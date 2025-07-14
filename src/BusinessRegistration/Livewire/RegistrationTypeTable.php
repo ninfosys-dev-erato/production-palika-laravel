@@ -11,6 +11,7 @@ use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\BusinessRegistration\Exports\RegistrationTypeExport;
 use Src\BusinessRegistration\Models\RegistrationType;
 use Src\BusinessRegistration\Service\RegistrationTypeAdminService;
+use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 
 class RegistrationTypeTable extends DataTableComponent
 {
@@ -42,6 +43,7 @@ class RegistrationTypeTable extends DataTableComponent
     public function builder(): Builder
     {
         return RegistrationType::query()
+            ->select('*')
             ->where('deleted_at', null)
             ->where('deleted_by', null)
             ->orderBy('created_at', 'DESC');
@@ -57,6 +59,16 @@ class RegistrationTypeTable extends DataTableComponent
         $columns = [
             Column::make(__('businessregistration::businessregistration.business_registration_type'), "title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('businessregistration::businessregistration.business_type'), "action")->sortable()->searchable()->collapseOnTablet(),
+            // Add registration_category_enum column with enum label
+            Column::make(__('businessregistration::businessregistration.registration_category_enum'), "registration_category_enum")
+                ->label(function ($row) {
+                    return $row->registration_category_enum
+                        ? RegistrationCategoryEnum::from($row->registration_category_enum)->label()
+                        : '';
+                })
+                ->sortable()
+                ->searchable()
+                ->collapseOnTablet(),
 
         ];
         if (can('registration-type_update') || can('registration-type_delete')) {

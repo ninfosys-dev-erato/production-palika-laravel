@@ -1,16 +1,20 @@
 <div>
 
-    @if ($row->province || ($row->ward_no && $row->province !== 'N/A'))
-        <strong>{{ __('businessregistration::businessregistration.province') }}:</strong> {{ $row->province->title }} - {{ $row->ward_no }} <br>
+    @if ($row->businessProvince || ($row->business_ward && $row->businessProvince !== 'N/A'))
+        <strong>{{ __('businessregistration::businessregistration.province') }}:</strong>
+        {{ $row->businessProvince?->title }} - {{ $row->business_ward }} <br>
     @endif
 
-    @if ($row->local_body_id && $row->local_body_id !== 'N/A')
-        <strong>{{ __('businessregistration::businessregistration.local_body') }}:</strong> {{ $row->localBody->title }} <br>
+    @if ($row->business_local_body && $row->business_local_body !== 'N/A')
+        <strong>{{ __('businessregistration::businessregistration.local_body') }}:</strong>
+        {{ $row->businessLocalBody?->title }} <br>
     @endif
 
-    @if ($row->district_id && $row->district_id !== 'N/A')
-        <strong>{{ __('businessregistration::businessregistration.district') }}:</strong> {{ $row->district->title }} <br>
+    @if ($row->business_district && $row->business_district !== 'N/A')
+        <strong>{{ __('businessregistration::businessregistration.district') }}:</strong>
+        {{ $row->businessDistrict?->title }} <br>
     @endif
+
 
 
 </div>

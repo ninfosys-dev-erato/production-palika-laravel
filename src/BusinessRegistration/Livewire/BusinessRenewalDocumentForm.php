@@ -55,7 +55,7 @@ class BusinessRenewalDocumentForm extends Component
     public function save()
     {
         $this->validate();
-        try{
+        try {
             $dto = BusinessRenewalDocumentAdminDto::fromLiveWireModel($this->businessRenewalDocument);
             $service = new BusinessRenewalDocumentAdminService();
             switch ($this->action) {
@@ -63,7 +63,7 @@ class BusinessRenewalDocumentForm extends Component
                     $service->store($dto);
                     $this->successFlash(__('businessregistration::businessregistration.business_renewal_document_created_successfully'));
                     return redirect()->route('admin.business_renewal_documents.index');
-                    
+
                 case Action::UPDATE:
                     $service->update($this->businessRenewalDocument, $dto);
                     $this->successFlash(__('businessregistration::businessregistration.business_renewal_document_updated_successfully'));
@@ -71,7 +71,6 @@ class BusinessRenewalDocumentForm extends Component
 
                 default:
                     return redirect()->route('admin.business_renewal_documents.index');
-                   
             }
         } catch (\Exception $e) {
             logger()->error($e);

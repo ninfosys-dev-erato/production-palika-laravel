@@ -3,6 +3,7 @@
 namespace Src\BusinessRegistration\Models;
 
 use App\Models\User;
+use App\Traits\HelperDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Src\FiscalYears\Models\FiscalYear;
 
 class BusinessRenewal extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, HelperDate;
 
     protected $table = 'brs_business_renewals';
 
@@ -43,34 +44,33 @@ class BusinessRenewal extends Model
         'bill_no',
     ];
 
-    public function casts(): array
-    {
-        return [
-            'fiscal_year_id' => 'string',
-            'business_registration_id' => 'string',
-            'renew_date' => 'string',
-            'renew_date_en' => 'string',
-            'date_to_be_maintained' => 'string',
-            'date_to_be_maintained_en' => 'string',
-            'renew_amount' => 'string',
-            'penalty_amount' => 'string',
-            'payment_receipt' => 'string',
-            'payment_receipt_date' => 'string',
-            'payment_receipt_date_en' => 'string',
-            'reg_no' => 'string',
-            'registration_no' => 'string',
-            'application_status' => ApplicationStatusEnum::class,
-            'created_at' => 'datetime',
-            'created_by' => 'string',
-            'updated_at' => 'datetime',
-            'updated_by' => 'string',
-            'deleted_at' => 'datetime',
-            'deleted_by' => 'string',
-            'approved_at' => 'datetime',
-            'approved_by' => 'string',
-            'bill_no' => 'string',
-        ];
-    }
+    protected $casts =
+    [
+        'fiscal_year_id' => 'string',
+        'business_registration_id' => 'string',
+        'renew_date' => 'string',
+        'renew_date_en' => 'string',
+        'date_to_be_maintained' => 'string',
+        'date_to_be_maintained_en' => 'string',
+        'renew_amount' => 'integer',
+        'penalty_amount' => 'integer',
+        'payment_receipt' => 'string',
+        'payment_receipt_date' => 'string',
+        'payment_receipt_date_en' => 'string',
+        'reg_no' => 'string',
+        'registration_no' => 'string',
+        'application_status' => ApplicationStatusEnum::class,
+        'created_at' => 'datetime',
+        'created_by' => 'string',
+        'updated_at' => 'datetime',
+        'updated_by' => 'string',
+        'deleted_at' => 'datetime',
+        'deleted_by' => 'string',
+        'approved_at' => 'datetime',
+        'approved_by' => 'string',
+        'bill_no' => 'string',
+    ];
+
 
     public function fiscalYear(): BelongsTo
     {
@@ -93,5 +93,9 @@ class BusinessRenewal extends Model
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+    public function getNepaliCreatedAtAttribute()
+    {
+        return $this->adToBs($this->created_at->format('Y-m-d'));
     }
 }

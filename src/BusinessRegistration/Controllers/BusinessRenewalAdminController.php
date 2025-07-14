@@ -4,6 +4,7 @@ namespace Src\BusinessRegistration\Controllers;
 
 use App\Enums\Action;
 use App\Http\Controllers\Controller;
+use App\Traits\HelperDate;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -12,6 +13,7 @@ use Src\BusinessRegistration\Models\BusinessRenewal;
 
 class BusinessRenewalAdminController extends Controller implements HasMiddleware
 {
+    use HelperDate;
     public static function middleware(): array
     {
         return [
@@ -44,7 +46,19 @@ class BusinessRenewalAdminController extends Controller implements HasMiddleware
 
     public function view(Request $request)
     {
-        $businessRenewal = BusinessRenewal::with('registration')->findOrFail($request->route('id'));
+        $businessRenewal = BusinessRenewal::with([
+            'registration',
+            'registration.registrationType',
+            'registration.registrationType.registrationCategory',
+            'registration.applicants',
+            'registration.applicants.applicantProvince',
+            'registration.applicants.applicantDistrict',
+            'registration.applicants.applicantLocalBody',
+            'registration.applicants.citizenshipDistrict',
+            'registration.requiredBusinessDocs',
+            'fiscalYear'
+        ])->findOrFail($request->route('id'));
+
         return view('BusinessRegistration::renewal.show')->with(compact('businessRenewal'));
     }
 }

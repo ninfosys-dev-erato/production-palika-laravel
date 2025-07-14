@@ -173,31 +173,87 @@
             </tr>
         </thead>
         <tbody>
+            @php $businessNumber = 1; @endphp
             @foreach ($renewalBusinessData as $data)
-                <tr>
-                    <td>{{ replaceNumbers($loop->iteration, true) }}</td>
-                    <td>{{ replaceNumbers($data->registration_no, true) }}</td>
-                    <td>{{ $data->registration?->entity_name }}</td>
-                    <td>
-                        {{ $data->registration?->province->title ?? '' }}
-                        {{ $data->registration?->district->title ?? '' }}
-                        {{ $data->registration?->localBody->title ?? '' }}
-                        {{ $data->registration?->ward_no ? ' वडा नं. ' . $data->registration?->ward_no : '' }}
-                    </td>
-                    <td>{{ $data->registration?->registrationType?->registrationCategory?->title_ne }}</td>
-                    <td>{{ $data->registration?->applicant_name }}</td>
-                    <td>{{ $data->registration?->applicant_number }}</td>
-                    <td>{{ replaceNumbers($data->renew_date, true) }}</td>
-                    <td>{{ replaceNumbers($data->date_to_be_maintained, true) }}</td>
-                    <td>{{ replaceNumbers($data->renew_amount, true) }}</td>
-                    <td>{{ replaceNumbers($data->penalty_amount, true) }}</td>
-                    <td>{{ replaceNumbers($data->bill_no, true) }}</td>
-                    <td>{{ replaceNumbers($data->payment_receipt_date, true) }}</td>
-                    <td>{{ Src\BusinessRegistration\Enums\ApplicationStatusEnum::getNepaliLabel($data->application_status) }}
-                    </td>
-
-
-                </tr>
+                @if ($data->registration && $data->registration->applicants->count() > 0)
+                    @foreach ($data->registration->applicants as $index => $applicant)
+                        <tr>
+                            <td>
+                                @if ($index == 0)
+                                    {{ replaceNumbers($businessNumber, true) }}
+                                @else
+                                    {{ replaceNumbers($businessNumber, true) }}.{{ replaceNumbers($index, true) }}
+                                @endif
+                            </td>
+                            <td>{{ replaceNumbers($data->registration_no, true) }}</td>
+                            <td>{{ $data->registration->entity_name }}</td>
+                            <td>
+                                @php
+                                    $businessAddress = collect([
+                                        $data->registration->businessProvince->title ?? null,
+                                        $data->registration->businessDistrict->title ?? null,
+                                        $data->registration->businessLocalBody->title ?? null,
+                                        $data->registration->business_ward
+                                            ? 'वडा नं. ' . $data->registration->business_ward
+                                            : null,
+                                        $data->registration->business_tole ?? null,
+                                        $data->registration->business_street ?? null,
+                                    ])
+                                        ->filter()
+                                        ->implode(', ');
+                                @endphp
+                                {{ $businessAddress }}
+                            </td>
+                            <td>{{ $data->registration->registrationType->registrationCategory->title_ne ?? '' }}</td>
+                            <td>{{ $applicant->applicant_name ?? '' }}</td>
+                            <td>{{ $applicant->phone ?? '' }}</td>
+                            <td>{{ replaceNumbers($data->renew_date, true) }}</td>
+                            <td>{{ replaceNumbers($data->date_to_be_maintained, true) }}</td>
+                            <td>{{ replaceNumbers($data->renew_amount, true) }}</td>
+                            <td>{{ replaceNumbers($data->penalty_amount, true) }}</td>
+                            <td>{{ replaceNumbers($data->bill_no, true) }}</td>
+                            <td>{{ replaceNumbers($data->payment_receipt_date, true) }}</td>
+                            <td>{{ Src\BusinessRegistration\Enums\ApplicationStatusEnum::getNepaliLabel($data->application_status) }}
+                            </td>
+                        </tr>
+                    @endforeach
+                    @php $businessNumber++; @endphp
+                @else
+                    <tr>
+                        <td>{{ replaceNumbers($businessNumber, true) }}</td>
+                        <td>{{ replaceNumbers($data->registration_no, true) }}</td>
+                        <td>{{ $data->registration->entity_name ?? '' }}</td>
+                        <td>
+                            @php
+                                $businessAddress = collect([
+                                    $data->registration->businessProvince->title ?? null,
+                                    $data->registration->businessDistrict->title ?? null,
+                                    $data->registration->businessLocalBody->title ?? null,
+                                    $data->registration->business_ward
+                                        ? 'वडा नं. ' . $data->registration->business_ward
+                                        : null,
+                                    $data->registration->business_tole ?? null,
+                                    $data->registration->business_street ?? null,
+                                ])
+                                    ->filter()
+                                    ->implode(', ');
+                            @endphp
+                            {{ $businessAddress }}
+                        </td>
+                        <td>{{ $data->registration->registrationType->registrationCategory->title_ne ?? '' }}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>{{ replaceNumbers($data->renew_date, true) }}</td>
+                        <td>{{ replaceNumbers($data->date_to_be_maintained, true) }}</td>
+                        <td>{{ replaceNumbers($data->renew_amount, true) }}</td>
+                        <td>{{ replaceNumbers($data->penalty_amount, true) }}</td>
+                        <td>{{ replaceNumbers($data->bill_no, true) }}</td>
+                        <td>{{ replaceNumbers($data->payment_receipt_date, true) }}</td>
+                        <td>{{ Src\BusinessRegistration\Enums\ApplicationStatusEnum::getNepaliLabel($data->application_status) }}
+                        </td>
+                    </tr>
+                    @php $businessNumber++; @endphp
+                @endif
             @endforeach
         </tbody>
     </table>

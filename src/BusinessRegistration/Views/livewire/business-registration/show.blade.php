@@ -1,220 +1,339 @@
-<div class="card shadow-sm p-3 mt-3">
-    <div class="row">
-        <div class="col-12 mb-3">
-            @if ($businessRegistration->data)
-                @php($data = is_array($businessRegistration->data) ? $businessRegistration->data : json_decode($businessRegistration->data, true))
-                @foreach ($data as $key => $field)
-                    <p>
-                        <strong>{{ $field['label'] }}:</strong>
-                        @if ($field['type'] === 'group' && isset($field['fields']))
-                            @foreach ($field['fields'] as $subKey => $subField)
-                                <p>
-                                    <strong>{{ $subField['label'] }}:</strong>
-                                    {{ $subField['value'] ?? '' }}
-                                </p>
-                            @endforeach
-                        @elseif ($field['type'] === 'file')
-                            @if (is_array($field['value']))
-                                @foreach ($field['value'] as $index => $fileValue)
-                                    <img width="50"
-                                        src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local') }}"
-                                        alt="" class="rounded shadow-sm cursor-pointer" data-bs-toggle="modal"
-                                        data-bs-target="#filePreviewModal{{ $key }}{{ $index }}">
+<div>
+    @php
+        use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+        use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 
-                                    <div class="modal fade" id="filePreviewModal{{ $key }}{{ $index }}"
-                                        tabindex="-1" role="dialog" wire:ignore.self>
-                                        <div class="modal-dialog modal-lg" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">
-                                                        {{ __('businessregistration::businessregistration.file_preview') }}
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body text-center">
-                                                    <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local') }}"
-                                                        alt="{{ __('businessregistration::businessregistration.file_preview') }}"
-                                                        class="img-fluid rounded">
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">{{ __('businessregistration::businessregistration.close') }}</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <img width="50"
-                                    src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $field['value'], 'local') }}"
-                                    alt="" class="rounded shadow-sm cursor-pointer" data-bs-toggle="modal"
-                                    data-bs-target="#filePreviewModal{{ $key }}">
+        // For deregistration, get the original business registration data
+        if (
+            $businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION &&
+            $businessRegistration->registration_id
+        ) {
+            $originalBusiness = \Src\BusinessRegistration\Models\BusinessRegistration::withTrashed()
+                ->where('id', $businessRegistration->registration_id)
+                ->first();
+            $displayData = $originalBusiness?->data ?? $businessRegistration->data;
+            $displayApplicants = $originalBusiness?->applicants ?? $businessRegistration->applicants;
+        } else {
+            $displayData = $businessRegistration->data;
+            $displayApplicants = $businessRegistration->applicants;
+        }
+    @endphp
+    <div class="row mb-3">
+        @if ($displayData)
+            @php
+                $data = is_array($displayData) ? $displayData : json_decode($displayData, true);
 
-                                <div class="modal fade" id="filePreviewModal{{ $key }}" tabindex="-1"
-                                    role="dialog" wire:ignore.self>
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    {{ __('businessregistration::businessregistration.file_preview') }}
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body text-center">
-                                                <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $field['value'], 'local') }}"
-                                                    alt="{{ __('businessregistration::businessregistration.file_preview') }}"
-                                                    class="img-fluid rounded">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">{{ __('businessregistration::businessregistration.close') }}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        @elseif ($field['type'] === 'table')
-                            @if (array_key_exists('fields', $field))
-                                <div class="table-responsive mt-2">
-                                    <table class="table table-bordered table-sm">
-                                        <thead class="table-light">
-                                            <tr>
-                                                @foreach ($field['fields'][0] as $headerField)
-                                                    <th>{{ $headerField['label'] ?? ucfirst($headerField['key']) }}
-                                                    </th>
-                                                @endforeach
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($field['fields'] as $row)
-                                                <tr>
-                                                    @foreach ($row as $column)
-                                                        <td>
-                                                            @if ($column['type'] === 'file')
-                                                                @if (is_array($column['value']))
-                                                                    @foreach ($column['value'] as $index => $fileValue)
-                                                                        <img width="180" height="150"
-                                                                            src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local') }}"
-                                                                            alt=""
-                                                                            class="rounded shadow-sm cursor-pointer"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#filePreviewModal{{ $key }}{{ $index }}">
+            @endphp
 
-                                                                        <div class="modal fade"
-                                                                            id="filePreviewModal{{ $key }}{{ $index }}"
-                                                                            tabindex="-1" role="dialog"
-                                                                            wire:ignore.self>
-                                                                            <div class="modal-dialog modal-lg"
-                                                                                role="document">
-                                                                                <div class="modal-content">
-                                                                                    <div class="modal-header">
-                                                                                        <h5 class="modal-title">
-                                                                                            {{ __('businessregistration::businessregistration.file_preview') }}
-                                                                                        </h5>
-                                                                                        <button type="button"
-                                                                                            class="btn-close"
-                                                                                            data-bs-dismiss="modal"
-                                                                                            aria-label="Close"></button>
-                                                                                    </div>
-                                                                                    <div class="modal-body text-center">
-                                                                                        <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local') }}"
-                                                                                            alt="{{ __('businessregistration::businessregistration.file_preview') }}"
-                                                                                            class="img-fluid rounded">
-                                                                                    </div>
-                                                                                    <div class="modal-footer">
-                                                                                        <button type="button"
-                                                                                            class="btn btn-secondary"
-                                                                                            data-bs-dismiss="modal">{{ __('businessregistration::businessregistration.close') }}</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    @endforeach
-                                                                @else
-                                                                    <img width="180" height="150"
-                                                                        src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $column['value'], 'local') }}"
-                                                                        alt=""
-                                                                        class="rounded shadow-sm cursor-pointer"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#filePreviewModal{{ $key }}">
-
-                                                                    <div class="modal fade"
-                                                                        id="filePreviewModal{{ $key }}"
-                                                                        tabindex="-1" role="dialog" wire:ignore.self>
-                                                                        <div class="modal-dialog modal-lg"
-                                                                            role="document">
-                                                                            <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title">
-                                                                                        {{ __('businessregistration::businessregistration.file_preview') }}
-                                                                                    </h5>
-                                                                                    <button type="button"
-                                                                                        class="btn-close"
-                                                                                        data-bs-dismiss="modal"
-                                                                                        aria-label="Close"></button>
-                                                                                </div>
-                                                                                <div class="modal-body text-center">
-                                                                                    <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $column['value'], 'local') }}"
-                                                                                        alt="{{ __('businessregistration::businessregistration.file_preview') }}"
-                                                                                        class="img-fluid rounded">
-                                                                                </div>
-                                                                                <div class="modal-footer">
-                                                                                    <button type="button"
-                                                                                        class="btn btn-secondary"
-                                                                                        data-bs-dismiss="modal">{{ __('businessregistration::businessregistration.close') }}</button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                @endif
-                                                            @else
-                                                                {{ is_array($column['value']) ? implode(', ', $column['value']) : $column['value'] ?? 'N/A' }}
-                                                            @endif
-                                                        </td>
-                                                    @endforeach
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @endif
+            {{-- 1. Show all non-file fields first --}}
+            <div class="card mb-4">
+                <div class="card-header text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fw-bold text-primary">
+                        @if ($businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION)
+                            {{ __('businessregistration::businessregistration.business_deregistration_details') }}
                         @else
-                            {{ is_array($field['value']) ? implode(', ', $field['value']) : $field['value'] ?? __('businessregistration::businessregistration.no_value_provided') }}
+                            {{ __('businessregistration::businessregistration.business_registration_details') }}
                         @endif
-                    </p>
-                @endforeach
-            @else
-                <p class="text-muted">{{ __('businessregistration::businessregistration.no_data_available') }}</p>
-            @endif
-        </div>
+                    </h4>
+
+
+                    <div class="d-flex gap-2">
+                        @if ($businessRegistration->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::REJECTED->value)
+                            <button type="button" class="btn btn-danger" wire:click="$dispatch('showRejectModal')"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="{{ __('businessregistration::businessregistration.reject') }}"
+                                data-bs-target="#rejectModal">
+                                <i class="bx bx-message-x"></i>
+                                {{ __('businessregistration::businessregistration.reject') }}
+                            </button>
+                        @endif
+                        @if ($businessRegistration->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
+                            <button class="btn btn-primary" wire:click="$dispatch('showAmountModal')"
+                                data-bs-toggle="tooltip"
+                                title="{{ __('businessregistration::businessregistration.send_for_payment') }}">
+                                <i class="bx bx-wallet-alt me-1"></i>
+                                {{ __('businessregistration::businessregistration.send_for_payment') }}
+                            </button>
+                        @endif
+
+                        @if (
+                            $businessRegistration->application_status ===
+                                Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED->value)
+                            <button class="btn btn-success" wire:click="$dispatch('showApproveModal')"
+                                data-bs-toggle="tooltip"
+                                title="{{ __('businessregistration::businessregistration.approve') }}">
+                                <i class="bx bx-checkbox-checked me-1"></i>
+                                {{ __('businessregistration::businessregistration.approve') }}
+                            </button>
+                        @endif
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <dl class="row mb-0">
+                        {{-- For Business --}}
+                        @if ($businessRegistration->registration_category == RegistrationCategoryEnum::BUSINESS->value)
+                            <dt class="col-sm-4">
+                                {{ __('businessregistration::businessregistration.capital_investment') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->capital_investment ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.working_capital') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->working_capital ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.fixed_capital') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->fixed_capital ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.is_rented') }}</dt>
+                            <dd class="col-sm-8">
+                                {{ $businessRegistration->is_rented ? __('businessregistration::businessregistration.yes') : __('businessregistration::businessregistration.no') }}
+                            </dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.houseownername') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->houseownername ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.phone') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->phone ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.monthly_rent') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->monthly_rent ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.rentagreement') }}
+                            </dt>
+                            <dd class="col-sm-8">
+                                @if ($businessRegistration->rentagreement)
+                                    <a href="{{ asset('storage/' . $businessRegistration->rentagreement) }}"
+                                        target="_blank">{{ __('businessregistration::businessregistration.view_uploaded_file') }}</a>
+                                @else
+                                    -
+                                @endif
+                            </dd>
+                        @endif
+
+                        {{-- For Firm --}}
+                        @if ($businessRegistration->registration_category == RegistrationCategoryEnum::FIRM->value)
+                            <dt class="col-sm-4">
+                                {{ __('businessregistration::businessregistration.capital_investment') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->capital_investment ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.operation_date') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->operation_date ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.houseownername') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->houseownername ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.east') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->east ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.west') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->west ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.north') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->north ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.south') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->south ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.landplotnumber') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->landplotnumber ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.area') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->area ?? '-' }}</dd>
+                        @endif
+
+                        {{-- For Industry --}}
+                        @if ($businessRegistration->registration_category == RegistrationCategoryEnum::INDUSTRY->value)
+                            <dt class="col-sm-4">
+                                {{ __('businessregistration::businessregistration.capital_investment') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->capital_investment ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.fixed_capital') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->fixed_capital ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.working_capital') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->working_capital ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">
+                                {{ __('businessregistration::businessregistration.production_capacity') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->production_capacity ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">
+                                {{ __('businessregistration::businessregistration.required_manpower') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->required_manpower ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">
+                                {{ __('businessregistration::businessregistration.number_of_shifts') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->number_of_shifts ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">{{ __('businessregistration::businessregistration.operation_date') }}
+                            </dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->operation_date ?? '-' }}</dd>
+                        @endif
+
+                        {{-- For Organization --}}
+                        @if ($businessRegistration->registration_category == RegistrationCategoryEnum::ORGANIZATION->value)
+                            <dt class="col-sm-4">
+                                {{ __('businessregistration::businessregistration.financial_source') }}</dt>
+                            <dd class="col-sm-8">{{ $businessRegistration->financial_source ?? '-' }}</dd>
+                        @endif
+                    </dl>
+
+
+
+
+                    <dl class="row mb-0">
+                        @foreach ($data as $key => $field)
+                            @if ($field['type'] !== 'file')
+                                <dt class="col-sm-4 info-label fw-semibold">
+                                    {{ $field['label'] }}:
+                                </dt>
+
+                                @if ($field['type'] === 'group' && isset($field['fields']))
+                                    <dd class="col-sm-9">
+                                        @foreach ($field['fields'] as $subField)
+                                            <p>
+                                                <strong>{{ $subField['label'] }}:</strong>
+                                                {{ $subField['value'] ?? '' }}
+                                            </p>
+                                        @endforeach
+                                    </dd>
+                                @elseif ($field['type'] === 'table' && isset($field['fields']))
+                                    <dd class="col-sm-9">
+                                        <div class="table-responsive mt-2">
+                                            <table class="table table-bordered table-sm">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        @foreach ($field['fields'][0] as $headerField)
+                                                            <th>{{ $headerField['label'] ?? ucfirst($headerField['key']) }}
+                                                            </th>
+                                                        @endforeach
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($field['fields'] as $row)
+                                                        <tr>
+                                                            @foreach ($row as $column)
+                                                                <td>
+                                                                    @if ($column['type'] === 'file')
+                                                                        {{-- Skip files here; we'll show files later --}}
+                                                                        <em>File in table (will show below)</em>
+                                                                    @else
+                                                                        {{ is_array($column['value']) ? implode(', ', $column['value']) : $column['value'] ?? 'N/A' }}
+                                                                    @endif
+                                                                </td>
+                                                            @endforeach
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </dd>
+                                @else
+                                    <dd class="col-sm-8 info-value">
+                                        {{ is_array($field['value']) ? implode(', ', $field['value']) : $field['value'] ?? __('businessregistration::businessregistration.no_value_provided') }}
+                                    </dd>
+                                @endif
+                            @endif
+                        @endforeach
+                    </dl>
+                </div>
+            </div>
+
+            {{-- 2. Show all files separately --}}
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="fw-bold">
+                        {{ __('businessregistration::businessregistration.business_registration_files') }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+
+                        {{-- Citizenship Front --}}
+                        @foreach ($displayApplicants as $index => $applicant)
+                            <div class="col-md-6">
+                                <strong>Citizenship ({{ $applicant->applicant_name }})</strong><br>
+                                @if (!empty($citizenshipFrontUrls[$index]))
+                                    <a href="{{ $citizenshipFrontUrls[$index] }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary mt-2">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                    </a>
+                                @endif
+
+                                @if (!empty($citizenshipRearUrls[$index]))
+                                    <a href="{{ $citizenshipRearUrls[$index] }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary mt-2">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                    </a>
+                                @endif
+                            </div>
+                        @endforeach
+
+
+                        @foreach ($businessRegistration->requiredBusinessDocs as $item)
+                            <div class="col-md-3">
+                                <strong>{{ $item->document_label_ne }}</strong><br>
+
+                                @if (!empty($businessRequiredDocUrls[$item->id]))
+                                    <a href="{{ $businessRequiredDocUrls[$item->id] }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary mt-2">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">No file available</span>
+                                @endif
+                            </div>
+                        @endforeach
+
+
+
+
+                        @foreach ($data as $key => $field)
+                            @if ($field['type'] === 'file')
+                                @php
+                                    $files = is_array($field['value']) ? $field['value'] : [$field['value']];
+                                    $urls = $dynamicFileUrls[$key] ?? [];
+                                @endphp
+
+                                <div class="col-md-3">
+                                    <strong>{{ $field['label_ne'] ?? $field['label'] }}</strong><br>
+
+                                    @foreach ($files as $index => $fileValue)
+                                        @if (!empty($urls[$index]))
+                                            <a href="{{ $urls[$index] }}" target="_blank"
+                                                class="btn btn-sm btn-outline-primary mt-2 d-block">
+                                                <i class="bx bx-file"></i>
+                                                {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                            </a>
+                                        @else
+                                            <span class="text-muted d-block mt-2">No file available</span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                        @endforeach
+
+                    </div>
+                </div>
+            </div>
+        @else
+            <p class="text-muted">{{ __('businessregistration::businessregistration.no_data_available') }}</p>
+        @endif
     </div>
-
-        @if ($businessRegistration->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-primary" wire:click="$dispatch('showAmountModal')">
-                    <i class="bx bx-wallet-alt"></i>
-                    {{ __('businessregistration::businessregistration.send_for_payment') }}
-                </button>
-            </div>
-        @endif
-
-        @if (
-            $businessRegistration->application_status ===
-                Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED->value)
-            <div class="d-flex justify-content-end mt-3">
-                <button type="button" class="btn btn-success" wire:click="$dispatch('showApproveModal')"
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="{{ __('businessregistration::businessregistration.approve') }}">
-                    <i class="bx bx-checkbox-checked"></i> {{ __('businessregistration::businessregistration.approve') }}
-                </button>
-            </div>
-        @endif
 
     {{-- Send for payment modal --}}
     <div class="modal fade" id="sendForPaymentModal" tabindex="-1" role="dialog" wire:ignore.self>
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ __('businessregistration::businessregistration.payable_amount') }}</h5>
@@ -243,7 +362,7 @@
 
     <!-- Approve Modal -->
     <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" wire:ignore.self>
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ __('businessregistration::businessregistration.approval_details') }}
@@ -270,6 +389,70 @@
             </div>
         </div>
     </div>
+
+    {{-- reject modal  --}}
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ __('businessregistration::businessregistration.rejection_reason') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <textarea dusk="businessregistration-rejectionReason-field" wire:model="rejectionReason" class="form-control"
+                            rows="4"></textarea>
+                        @error('rejectionReason')
+                            <span class="text-danger">{{ __($message) }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('businessregistration::businessregistration.cancel') }}</button>
+                    <button type="button" class="btn btn-danger"
+                        wire:click="reject">{{ __('businessregistration::businessregistration.save') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- universal modal --}}
+    <div class="modal fade" id="universalImageModal" tabindex="-1" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="universalImageTitle">File Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="universalImagePreview" src="" class="img-fluid rounded shadow-sm"
+                        alt="Preview">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalImage = document.getElementById('universalImagePreview');
+            const modalTitle = document.getElementById('universalImageTitle');
+
+            document.querySelectorAll('.preview-image').forEach(img => {
+                img.addEventListener('click', function() {
+                    modalImage.src = this.dataset.image;
+                    modalTitle.textContent = this.dataset.title || 'File Preview';
+                });
+            });
+        });
+    </script>
+
+
 </div>
 
 @push('scripts')
@@ -280,6 +463,9 @@
 
         Livewire.on('showAmountModal', () => {
             $('#sendForPaymentModal').modal('show');
-        })
+        });
+        Livewire.on('showRejectModal', () => {
+            $('#rejectModal').modal('show');
+        });
     </script>
 @endpush

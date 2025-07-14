@@ -49,25 +49,37 @@ class BusinessRegistrationReportExport implements FromCollection, WithHeadings, 
     {
         $this->serial++;
 
-        $address =
-            ($data->province->title ?? '') . ' ' .
-            ($data->district->title ?? '') . ' ' .
-            ($data->localBody->title ?? '') .
-            ($data->ward_no ? ' वडा नं. ' . $data->ward_no : '');
+        $applicantAddress = collect([
+            $data->applicantProvince?->title ?? null,
+            $data->applicantDistrict?->title ?? null,
+            $data->applicantLocalBody?->title ?? null,
+            $data->applicant_ward ? 'वडा नं. ' . $data->applicant_ward : null,
+            $data->applicant_tole ?? null,
+            $data->applicant_street ?? null,
+        ])->filter()->implode(', ');
+        $businessAddress = collect([
+            $data->businessProvince?->title ?? null,
+            $data->businessDistrict?->title ?? null,
+            $data->businessLocalBody?->title ?? null,
+            $data->business_ward ? 'वडा नं. ' . $data->business_ward : null,
+            $data->business_tole ?? null,
+            $data->business_street ?? null,
+        ])->filter()->implode(', ');
+        $address = "आवेदक: $applicantAddress\nव्यवसाय: $businessAddress";
 
         return [
             $this->serial,
             $data->registration_number ?? 'N/A',
             $data->entity_name ?? 'N/A',
             $address,
-            $data->registrationType->registrationCategory->title_ne ?? 'N/A', // प्रकार
-            $data->registrationType->title ?? 'N/A', // वर्ग
-            $data->businessNature->title_ne ?? 'N/A', // प्रकृति
+            $data->registrationType->registrationCategory->title_ne ?? 'N/A',
+            $data->registrationType->title ?? 'N/A',
+            $data->businessNature->title_ne ?? 'N/A',
             $data->applicant_name ?? 'N/A',
-            $data->applicant_number ?? 'N/A',
+            $data->phone ?? 'N/A',
             $data->application_date ?? 'N/A',
-            $data->application_status_nepali ?? 'N/A', // Enum as Nepali
-            $data->business_status_nepali ?? 'N/A', // Enum as Nepali
+            $data->application_status_nepali ?? 'N/A',
+            $data->business_status_nepali ?? 'N/A',
         ];
     }
 

@@ -14,10 +14,10 @@ use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessStatusEnum;
+use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 use Src\BusinessRegistration\Exports\BusinessRegistrationReportExport;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Models\NatureOfBusiness;
-use Src\BusinessRegistration\Models\RegistrationCategory;
 use Src\BusinessRegistration\Models\RegistrationType;
 use Src\Employees\Models\Branch;
 use Src\TokenTracking\Exports\TokenReportExport;
@@ -80,7 +80,7 @@ class BusinessRegistrationReport extends Component
 
     public function mount()
     {
-        $this->categories = RegistrationCategory::whereNull('deleted_at')->pluck('title', 'id');
+        $this->categories = RegistrationCategoryEnum::getForWebInNepali();
         $this->natures = NatureOfBusiness::whereNull('deleted_at')->pluck('title', 'id');
         $this->types = RegistrationType::whereNull('deleted_at')->pluck('title', 'id');
         $this->wards =  getWards(getLocalBodies(localBodyId: key(getSettingWithKey('palika-local-body')))->wards);
@@ -97,7 +97,16 @@ class BusinessRegistrationReport extends Component
         $startDate = $this->startDate ? Carbon::parse($this->bsToAd($this->startDate))->startOfDay() : null;
         $endDate = $this->endDate ? Carbon::parse($this->bsToAd($this->endDate))->endOfDay() : null;
 
-        $query = BusinessRegistration::with(['registrationType.registrationCategory', 'province', 'district', 'localBody', 'businessNature'])->whereNull('deleted_at')->latest();
+        $query = BusinessRegistration::with([
+            'registrationType.registrationCategory',
+            'businessProvince',
+            'businessDistrict',
+            'businessLocalBody',
+            'businessNature',
+            'applicants.applicantProvince',
+            'applicants.applicantDistrict',
+            'applicants.applicantLocalBody'
+        ])->whereNull('deleted_at')->latest();
 
         // Apply filters to the query and add them to the applied filters array
         if ($startDate && $endDate) {
@@ -105,9 +114,7 @@ class BusinessRegistrationReport extends Component
             $appliedFilters[] = 'आवेदन मिति';
         }
         if ($this->selectedCategory) {
-            $query->whereHas('registrationType.registrationCategory', function ($q) {
-                $q->where('id', $this->selectedCategory);
-            });
+            $query->where('registration_category', $this->selectedCategory);
             $appliedFilters[] = 'वर्ग';
         }
         if ($this->selectedType) {
@@ -119,7 +126,7 @@ class BusinessRegistrationReport extends Component
             $appliedFilters[] = 'व्यवसाय प्रकृति';
         }
         if ($this->selectedWard) {
-            $query->where('ward_no', $this->selectedWard);
+            $query->where('business_ward', $this->selectedWard);
             $appliedFilters[] = 'वडा नं.';
         }
         if ($this->selectedApplicationStatus) {
@@ -141,7 +148,16 @@ class BusinessRegistrationReport extends Component
     {
         try {
             $registerBusinessData =  $this->registerBusinessData;
-            $registerBusinessData->load(['registrationType.registrationCategory']); //explicitly loaded this relation to fix the error of lazy loading
+            $registerBusinessData->load([
+                'registrationType.registrationCategory',
+                'businessProvince',
+                'businessDistrict',
+                'businessLocalBody',
+                'businessNature',
+                'applicants.applicantProvince',
+                'applicants.applicantDistrict',
+                'applicants.applicantLocalBody'
+            ]); //explicitly loaded this relation to fix the error of lazy loading
             $startDate = $this->startDate;
             $endDate = $this->endDate;
             if (empty($registerBusinessData)) {

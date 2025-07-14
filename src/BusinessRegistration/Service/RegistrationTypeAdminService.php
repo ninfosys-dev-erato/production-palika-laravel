@@ -19,6 +19,7 @@ class RegistrationTypeAdminService
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->id,
             'action' => $regTypeDto->action,
+            'registration_category_enum' => $regTypeDto->registration_category_enum,
         ]);
 
         return $regType;
@@ -34,6 +35,7 @@ class RegistrationTypeAdminService
             'updated_at' => date('Y-m-d H:i:s'),
             'updated_by' => Auth::user()->id,
             'action' => $regTypeDto->action,
+            'registration_category_enum' => $regTypeDto->registration_category_enum,
         ]);
 
         return $regType;
