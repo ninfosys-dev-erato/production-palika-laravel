@@ -92,8 +92,8 @@ return [
     [
         'module' => 'grant',
         'route' => 'admin.grant_management.index',
-        'icon' => 'RajaswaSankalanIcon.png',
-        'logo' => 'bx bx-dollar-circle',
+        'icon' => 'bx bx-dollar-circle',
+        'logo' => 'RajaswaSankalanIcon.png',
         'label' => 'Grant Management System',
         'perm' => null,
     ],
