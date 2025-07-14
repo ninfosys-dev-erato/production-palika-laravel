@@ -1,0 +1,176 @@
+
+In StreamHandler.php line 156:
+                                                                               
+  The stream or file "/var/www/html/storage/logs/laravel.log" could not be op  
+  ened in append mode: Failed to open stream: Permission denied                
+  The exception occurred while attempting to log: Class "Anuzpandey\LaravelNe  
+  paliDate\LaravelNepaliDateServiceProvider" not found                         
+  Context: {"exception":{}}                                                    
+                                                                               
+
+
+In StreamHandler.php line 156:
+                                                                               
+  The stream or file "/var/www/html/storage/logs/laravel.log" could not be op  
+  ened in append mode: Failed to open stream: Permission denied                
+  The exception occurred while attempting to log: Class "Anuzpandey\LaravelNe  
+  paliDate\LaravelNepaliDateServiceProvider" not found                         
+  Context: {"exception":{}}                                                    
+                                                                               
+
+
+In StreamHandler.php line 156:
+                                                                               
+  The stream or file "/var/www/html/storage/logs/laravel.log" could not be op  
+  ened in append mode: Failed to open stream: Permission denied                
+  The exception occurred while attempting to log: Class "Anuzpandey\LaravelNe  
+  paliDate\LaravelNepaliDateServiceProvider" not found                         
+  Context: {"exception":{}}                                                    
+                                                                               
+
+
+In StreamHandler.php line 156:
+                                                                               
+  The stream or file "/var/www/html/storage/logs/laravel.log" could not be op  
+  ened in append mode: Failed to open stream: Permission denied                
+  The exception occurred while attempting to log: Class "Anuzpandey\LaravelNe  
+  paliDate\LaravelNepaliDateServiceProvider" not found                         
+  Context: {"exception":{}}                                                    
+                                                                               
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `cache` where `key` in (illuminate:queue:restart))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+      [2m+42 vendor frames [22m
+
+  43  artisan:13
+      Illuminate\Foundation\Application::handleCommand()
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `permissions`)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+      [2m+23 vendor frames [22m
+
+  25  app/Providers/PassportCustomConfigProvider.php:37
+      Illuminate\Database\Eloquent\Model::all()
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `permissions`)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+      [2m+23 vendor frames [22m
+
+  25  app/Providers/PassportCustomConfigProvider.php:37
+      Illuminate\Database\Eloquent\Model::all()
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `permissions`)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+      [2m+23 vendor frames [22m
+
+  25  app/Providers/PassportCustomConfigProvider.php:37
+      Illuminate\Database\Eloquent\Model::all()
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `permissions`)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+      [2m+23 vendor frames [22m
+
+  25  app/Providers/PassportCustomConfigProvider.php:37
+      Illuminate\Database\Eloquent\Model::all()
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `permissions`)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+      [2m+23 vendor frames [22m
+
+  25  app/Providers/PassportCustomConfigProvider.php:37
+      Illuminate\Database\Eloquent\Model::all()
+

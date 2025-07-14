@@ -1,0 +1,4 @@
+<div>
+    {!! $registrationCertificate !!}
+    {!! $renewalCertificate !!}
+</div>

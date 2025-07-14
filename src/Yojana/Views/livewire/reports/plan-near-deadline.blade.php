@@ -1,0 +1,209 @@
+<div>
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.report_of_plan_with_less_than_15_days_for_deadline') }}</h4>
+        <div class="d-flex gap-2 ms-auto">
+{{--            <button type="button" wire:click = "export" class="btn btn-outline-primary btn-sm">--}}
+{{--                {{ __('yojana::yojana.export') }}--}}
+{{--            </button>--}}
+            <button type="button" wire:click="downloadPdf" class="btn btn-outline-primary btn-sm">
+                {{ __('yojana::yojana.print') }}
+            </button>
+        </div>
+    </div>
+    <div class="container py-4">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="divider divider-primary text-start text-primary fw-bold mx-4 mb-0">
+                <div class="divider-text fs-6">{{ __('yojana::yojana.search') }}</div>
+            </div>
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="row g-3">
+
+
+                        {{-- Dropdowns --}}
+                        <div class="col-md-4 col-12">
+                            <label class="form-label">{{ __('yojana::yojana.plan_area') }}</label>
+                            <select class="form-select" wire:model="selectedPlanArea">
+                                <option value="">{{ __('yojana::yojana.all') }}</option>
+                                @foreach ($planAreas as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            <div>
+                                @error('selectedPlanArea')
+                                <small class='text-danger'>{{ __($message) }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label class="form-label">{{ __('yojana::yojana.expense_head') }}</label>
+                            <select class="form-select" wire:model="selectedExpenseHead">
+                                <option value="">{{ __('yojana::yojana.all') }}</option>
+                                @foreach ($expenseHeads as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            <div>
+                                @error('selectedExpenseHead')
+                                <small class='text-danger'>{{ __($message) }}</small>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-12">
+                            <label class="form-label">{{ __('yojana::yojana.project_name') }}</label>
+                            <input type="text" wire:model="projectName" name="projectName" id=""
+                                   class="form-control">
+                            <div>
+                                @error('projectName')
+                                <small class='text-danger'>{{ __($message) }}</small>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-12">
+                            <label class="form-label">{{ __('yojana::yojana.ward') }}</label>
+                            <select class="form-select" wire:model="selectedWard">
+                                <option value="">{{ __('yojana::yojana.all') }}</option>
+                                @foreach ($wards as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            <div>
+                                @error('selectedWard')
+                                <small class='text-danger'>{{ __($message) }}</small>
+                                @enderror
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4 col-12">
+                            <label class="form-label">{{ __('yojana::yojana.address') }}</label>
+                            <input type="text" wire:model="projectLocation" name="projectLocation" id=""
+                                   class="form-control">
+                            <div>
+                                @error('projectLocation')
+                                <small class='text-danger'>{{ __($message) }}</small>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Buttons --}}
+                        <div class="col-12 d-flex justify-content-center gap-3 mt-4">
+                            <button type="button" class="btn btn-primary btn-sm" wire:loading.attr="disabled"
+                                    wire:target="search" wire:click="search">
+                                <span wire:loading wire:target="search">
+                                    <i class="bx bx-loader bx-spin me-1"></i>
+                                </span>
+                                <span wire:loading.remove wire:target="search">
+                                    <i class="bx bx-search me-1"></i> {{ __('yojana::yojana.search') }}
+                                </span>
+                            </button>
+
+                            <button type="button" class="btn btn-danger btn-sm" wire:click="clear">
+                                <i class="bx bx-x-circle me-1"></i> {{ __('yojana::yojana.clear') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div>
+        @if ($plans && $plans->count())
+            <div class="container mt-4">
+                <div class="card shadow table-responsive" id="printContent">
+                    <table class="table table-bordered table-striped" id="print-content">
+                        <thead>
+                        <tr>
+                            <th>सि.न.</th>
+                            <th>आ.व.</th>
+                            <th>आयोजनाको नाम</th>
+                            <th>वडा</th>
+                            <th>स्थान</th>
+                            <th>कार्यान्वयन निकाय</th>
+                            <th>सुरु हुने मिति</th>
+                            <th>सम्पन्न हुने मिति</th>
+                            <th>बजेट</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($plans as $index => $row)@php
+                            if ($row->implementationMethod->model == \Src\Yojana\Enums\ImplementationMethods::OperatedByConsumerCommittee){
+                               $implementationAgency = $row->implementationAgency->consumerCommittee->name;
+                            }elseif ($row->implementationMethod->model == \Src\Yojana\Enums\ImplementationMethods::OperatedByTrust){
+                                $implementationAgency = $row->implementationAgency->application->applicant_name;
+                            }elseif ($row->implementationMethod->model == \Src\Yojana\Enums\ImplementationMethods::OperatedByQuotation ||
+                                $row->implementationMethod->model == \Src\Yojana\Enums\ImplementationMethods::OperatedByNGO ||
+                                $row->implementationMethod->model == \Src\Yojana\Enums\ImplementationMethods::OperatedByContract){
+                                    $implementationAgency = $row->implementationAgency->organization->name;
+                                }
+                        @endphp
+
+                            <tr>
+                                <td>{{ replaceNumbers($index + 1, true) }}</td>
+                                <td>{{ $row->StartFiscalYear->year }}</td>
+                                <td>{{ $row->project_name }}</td>
+                                <td>{{ $row->ward->ward_name_ne }}</td>
+                                <td>{{ $row->location }}</td>
+                                <td> {{ $implementationAgency }} </td>
+                                <td>{{ replaceNumbers($row->agreement->plan_start_date, true) }}</td>
+                                <td>{{ replaceNumbers($row->agreement->plan_completion_date, true) }}</td>
+                                <td>{{ replaceNumbers($row->allocated_budget, true) }}</td>
+                            </tr>
+                        @endforeach
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+        @else
+            <div class="container mt-4">
+                <div class="card mx-auto shadow d-flex align-items-center justify-content-center flex-column"
+                     style="min-height: 200px;">
+                    <h5 class="text-center">{{ __('yojana::yojana.no_data_to_show') }}</h5>
+
+                    @error('startDate')
+                    <small class="text-danger">{{ __($message) }}</small>
+                    @enderror
+
+                    @error('endDate')
+                    <small class="text-danger">{{ __($message) }}</small>
+                    @enderror
+                </div>
+            </div>
+        @endif
+
+    </div>
+
+</div>
+@push('scripts')
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('open-pdf-in-new-tab', (event) => {
+                console.log(event);
+                window.open(event.url, '_blank');
+            });
+        });
+
+        function printDiv() {
+            const printContent = document.getElementById('print-content');
+            if (!printContent) {
+                alert('No content found for printing.');
+                return;
+            }
+
+            const tableHTML = printContent.outerHTML;
+            Livewire.dispatch('print-pdf', {
+                tableHtml: tableHTML
+            });
+
+
+
+        }
+    </script>
+@endpush

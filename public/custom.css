@@ -1,0 +1,45 @@
+/* Additional styles in your new CSS file */
+.custom-checkbox {
+    display: none;
+}
+.select2-container--open {
+    z-index: 9999999
+}
+.modal-open {
+    z-index: 9999;
+}
+.custom-checkbox-label {
+    cursor: pointer;
+    font-size: 16px; /* Ensure the icon is the desired size */
+    margin: 0; /* Remove margin from the label */
+    padding: 0; /* Remove padding from the label */
+}
+
+
+.custom-checkbox:checked + .custom-checkbox-label .bx {
+    color: #ffc107; /* Change the color when checked */
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Small gap between the checkbox and the star icon */
+}
+
+.form-check-input {
+    margin: 0; /* Remove default margin to reduce the gap */
+    height: 16px; /* Ensure same height as the star icon */
+    width: 16px; /* Match the size with the star icon */
+}
+.custom-form-check {
+    display: flex;
+    align-items: center;
+    margin: 0; /* Remove any margin around the form-check */
+    padding: 0; /* Remove any padding around the form-check */
+}
+.form-check-custom {
+    display: block;
+    min-height: 1.434375rem;
+    padding-left: 0.5em; /* Reduced left padding */
+    margin-bottom: 0.125rem;
+}
