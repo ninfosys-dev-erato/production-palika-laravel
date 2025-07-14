@@ -1,0 +1,15 @@
+<?php return [
+    'emergencyContact.parent_id' => 'emergencycontacts-emergencyContact.parent_id-field',
+    'emergencyContact.group' => 'emergencycontacts-emergencyContact.group-field',
+    'service_name' => 'emergencycontacts-service_name-field',
+    'service_name_ne' => 'emergencycontacts-service_name_ne-field',
+    'icon' => 'emergencycontacts-icon-field',
+    'contact_person' => 'emergencycontacts-contact_person-field',
+    'contact_person_ne' => 'emergencycontacts-contact_person_ne-field',
+    'address' => 'emergencycontacts-address-field',
+    'address_ne' => 'emergencycontacts-address_ne-field',
+    'contact_numbers' => 'emergencycontacts-contact_numbers-field',
+    'site_map' => 'emergencycontacts-site_map-field',
+    'website_url' => 'emergencycontacts-website_url-field',
+    'facebook_url' => 'emergencycontacts-facebook_url-field',
+];
