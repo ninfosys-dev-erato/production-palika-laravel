@@ -67,4 +67,7 @@ Route::group(['prefix' => 'admin/business-registration', 'as' => 'admin.business
 Route::group(['prefix' => 'admin/business-de-registration', 'as' => 'admin.business-deregistration.', 'middleware' => ['web', 'auth']], function () {
     Route::get('/', [BusinessDeRegistrationAdminController::class, 'index'])->name('index');
     Route::get('/create', [BusinessDeRegistrationAdminController::class, 'create'])->name('create');
+    Route::get('/edit/{id}', [BusinessDeRegistrationAdminController::class, 'edit'])->name('edit');
+    Route::get('/view/{id}', [BusinessDeRegistrationAdminController::class, 'view'])->name('view');
+    Route::get('/preview/{id}', [BusinessDeRegistrationAdminController::class, 'preview'])->name('preview');
 });

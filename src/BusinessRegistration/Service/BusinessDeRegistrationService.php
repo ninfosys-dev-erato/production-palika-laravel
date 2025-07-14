@@ -26,7 +26,9 @@ class BusinessDeRegistrationService
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()?->id,
             'registration_type_id' => $dto->registration_type_id,
-            'application_status' => ApplicationStatusEnum::PENDING->value,
+            'application_status' => ApplicationStatusEnum::PENDING,
+            'registration_type_id' => $dto->registration_type_id,
+
 
         ]);
 
@@ -49,7 +51,7 @@ class BusinessDeRegistrationService
             'updated_at' => date('Y-m-d H:i:s'),
             'updated_by' => Auth::user()?->id,
             'registration_type_id' => $dto->registration_type_id,
-            'application_status' => ApplicationStatusEnum::PENDING->value,
+            'registration_type_id' => $dto->registration_type_id,
         ]);
         return $model;
     }

@@ -5,6 +5,7 @@ namespace Src\BusinessRegistration\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 
 class BusinessDeregistration extends Model
 {
@@ -42,7 +43,7 @@ class BusinessDeregistration extends Model
         'bill_no' => 'string',
         'registration_number' => 'string',
         'data' => 'json',
-        'application_status' => 'string',
+        'application_status' => ApplicationStatusEnum::class,
         'created_by' => 'integer',
         'updated_by' => 'integer',
         'deleted_at' => 'datetime',
@@ -50,6 +51,8 @@ class BusinessDeregistration extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'registration_type_id' => 'integer',
+
+
     ];
 
     public function businessRegistration()

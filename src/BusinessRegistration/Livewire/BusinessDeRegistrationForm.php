@@ -174,6 +174,11 @@ class BusinessDeRegistrationForm extends Component
         $this->businessRegistrationType = $businessRegistrationType;
         $this->action = $action;
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
+
+        if ($this->action == Action::UPDATE) {
+            $this->search = $this->businessDeRegistration->businessRegistration->entity_name;
+            $this->searchBusiness();
+        }
     }
 
 
@@ -201,16 +206,18 @@ class BusinessDeRegistrationForm extends Component
 
 
         if ($businessData) {
-            // Check if a deregistration already exists for this business registration
-            $deregistrationExists = BusinessDeregistration::where('brs_registration_data_id', $businessData->id)
-                ->whereNull('deleted_at')
-                ->exists();
-            if ($deregistrationExists) {
-                $this->errorToast(__('businessregistration::businessregistration.deregistration_already_exists_for_this_business'));
-                return;
+            if ($this->action == Action::CREATE) {
+                // Check if a deregistration already exists for this business registration
+                $deregistrationExists = BusinessDeregistration::where('brs_registration_data_id', $businessData->id)
+                    ->whereNull('deleted_at')
+                    ->exists();
+                if ($deregistrationExists) {
+                    $this->errorToast(__('businessregistration::businessregistration.deregistration_already_exists_for_this_business'));
+                    return;
+                }
             }
+
             $this->businessRegistration = $businessData;
-            $this->businessDeRegistration->fiscal_year_id = getCurrentFiscalYear()->id;
 
             // Map applicants to personalDetails
             $this->personalDetails = $businessData->applicants
@@ -792,7 +799,7 @@ class BusinessDeRegistrationForm extends Component
                     return redirect()->route('admin.business-deregistration.index');
 
                 case Action::UPDATE:
-                    $service->update($this->registrationCategory, $dto);
+                    $service->update($this->businessDeRegistration, $dto);
                     $this->successFlash(__('businessregistration::businessregistration.business_deregistration_updated_successfully'));
                     DB::commit();
                     return redirect()->route('admin.business-deregistration.index');

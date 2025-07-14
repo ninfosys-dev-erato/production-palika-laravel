@@ -31,8 +31,8 @@
                     class="bx bx-list-ul"></i>{{ __('businessregistration::businessregistration.business_deregistration_lists') }}</a>
         </div>
     </div>
-    @if (isset($businessRegistration))
-        <livewire:business_registration.business_de_registration_form :$action :$businessRegistration
+    @if (isset($businessDeRegistration))
+        <livewire:business_registration.business_de_registration_form :$businessDeRegistration :$action
             :$businessRegistrationType />
     @else
         <livewire:business_registration.business_de_registration_form :$action :$businessRegistrationType />

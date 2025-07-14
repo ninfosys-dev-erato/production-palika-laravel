@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
+use Src\BusinessRegistration\Models\BusinessDeRegistration;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Models\RegistrationType;
 use Src\BusinessRegistration\Traits\BusinessRegistrationTemplate;
@@ -39,4 +40,13 @@ class BusinessDeRegistrationAdminController extends Controller implements HasMid
         $action = Action::CREATE;
         return view('BusinessRegistration::business-deregistration.form')->with(compact('registration', 'businessRegistrationType', 'action'));
     }
+    public function edit(Request $request, $id)
+    {
+        $businessDeRegistration = BusinessDeRegistration::find($request->route('id'));
+        $businessRegistrationType = BusinessRegistrationType::from($request->query('type'));
+        $action = Action::UPDATE;
+        return view('BusinessRegistration::business-deregistration.form')->with(compact('businessDeRegistration', 'businessRegistrationType', 'action'));
+    }
+    public function view(Request $request, $id) {}
+    public function preview(Request $request, $id) {}
 }
