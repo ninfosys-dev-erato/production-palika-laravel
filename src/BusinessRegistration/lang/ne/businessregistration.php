@@ -453,5 +453,6 @@ return [
     'export' => 'निर्यात',
     'pdf' => 'पीडीएफ',
     'registered_business_report' => 'दर्ता गरिएका व्यवसाय रिपोर्ट',
+    'deregistration_already_exists_for_this_business' => 'यस व्यवसायको लागि खारेजी पहिले नै अवस्थित छ।',
 
 ];

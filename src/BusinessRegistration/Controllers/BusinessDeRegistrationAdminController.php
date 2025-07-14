@@ -27,15 +27,16 @@ class BusinessDeRegistrationAdminController extends Controller implements HasMid
     public function index(Request $request)
     {
         // $type = $request->query('type');
-        $type = $request->query('type') ?? BusinessRegistrationType::REGISTRATION->value;
+        $type = $request->query('type') ?? BusinessRegistrationType::DEREGISTRATION->value;
 
-        return view('BusinessRegistration::business-registration.index')->with(compact('type'));
+
+        return view('BusinessRegistration::business-deregistration.index')->with(compact('type'));
     }
 
     public function create(Request $request, RegistrationType $registration)
     {
         $businessRegistrationType = BusinessRegistrationType::from($request->query('type'));
         $action = Action::CREATE;
-        return view('BusinessRegistration::business-registration.form')->with(compact('action', 'registration', 'businessRegistrationType'));
+        return view('BusinessRegistration::business-deregistration.form')->with(compact('registration', 'businessRegistrationType', 'action'));
     }
 }

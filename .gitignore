@@ -26,6 +26,7 @@ yarn-error.log
 /src/Generator/Templates/
 /src/Generator/Views/
 /storage
+/storage/*
 /docker-compose.yml
 /bootstrap/*
 /bootstrap

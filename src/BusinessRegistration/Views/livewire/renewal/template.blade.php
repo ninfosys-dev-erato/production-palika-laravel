@@ -20,6 +20,7 @@
         <div class="col-md-12">
             <div style="border-radius: 10px; text-align: center; padding: 20px;">
                 <div id="printContent" class="a4-container">
+                    {!! $registrationCertificate !!}
                     {!! $renewalCertificate !!}
                 </div>
             </div>
@@ -43,7 +44,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     {{-- this script lets user download the pdf --}}
-    <script>
+    {{-- <script>
         async function printDiv() {
             const {
                 jsPDF
@@ -79,6 +80,49 @@
                 heightLeft -= pdfHeight;
             }
             pdf.save("certificate.pdf");
+        }
+    </script> --}}
+
+
+    <script>
+        async function printDiv() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const element = document.getElementById('printContent');
+
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // Add first page
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            // Add more pages only if needed
+            while (heightLeft > 1) {
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            // Trigger browser print dialog
+            pdf.autoPrint();
+            window.open(pdf.output('bloburl'), '_blank');
         }
     </script>
 

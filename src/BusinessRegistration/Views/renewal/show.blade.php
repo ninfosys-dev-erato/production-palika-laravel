@@ -101,14 +101,6 @@
                                 <i class="bx bx-buildings me-2 text-primary"></i>
                                 {{ __('businessregistration::businessregistration.business_renewal_details') }}
                             </h5>
-                            @if ($businessRenewal->application_status == 'accepted')
-                                <button type="button" class="btn btn-outline-primary btn-sm"
-                                    onclick="Livewire.dispatch('print-renewal')" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title='Print Recommendation'>
-                                    <i class="bx bx-printer me-1"></i>
-                                    {{ __('businessregistration::businessregistration.print') }}
-                                </button>
-                            @endif
                         </div>
                     </div>
                     <div class="card-body">
@@ -248,40 +240,53 @@
         @endif
     </div>
 
-    <div class="mb-1 mt-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <!-- Left-side buttons -->
-            <div class="d-flex gap-2" role="tablist">
-                <button type="button" class="btn active btn-primary" role="tab" data-bs-toggle="pill"
-                    data-bs-target="#navs-pills-renewal-action" aria-controls="navs-pills-renewal-action"
-                    aria-selected="true">
+
+
+
+
+
+    <div class="mb-3 mt-3">
+        <ul class="nav nav-pills" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button type="button" class="btn active btn-primary mx-2" role="tab" data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-renewal-action" aria-controls="navs-pills-business-detail"
+                    aria-selected="false">
                     {{ __('businessregistration::businessregistration.business_renewal_action') }}
                 </button>
+            </li>
 
-                @if ($businessRenewal->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING)
-                    <button type="button" class="btn mx-2 btn-primary" role="tab" data-bs-toggle="pill"
-                        data-bs-target="#navs-pills-payment" aria-controls="navs-pills-payment" aria-selected="false">
+
+            @if ($businessRenewal->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING)
+                <li class="nav-item" role="presentation">
+                    <button type="button" class="btn mx-2 btn-primary" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#navs-pills-payment" aria-controls="navs-pills-nill" aria-selected="false">
                         {{ __('businessregistration::businessregistration.payment') }}
                     </button>
-                @endif
+                </li>
+            @endif
 
-                <button type="button" class="btn btn-primary" role="tab" data-bs-toggle="pill"
-                    data-bs-target="#navs-pills-documents" aria-controls="navs-pills-documents" aria-selected="false">
+
+            <li class="nav-item" role="presentation">
+                <button type="button" class="btn mx-2 btn-primary" role="tab" data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-documents" aria-controls="navs-pills-letter" aria-selected="false">
                     {{ __('businessregistration::businessregistration.documents') }}
                 </button>
+            </li>
 
-                @if ($businessRenewal->application_status == \Src\BusinessRegistration\Enums\ApplicationStatusEnum::ACCEPTED)
-                    <button type="button" class="btn btn-primary" role="tab" data-bs-toggle="pill"
-                        data-bs-target="#navs-pills-certificate" aria-controls="navs-pills-certificate"
+            @if ($businessRenewal->application_status == \Src\BusinessRegistration\Enums\ApplicationStatusEnum::ACCEPTED)
+                <li class="nav-item" role="presentation">
+                    <button type="button" class="btn mx-2 btn-primary" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#navs-pills-certificate" aria-controls="navs-pills-letter"
                         aria-selected="false">
                         {{ __('businessregistration::businessregistration.certificate') }}
                     </button>
-                @endif
-            </div>
-        </div>
+                </li>
+            @endif
+        </ul>
     </div>
 
-    <div class="tab-content">
+
+    <div class="tab-content p-0">
         <div class="tab-pane fade show active" id="navs-pills-renewal-action" role="tabpanel"
             aria-labelledby="navs-pills-renewal-action-tab">
             <livewire:business_registration.business_renewal_action :$businessRenewal />
@@ -289,6 +294,7 @@
 
         <div class="tab-pane fade" id="navs-pills-payment" role="tabpanel" aria-labelledby="navs-pills-payment-tab">
             <livewire:business_registration.business_renewal_upload_bill :$businessRenewal />
+
         </div>
 
         <div class="tab-pane fade" id="navs-pills-documents" role="tabpanel"
@@ -298,13 +304,8 @@
 
         <div class="tab-pane fade" id="navs-pills-certificate" role="tabpanel"
             aria-labelledby="navs-pills-certificate-tab">
-            <div class="col-md-12">
-                <div style="border-radius: 10px; text-align: center;">
-                    <div id="printContent" style="width: 210mm; display: inline-block;">
-                        <livewire:business_registration.business_renewal_template :$businessRenewal />
-                    </div>
-                </div>
-            </div>
+
+            <livewire:business_registration.business_renewal_template :$businessRenewal />
         </div>
     </div>
 
