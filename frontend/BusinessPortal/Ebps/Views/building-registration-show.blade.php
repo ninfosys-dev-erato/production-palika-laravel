@@ -410,7 +410,7 @@
                 </div>
 
                 <!-- Certification Section -->
-                <div class="mt-5 pt-4 border-top">
+                {{-- <div class="mt-5 pt-4 border-top">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="border p-4 bg-light">
@@ -425,16 +425,8 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-md-6 d-flex align-items-center justify-content-center">
-                            <div class="text-center">
-                                <div class="border border-2 border-dark rounded-circle d-inline-flex align-items-center justify-content-center"
-                                    style="width: 150px; height: 150px;">
-                                    <p class="mb-0 fw-bold text-dark">कार्यालयको छाप</p>
-                                </div>
-                            </div>
-                        </div> --}}
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 
