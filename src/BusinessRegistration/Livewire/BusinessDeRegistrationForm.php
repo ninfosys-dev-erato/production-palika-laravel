@@ -21,6 +21,7 @@ use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Models\NatureOfBusiness;
 use Src\BusinessRegistration\Models\RegistrationCategory;
 use Src\BusinessRegistration\Models\RegistrationType;
+use Src\BusinessRegistration\Service\BusinessDeRegistrationService;
 use Src\BusinessRegistration\Service\BusinessRegistrationAdminService;
 use Src\BusinessRegistration\Service\BusinessRegistrationApplicantService;
 use Src\BusinessRegistration\Service\BusinessRequiredDocService;
@@ -28,6 +29,7 @@ use Src\Customers\Enums\GenderEnum;
 use Src\Employees\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use Src\Address\Models\District;
+use Src\BusinessRegistration\DTO\BusinessDeRegistrationDto;
 use Src\BusinessRegistration\Models\BusinessDeRegistration;
 
 class BusinessDeRegistrationForm extends Component
@@ -129,103 +131,36 @@ class BusinessDeRegistrationForm extends Component
 
     public function rules(): array
     {
-        $rules = [
-            // Personal Detail - now handled in separate table
-            'personalDetails.*.applicant_name' => ['required'],
-            'personalDetails.*.gender' => ['nullable'],
-            'personalDetails.*.father_name' => ['nullable'],
-            'personalDetails.*.grandfather_name' => ['nullable'],
-            'personalDetails.*.phone' => ['nullable'],
-            'personalDetails.*.email' => ['nullable'],
-            'personalDetails.*.citizenship_number' => ['nullable'],
-            'personalDetails.*.citizenship_issued_date' => ['nullable'],
-            'personalDetails.*.citizenship_issued_district' => ['nullable'],
-            'personalDetails.*.applicant_province' => ['nullable'],
-            'personalDetails.*.applicant_district' => ['nullable'],
-            'personalDetails.*.applicant_local_body' => ['nullable'],
-            'personalDetails.*.applicant_ward' => ['nullable'],
-            'personalDetails.*.applicant_tole' => ['nullable'],
-            'personalDetails.*.applicant_street' => ['nullable'],
-            'personalDetails.*.position' => ['nullable'],
-            'personalDetails.*.citizenship_front' => ['nullable'],
-            'personalDetails.*.citizenship_rear' => ['nullable'],
-            // Business Detail
-            'businessRegistration.fiscal_year' => ['required'],
-            'businessRegistration.application_date' => ['required'],
-            'businessRegistration.entity_name' => ['required'],
-
-            'businessRegistration.business_nature' => ['nullable'],
-            'businessRegistration.main_service_or_goods' => ['nullable'],
-            'businessRegistration.total_capital' => ['nullable'],
-            'businessRegistration.business_province' => ['nullable'],
-            'businessRegistration.business_district' => ['nullable'],
-            'businessRegistration.business_local_body' => ['nullable'],
-            'businessRegistration.business_ward' => ['nullable'],
-            'businessRegistration.business_tole' => ['nullable'],
-            'businessRegistration.business_street' => ['nullable'],
-            'businessRegistration.is_rented' => ['nullable'],
-            'businessRegistration.purpose' => ['nullable'],
-            'businessRegistration.registration_category' => ['nullable'],
-
-            // New fields for business registration
-            'businessRegistration.working_capital' => ['nullable'],
-            'businessRegistration.fixed_capital' => ['nullable'],
-            'businessRegistration.capital_investment' => ['nullable'],
-            'businessRegistration.financial_source' => ['nullable'],
-            'businessRegistration.required_electric_power' => ['nullable'],
-            'businessRegistration.production_capacity' => ['nullable'],
-            'businessRegistration.required_manpower' => ['nullable'],
-            'businessRegistration.number_of_shifts' => ['nullable'],
-            'businessRegistration.operation_date' => ['nullable'],
-            'businessRegistration.others' => ['nullable'],
-            'businessRegistration.houseownername' => ['nullable'],
-            'businessRegistration.phone' => ['nullable'],
-            'businessRegistration.monthly_rent' => ['nullable'],
-            'businessRegistration.rentagreement' => ['nullable'],
-            'businessRegistration.east' => ['nullable'],
-            'businessRegistration.west' => ['nullable'],
-            'businessRegistration.north' => ['nullable'],
-            'businessRegistration.south' => ['nullable'],
-            'businessRegistration.landplotnumber' => ['nullable'],
-            'businessRegistration.area' => ['nullable'],
-            'businessRegistration.total_running_day' => ['nullable'],
-
-            // Registration Type
-            'businessRegistration.registration_type_id' => ['required'],
-
-            // Business Required Documents validation
-            'businessRequiredDoc.*' => ['nullable'], // 10MB max
+        return [
+            'businessDeRegistration.brs_registration_data_id' => ['nullable'],
+            'businessDeRegistration.registration_type_id' => ['required'],
+            'businessDeRegistration.fiscal_year' => ['required', 'string'],
+            'businessDeRegistration.application_date' => ['required', 'string'],
+            'businessDeRegistration.application_date_en' => ['nullable', 'string'],
+            'businessDeRegistration.amount' => ['nullable', 'string'],
+            'businessDeRegistration.application_rejection_reason' => ['nullable', 'string'],
+            'businessDeRegistration.bill_no' => ['nullable', 'string'],
+            'businessDeRegistration.registration_number' => ['nullable', 'string'],
+            'businessDeRegistration.data' => ['nullable'],
+            'businessDeRegistration.application_status' => ['nullable', 'string'],
+            'businessDeRegistration.created_by' => ['nullable', 'integer'],
+            'businessDeRegistration.updated_by' => ['nullable', 'integer'],
+            'businessDeRegistration.deleted_at' => ['nullable'],
+            'businessDeRegistration.deleted_by' => ['nullable', 'integer'],
+            'businessDeRegistration.created_at' => ['nullable'],
+            'businessDeRegistration.updated_at' => ['nullable'],
         ];
-
-        // Conditional rules if department exists
-        if ($this->hasDepartment) {
-            $rules['businessRegistration.operator_id'] = ['nullable', Rule::exists('users', 'id')];
-            $rules['businessRegistration.preparer_id'] = ['nullable', Rule::exists('users', 'id')];
-            $rules['businessRegistration.approver_id'] = ['nullable', Rule::exists('users', 'id')];
-        }
-
-        return $rules;
     }
-
-
 
     public function messages(): array
     {
         return [
-            // Personal Details
-            'personalDetails.*.applicant_name.required' => __('businessregistration::businessregistration.the_applicant_name_is_required'),
-
-            // Business Details
-            'businessRegistration.fiscal_year.required' => __('businessregistration::businessregistration.the_fiscal_year_is_required'),
-            'businessRegistration.application_date.required' => __('businessregistration::businessregistration.application_date'),
-            'businessRegistration.entity_name.required' => __('businessregistration::businessregistration.the_entity_name_is_required'),
-
-            // Registration Type
-            'businessRegistration.registration_type_id.required' => __('businessregistration::businessregistration.the_registration_type_is_required'),
-            'businessRegistration.registration_type_id.exists' => __('businessregistration::businessregistration.the_registration_type_must_be_valid'),
+            'businessDeRegistration.fiscal_year.required' => __('businessregistration::businessregistration.the_fiscal_year_is_required'),
+            'businessDeRegistration.application_date.required' => __('businessregistration::businessregistration.application_date_is_required'),
+            'businessDeRegistration.registration_type_id.required' => __('businessregistration::businessregistration.registration_type_id_is_required'),
+            // Add more as needed
         ];
     }
-
 
 
     public function render(): View
@@ -238,6 +173,7 @@ class BusinessDeRegistrationForm extends Component
         $this->businessDeRegistration = $businessDeRegistration;
         $this->businessRegistrationType = $businessRegistrationType;
         $this->action = $action;
+        $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
     }
 
 
@@ -398,15 +334,6 @@ class BusinessDeRegistrationForm extends Component
 
         $this->registrationTypeEnum = $registrationType->registration_category_enum;
 
-        if (!empty($registrationType->department_id)) {
-            $this->hasDepartment = !$this->hasDepartment;
-            $this->departmentUser = Branch::find($registrationType->department_id)?->users->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                ];
-            });
-        }
 
         if (!$registrationType || !$registrationType->form) {
             $this->data = [];
@@ -850,128 +777,30 @@ class BusinessDeRegistrationForm extends Component
         DB::beginTransaction();
         try {
             $this->validate();
-            $this->businessRegistration['data'] = $this->getFormattedData();
-            $this->businessRegistration['application_date_en'] = $this->bsToAd($this->businessRegistration['application_date']);
+            $this->businessDeRegistration['data'] = $this->getFormattedData();
+            $this->businessDeRegistration['application_date_en'] = $this->bsToAd($this->businessDeRegistration['application_date']);
+            $this->businessDeRegistration['brs_registration_data_id'] = $this->businessRegistration->id;
 
-            $service = new BusinessRegistrationAdminService();
-            $businessApplicantService = new BusinessRegistrationApplicantService();
-
-            $businessRequiredDocService = new BusinessRequiredDocService();
-            $businessRegistrationId = null;
-
+            $service = new BusinessDeRegistrationService();
+            $dto = BusinessDeRegistrationDto::fromLiveWireModel($this->businessDeRegistration);
             switch ($this->action) {
+
                 case Action::CREATE:
-                    switch ($this->businessRegistrationType) {
-                        case BusinessRegistrationType::DEREGISTRATION:
-                            $dto = BusinessRegistrationAdminDto::fromDeRegistrationLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
-                            $success = $service->deRegisterBusiness($dto, $this->businessRegistration);
-
-                            if ($success) {
-
-                                $businessRegistrationId = $success->id;
-                                foreach ($this->personalDetails as $data) {
-                                    $data['business_registration_id'] = $businessRegistrationId;
-                                    $dto = BusinessRegistrationApplicantDto::fromArray($data);
-
-
-                                    $businessApplicantService->store($dto);
-                                }
-                            } else {
-                                DB::rollBack();
-                                // $this->errorFlash(__('Business DeRegistration failed'));
-                                return;
-                            }
-                            break;
-                        default:
-                            $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
-                            $success = $service->store($dto);
-                            if ($success instanceof BusinessRegistration) {
-                                $businessRegistrationId = $success->id;
-                                foreach ($this->personalDetails as $data) {
-                                    $data['business_registration_id'] = $businessRegistrationId;
-                                    $dto = BusinessRegistrationApplicantDto::fromArray($data);
-
-
-                                    $businessApplicantService->store($dto);
-                                }
-                                // Save required business documents
-                                foreach ($this->businessRequiredDoc as $field => $filename) {
-                                    if (!empty($filename)) {
-                                        $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
-                                        $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
-                                        $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
-                                            businessRegistrationId: $businessRegistrationId,
-                                            documentField: $field,
-                                            documentLabelEn: $documentLabelEn,
-                                            documentLabelNe: $documentLabelNe,
-                                            documentFilename: $filename
-                                        );
-                                        $businessRequiredDocService->store($dto);
-                                    }
-                                }
-                                $this->successFlash(__('Business Registration successful'));
-                            } else {
-                                DB::rollBack();
-                                $this->errorFlash(__('Business Registration failed'));
-                                return;
-                            }
-                            break;
-                    }
+                    $service->store($dto);
+                    $this->successFlash(__('businessregistration::businessregistration.business_deregistration_created_successfully'));
                     DB::commit();
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                    return redirect()->route('admin.business-deregistration.index');
 
                 case Action::UPDATE:
-                    $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
-                    $success = $service->update($dto, $this->businessRegistration);
-                    if ($success instanceof BusinessRegistration) {
-                        $this->businessRegistration->applicants()->delete();
-                        foreach ($this->personalDetails as $data) {
-                            $data['business_registration_id'] = $this->businessRegistration->id;
-                            $dto = BusinessRegistrationApplicantDto::fromArray($data);
-                            $businessApplicantService->store($dto);
-                        }
-                        // Delete existing required business documents and save new ones
-                        $this->businessRegistration->requiredBusinessDocs()->delete();
-                        foreach ($this->businessRequiredDoc as $field => $filename) {
-                            if (!empty($filename)) {
-                                $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
-                                $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
-                                $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
-                                    businessRegistrationId: $this->businessRegistration->id,
-                                    documentField: $field,
-                                    documentLabelEn: $documentLabelEn,
-                                    documentLabelNe: $documentLabelNe,
-                                    documentFilename: $filename
-                                );
-                                $businessRequiredDocService->store($dto);
-                            }
-                        }
-
-                        $this->successFlash(__('businessregistration::businessregistration.business_registration_application_updated_successfully'));
-                    } else {
-                        DB::rollBack();
-                        $this->errorFlash(__('Business registration update  failed'));
-                        return;
-                    }
+                    $service->update($this->registrationCategory, $dto);
+                    $this->successFlash(__('businessregistration::businessregistration.business_deregistration_updated_successfully'));
                     DB::commit();
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
-
-                default:
-                    DB::rollBack();
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                    return redirect()->route('admin.business-deregistration.index');
             }
         } catch (\Throwable $e) {
             DB::rollBack();
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
-    }
-    /**
-     * this function is used to make input field readonly
-     * checks type and return true if matches and make input filed readonly
-     */
-    public function getIsReadonlyProperty(): bool
-    {
-        return $this->businessRegistrationType === BusinessRegistrationType::DEREGISTRATION;
     }
 }

@@ -37,11 +37,11 @@ class BusinessDeRegistrationTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('brs_business_registration_data.id')
+        $this->setPrimaryKey('brs_business_deregistration_data.id')
             ->setTableAttributes([
                 'class' => "table table-bordered table-hover dataTable dtr-inline"
             ])
-            ->setAdditionalSelects(['id'])
+            ->setAdditionalSelects(['brs_business_deregistration_data.id'])
             ->setBulkActionsDisabled()
             ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
@@ -93,7 +93,11 @@ class BusinessDeRegistrationTable extends DataTableComponent
                 ->sortable()
                 ->searchable()
                 ->html(),
-            Column::make(__('businessregistration::businessregistration.applicant_name'), "businessRegistration.applicants.applicant_name")
+            Column::make(__('businessregistration::businessregistration.applicant_name'))
+                ->label(function ($row) {
+                    $firstApplicant = $row->businessRegistration?->applicants->first();
+                    return $firstApplicant ? $firstApplicant->applicant_name : '';
+                })
                 ->sortable()
                 ->searchable()
                 ->html(),
@@ -138,9 +142,6 @@ class BusinessDeRegistrationTable extends DataTableComponent
                 }
             )->html()->searchable(),
 
-
-
-
             Column::make(__('businessregistration::businessregistration.status'), 'application_status')
                 ->format(function ($value, $row) {
                     return $row->application_status;
@@ -175,10 +176,7 @@ class BusinessDeRegistrationTable extends DataTableComponent
                 }
 
 
-                if ($row->application_status === ApplicationStatusEnum::ACCEPTED->value && $this->type !=  BusinessRegistrationType::DEREGISTRATION->value) {
-                    $renewButton = '<button type="button" class="btn btn-secondary btn-sm" wire:click="renew(' . $row->id . ')"><i class="bx bx-refresh"></i></button>';
-                    $buttons .= $renewButton;
-                }
+
                 return $buttons . "</div>";
             })->html();
 

@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <form enctype="multipart/form-data">
+    <form enctype="multipart/form-data" wire:submit.prevent="save">
         @csrf
         @if ($showData)
             <div class="min-vh-100 bg-gradient-peaceful py-5">
@@ -378,42 +378,39 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            @if ($showRentFields)
 
+                                            <div class="col-md-6">
+                                                <label
+                                                    class="form-label-peaceful">{{ __('businessregistration::businessregistration.houseownername') }}</label>
+                                                <div class="form-control-plaintext">
+                                                    {{ $businessRegistration->houseownername ?? '-' }}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label
+                                                    class="form-label-peaceful">{{ __('businessregistration::businessregistration.land/house_owner_phone') }}</label>
+                                                <div class="form-control-plaintext">
+                                                    {{ $businessRegistration->phone ?? '-' }}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label
+                                                    class="form-label-peaceful">{{ __('businessregistration::businessregistration.monthly_rent') }}</label>
+                                                <div class="form-control-plaintext">
+                                                    {{ $businessRegistration->monthly_rent ?? '-' }}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label
+                                                    class="form-label-peaceful">{{ __('businessregistration::businessregistration.rentagreement') }}</label>
+                                                @if (!empty($businessRegistration['rentagreement_url']))
+                                                    <a href="{{ $businessRegistration['rentagreement_url'] }}"
+                                                        target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                                        <i class="bx bx-file"></i>
+                                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                    </a>
+                                                @else
+                                                    <div class="form-control-plaintext">-</div>
+                                                @endif
+                                            </div>
 
-                                                <div class="col-md-6">
-                                                    <label
-                                                        class="form-label-peaceful">{{ __('businessregistration::businessregistration.houseownername') }}</label>
-                                                    <div class="form-control-plaintext">
-                                                        {{ $businessRegistration->houseownername ?? '-' }}</div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label
-                                                        class="form-label-peaceful">{{ __('businessregistration::businessregistration.land/house_owner_phone') }}</label>
-                                                    <div class="form-control-plaintext">
-                                                        {{ $businessRegistration->phone ?? '-' }}</div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label
-                                                        class="form-label-peaceful">{{ __('businessregistration::businessregistration.monthly_rent') }}</label>
-                                                    <div class="form-control-plaintext">
-                                                        {{ $businessRegistration->monthly_rent ?? '-' }}</div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label
-                                                        class="form-label-peaceful">{{ __('businessregistration::businessregistration.rentagreement') }}</label>
-                                                    @if (!empty($businessRegistration['rentagreement_url']))
-                                                        <a href="{{ $businessRegistration['rentagreement_url'] }}"
-                                                            target="_blank"
-                                                            class="btn btn-sm btn-outline-primary mt-2">
-                                                            <i class="bx bx-file"></i>
-                                                            {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                                        </a>
-                                                    @else
-                                                        <div class="form-control-plaintext">-</div>
-                                                    @endif
-                                                </div>
-                                            @endif
                                         </div>
 
                                     @endif
@@ -625,7 +622,7 @@
                                                 {{ __('businessregistration::businessregistration.select_registration_type') }}
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <select wire:model.live="businessRegistration.registration_type_id"
+                                            <select wire:model.live="businessDeRegistration.registration_type_id"
                                                 class="form-control @error('businessRegistration.registration_type_id') is-invalid @enderror"
                                                 id="registration_type_id" aria-label="Registration Type"
                                                 wire:change.live="setFields($event.target.value)">
@@ -643,6 +640,38 @@
                                                 </div>
                                             @enderror
                                         </div>
+                                        <div class="divider divider-primary text-start text-primary mb-4">
+                                            <div class="divider-text fw-bold fs-6">
+                                                {{ __('businessregistration::businessregistration.application_details') }}
+                                            </div>
+                                        </div>
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <label
+                                                    class="form-label-peaceful">{{ __('businessregistration::businessregistration.fiscal_year') }}</label>
+                                                <select wire:model="businessDeRegistration.fiscal_year"
+                                                    class="form-control" name="fiscal_year">
+                                                    <option value="">
+                                                        {{ __('businessregistration::businessregistration.fiscal_year') }}
+                                                    </option>
+                                                    @foreach ($fiscalYears as $id => $year)
+                                                        <option value="{{ $id }}">{{ $year }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label
+                                                    class="form-label-peaceful">{{ __('businessregistration::businessregistration.application_date') }}</label>
+                                                <input wire:model="businessDeRegistration.application_date"
+                                                    name="application_date" type="text"
+                                                    class="form-control nepali-date"
+                                                    placeholder="{{ __('businessregistration::businessregistration.application_date') }}">
+                                            </div>
+
+                                        </div>
+
                                     </div>
 
 
@@ -674,7 +703,7 @@
                                         <span
                                             class="badge bg-light text-muted">{{ __('businessregistration::businessregistration.step_3_of_3') }}</span>
                                     </div>
-                                    <button type="submit" class="btn btn-success-peaceful" wire:click="save">
+                                    <button type="submit" class="btn btn-success-peaceful">
                                         <i
                                             class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit_registration') }}
                                     </button>

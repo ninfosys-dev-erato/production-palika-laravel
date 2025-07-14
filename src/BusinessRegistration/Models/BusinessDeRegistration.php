@@ -29,6 +29,7 @@ class BusinessDeregistration extends Model
         'updated_by',
         'deleted_at',
         'deleted_by',
+        'registration_type_id',
     ];
 
     protected $casts = [
@@ -48,6 +49,7 @@ class BusinessDeregistration extends Model
         'deleted_by' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'registration_type_id' => 'integer',
     ];
 
     public function businessRegistration()
