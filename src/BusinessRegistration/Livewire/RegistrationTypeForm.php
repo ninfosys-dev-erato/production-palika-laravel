@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Src\BusinessRegistration\DTO\RegistrationTypeAdminDto;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
-use Src\BusinessRegistration\Models\RegistrationCategory;
+use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 use Src\BusinessRegistration\Models\RegistrationType;
 use Src\BusinessRegistration\Service\RegistrationTypeAdminService;
 use Src\Employees\Models\Branch;
@@ -28,6 +28,7 @@ class RegistrationTypeForm extends Component
     private $category_title;
     public bool $isBusiness = false;
     public array  $businessActions = [];
+    public $registration_category_enums;
 
     public function rules(): array
     {
@@ -36,7 +37,8 @@ class RegistrationTypeForm extends Component
             'registrationType.action' => ['nullable'],
             'registrationType.form_id' => ['sometimes', 'nullable', Rule::exists('mst_forms', 'id')],
             'registrationType.registration_category_id' => ['sometimes', 'nullable'],
-            'registrationType.department_id' => ['nullable']
+            'registrationType.department_id' => ['nullable'],
+            'registrationType.registration_category_enum' => ['required'],
         ];
 
         // if ($this->isBusiness) {
@@ -52,6 +54,7 @@ class RegistrationTypeForm extends Component
             'registrationType.form_id.sometimes' => __('businessregistration::businessregistration.the_form_id_is_optional_but_if_provided_it_must_exist_in_the_forms_table'),
             'registrationType.registration_category_id.sometimes' => __('businessregistration::businessregistration.the_registration_category_id_is_optional_but_if_provided_it_must_exist_in_the_registration_categories_table'),
             'registrationType.department.required' => __('businessregistration::businessregistration.the_departmet_is_required'),
+            'registrationType.registration_category_enum.required' => __('businessregistration::businessregistration.the_registration_category_enum_is_required'),
         ];
     }
 
@@ -63,8 +66,8 @@ class RegistrationTypeForm extends Component
         $this->action = $action;
         $this->isBusiness = false;
         $this->forms = Form::where('module', 'business-registration')->whereNull('deleted_by')->pluck('id', 'title')->toArray();
-        $this->getCategoryTitle();
-        $this->registrationCategories = RegistrationCategory::pluck('id', $this->category_title)->toArray();
+        // Use RegistrationCategoryEnum for registration categories
+        $this->registration_category_enums = RegistrationCategoryEnum::getForWeb();
         $this->departments = Branch::whereNull('deleted_at')->whereNull('deleted_by')->pluck('id', 'title')->toArray();
 
         $this->businessActions = BusinessRegistrationType::cases();
@@ -78,6 +81,7 @@ class RegistrationTypeForm extends Component
     public function save()
     {
         $this->validate();
+
         try {
             $dto = RegistrationTypeAdminDto::fromLiveWireModel($this->registrationType);
             $service = new RegistrationTypeAdminService();
@@ -102,14 +106,14 @@ class RegistrationTypeForm extends Component
         }
     }
 
-    public function registationCategory()
-    {
-        $this->registrationType->registration_category_id;
-        $category = RegistrationCategory::where('id', $this->registrationType->registration_category_id)->first();
-        if ($category->title === "Business") {
-            $this->isBusiness = !$this->isBusiness;
-        }
-    }
+    // public function registationCategory()
+    // {
+    //     $this->registrationType->registration_category_id;
+    //     $category = RegistrationCategory::where('id', $this->registrationType->registration_category_id)->first();
+    //     if ($category->title === "Business") {
+    //         $this->isBusiness = !$this->isBusiness;
+    //     }
+    // }
 
     private function getCategoryTitle()
     {

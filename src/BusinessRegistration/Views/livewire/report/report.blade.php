@@ -171,33 +171,69 @@
                             <th>प्रकृति</th>
                             <th>संस्थापकको नाम</th>
                             <th>संस्थापकको न</th>
+                            <th>संस्थापकको ठेगाना</th>
                             <th>दर्ता मिती</th>
                             <th>आवेदन स्थिति</th>
-                            <th>व्यापार स्थिति</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @php $businessNumber = 1; @endphp
                         @foreach ($registerBusinessData as $data)
-                            <tr>
-                                <td>{{ replaceNumbers($loop->iteration, true) }}</td>
-                                <td>{{ $data->registration_number }}</td>
-                                <td>{{ $data->entity_name }}</td>
-                                <td>
-                                    {{ $data->province->title ?? '' }}
-                                    {{ $data->district->title ?? '' }}
-                                    {{ $data->localBody->title ?? '' }}
-                                    {{ $data->ward_no ? ' वडा नं. ' . $data->ward_no : '' }}
-                                </td>
-                                <td>{{ $data->registrationType->registrationCategory->title_ne ?? '' }}</td>
-                                <td>{{ $data->registrationType->title ?? '' }}</td>
-                                <td>{{ $data->businessNature->title_ne ?? '' }}</td>
-                                <td>{{ $data->applicant_name }}</td>
-                                <td>{{ $data->applicant_number }}</td>
-                                <td>{{ $data->application_date }}</td>
-                                <td>{{ $data->application_status_nepali }}</td> {{-- convert enum to nepali from model --}}
-                                <td>{{ $data->business_status_nepali }}</td>{{-- convert enum to nepali from model --}}
-
-                            </tr>
+                            @if ($data->applicants->count() > 0)
+                                @foreach ($data->applicants as $index => $applicant)
+                                    <tr>
+                                        <td>
+                                            @if ($index == 0)
+                                                {{ replaceNumbers($businessNumber, true) }}
+                                            @else
+                                                {{ replaceNumbers($businessNumber, true) }}.{{ replaceNumbers($index, true) }}
+                                            @endif
+                                        </td>
+                                        <td>{{ $data->registration_number }}</td>
+                                        <td>{{ $data->entity_name }}</td>
+                                        <td>
+                                            @php
+                                                $businessAddress = collect([
+                                                    $data->businessProvince->title ?? null,
+                                                    $data->businessDistrict->title ?? null,
+                                                    $data->businessLocalBody->title ?? null,
+                                                    $data->business_ward ? 'वडा नं. ' . $data->business_ward : null,
+                                                    $data->business_tole ?? null,
+                                                    $data->business_street ?? null,
+                                                ])
+                                                    ->filter()
+                                                    ->implode(', ');
+                                            @endphp
+                                            {{ $businessAddress }}
+                                        </td>
+                                        <td>{{ $data->registrationType->registrationCategory->title_ne ?? '' }}</td>
+                                        <td>{{ $data->registrationType->title ?? '' }}</td>
+                                        <td>{{ $data->businessNature->title_ne ?? '' }}</td>
+                                        <td>{{ $applicant->applicant_name ?? '' }}</td>
+                                        <td>{{ $applicant->phone ?? '' }}</td>
+                                        <td>
+                                            @php
+                                                $applicantAddress = collect([
+                                                    $applicant->applicantProvince->title ?? null,
+                                                    $applicant->applicantDistrict->title ?? null,
+                                                    $applicant->applicantLocalBody->title ?? null,
+                                                    $applicant->applicant_ward
+                                                        ? 'वडा नं. ' . $applicant->applicant_ward
+                                                        : null,
+                                                    $applicant->applicant_tole ?? null,
+                                                    $applicant->applicant_street ?? null,
+                                                ])
+                                                    ->filter()
+                                                    ->implode(', ');
+                                            @endphp
+                                            {{ $applicantAddress }}
+                                        </td>
+                                        <td>{{ $data->application_date }}</td>
+                                        <td>{{ $data->application_status_nepali }}</td>
+                                    </tr>
+                                @endforeach
+                                @php $businessNumber++; @endphp
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

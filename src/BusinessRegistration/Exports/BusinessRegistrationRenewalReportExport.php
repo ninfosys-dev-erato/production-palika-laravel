@@ -53,11 +53,23 @@ class BusinessRegistrationRenewalReportExport implements FromCollection, WithHea
     {
         $this->serial++;
 
-        $address =
-            ($data->registration?->province->title ?? '') . ' ' .
-            ($data->registration?->district->title ?? '') . ' ' .
-            ($data->registration?->localBody->title ?? '') .
-            ($data->registration?->ward_no ? ' वडा नं. ' . $data->registration?->ward_no : '');
+        $applicantAddress = collect([
+            $data->registration?->applicantProvince?->title ?? null,
+            $data->registration?->applicantDistrict?->title ?? null,
+            $data->registration?->applicantLocalBody?->title ?? null,
+            $data->registration?->applicant_ward ? 'वडा नं. ' . $data->registration?->applicant_ward : null,
+            $data->registration?->applicant_tole ?? null,
+            $data->registration?->applicant_street ?? null,
+        ])->filter()->implode(', ');
+        $businessAddress = collect([
+            $data->registration?->businessProvince?->title ?? null,
+            $data->registration?->businessDistrict?->title ?? null,
+            $data->registration?->businessLocalBody?->title ?? null,
+            $data->registration?->business_ward ? 'वडा नं. ' . $data->registration?->business_ward : null,
+            $data->registration?->business_tole ?? null,
+            $data->registration?->business_street ?? null,
+        ])->filter()->implode(', ');
+        $address = "आवेदक: $applicantAddress\nव्यवसाय: $businessAddress";
 
         return [
             $this->serial,
@@ -66,7 +78,7 @@ class BusinessRegistrationRenewalReportExport implements FromCollection, WithHea
             $address,
             $data->registration?->registrationType?->registrationCategory?->title_ne ?? 'N/A',
             $data->registration?->applicant_name ?? 'N/A',
-            $data->registration?->applicant_number ?? 'N/A',
+            $data->registration?->phone ?? 'N/A',
             $data->renew_date ?? 'N/A',
             $data->date_to_be_maintained ?? 'N/A',
             $data->renew_amount ?? '०',

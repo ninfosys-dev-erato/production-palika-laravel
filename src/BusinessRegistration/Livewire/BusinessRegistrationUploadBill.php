@@ -29,9 +29,9 @@ class BusinessRegistrationUploadBill extends Component
     public function uploadBill()
     {
         $this->validate([
-            'bill' => 'required|file|mimes:pdf,jpg,png|max:2048'
+            'bill' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
-        try{
+        try {
             $path = ImageServiceFacade::compressAndStoreImage($this->bill, config('src.BusinessRegistration.businessRegistration.bill'), 'local');
             $this->businessRegistration->bill = $path;
             $this->businessRegistration->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
@@ -40,7 +40,7 @@ class BusinessRegistrationUploadBill extends Component
             $service->uploadBill($this->businessRegistration, $dto);
             $this->successFlash(__('businessregistration::businessregistration.bill_uploaded_successfully'));
             return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             logger()->error($e);
             $this->errorFlash('Something went wrong while rejecting.', $e->getMessage());
         }

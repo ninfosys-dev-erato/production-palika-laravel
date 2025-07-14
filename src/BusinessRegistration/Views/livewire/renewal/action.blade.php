@@ -1,89 +1,225 @@
-<div>
+<div class="card">
+    <div class="card-body">
+        @php
+            use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+        @endphp
+        @if ($businessRenewal->registration->data)
+            @php
+                $data = is_array($businessRenewal->registration->data)
+                    ? $businessRenewal->registration->data
+                    : json_decode($businessRenewal->registration->data, true);
+            @endphp
+        @endif
 
-    @if ($businessRenewal->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING)
-        <div class="d-flex justify-content-start mt-3">
-            <button class="btn btn-primary" wire:click="$dispatch('showPaymentModal')">
-                <i class="bx bx-wallet-alt"></i> {{ __('businessregistration::businessregistration.send_for_payment') }}
-            </button>
-        </div>
-    @endif
-
-
-    @if ($showBillUpload)
-        <div class="col-md-12 mb-2">
-            <form wire:submit.prevent="uploadBill">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group mb-3">
-                            <h5>
-                                {{ __('businessregistration::businessregistration.amount_to_be_paid') }} :
-                                <span class="text-primary">
-                                    {{ __('businessregistration::businessregistration.nrs') }}{{ number_format($businessRenewal->renew_amount + ($businessRenewal->penalty_amount ?? 0), 2) }}
-                                </span>
-                            </h5>
-                        </div>
-                        <div class="form-group">
-                            <label
-                                for="payment_receipt">{{ __('businessregistration::businessregistration.upload_payment_photo') }}</label>
-                            <input wire:model="payment_receipt" name="payment_receipt" type="file"
-                                class="form-control" accept="image/*">
-                            @error('payment_receipt')
-                                <div class="text-danger">{{ __($message) }}</div>
-                            @enderror
-                            @if ($payment_receipt)
-                                <img src="{{ method_exists($payment_receipt, 'temporaryUrl') ? $payment_receipt->temporaryUrl() : $payment_receipt }}"
-                                    alt="Uploaded Image Preview" class="img-thumbnail mt-2" style="height: 300px;"
-                                    onerror="this.style.display='none';">
-                            @endif
-
-                        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                {{ __('businessregistration::businessregistration.business_registration_details') }}</h4>
+            <div class="d-flex">
+                @if ($businessRenewal->application_status == Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING)
+                    <div class="d-flex justify-content-start mt-3">
+                        <button class="btn btn-primary" wire:click="$dispatch('showPaymentModal')">
+                            <i class="bx bx-wallet-alt"></i>
+                            {{ __('businessregistration::businessregistration.send_for_payment') }}
+                        </button>
                     </div>
-                </div>
-                <button class="btn btn-primary mt-2" type="submit" wire:loading.attr="disabled"
-                    wire:click="uploadBill">{{ __('businessregistration::businessregistration.upload') }}</button>
-            </form>
-        </div>
-    @endif
-
-
-    @if (!empty($businessRenewal->payment_receipt))
-        <div class="col-md-12 mt-3">
-            <label
-                for="existing-bill">{{ __('businessregistration::businessregistration.uploaded_payment_photo') }}</label>
-            <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
-                alt="Uploaded Bill Image" class="img-thumbnail mt-2 clickable" style="height: 300px; cursor: pointer;"
-                data-bs-toggle="modal" data-bs-target="#billModal">
-        </div>
-
-        <div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="billModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="billModalLabel">
-                            {{ __('businessregistration::businessregistration.uploaded_bill_image') }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                @endif
+                @if ($businessRenewal->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED)
+                    <div class="d-flex justify-content-start mt-3">
+                        <button class="btn btn-primary" wire:click="$dispatch('approveRenewal')">
+                            <i class="bx bx-wallet-alt"></i>
+                            {{ __('businessregistration::businessregistration.approve_renewal') }}
+                        </button>
                     </div>
-                    <div class="modal-body text-center">
-                        <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
-                            alt="Full-size Uploaded Bill" class="img-fluid" style="max-height: 90vh;">
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
-    @endif
-    @if ($businessRenewal->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED)
-        <div class="d-flex justify-content-start mt-3">
-            <button class="btn btn-primary" wire:click="$dispatch('approveRenewal')">
-                <i class="bx bx-wallet-alt"></i> {{ __('businessregistration::businessregistration.approve_renewal') }}
-            </button>
+
+        <div>
+            <dl class="row mb-0">
+                {{-- For Business --}}
+
+
+                @if ($businessRenewal->registration->registration_category == RegistrationCategoryEnum::BUSINESS->value)
+
+                    <dt class="col-sm-4">
+                        {{ __('businessregistration::businessregistration.capital_investment') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->capital_investment ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.working_capital') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->working_capital ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.fixed_capital') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->fixed_capital ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.is_rented') }}</dt>
+                    <dd class="col-sm-8">
+                        {{ $businessRenewal->registration->is_rented ? __('businessregistration::businessregistration.yes') : __('businessregistration::businessregistration.no') }}
+                    </dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.houseownername') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->houseownername ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.phone') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->phone ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.monthly_rent') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->monthly_rent ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.rentagreement') }}
+                    </dt>
+                    <dd class="col-sm-8">
+                        @if ($businessRenewal->registration->rentagreement)
+                            <a href="{{ asset('storage/' . $businessRenewal->registration->rentagreement) }}"
+                                target="_blank">{{ __('businessregistration::businessregistration.view_uploaded_file') }}</a>
+                        @else
+                            -
+                        @endif
+                    </dd>
+                @endif
+
+                {{-- For Firm --}}
+                @if ($businessRenewal->registration->registration_category == RegistrationCategoryEnum::FIRM->value)
+                    <dt class="col-sm-4">
+                        {{ __('businessregistration::businessregistration.capital_investment') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->capital_investment ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.operation_date') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->operation_date ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.houseownername') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->houseownername ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.east') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->east ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.west') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->west ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.north') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->north ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.south') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->south ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.landplotnumber') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->landplotnumber ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.area') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->area ?? '-' }}</dd>
+                @endif
+
+                {{-- For Industry --}}
+                @if ($businessRenewal->registration->registration_category == RegistrationCategoryEnum::INDUSTRY->value)
+                    <dt class="col-sm-4">
+                        {{ __('businessregistration::businessregistration.capital_investment') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->capital_investment ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.fixed_capital') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->fixed_capital ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.working_capital') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->working_capital ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">
+                        {{ __('businessregistration::businessregistration.production_capacity') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->production_capacity ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">
+                        {{ __('businessregistration::businessregistration.required_manpower') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->required_manpower ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">
+                        {{ __('businessregistration::businessregistration.number_of_shifts') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->number_of_shifts ?? '-' }}</dd>
+
+                    <dt class="col-sm-4">{{ __('businessregistration::businessregistration.operation_date') }}
+                    </dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->operation_date ?? '-' }}</dd>
+                @endif
+
+                {{-- For Organization --}}
+                @if ($businessRenewal->registration->registration_category == RegistrationCategoryEnum::ORGANIZATION->value)
+                    <dt class="col-sm-4">
+                        {{ __('businessregistration::businessregistration.financial_source') }}</dt>
+                    <dd class="col-sm-8">{{ $businessRenewal->registration->financial_source ?? '-' }}</dd>
+                @endif
+            </dl>
+
+            <dl class="row mb-0">
+                @foreach ($data as $key => $field)
+                    @if ($field['type'] !== 'file')
+                        <dt class="col-sm-4 info-label fw-semibold">
+                            {{ $field['label'] }}:
+                        </dt>
+
+                        @if ($field['type'] === 'group' && isset($field['fields']))
+                            <dd class="col-sm-9">
+                                @foreach ($field['fields'] as $subField)
+                                    <p>
+                                        <strong>{{ $subField['label'] }}:</strong>
+                                        {{ $subField['value'] ?? '' }}
+                                    </p>
+                                @endforeach
+                            </dd>
+                        @elseif ($field['type'] === 'table' && isset($field['fields']))
+                            <dd class="col-sm-9">
+                                <div class="table-responsive mt-2">
+                                    <table class="table table-bordered table-sm">
+                                        <thead class="table-light">
+                                            <tr>
+                                                @foreach ($field['fields'][0] as $headerField)
+                                                    <th>{{ $headerField['label'] ?? ucfirst($headerField['key']) }}
+                                                    </th>
+                                                @endforeach
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($field['fields'] as $row)
+                                                <tr>
+                                                    @foreach ($row as $column)
+                                                        <td>
+                                                            @if ($column['type'] === 'file')
+                                                                {{-- Skip files here; we'll show files later --}}
+                                                                <em>File in table (will show below)</em>
+                                                            @else
+                                                                {{ is_array($column['value']) ? implode(', ', $column['value']) : $column['value'] ?? 'N/A' }}
+                                                            @endif
+                                                        </td>
+                                                    @endforeach
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </dd>
+                        @else
+                            <dd class="col-sm-8 info-value">
+                                {{ is_array($field['value']) ? implode(', ', $field['value']) : $field['value'] ?? __('businessregistration::businessregistration.no_value_provided') }}
+                            </dd>
+                        @endif
+                    @endif
+                @endforeach
+            </dl>
         </div>
-    @endif
+    </div>
+
+
 
     <div class="modal fade" id="sendForPaymentModal" tabindex="-1" role="dialog" wire:ignore.self>
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('businessregistration::businessregistration.payable_renew_amount') }}
+                    <h5 class="modal-title">
+                        {{ __('businessregistration::businessregistration.payable_renew_amount') }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -91,7 +227,7 @@
                     <div class="mb-3">
                         <label for="renew_amount"
                             class="form-label">{{ __('businessregistration::businessregistration.renew_amount') }}</label>
-                        <input dusk="businessregistration-renew_amount-field" type="text" id="renew_amount"
+                        <input dusk="businessregistration-renew_amount-field" type="number" id="renew_amount"
                             class="form-control" wire:model="renew_amount">
                         @error('renew_amount')
                             <span class="text-danger">{{ __($message) }}</span>
@@ -101,7 +237,7 @@
                     <div class="mb-3">
                         <label for="penalty_amount"
                             class="form-label">{{ __('businessregistration::businessregistration.penalty_amount') }}</label>
-                        <input dusk="businessregistration-penalty_amount-field" type="text" id="penalty_amount"
+                        <input dusk="businessregistration-penalty_amount-field" type="number" id="penalty_amount"
                             class="form-control" wire:model="penalty_amount">
                         @error('penalty_amount')
                             <span class="text-danger">{{ __($message) }}</span>
@@ -119,7 +255,7 @@
     </div>
 
     <div class="modal fade" id="approveRenewalForm" tabindex="-1" role="dialog" wire:ignore.self>
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
@@ -179,6 +315,7 @@
             </div>
         </div>
     </div>
+</div>
 
 </div>
 

@@ -1,6 +1,7 @@
 <div>
     <button type="button" class="btn btn-danger" wire:click="$dispatch('showRejectModal')" data-bs-toggle="tooltip"
-        data-bs-placement="top" title="{{ __('businessregistration::businessregistration.reject') }}" data-bs-target="#rejectModal">
+        data-bs-placement="top" title="{{ __('businessregistration::businessregistration.reject') }}"
+        data-bs-target="#rejectModal">
         <i class="bx bx-message-x"></i> {{ __('businessregistration::businessregistration.reject') }}
     </button>
 
@@ -13,15 +14,18 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <textarea dusk="businessregistration-rejectionReason-field" wire:model="rejectionReason" class="form-control" rows="4"></textarea>
+                        <textarea dusk="businessregistration-rejectionReason-field" wire:model="rejectionReason" class="form-control"
+                            rows="4"></textarea>
                         @error('rejectionReason')
                             <span class="text-danger">{{ __($message) }}</span>
                         @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('businessregistration::businessregistration.cancel') }}</button>
-                    <button type="button" class="btn btn-danger" wire:click="reject">{{ __('businessregistration::businessregistration.save') }}</button>
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">{{ __('businessregistration::businessregistration.cancel') }}</button>
+                    <button type="button" class="btn btn-danger"
+                        wire:click="reject">{{ __('businessregistration::businessregistration.save') }}</button>
                 </div>
             </div>
         </div>

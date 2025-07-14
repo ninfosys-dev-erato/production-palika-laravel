@@ -31,11 +31,11 @@ class BusinessRegistrationReject extends Component
         try {
             $this->businessRegistration->application_rejection_reason = $this->rejectionReason;
             $dto = BusinessRegistrationShowDto::fromModel($this->businessRegistration);
+
             $service = new BusinessRegistrationAdminService();
             $service->reject($this->businessRegistration, $dto);
             session()->flash('message', 'Recommendation rejected successfully.');
             return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
-
         } catch (\Exception $e) {
             logger()->error($e);
             $this->errorFlash('Something went wrong while rejecting.', $e->getMessage());
@@ -52,8 +52,6 @@ class BusinessRegistrationReject extends Component
     public function print()
     {
         $service = new BusinessRegistrationAdminService();
-        return $service->getLetter($this->businessRegistration,'web');
-        
+        return $service->getLetter($this->businessRegistration, 'web');
     }
-
 }

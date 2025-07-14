@@ -52,7 +52,22 @@ class BusinessRegistrationAdminController extends Controller implements HasMiddl
 
     public function view(Request $request)
     {
-        $businessRegistration = BusinessRegistration::findOrFail($request->route('id'));
+        $businessRegistration = BusinessRegistration::with([
+            'fiscalYear',
+            'businessProvince',
+            'businessDistrict',
+            'businessLocalBody',
+            'applicants',
+            'applicants.applicantProvince',
+            'applicants.applicantDistrict',
+            'applicants.applicantLocalBody',
+            'applicants.citizenshipDistrict',
+            'requiredBusinessDocs',
+        ])->findOrFail($request->route('id'));
+
+
+
+
         $template = $this->resolveTemplate($businessRegistration);
         return view('BusinessRegistration::business-registration.show')->with(compact('businessRegistration', 'template'));
     }

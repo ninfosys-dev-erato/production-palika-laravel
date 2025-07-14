@@ -22,7 +22,7 @@
 }
 
 body {
-    font-family: "kalimati", "sans-serif";
+    font-family: "Noto Sans Devanagari", "sans-serif" !important;
     line-height: 1.6;
     padding: 0 !important;
 }

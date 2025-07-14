@@ -67,6 +67,7 @@
             } = window.jspdf;
             const element = document.getElementById('printContent');
 
+
             const canvas = await html2canvas(element, {
                 scale: 2,
                 useCORS: true,

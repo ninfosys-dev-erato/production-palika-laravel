@@ -1,4 +1,5 @@
 <?php
+
 namespace Src\BusinessRegistration\Livewire;
 
 use App\Facades\FileFacade;
@@ -13,12 +14,13 @@ use Src\BusinessRegistration\Models\BusinessRenewal;
 use Src\BusinessRegistration\Models\BusinessRenewalDocument;
 use Src\BusinessRegistration\Service\BusinessRenewalDocumentAdminService;
 
-class BusinessRenewalRequestedDocuments extends Component{
+class BusinessRenewalRequestedDocuments extends Component
+{
 
-    use SessionFlash,WithFileUploads;
+    use SessionFlash, WithFileUploads;
     public ?BusinessRenewal $businessRenewal;
     #[Modelable]
-    public  $documents=[];
+    public  $documents = [];
     public  $options = [];
 
     public function rules(): array
@@ -35,18 +37,21 @@ class BusinessRenewalRequestedDocuments extends Component{
         return view('BusinessRegistration::livewire.renewal.documents');
     }
 
-    public function mount(BusinessRenewal $businessRenewal){
+    public function mount(BusinessRenewal $businessRenewal)
+    {
         $this->businessRenewal = $businessRenewal;
-        $this->options=BusinessDocumentStatusEnum::getForWeb();
+        $this->options = BusinessDocumentStatusEnum::getForWeb();
         $this->documents = BusinessRenewalDocument::where(
-            'business_renewal',$this->businessRenewal->id)->whereNull('deleted_at')->whereNull('deleted_by')->get()->map(function ($document) {
+            'business_renewal',
+            $this->businessRenewal->id
+        )->whereNull('deleted_at')->whereNull('deleted_by')->get()->map(function ($document) {
             return array_merge($document->toArray(), [
                 'url' => $document->url,
             ]);
         })
             ->toArray();
     }
-    public function updated($propertyName,$value)
+    public function updated($propertyName, $value)
     {
         // Check if the property being updated is a file input
         if (preg_match('/^documents\.\d+\.document$/', $propertyName)) {
@@ -57,22 +62,23 @@ class BusinessRenewalRequestedDocuments extends Component{
     }
     public function addDocument(): void
     {
-        $this->documents[]=[
-            'document_name'=>null,
-            'document_status'=>null,
-            'document'=>null,
+        $this->documents[] = [
+            'document_name' => null,
+            'document_status' => null,
+            'document' => null,
         ];
         $this->successToast(__('businessregistration::businessregistration.document_added_successfully'));
     }
 
-    public function removeDocument(int $index): void{
+    public function removeDocument(int $index): void
+    {
         unset($this->documents[$index]);
         $this->successToast(__('businessregistration::businessregistration.document_successfully_removed'));
     }
 
     public function copyToTemp($index)
     {
-        if($this->documents[$index]['id']) {
+        if ($this->documents[$index]['id']) {
             //Copy to Local Temp just in case user decides to toggle is_public
             FileFacade::copyFile(
                 sourcePath: config('src.BusinessRegistration.businessRegistration.registration_document'),
@@ -85,19 +91,20 @@ class BusinessRenewalRequestedDocuments extends Component{
             unset($this->documents[$index]['id']);
         }
     }
-    public function fileUpload($index){
+    public function fileUpload($index)
+    {
         $save = FileFacade::saveFile(
-            path:config('src.BusinessRegistration.businessRegistration.registration_document'),
-            file:$this->documents[$index]['document'],
-            disk:"local",
-            filename:""
+            path: config('src.BusinessRegistration.businessRegistration.registration_document'),
+            file: $this->documents[$index]['document'],
+            disk: "local",
+            filename: ""
         );
         $this->documents[$index]['document'] = $save;
-        $this->documents[$index]['document_status'] = BusinessDocumentStatusEnum::UPLOADED;
+        $this->documents[$index]['document_status'] = BusinessDocumentStatusEnum::UPLOADED->value;
         $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
-            path:config('src.BusinessRegistration.businessRegistration.registration_document'),
-            filename:$save,
-            disk:'local'
+            path: config('src.BusinessRegistration.businessRegistration.registration_document'),
+            filename: $save,
+            disk: 'local'
         );
         // ✅ Force Livewire to recognize the change
         $this->documents = array_values($this->documents);
@@ -107,7 +114,9 @@ class BusinessRenewalRequestedDocuments extends Component{
     {
         if ($this->documents) {
             $this->documents =  BusinessRenewalDocument::where(
-                'business_renewal',$this->businessRenewal->id)->whereNull('deleted_at')->whereNull('deleted_by')->get()->map(function ($document) {
+                'business_renewal',
+                $this->businessRenewal->id
+            )->whereNull('deleted_at')->whereNull('deleted_by')->get()->map(function ($document) {
                 return array_merge($document->toArray(), [
                     'url' => $document->url,
                 ]);
@@ -121,13 +130,12 @@ class BusinessRenewalRequestedDocuments extends Component{
     {
         $service  = new BusinessRenewalDocumentAdminService();
         $dto = BusinessRenewalDocumentAdminDto::fromLiveWireArray($this->documents[$index], $this->businessRenewal);
-        $result =  $service->saveDocument($this->documents[$index]['id'] ?? 0,$dto);
-        if($result){
+        $result =  $service->saveDocument($this->documents[$index]['id'] ?? 0, $dto);
+        if ($result) {
             $this->successToast(__('businessregistration::businessregistration.document_saved_successfully'));
-        }else{
+            $this->refresh(); // Refresh the documents list after saving
+        } else {
             $this->errorToast(__('businessregistration::businessregistration.document_saving_failed'));
         }
     }
-
-
 }

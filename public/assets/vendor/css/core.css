@@ -5,6 +5,7 @@
     font-style: normal;
     font-display: swap;
     unicode-range: U+0900-097F;
+    
 }
 @charset "UTF-8";
 :root {
@@ -82,7 +83,7 @@
 
 body {
     margin: 0;
-    font-family: var(--bs-body-font-family);
+    font-family: 'Noto Sans Devanagari';
     font-size: var(--bs-body-font-size);
     font-weight: var(--bs-body-font-weight);
     line-height: var(--bs-body-line-height);

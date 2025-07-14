@@ -13,6 +13,7 @@ class RegistrationTypeAdminDto
         public string  $registration_category_id,
         public ?string $department_id,
         public ?BusinessRegistrationType $action,
+        public ?string $registration_category_enum = null,
     ) {}
 
     public static function fromLiveWireModel(RegistrationType $regType)
@@ -23,6 +24,7 @@ class RegistrationTypeAdminDto
             registration_category_id: $regType->registration_category_id ?? null,
             department_id: $regType->department_id ?? null,
             action: $regType->action ?? null,
+            registration_category_enum: $regType->registration_category_enum,
         );
     }
 }

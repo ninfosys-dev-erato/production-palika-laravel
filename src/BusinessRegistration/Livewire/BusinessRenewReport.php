@@ -14,12 +14,12 @@ use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessStatusEnum;
+use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 use Src\BusinessRegistration\Exports\BusinessRegistrationRenewalReportExport;
 use Src\BusinessRegistration\Exports\BusinessRegistrationReportExport;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Models\BusinessRenewal;
 use Src\BusinessRegistration\Models\NatureOfBusiness;
-use Src\BusinessRegistration\Models\RegistrationCategory;
 use Src\BusinessRegistration\Models\RegistrationType;
 use Src\Employees\Models\Branch;
 use Src\TokenTracking\Exports\TokenReportExport;
@@ -45,19 +45,16 @@ class BusinessRenewReport extends Component
     public $endDate;
     public $applicationStatus;
     public $selectedApplicationStatus;
-
-    // public $categories;
-    // public $selectedCategory;
-    // public $natures;
-    // public $selectedNature;
-    // public $wards;
-    // public $selectedWard;
-
-    // public $businessStatus;
-    // public $selectedBusinessStatus;
-    // public $types;
-    // public $selectedType;
-
+    public $categories;
+    public $selectedCategory;
+    public $natures;
+    public $selectedNature;
+    public $wards;
+    public $selectedWard;
+    public $businessStatus;
+    public $selectedBusinessStatus;
+    public $types;
+    public $selectedType;
 
     public $renewalBusinessData;
     public $appliedFilters = [];
@@ -67,7 +64,12 @@ class BusinessRenewReport extends Component
         return [
             'startDate' => ['required'],
             'endDate' => ['required'],
+            'selectedCategory' => ['nullable'],
+            'selectedNature' => ['nullable'],
+            'selectedWard' => ['nullable'],
             'selectedApplicationStatus' => ['nullable'],
+            'selectedBusinessStatus' => ['nullable'],
+            'selectedType' => ['nullable'],
         ];
     }
 
@@ -78,28 +80,75 @@ class BusinessRenewReport extends Component
 
     public function mount()
     {
+        $this->categories = RegistrationCategoryEnum::getForWebInNepali();
+        $this->natures = NatureOfBusiness::whereNull('deleted_at')->pluck('title', 'id');
+        $this->types = RegistrationType::whereNull('deleted_at')->pluck('title', 'id');
+        $this->wards = getWards(getLocalBodies(localBodyId: key(getSettingWithKey('palika-local-body')))->wards);
         $this->applicationStatus = ApplicationStatusEnum::getForWebInNepali();
+        $this->businessStatus = BusinessStatusEnum::getForWebInNepali();
     }
 
 
     public function search()
     {
+        // Prepare an array to store applied filters with Nepali variable names
         $appliedFilters = [];
 
         $startDate = $this->startDate ? Carbon::parse($this->bsToAd($this->startDate))->startOfDay() : null;
         $endDate = $this->endDate ? Carbon::parse($this->bsToAd($this->endDate))->endOfDay() : null;
 
-        $query = BusinessRenewal::with(['fiscalYear', 'registration', 'registration.province', 'registration.district', 'registration.localBody', 'registration.registrationType.registrationCategory'])->latest();
+        $query = BusinessRenewal::with([
+            'fiscalYear',
+            'registration',
+            'registration.businessProvince',
+            'registration.businessDistrict',
+            'registration.businessLocalBody',
+            'registration.registrationType.registrationCategory',
+            'registration.applicants.applicantProvince',
+            'registration.applicants.applicantDistrict',
+            'registration.applicants.applicantLocalBody'
+        ])->latest();
 
+        // Apply filters to the query and add them to the applied filters array
         if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate, $endDate]);
             $appliedFilters[] = 'आवेदन मिति';
         }
+        if ($this->selectedCategory) {
+            $query->whereHas('registration', function ($q) {
+                $q->where('registration_category', $this->selectedCategory);
+            });
+            $appliedFilters[] = 'वर्ग';
+        }
+        if ($this->selectedType) {
+            $query->whereHas('registration', function ($q) {
+                $q->where('registration_type_id', $this->selectedType);
+            });
+            $appliedFilters[] = 'दर्ता प्रकार';
+        }
+        if ($this->selectedNature) {
+            $query->whereHas('registration', function ($q) {
+                $q->where('business_nature', $this->selectedNature);
+            });
+            $appliedFilters[] = 'व्यवसाय प्रकृति';
+        }
+        if ($this->selectedWard) {
+            $query->whereHas('registration', function ($q) {
+                $q->where('business_ward', $this->selectedWard);
+            });
+            $appliedFilters[] = 'वडा नं.';
+        }
         if ($this->selectedApplicationStatus) {
             $query->where('application_status', $this->selectedApplicationStatus);
-
             $appliedFilters[] = 'आवेदन स्थिति';
         }
+        if ($this->selectedBusinessStatus) {
+            $query->whereHas('registration', function ($q) {
+                $q->where('business_status', $this->selectedBusinessStatus);
+            });
+            $appliedFilters[] = 'व्यवसाय स्थिति';
+        }
+
         $this->appliedFilters = $appliedFilters;
         $this->renewalBusinessData = $query->get();
     }
@@ -109,7 +158,17 @@ class BusinessRenewReport extends Component
     {
         try {
             $renewalBusinessData =  $this->renewalBusinessData;
-            $renewalBusinessData->load(['fiscalYear', 'registration', 'registration.province', 'registration.district', 'registration.localBody', 'registration.registrationType.registrationCategory']);
+            $renewalBusinessData->load([
+                'fiscalYear',
+                'registration',
+                'registration.businessProvince',
+                'registration.businessDistrict',
+                'registration.businessLocalBody',
+                'registration.registrationType.registrationCategory',
+                'registration.applicants.applicantProvince',
+                'registration.applicants.applicantDistrict',
+                'registration.applicants.applicantLocalBody'
+            ]);
 
             $startDate = $this->startDate;
             $endDate = $this->endDate;
@@ -134,7 +193,7 @@ class BusinessRenewReport extends Component
             $url = PdfFacade::saveAndStream(
                 content: $html,
                 file_path: config('src.BusinessRegistration.businessRegistration.pdf'),
-                file_name: "businessRegistration" . date('YmdHis'),
+                file_name: "businessRenewal" . date('YmdHis'),
                 disk: "local",
             );
 
@@ -150,8 +209,14 @@ class BusinessRenewReport extends Component
     {
         $this->startDate = null;
         $this->endDate = null;
-
+        $this->selectedCategory = null;
+        $this->selectedNature = null;
+        $this->selectedWard = null;
+        $this->selectedApplicationStatus = null;
+        $this->selectedBusinessStatus = null;
+        $this->selectedType = null;
         $this->renewalBusinessData = [];
+        $this->appliedFilters = [];
     }
 
     public function export()

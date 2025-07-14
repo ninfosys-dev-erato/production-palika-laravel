@@ -36,21 +36,38 @@
 
 
 
-        <div class="col-md-6 mb-3">
+        {{-- <div class="col-md-6 mb-3">
             <div class="form-group">
                 <label for="registration_category_id"
                     class="position form-label">{{ __('businessregistration::businessregistration.select_category') }}</label>
                 <select dusk="businessregistration-registration_category_id-field" id="registration_category_id"
-                    class="form-select" style="width: 100%;" wire:change="registationCategory"
-                    wire:model='registrationType.registration_category_id'
+                    class="form-select" style="width: 100%;" wire:model='registrationType.registration_category_id'
                     name="registrationType.registration_category_id">
                     <option>{{ __('businessregistration::businessregistration.select_category') }}</option>
-                    @foreach ($registrationCategories as $label => $value)
+                    @foreach ($registrationCategories as $value => $label)
                         <option value="{{ $value }}">{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
             @error('registrationType.registration_category_id')
+                <div class="invalid-feedback">{{ __($message) }}</div>
+            @enderror
+        </div> --}}
+
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                <label for="registration_category_enum"
+                    class="position form-label">{{ __('businessregistration::businessregistration.select_category_enum') }}</label>
+                <select dusk="businessregistration-registration_category_enum-field" id="registration_category_enum"
+                    class="form-select" style="width: 100%;" wire:model='registrationType.registration_category_enum'
+                    name="registrationType.registration_category_enum">
+                    <option>{{ __('businessregistration::businessregistration.select_category') }}</option>
+                    @foreach ($registration_category_enums as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @error('registrationType.registration_category_enum')
                 <div class="invalid-feedback">{{ __($message) }}</div>
             @enderror
         </div>
