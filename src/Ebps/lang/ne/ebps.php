@@ -606,6 +606,7 @@ return [
     'document_status' => 'कागजातको स्थिति',
     'enter_document_name' => 'कागजातको नाम प्रविष्ट गर्नुहोस्',
     'other_documents' => 'अन्य कागजातहरू',
+    'no_documents_uploaded' => 'कुनै कागजातहरू अपलोड गरिएको छैन'
 
 
 ];

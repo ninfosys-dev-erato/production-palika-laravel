@@ -607,4 +607,5 @@ return [
     'document_status' => 'Document Status',
     'enter_document_name' => 'Enter Document Name',
     'other_documents' => 'Other Documents',
+    'no_documents_uploaded' => 'No Documents Uploaded',
 ];

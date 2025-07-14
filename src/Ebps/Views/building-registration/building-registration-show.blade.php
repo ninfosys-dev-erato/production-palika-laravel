@@ -293,36 +293,38 @@
 
 
                     <!-- char kila bibaran -->
-                    <div class="section-subheader mb-3">
-                        <i class="fas fa-building me-2"></i> चार किल्ला विवरण
-                    </div>
+                    @if ($mapApply?->landDetail?->fourBoundaries->isNotEmpty())
+                        <div class="section-subheader mb-3">
+                            <i class="fas fa-building me-2"></i> चार किल्ला विवरण
+                        </div>
 
-                    <div class="table-responsive mb-5">
-                        <table class="table table-bordered">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th class="text-dark">क्र.स</th>
-                                    <th class="text-dark">शीर्षक</th>
-                                    <th class="text-dark">दिशा</th>
-                                    <th class="text-dark">दुरी</th>
-                                    <th class="text-dark">कित्ता नम्बर</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if ($mapApply->landDetail->fourBoundaries)
-                                    @foreach ($mapApply->landDetail->fourBoundaries as $index => $detail)
-                                        <tr>
-                                            <td class="text-dark">{{ $index + 1 }}</td>
-                                            <td class="text-dark">{{ $detail->title }}</td>
-                                            <td class="text-dark">{{ $detail->direction }}</td>
-                                            <td class="text-dark">{{ $detail->distance }}</td>
-                                            <td class="text-dark">{{ $detail->lot_no }}</td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
-                    </div>
+                        <div class="table-responsive mb-5">
+                            <table class="table table-bordered">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="text-dark">क्र.स</th>
+                                        <th class="text-dark">शीर्षक</th>
+                                        <th class="text-dark">दिशा</th>
+                                        <th class="text-dark">दुरी</th>
+                                        <th class="text-dark">कित्ता नम्बर</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($mapApply?->landDetail?->fourBoundaries)
+                                        @foreach ($mapApply?->landDetail?->fourBoundaries as $index => $detail)
+                                            <tr>
+                                                <td class="text-dark">{{ $index + 1 }}</td>
+                                                <td class="text-dark">{{ $detail->title }}</td>
+                                                <td class="text-dark">{{ $detail->direction }}</td>
+                                                <td class="text-dark">{{ $detail->distance }}</td>
+                                                <td class="text-dark">{{ $detail->lot_no }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Land Owner Details Section -->
@@ -376,7 +378,7 @@
                                 <a href="{{ $mapApply->landOwner->photo }}" target="_blank"
                                     class="btn btn-outline-primary btn-sm mt-2">
                                     <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
-                                </a>                                
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -486,38 +488,7 @@
                 </div>
 
                 <!-- Four Boundaries Details Table -->
-                <div class="mb-4">
-                    <div class="section-subheader mb-3">
-                        <i class="fas fa-building me-2"></i> ५. चार किल्ला विवरण
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th class="text-dark">क्र.सं.</th>
-                                    <th class="text-dark">दिशा</th>
-                                    <th class="text-dark">रखिएको चिन्ह</th>
-                                    <th class="text-dark">लम्बाई</th>
-                                    <th class="text-dark">चौडाई</th>
-                                    <th class="text-dark">कैफियत</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php $boundary = $mapApply->boundaries ?? []; @endphp
-                                @foreach ($boundary as $index => $b)
-                                    <tr>
-                                        <td class="text-dark">{{ $index + 1 }}</td>
-                                        <td class="text-dark">{{ $b->direction }}</td>
-                                        <td class="text-dark">{{ $b->mark }}</td>
-                                        <td class="text-dark">{{ $b->length }}</td>
-                                        <td class="text-dark">{{ $b->width }}</td>
-                                        <td class="text-dark">{{ $b->remarks }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            
                 <div class="section-subheader mt-4">
                     <i class="fas fa-signature me-2"></i> {{ __('ebps::ebps.other_documents') }}
                 </div>
@@ -548,14 +519,14 @@
                     @empty
                         <div class="col-12 text-center text-muted fst-italic">
                             <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps._no_documents_uploaded') }}.
+                            {{ __('ebps::ebps.no_documents_uploaded') }}.
                         </div>
                     @endforelse
                 </div>
 
 
                 <!-- Certification Section -->
-                <div class="mt-5 pt-4 border-top">
+                {{-- <div class="mt-5 pt-4 border-top">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="border p-4 bg-light">
@@ -572,16 +543,9 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-md-6 d-flex align-items-center justify-content-center">
-                            <div class="text-center">
-                                <div class="border border-2 border-dark rounded-circle d-inline-flex align-items-center justify-content-center"
-                                    style="width: 150px; height: 150px;">
-                                    <p class="mb-0 fw-bold text-dark">कार्यालयको छाप</p>
-                                </div>
-                            </div>
-                        </div> --}}
+                       
                     </div>
-                </div>
+                </div> --}}
             </div>
 
 

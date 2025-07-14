@@ -539,7 +539,7 @@
                 </div>
 
                 <!-- Certification Section -->
-                <div class="mt-5 pt-4 border-top">
+                {{-- <div class="mt-5 pt-4 border-top">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="border p-4 bg-light">
@@ -559,7 +559,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
