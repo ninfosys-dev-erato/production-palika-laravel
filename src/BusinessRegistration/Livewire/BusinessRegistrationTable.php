@@ -202,21 +202,21 @@ class BusinessRegistrationTable extends DataTableComponent
 
 
         ];
-        if (can('business-registration_update') || can('business-registration_delete')) {
+        if (can('business_registration edit') || can('business_registration delete')) {
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                // if (can('business-registration_access')) {
+                if (can('business-registration_access')) {
                 $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                 $buttons .= $view;
-                // }
+                }
                 if ($this->type != BusinessRegistrationType::DEREGISTRATION->value) {
-                    if (can('business-registration_update') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
+                    if (can('business_registration edit') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
                         $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                         $buttons .= $edit;
                     }
                 }
 
-                if (can('business-registration_delete') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value && $this->type !=  BusinessRegistrationType::DEREGISTRATION->value) {
+                if (can('business_registration delete') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value && $this->type !=  BusinessRegistrationType::DEREGISTRATION->value) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
                     $buttons .= $delete;
                 }
@@ -251,7 +251,7 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('business-registration_update')) {
+        if (!can('business_registration edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -260,7 +260,7 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('business-registration_delete')) {
+        if (!can('registration_delete delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -272,7 +272,7 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('business-registration_delete')) {
+        if (!can('registration_delete delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

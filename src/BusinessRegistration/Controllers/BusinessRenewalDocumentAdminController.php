@@ -11,9 +11,9 @@ class BusinessRenewalDocumentAdminController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('permission:business_renewal_documents view')->only('index');
-        //$this->middleware('permission:business_renewal_documents edit')->only('edit');
-        //$this->middleware('permission:business_renewal_documents create')->only('create');
+        //$this->middleware('permission:business_renewals view')->only('index');
+        //$this->middleware('permission:business_renewals edit')->only('edit');
+        //$this->middleware('permission:business_renewals create')->only('create');
     }
 
     function index(Request $request)

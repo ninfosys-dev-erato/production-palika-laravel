@@ -18,7 +18,7 @@
                         <h5 class="text-primary fw-bold">
                             {{ __('businessregistration::businessregistration.registration_categories') }}</h5>
                         <div>
-                            @perm('registration-category_create')
+                            @perm('business_category create')
                                 {{-- <a href="{{ route('admin.business-registration.registration-category.create') }}"
                                     class="btn btn-info"><i class="bx bx-plus"></i>
                                     {{ __('businessregistration::businessregistration.add_registration_category') }}</a> --}}

@@ -22,7 +22,7 @@
                             {{ __('businessregistration::businessregistration.business_list') }}
                         </h5>
                         <div>
-                            @perm('business-registration_access')
+                            @perm('business_registration create')
                                 <a href="{{ route('admin.business-deregistration.create', ['type' => $type]) }}"
                                     class="btn btn-info"><i class="bx bx-plus"></i>
 

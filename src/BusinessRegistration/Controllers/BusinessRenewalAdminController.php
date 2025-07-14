@@ -17,7 +17,7 @@ class BusinessRenewalAdminController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:business-registration-renewal_access', only: ['index']),
+            new Middleware('permission:business_renewals access', only: ['index']),
             new Middleware('permission:business_renewals create', only: ['create']),
             new Middleware('permission:business_renewals edit', only: ['edit']),
         ];

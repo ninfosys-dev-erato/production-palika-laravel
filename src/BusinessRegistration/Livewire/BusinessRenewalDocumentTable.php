@@ -58,16 +58,16 @@ Column::make(__('businessregistration::businessregistration.document_details'), 
 Column::make(__('businessregistration::businessregistration.document_status'), "document_status") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('businessregistration::businessregistration.comment_log'), "comment_log") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('business_renewal_documents edit') || can('business_renewal_documents delete')) {
+        if (can('business_renewals edit') || can('business_renewals delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
-                if (can('business_renewal_documents edit')) {
+                if (can('business_renewals edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('business_renewal_documents delete')) {
+                if (can('business_renewals delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -83,7 +83,7 @@ Column::make(__('businessregistration::businessregistration.comment_log'), "comm
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('business_renewal_documents edit')){
+        if(!can('business_renewals edit')){
                SessionFlash::WARNING_FLASH(__('businessregistration::businessregistration.you_cannot_perform_this_action'));
                return false;
         }
@@ -91,7 +91,7 @@ Column::make(__('businessregistration::businessregistration.comment_log'), "comm
     }
     public function delete($id)
     {
-        if(!can('business_renewal_documents delete')){
+        if(!can('business_renewals delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -100,7 +100,7 @@ Column::make(__('businessregistration::businessregistration.comment_log'), "comm
         $this->successFlash(__('businessregistration::businessregistration.business_renewal_document_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('business_renewal_documents delete')){
+        if(!can('business_renewals delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

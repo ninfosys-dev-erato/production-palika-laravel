@@ -18,7 +18,7 @@
                             {{ __('businessregistration::businessregistration.business_renewal_document_list') }}</h5>
                     </div>
                     <div>
-                        @perm('business_renewal_documents create')
+                        @perm('business_renewals create')
                             <a href="{{ route('admin.business_renewal_documents.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('businessregistration::businessregistration.add_business_renewal_document') }}</a>
