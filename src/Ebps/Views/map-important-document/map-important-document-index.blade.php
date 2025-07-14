@@ -15,7 +15,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.map_important_document') }}
                     </h5>
-                    @perm('map_important_documents_create')
+                    @perm('ebps_settings create')
                         <!-- <a href="{{ route('admin.ebps.map_important_documents.create') }}" class="btn btn-info"><i
                                         class="bx bx-plus"></i>
                                     Add MapImportantDocument</a> -->

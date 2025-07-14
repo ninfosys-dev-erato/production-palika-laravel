@@ -59,16 +59,16 @@ Column::make(__('ebps::ebps.direction'), "direction") ->sortable()->searchable()
 Column::make(__('ebps::ebps.distance'), "distance") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('ebps::ebps.lot_no'), "lot_no") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('four_boundaries edit') || can('four_boundaries delete')) {
+        if (can('ebps_settings edit') || can('ebps_settings delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('four_boundaries edit')) {
+                if (can('ebps_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('four_boundaries delete')) {
+                if (can('ebps_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -85,7 +85,7 @@ Column::make(__('ebps::ebps.lot_no'), "lot_no") ->sortable()->searchable()->coll
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('four_boundaries edit')){
+        if(!can('ebps_settings edit')){
                SessionFlash::WARNING_FLASH(__('ebps::ebps.you_cannot_perform_this_action'));
                return false;
         }
@@ -93,7 +93,7 @@ Column::make(__('ebps::ebps.lot_no'), "lot_no") ->sortable()->searchable()->coll
     }
     public function delete($id)
     {
-        if(!can('four_boundaries delete')){
+        if(!can('ebps_settings delete')){
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
                 return false;
         }
@@ -102,7 +102,7 @@ Column::make(__('ebps::ebps.lot_no'), "lot_no") ->sortable()->searchable()->coll
         $this->successFlash(__('ebps::ebps.four_boundary_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('four_boundaries delete')){
+        if(!can('ebps_settings delete')){
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
                     return false;
         }

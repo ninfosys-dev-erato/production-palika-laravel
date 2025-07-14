@@ -55,16 +55,16 @@ class BuildingRoofTypeTable extends DataTableComponent
      $columns = [
             Column::make("Title", "title") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('ebps_building_roof_types edit') || can('ebps_building_roof_types delete')) {
+        if (can('ebps_settings edit') || can('ebps_settings delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('ebps_building_roof_types edit')) {
+                if (can('ebps_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('ebps_building_roof_types delete')) {
+                if (can('ebps_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -81,7 +81,7 @@ class BuildingRoofTypeTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('ebps_building_roof_types edit')){
+        if(!can('ebps_settings edit')){
                SessionFlash::WARNING_FLASH(__('ebps::ebps.you_cannot_perform_this_action'));
                return false;
         }
@@ -91,7 +91,7 @@ class BuildingRoofTypeTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('ebps_building_roof_types delete')){
+        if(!can('ebps_settings delete')){
                 SessionFlash::WARNING_FLASH(__('ebps::ebps.you_cannot_perform_this_action'));
                 return false;
         }
@@ -100,7 +100,7 @@ class BuildingRoofTypeTable extends DataTableComponent
         $this->successFlash(__('ebps::ebps.building_roof_type_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('ebps_building_roof_types delete')){
+        if(!can('ebps_settings delete')){
                     SessionFlash::WARNING_FLASH(__('ebps::ebps.you_cannot_perform_this_action'));
                     return false;
         }

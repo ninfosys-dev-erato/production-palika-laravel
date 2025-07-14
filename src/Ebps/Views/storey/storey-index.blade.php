@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.storeys') }}
                     </h5>
-                    @perm('storeys_create')
+                    @perm('ebps_settings create')
                         <!-- <a href="{{ route('admin.ebps.storeys.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                             {{ 'Add Storey' }}</a> -->
 

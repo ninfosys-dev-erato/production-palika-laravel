@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.building_construction_type') }}
                     </h5>
-                    @perm('building_construction_types_create')
+                    @perm('ebps_settings create')
                         <!-- <a href="{{ route('admin.ebps.building_construction_types.create') }}" class="btn btn-info"><i
                                             class="bx bx-plus"></i>
                                         {{ __('ebps::ebps.add_building_construction_type') }}</a> -->
