@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.map_pass_group') }}
                     </h5>
-                    @perm('ebps_map_pass_groups create')
+                    @perm('ebps_settings create')
                         <a href="{{ route('admin.ebps.map_pass_groups.create') }}" class="btn btn-info"><i
                                 class="bx bx-plus"></i> {{ __('ebps::ebps.add_map_pass_group') }}</a>
                     @endperm

@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.building_criteria') }}
                     </h5>
-                    @perm('ebps_building_criterias_create')
+                    @perm('ebps_settings create')
                         <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                             data-bs-target="#indexModal">
                             <i class="bx bx-plus"></i> {{ __('ebps::ebps.add_building_criterias') }}

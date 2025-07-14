@@ -15,10 +15,10 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.construction_type') }}
                     </h5>
-                    @perm('construction_types_create')
+                    @perm('ebps_settings create')
                         <!-- <a href="{{ route('admin.ebps.construction_types.create') }}" class="btn btn-info"><i
-                                        class="bx bx-plus"></i>
-                                    {{ __('ebps::ebps.add_construction_type') }}</a> -->
+                                            class="bx bx-plus"></i>
+                                        {{ __('ebps::ebps.add_construction_type') }}</a> -->
                         <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                             data-bs-target="#indexModal">
                             <i class="bx bx-plus"></i> {{ __('ebps::ebps.add_construction_type') }}

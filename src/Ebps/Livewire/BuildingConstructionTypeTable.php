@@ -55,16 +55,16 @@ class BuildingConstructionTypeTable extends DataTableComponent
      $columns = [
             Column::make(__('ebps::ebps.title'), "title") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('ebps_building_construction_types _edit') || can('ebps_building_construction_types delete')) {
+        if (can('ebps_settings edit') || can('ebps_settings delete')) {
             $actionsColumn = Column::make(__('ebps::ebps.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('ebps_building_construction_types edit')) {
+                if (can('ebps_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('ebps_building_construction_types delete')) {
+                if (can('ebps_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -81,7 +81,7 @@ class BuildingConstructionTypeTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('ebps_building_construction_types edit')){
+        if(!can('ebps_settings edit')){
                SessionFlash::WARNING_FLASH(__('ebps::ebps.you_cannot_perform_this_action'));
                return false;
         }
@@ -90,7 +90,7 @@ class BuildingConstructionTypeTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('ebps_building_construction_types delete')){
+        if(!can('ebps_settings delete')){
                 SessionFlash::WARNING_FLASH(__('ebps::ebps.you_cannot_perform_this_action'));
                 return false;
         }
@@ -99,7 +99,7 @@ class BuildingConstructionTypeTable extends DataTableComponent
         $this->successFlash(__('ebps::ebps.building_construction_type_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('ebps_building_construction_types delete')){
+        if(!can('ebps_settings delete')){
                     SessionFlash::WARNING_FLASH(__('ebps::ebps.you_cannot_perform_this_action'));
                     return false;
         }
