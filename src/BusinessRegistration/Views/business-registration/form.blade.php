@@ -30,14 +30,13 @@
                 class="btn btn-info"><i
                     class="bx bx-list-ul"></i>{{ __('businessregistration::businessregistration.business_registration_lists') }}</a>
         </div>
-        <div class="card-body">
-            @if (isset($businessRegistration))
-                <livewire:business_registration.business_registration_form :$businessRegistration :$action
-                    :$businessRegistrationType />
-            @else
-                <livewire:business_registration.business_registration_form :$action :$businessRegistrationType
-                    :$registration />
-            @endif
-        </div>
     </div>
+    @if (isset($businessRegistration))
+        <livewire:business_registration.business_registration_form :$businessRegistration :$action
+            :$businessRegistrationType />
+    @else
+        <livewire:business_registration.business_registration_form :$action :$businessRegistrationType :$registration />
+    @endif
+
+
 </x-layout.app>

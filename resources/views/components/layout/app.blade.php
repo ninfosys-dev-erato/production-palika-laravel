@@ -25,6 +25,13 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}" />
     <link rel="stylesheet" href="{{ asset('home/tableStyle.css') }}" />
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap"
+        rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
@@ -148,19 +155,40 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('vendor/nepali.datepicker.v4.0.8.min.js') }}" type="text/javascript"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        function initNepaliDatePicker() {
             document.querySelectorAll('.nepali-date').forEach(function(input) {
-                input.nepaliDatePicker({
-                    language: "ne",
-                    ndpYear: true,
-                    ndpMonth: true,
-                    unicodeDate: true,
-                    onChange: function() {
-                        input.dispatchEvent(new Event('input', {
-                            bubbles: true
-                        }));
-                    }
-                });
+                // Remove any previous initialization (defensive)
+                if (input.nepaliDatePicker) {
+                    try {
+                        input.nepaliDatePicker('destroy');
+                    } catch (e) {}
+                }
+                input.classList.remove('ndp-initialized');
+                // Initialize if not already done
+                if (!input.classList.contains('ndp-initialized')) {
+                    input.nepaliDatePicker({
+                        language: "ne",
+                        ndpYear: true,
+                        ndpMonth: true,
+                        unicodeDate: true,
+                        onChange: function() {
+                            input.dispatchEvent(new Event('input', {
+                                bubbles: true
+                            }));
+                        }
+                    });
+                    input.classList.add('ndp-initialized');
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            initNepaliDatePicker();
+        });
+
+        document.addEventListener("livewire:load", function() {
+            Livewire.hook('message.processed', (message, component) => {
+                initNepaliDatePicker();
             });
         });
     </script>

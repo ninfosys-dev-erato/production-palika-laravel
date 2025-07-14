@@ -13,9 +13,7 @@ class BusinessRenewalDocumentAdminDto
         public ?string $document_name,
         public ?string $document,
         public ?string $document_status,
-    )
-    {
-    }
+    ) {}
 
     public static function fromLiveWireModel(BusinessRenewalDocument $businessRenewalDocument): BusinessRenewalDocumentAdminDto
     {

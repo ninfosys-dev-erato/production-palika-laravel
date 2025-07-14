@@ -106,8 +106,8 @@ class BusinessRenewalTable extends DataTableComponent
                     $applicant_name = $row->registration?->applicant_name;
                     $applicant_number = $row->registration?->applicant_number;
                     return "
-                        <div><strong>" . (__('businessregistration::businessregistration.applicant_number')) . ":" . "</strong> {$applicant_name}</div>
-                          <div><strong>" . (__('businessregistration::businessregistration.applicant_name')) . ":" . "</strong> {$applicant_number}</div>
+                        <div><strong>" . (__('businessregistration::businessregistration.applicant_name')) . ":" . "</strong> {$applicant_name}</div>
+                          <div><strong>" . (__('businessregistration::businessregistration.applicant_number')) . ":" . "</strong> {$applicant_number}</div>
                     ";
                 })
                 ->sortable()

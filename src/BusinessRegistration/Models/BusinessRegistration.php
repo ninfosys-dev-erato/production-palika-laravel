@@ -16,107 +16,136 @@ use Src\Address\Models\Province;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 use Src\BusinessRegistration\Enums\BusinessStatusEnum;
+use Src\BusinessRegistration\Models\BusinessRequiredDoc;
 use Src\BusinessRegistration\Service\BusinessRegistrationAdminService;
+use Src\Customers\Enums\GenderEnum;
 use Src\Employees\Models\Branch;
 use Src\FileTracking\Models\FileRecord;
 use Src\Settings\Models\FiscalYear;
 use Src\Wards\Models\Ward;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BusinessRegistration extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
-    protected $table = "brs_business_registration";
+    protected $table = "brs_business_registration_data";
 
     protected $fillable = [
-        'registration_type_id',
         'entity_name',
+        'fiscal_year',
+        'registration_date',
+        'registration_type',
+        'registration_type_id',
+
+        'business_nature',
+        'main_service_or_goods',
+        'total_capital',
+        'business_province',
+        'business_district',
+        'business_local_body',
+        'business_ward',
+        'business_tole',
+        'business_street',
+
+        'working_capital',
+        'fixed_capital',
+        'capital_investment',
+        'financial_source',
+        'required_electric_power',
+        'production_capacity',
+        'required_manpower',
+        'number_of_shifts',
+        'operation_date',
+        'others',
+        'houseownername',
+        'monthly_rent',
+        'rentagreement',
+        'east',
+        'west',
+        'north',
+        'south',
+        'landplotnumber',
+        'area',
+
+        'registration_id',
+
         'amount',
+        'application_rejection_reason',
         'bill_no',
         'application_date',
         'application_date_en',
-        'registration_date',
         'registration_date_en',
         'registration_number',
         'certificate_number',
-        'province_id',
-        'district_id',
-        'local_body_id',
-        'business_nature',
-        'department_id',
-        'ward_no',
-        'way',
-        'tole',
-        'data',
-        'business_status',
-        'application_rejection_reason',
-        'application_status',
-        'bill',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+
         'created_by',
         'updated_by',
+        'deleted_at',
         'deleted_by',
-        'fiscal_year_id',
-        'approved_at',
-        'approved_by',
-        'mobile_no',
-        'rejected_at',
-        'rejected_by',
-        'operator_id', //संचालक
-        'preparer_id', //तयार गर्ने
-        'approver_id', //प्रमाणित गर्ने
-        'applicant_name',
-        'applicant_number',
-        'registration_id',
-        'registration_type',
+
+        'data',
+        'application_status',
+        'total_running_day',
+        'is_rented',
+        'registration_category'
     ];
 
     protected $casts = [
-        'registration_type_id' => 'string',
+        'registration_type' => BusinessRegistrationType::class,
         'entity_name' => 'string',
-        'applicant_name' => 'string',
-        'applicant_number' => 'string',
-        'amount' => 'string',
-        'bill_no' => 'string',
-        'department_id' => 'string',
+        'fiscal_year' => 'string',
+        'registration_date' => 'string',
+        'registration_type_id' => 'integer',
+
         'business_nature' => 'string',
+        'main_service_or_goods' => 'string',
+        'total_capital' => 'integer',
+        'business_province' => 'string',
+        'business_district' => 'string',
+        'business_local_body' => 'string',
+        'business_ward' => 'string',
+        'business_tole' => 'string',
+        'business_street' => 'string',
+
+        'working_capital' => 'string',
+        'fixed_capital' => 'string',
+        'capital_investment' => 'string',
+        'financial_source' => 'string',
+        'required_electric_power' => 'string',
+        'production_capacity' => 'string',
+        'required_manpower' => 'string',
+        'number_of_shifts' => 'string',
+        'operation_date' => 'string',
+        'others' => 'string',
+        'houseownername' => 'string',
+        'monthly_rent' => 'string',
+        'rentagreement' => 'string',
+        'east' => 'string',
+        'west' => 'string',
+        'north' => 'string',
+        'south' => 'string',
+        'landplotnumber' => 'string',
+        'area' => 'string',
+        'amount' => 'string',
+        'application_rejection_reason' => 'string',
+        'bill_no' => 'string',
         'application_date' => 'string',
         'application_date_en' => 'string',
-        'registration_date' => 'string',
         'registration_date_en' => 'string',
         'registration_number' => 'string',
         'certificate_number' => 'string',
-        'province_id' => 'string',
-        'district_id' => 'string',
-        'local_body_id' => 'string',
-        'business_status' => 'string',
-        'application_rejection_reason' => 'string',
-        'application_status' => 'string',
-        'ward_no' => 'string',
-        'way' => 'string',
-        'tole' => 'string',
+
+        'created_by' => 'integer',
+        'updated_by' => 'integer',
+
         'data' => 'json',
-        'bill' => 'string',
-        'fiscal_year_id' => 'string',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-        'created_by' => 'string',
-        'updated_by' => 'string',
-        'deleted_by' => 'string',
-        'approved_at' => 'datetime',
-        'approved_by' => 'string',
-        'mobile_no' => 'string',
-        'rejected_at' => 'datetime',
-        'rejected_by' => 'string',
-        'operator_id' => 'string', //संचालक
-        'preparer_id' => 'string', //तयार गर्ने
-        'approver_id' => 'string', //प्रमाणित गर्ने
-        'registration_id' => 'string',
-        'registration_type' => BusinessRegistrationType::class,
+        'application_status' => 'string',
+        'total_running_day' => 'string',
+        'is_rented' => 'string',
+        'registration_category' => 'string',
     ];
+
 
     public function registrationType(): BelongsTo
     {
@@ -125,7 +154,7 @@ class BusinessRegistration extends Model
 
     public function fiscalYear(): BelongsTo
     {
-        return $this->belongsTo(FiscalYear::class, 'fiscal_year_id');
+        return $this->belongsTo(FiscalYear::class, 'fiscal_year', 'id');
     }
 
     public function province(): BelongsTo
@@ -142,6 +171,29 @@ class BusinessRegistration extends Model
     {
         return $this->belongsTo(LocalBody::class, 'local_body_id');
     }
+
+    // Business relationships
+    public function businessProvince(): BelongsTo
+    {
+        return $this->belongsTo(Province::class, 'business_province', 'id');
+    }
+
+    public function businessDistrict(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'business_district', 'id');
+    }
+
+    public function businessLocalBody(): BelongsTo
+    {
+        return $this->belongsTo(LocalBody::class, 'business_local_body', 'id');
+    }
+
+
+
+
+
+
+
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -206,5 +258,15 @@ class BusinessRegistration extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(BusinessRegistration::class, 'registration_id');
+    }
+
+    public function applicants(): HasMany
+    {
+        return $this->hasMany(BusinessRegistrationApplicant::class, 'business_registration_id');
+    }
+
+    public function requiredBusinessDocs(): HasMany
+    {
+        return $this->hasMany(BusinessRequiredDoc::class, 'business_registration_id');
     }
 }

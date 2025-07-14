@@ -6,6 +6,7 @@ use App\Facades\FileTrackingFacade;
 use App\Facades\PdfFacade;
 use App\Traits\HelperDate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Src\BusinessRegistration\DTO\BusinessRegistrationAdminDto;
 use Src\BusinessRegistration\DTO\BusinessRegistrationShowDto;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
@@ -14,7 +15,6 @@ use Src\BusinessRegistration\Enums\BusinessStatusEnum;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Traits\BusinessRegistrationTemplate;
 use Src\Settings\Models\Setting;
-use DB;
 
 class BusinessRegistrationAdminService
 {
@@ -23,35 +23,54 @@ class BusinessRegistrationAdminService
     public function store(BusinessRegistrationAdminDto $businessRegistrationAdminDto): bool|BusinessRegistration
     {
         $businessRegistration = BusinessRegistration::create([
-            'entity_name' => $businessRegistrationAdminDto->entity_name,
-            'registration_type_id' => $businessRegistrationAdminDto->registration_type_id,
-            'amount' => $businessRegistrationAdminDto->amount,
-            'bill_no' => $businessRegistrationAdminDto->bill_no,
-            'applicant_number' => $businessRegistrationAdminDto->applicant_number,
-            'applicant_name' => $businessRegistrationAdminDto->applicant_name,
-            'application_date' => $businessRegistrationAdminDto->application_date,
-            'application_date_en' => $businessRegistrationAdminDto->application_date_en,
-            'registration_date' => $businessRegistrationAdminDto->registration_date,
-            'registration_date_en' => $businessRegistrationAdminDto->registration_date_en,
-            'registration_number' => $businessRegistrationAdminDto->registration_number,
-            'certificate_number' => $businessRegistrationAdminDto->certificate_number,
-            'department_id' => $businessRegistrationAdminDto->department_id,
-            'business_nature' => $businessRegistrationAdminDto->business_nature,
-            'province_id' => $businessRegistrationAdminDto->province_id,
-            'district_id' => $businessRegistrationAdminDto->district_id,
-            'local_body_id' => $businessRegistrationAdminDto->local_body_id,
-            'ward_no' => $businessRegistrationAdminDto->ward_no,
-            'way' => $businessRegistrationAdminDto->way,
-            'tole' => $businessRegistrationAdminDto->tole,
-            'data' => json_encode($businessRegistrationAdminDto->data),
-            'created_at' => date('Y-m-d H:i:s'),
-            'created_by' => $businessRegistrationAdminDto->created_by,
-            'mobile_no' => $businessRegistrationAdminDto->mobile_no,
-            'operator_id' => $businessRegistrationAdminDto->operator_id,
-            'preparer_id' => $businessRegistrationAdminDto->preparer_id,
-            'approver_id' => $businessRegistrationAdminDto->approver_id,
+            // Business Info
+            'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
+            'total_capital'                => $businessRegistrationAdminDto->total_capital,
+            'business_province'            => $businessRegistrationAdminDto->business_province,
+            'business_district'            => $businessRegistrationAdminDto->business_district,
+            'business_local_body'          => $businessRegistrationAdminDto->business_local_body,
+            'business_ward'                => $businessRegistrationAdminDto->business_ward,
+            'business_tole'                => $businessRegistrationAdminDto->business_tole,
+            'business_street'              => $businessRegistrationAdminDto->business_street,
+            'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
+            'entity_name'                  => $businessRegistrationAdminDto->entity_name,
+            'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
+            'registration_date_en'         => $businessRegistrationAdminDto->registration_date_en,
+            'application_date'             => $businessRegistrationAdminDto->application_date,
+            'application_date_en'         => $businessRegistrationAdminDto->application_date_en,
+            'data'                        => json_encode($businessRegistrationAdminDto->data),
+            'created_at'                    => date('Y-m-d H:i:s'),
+            'created_by'                     => $businessRegistrationAdminDto->created_by,
             'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
             'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
+            'registration_number' => $businessRegistrationAdminDto->registration_number,
+            'certificate_number' => $businessRegistrationAdminDto->certificate_number,
+            'application_status' => ApplicationStatusEnum::PENDING->value,
+
+            'working_capital'              => $businessRegistrationAdminDto->working_capital,
+            'fixed_capital'                => $businessRegistrationAdminDto->fixed_capital,
+            'capital_investment'           => $businessRegistrationAdminDto->capital_investment,
+            'financial_source'             => $businessRegistrationAdminDto->financial_source,
+            'required_electric_power'      => $businessRegistrationAdminDto->required_electric_power,
+            'production_capacity'          => $businessRegistrationAdminDto->production_capacity,
+            'required_manpower'            => $businessRegistrationAdminDto->required_manpower,
+            'number_of_shifts'             => $businessRegistrationAdminDto->number_of_shifts,
+            'operation_date'               => $businessRegistrationAdminDto->operation_date,
+            'others'                       => $businessRegistrationAdminDto->others,
+            'houseownername' => $businessRegistrationAdminDto->houseownername,
+            'phone' => $businessRegistrationAdminDto->phone,
+            'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
+            'rentagreement' => $businessRegistrationAdminDto->rentagreement,
+            'east' => $businessRegistrationAdminDto->east,
+            'west' => $businessRegistrationAdminDto->west,
+            'north' => $businessRegistrationAdminDto->north,
+            'south' => $businessRegistrationAdminDto->south,
+            'landplotnumber' => $businessRegistrationAdminDto->landplotnumber,
+            'area' => $businessRegistrationAdminDto->area,
+            'is_rented' => $businessRegistrationAdminDto->is_rented,
+            'total_running_day' => $businessRegistrationAdminDto->total_running_day,
+            'registration_category' => $businessRegistrationAdminDto->registration_category,
         ]);
 
         return $businessRegistration;
@@ -60,34 +79,55 @@ class BusinessRegistrationAdminService
     public function update(BusinessRegistrationAdminDto $businessRegistrationAdminDto, BusinessRegistration $businessRegistration): bool|BusinessRegistration
     {
         $registration = tap($businessRegistration)->update([
-            'entity_name' => $businessRegistrationAdminDto->entity_name,
-            'registration_type_id' => $businessRegistrationAdminDto->registration_type_id,
-            'amount' => $businessRegistrationAdminDto->amount,
-            'applicant_number' => $businessRegistrationAdminDto->applicant_number,
-            'applicant_name' => $businessRegistrationAdminDto->applicant_name,
-            'bill_no' => $businessRegistrationAdminDto->bill_no,
-            'application_date' => $businessRegistrationAdminDto->application_date,
-            'application_date_en' => $businessRegistrationAdminDto->application_date_en,
-            'registration_date' => $businessRegistrationAdminDto->registration_date,
-            'registration_date_en' => $businessRegistrationAdminDto->registration_date_en,
+            // Business Info
+            'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
+            'total_capital'                => $businessRegistrationAdminDto->total_capital,
+            'business_province'            => $businessRegistrationAdminDto->business_province,
+            'business_district'            => $businessRegistrationAdminDto->business_district,
+            'business_local_body'          => $businessRegistrationAdminDto->business_local_body,
+            'business_ward'                => $businessRegistrationAdminDto->business_ward,
+            'business_tole'                => $businessRegistrationAdminDto->business_tole,
+            'business_street'              => $businessRegistrationAdminDto->business_street,
+            'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
+            'entity_name'                  => $businessRegistrationAdminDto->entity_name,
+            'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
+            'registration_date'            => $businessRegistrationAdminDto->registration_date,
+            'registration_date_en'         => $businessRegistrationAdminDto->registration_date_en,
+            'application_date'             => $businessRegistrationAdminDto->application_date,
+            'application_date_en'         => $businessRegistrationAdminDto->application_date_en,
+            'data'                        => json_encode($businessRegistrationAdminDto->data),
+            'created_at'                    => date('Y-m-d H:i:s'),
+            'created_by'                     => $businessRegistrationAdminDto->created_by,
+            'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
+            'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
             'registration_number' => $businessRegistrationAdminDto->registration_number,
             'certificate_number' => $businessRegistrationAdminDto->certificate_number,
-            'department_id' => $businessRegistrationAdminDto->department_id,
-            'business_nature' => $businessRegistrationAdminDto->business_nature,
-            'province_id' => $businessRegistrationAdminDto->province_id,
-            'district_id' => $businessRegistrationAdminDto->district_id,
-            'local_body_id' => $businessRegistrationAdminDto->local_body_id,
-            'ward_no' => $businessRegistrationAdminDto->ward_no,
-            'way' => $businessRegistrationAdminDto->way,
-            'tole' => $businessRegistrationAdminDto->tole,
-            'data' => json_encode($businessRegistrationAdminDto->data),
-            'updated_at' => now(),
-            'updated_by' => $businessRegistrationAdminDto->updated_by,
-            'mobile_no' => $businessRegistrationAdminDto->mobile_no,
             'application_status' => ApplicationStatusEnum::PENDING->value,
-            'operator_id' => $businessRegistrationAdminDto->operator_id,
-            'preparer_id' => $businessRegistrationAdminDto->preparer_id,
-            'approver_id' => $businessRegistrationAdminDto->approver_id,
+
+            'working_capital'              => $businessRegistrationAdminDto->working_capital,
+            'fixed_capital'                => $businessRegistrationAdminDto->fixed_capital,
+            'capital_investment'           => $businessRegistrationAdminDto->capital_investment,
+            'financial_source'             => $businessRegistrationAdminDto->financial_source,
+            'required_electric_power'      => $businessRegistrationAdminDto->required_electric_power,
+            'production_capacity'          => $businessRegistrationAdminDto->production_capacity,
+            'required_manpower'            => $businessRegistrationAdminDto->required_manpower,
+            'number_of_shifts'             => $businessRegistrationAdminDto->number_of_shifts,
+            'operation_date'               => $businessRegistrationAdminDto->operation_date,
+            'others'                       => $businessRegistrationAdminDto->others,
+            'houseownername' => $businessRegistrationAdminDto->houseownername,
+            'phone' => $businessRegistrationAdminDto->phone,
+            'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
+            'rentagreement' => $businessRegistrationAdminDto->rentagreement,
+            'east' => $businessRegistrationAdminDto->east,
+            'west' => $businessRegistrationAdminDto->west,
+            'north' => $businessRegistrationAdminDto->north,
+            'south' => $businessRegistrationAdminDto->south,
+            'landplotnumber' => $businessRegistrationAdminDto->landplotnumber,
+            'area' => $businessRegistrationAdminDto->area,
+            'is_rented' => $businessRegistrationAdminDto->is_rented,
+            'total_running_day' => $businessRegistrationAdminDto->total_running_day,
+            'registration_category' => $businessRegistrationAdminDto->registration_category,
         ]);
 
         return $registration;
@@ -95,8 +135,9 @@ class BusinessRegistrationAdminService
 
     public function delete(BusinessRegistration $businessRegistration): bool|BusinessRegistration
     {
+
         $businessRegistration = tap($businessRegistration)->update([
-            'deleted_at' => now(),
+            'deleted_at' => date('Y-m-d H:i:s'),
             'deleted_by' => Auth::user()->id
         ]);
 
@@ -112,12 +153,12 @@ class BusinessRegistrationAdminService
         ]);
     }
 
-    public function reject(BusinessRegistration $businessRegistration, BusinessRegistrationShowDto $applyRecommendationShowDto)
+    public function reject(BusinessRegistration $businessRegistration, BusinessRegistrationShowDto $businessRegistrationAdminDto)
     {
         FileTrackingFacade::recordFile($businessRegistration);
         $resone = tap($businessRegistration)->update([
             'rejected_by' => Auth::user()->id,
-            'application_rejection_reason' => $applyRecommendationShowDto->application_rejection_reason,
+            'application_rejection_reason' => $businessRegistrationAdminDto->application_rejection_reason,
             'rejected_at' => now(),
             'application_status' => ApplicationStatusEnum::REJECTED->value
         ]);
@@ -148,8 +189,8 @@ class BusinessRegistrationAdminService
             'application_rejection_reason' => null,
             'rejected_at' => null,
             'registration_number' => $data['registration_number'],
-            'registration_date' => $data['registration_date'],
-            'registration_date_en' => $data['registration_date_en'],
+            'registration_date' => replaceNumbers($this->adToBs(date('Y-m-d')), true),
+            'registration_date_en' => date('Y-m-d'),
             'certificate_number' => $data['certificate_number'],
             'bill_no' => $data['bill_no'],
             'business_status' => BusinessStatusEnum::ACTIVE->value,
@@ -208,16 +249,16 @@ class BusinessRegistrationAdminService
             dd($exception->getMessage());
         }
     }
-    public function deRegisterBusiness(BusinessRegistrationAdminDto $businessRegistrationAdminDto, BusinessRegistration $businessRegistration): bool
+    public function deRegisterBusiness(BusinessRegistrationAdminDto $businessRegistrationAdminDto, BusinessRegistration $businessRegistration): BusinessRegistration|bool
     {
         DB::beginTransaction();
         try {
 
             if ($businessRegistration->deleted_at === null && $businessRegistration->deleted_by === null) {
-                $this->store($businessRegistrationAdminDto);
+                $deregistration = $this->store($businessRegistrationAdminDto);
                 $this->delete($businessRegistration);
                 DB::commit();
-                return true;
+                return $deregistration;
             } else {
                 DB::rollBack();
                 return false;
