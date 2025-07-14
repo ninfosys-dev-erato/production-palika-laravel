@@ -23,7 +23,7 @@ class WardUserForm extends Component
 
     public function mount()
     {
-        $this->roles = Role::whereNull('deleted_at')->whereNull('deleted_by')->get();
+        $this->roles = Role::get();
 
     }
 
@@ -89,8 +89,8 @@ class WardUserForm extends Component
         $localBodyId = key(getSettingWithKey('palika-local-body')); 
         $localBody = LocalBody::findOrFail($localBodyId);
         $wardCount = $localBody->wards;
-        $localBodyEn = $localBody->name_en;
-        $localBodyNe = $localBody->name_ne;
+        $localBodyEn = $localBody->title_en;
+        $localBodyNe = $localBody->title;
         
         for ($i = 1; $i <= $wardCount; $i++) {
             $nepaliNo = replaceNumbers($i, true);
