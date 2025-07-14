@@ -92,7 +92,7 @@ return [
     [
         'module' => 'grant',
         'route' => 'admin.grant_management.index',
-        'icon' => 'AnudaanByabasthapanIcon.png',
+        'icon' => 'RajaswaSankalanIcon.png',
         'logo' => 'bx bx-dollar-circle',
         'label' => 'Grant Management System',
         'perm' => null,
