@@ -240,7 +240,6 @@ class BusinessRegistrationTable extends DataTableComponent
             return redirect()->back();
         }
 
-        // ✅ Proceed with creation
         $registrationNumber = BusinessRegistration::where('id', $id)->value('registration_number');
 
         $renewal = BusinessRenewal::create([

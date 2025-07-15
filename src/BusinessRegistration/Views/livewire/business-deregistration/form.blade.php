@@ -12,6 +12,7 @@
                     class="form-label fw-bold fs-7 d-block">{{ __('businessregistration::businessregistration.search_by_company_name/registration_number') }}</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="name" wire:model.defer="search"
+                        wire:keydown.enter.prevent="searchBusiness"
                         placeholder={{ __('businessregistration::businessregistration.enter_company_name/registration_number') }}>
                     <button class="btn btn-primary" type="button" wire:click="searchBusiness">
                         {{ __('businessregistration::businessregistration.search') }}
