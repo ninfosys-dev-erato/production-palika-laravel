@@ -41,7 +41,7 @@ class BuildingRegistrationController extends Controller
 
     function moveForward(int $id)
     {
-        $steps = MapStep::whereNull('deleted_by')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION )->get();
+        $steps = MapStep::with('form')->whereNull('deleted_by')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION )->get();
         $mapApply= MapApply::where('id', $id)->with('mapApplySteps')->first();
        
         return view('BusinessPortal.Ebps::building-registration-steps', compact('steps',  'mapApply'));
