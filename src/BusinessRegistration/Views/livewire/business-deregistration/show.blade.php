@@ -207,36 +207,40 @@
 
 
                     @if (count($applicants))
+                        @foreach ($applicants as $index => $applicant)
+                            <div class="col-md-6 mb-3">
+                                <strong>Citizenship ({{ $applicant->applicant_name }})</strong><br>
 
-                        <ul>
-                            @foreach ($applicants as $index => $applicant)
-                                <li>
-                                    {{ $applicant['applicant_name'] }}:
-                                    @if (!empty($citizenshipFrontUrls[$index]))
-                                        <a href="{{ $citizenshipFrontUrls[$index] }}" target="_blank"
-                                            class="btn btn-sm btn-outline-primary mt-2">
-                                            <i class="bx bx-file"></i>
-                                            {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                        </a>
-                                    @endif
-                                    @if (!empty($citizenshipRearUrls[$index]))
-                                        <a href="{{ $citizenshipRearUrls[$index] }}" target="_blank"
-                                            class="btn btn-sm btn-outline-primary mt-2">
-                                            <i class="bx bx-file"></i>
-                                            {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                        </a>
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
+                                @if (!empty($citizenshipFrontUrls[$index]))
+                                    <a href="{{ $citizenshipFrontUrls[$index] }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary mt-2">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('businessregistration::businessregistration.citizenship_front') }}
+                                    </a>
+                                @else
+                                    <span
+                                        class="text-muted d-block mt-2">{{ __('businessregistration::businessregistration.no_front_file') }}</span>
+                                @endif
+
+                                @if (!empty($citizenshipRearUrls[$index]))
+                                    <a href="{{ $citizenshipRearUrls[$index] }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary mt-2">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('businessregistration::businessregistration.citizenship_rear') }}
+                                    </a>
+                                @else
+                                    <span
+                                        class="text-muted d-block mt-2">{{ __('businessregistration::businessregistration.no_rear_file') }}</span>
+                                @endif
+                            </div>
+                        @endforeach
+
                     @endif
-                    {{-- Citizenship Front --}}
-
 
 
                     @foreach ($businessDeRegistration->businessRegistration->requiredBusinessDocs as $item)
-                        <div class="col-md-3">
-                            <strong>{{ $item->document_label_ne }}</strong><br>
+                        <div class="col-md-6">
+                            <strong class="text-primary">{{ $item->document_label_ne }}</strong><br>
 
                             @if (!empty($businessRequiredDocUrls[$item->id]))
                                 <a href="{{ $businessRequiredDocUrls[$item->id] }}" target="_blank"

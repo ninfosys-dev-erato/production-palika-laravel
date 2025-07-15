@@ -60,4 +60,8 @@ class BusinessDeregistration extends Model
     {
         return $this->belongsTo(BusinessRegistration::class, 'brs_registration_data_id', 'id');
     }
+    public function registrationType()
+    {
+        return $this->belongsTo(RegistrationType::class, 'registration_type_id', 'id');
+    }
 }

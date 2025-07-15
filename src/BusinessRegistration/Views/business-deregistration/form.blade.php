@@ -22,7 +22,7 @@
                 <h4 class="text-primary"><i class="bx bx-radio-circle"></i> {{ $registration->title }}</h4>
             @else
                 <h5 class="text-primary fw-bold mb-0">
-                    {{ __('businessregistration::businessregistration.business_registration_form') }}
+                    {{ __('businessregistration::businessregistration.business_de_registration_form') }}
                 </h5>
             @endif
 

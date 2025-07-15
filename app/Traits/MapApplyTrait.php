@@ -59,10 +59,12 @@ trait MapApplyTrait
             $data = array_merge($data, $this->resolveLandDetails($mapApply));
         }
         
-        if($mapApply?->houseOwner)
+        if($mapApply?->houseOwner || $mapApply?->landOwner)
         {
-            $data = array_merge($data, $this->resolveOwnerDetails($mapApply));
-        }
+            $data = array_merge($data, $this->resolveHouseOwnerDetails($mapApply));
+            $data = array_merge($data, $this->resolveLandOwnerDetails($mapApply));
+        }      
+          
         
         $data = array_merge($data, $this->resolveApplicantDetails($mapApply));
         
@@ -114,13 +116,13 @@ trait MapApplyTrait
         ];
     }
     
-    private function resolveOwnerDetails($mapApply)
+    private function resolveHouseOwnerDetails($mapApply)
     {
         if (!$mapApply?->houseOwner) {
             return [];
         }
 
-        $houseOwner = $mapApply?->houseOwner;
+        $houseOwner = $mapApply?->houseOwner ?? self::EMPTY_LINES;
         
         return [
             '{{mapApply.houseOwnerName}}' => $houseOwner?->owner_name ?? self::EMPTY_LINES,
@@ -133,6 +135,24 @@ trait MapApplyTrait
             '{{mapApply.houseOwnerLocalBody}}' => isset($houseOwner?->local_body, $houseOwner?->local_body->title) ? $houseOwner?->local_body->title : self::EMPTY_LINES,
             '{{mapApply.houseOwnerWard}}' => replaceNumbers($houseOwner?->ward, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerTole}}' => $houseOwner?->tole ?? self::EMPTY_LINES,
+        ];
+    }
+    private function resolveLandOwnerDetails($mapApply)
+    {
+    
+        $landOwner = $mapApply?->landOwner ?? $mapApply?->houseOwner;
+        
+        return [
+            '{{mapApply.landOwnerName}}' => $landOwner?->owner_name ?? self::EMPTY_LINES,
+            '{{mapApply.landOwnerMobileNo}}' => replaceNumbers($landOwner?->mobile_no, true) ?? self::EMPTY_LINES,
+            '{{mapApply.landOwnerFatherName}}' => $landOwner?->father_name ?? self::EMPTY_LINES,
+            '{{mapApply.landOwnerGrandFatherName}}' => $landOwner?->grand_father_name ?? self::EMPTY_LINES,
+            '{{mapApply.landOwnerCitizenshipNo}}' => replaceNumbers($landOwner?->citizenship_no, true) ?? self::EMPTY_LINES,
+            '{{mapApply.landOwnerProvince}}' => isset($landOwner?->province, $landOwner?->province->title) ? $landOwner?->province->title : self::EMPTY_LINES,
+            '{{mapApply.landOwnerDistrict}}' => isset($landOwner?->district, $landOwner?->district->title) ? $landOwner?->district->title : self::EMPTY_LINES,
+            '{{mapApply.landOwnerLocalBody}}' => isset($landOwner?->local_body, $landOwner?->local_body->title) ? $landOwner?->local_body->title : self::EMPTY_LINES,
+            '{{mapApply.landOwnerWard}}' => replaceNumbers($landOwner?->ward, true) ?? self::EMPTY_LINES,
+            '{{mapApply.landOwnerTole}}' => $landOwner?->tole ?? self::EMPTY_LINES,
         ];
     }
 

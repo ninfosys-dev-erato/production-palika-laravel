@@ -110,77 +110,22 @@ class BusinessRegistrationTable extends DataTableComponent
 
             Column::make(__('businessregistration::businessregistration.applicant_detail'))
                 ->label(function ($row) {
+                    $firstApplicant = $row->applicants->first();
 
-
-                    if ($row->registration_type === BusinessRegistrationType::DEREGISTRATION && $row->registration_id) {
-                        $originalBusiness = BusinessRegistration::withTrashed()->with([
-                            'applicants',
-                            'applicants.applicantProvince',
-                            'applicants.applicantDistrict',
-                            'applicants.applicantLocalBody'
-                        ])->where('id', $row->registration_id)->first();
-
-
-                        if ($originalBusiness) {
-                            $firstApplicant = $originalBusiness->applicants->first();
-                            if ($firstApplicant) {
-                                $applicant_name = $firstApplicant->applicant_name;
-                                $applicant_number = $firstApplicant->phone;
-                                $province = $firstApplicant->applicantProvince?->title;
-                                $district = $firstApplicant->applicantDistrict?->title;
-                                $localBody = $firstApplicant->applicantLocalBody?->title;
-                                $ward = $firstApplicant->applicant_ward;
-                                $applicant_address = collect([$province, $district, $localBody, $ward])->filter()->implode(', ');
-                                return "
-                                    <div><strong>" . (__('businessregistration::businessregistration.applicant_name')) . ":</strong> {$applicant_name}</div>
-                                    <div><strong>" . (__('businessregistration::businessregistration.applicant_number')) . ":</strong> {$applicant_number}</div>
-                                    <div><strong>" . (__('businessregistration::businessregistration.applicant_address')) . ":</strong> {$applicant_address}</div>
-                                ";
-                            }
-                        }
-                    } else {
-                        // For regular registrations, use the applicants from the current record
-                        $firstApplicant = $row->applicants->first();
-                        if ($firstApplicant) {
-                            $applicant_name = $firstApplicant->applicant_name;
-                            $applicant_number = $firstApplicant->phone;
-                            $province = $firstApplicant->applicantProvince?->title;
-                            $district = $firstApplicant->applicantDistrict?->title;
-                            $localBody = $firstApplicant->applicantLocalBody?->title;
-                            $ward = $firstApplicant->applicant_ward;
-                            $applicant_address = collect([$province, $district, $localBody, $ward])->filter()->implode(', ');
-                            return "
-                                <div><strong>" . (__('businessregistration::businessregistration.applicant_name')) . ":</strong> {$applicant_name}</div>
-                                <div><strong>" . (__('businessregistration::businessregistration.applicant_number')) . ":</strong> {$applicant_number}</div>
-                                <div><strong>" . (__('businessregistration::businessregistration.applicant_address')) . ":</strong> {$applicant_address}</div>
-                            ";
-                        }
+                    if ($firstApplicant) {
+                        $applicant_name = $firstApplicant->applicant_name;
+                        $applicant_number = $firstApplicant->phone;
+                        $province = $firstApplicant->applicantProvince?->title;
+                        $district = $firstApplicant->applicantDistrict?->title;
+                        $localBody = $firstApplicant->applicantLocalBody?->title;
+                        $ward = $firstApplicant->applicant_ward;
+                        $applicant_address = collect([$province, $district, $localBody, $ward])->filter()->implode(', ');
+                        return "
+                            <div><strong>" . (__('businessregistration::businessregistration.applicant_name')) . ":</strong> {$applicant_name}</div>
+                            <div><strong>" . (__('businessregistration::businessregistration.applicant_number')) . ":</strong> {$applicant_number}</div>
+                            <div><strong>" . (__('businessregistration::businessregistration.applicant_address')) . ":</strong> {$applicant_address}</div>
+                        ";
                     }
-
-
-
-
-
-
-
-                    // $firstApplicant = $row->applicants->first();
-
-
-
-                    // if ($firstApplicant) {
-                    //     $applicant_name = $firstApplicant->applicant_name;
-                    //     $applicant_number = $firstApplicant->phone;
-                    //     $province = $firstApplicant->applicantProvince?->title;
-                    //     $district = $firstApplicant->applicantDistrict?->title;
-                    //     $localBody = $firstApplicant->applicantLocalBody?->title;
-                    //     $ward = $firstApplicant->applicant_ward;
-                    //     $applicant_address = collect([$province, $district, $localBody, $ward])->filter()->implode(', ');
-                    //     return "
-                    //         <div><strong>" . (__('businessregistration::businessregistration.applicant_name')) . ":</strong> {$applicant_name}</div>
-                    //         <div><strong>" . (__('businessregistration::businessregistration.applicant_number')) . ":</strong> {$applicant_number}</div>
-                    //         <div><strong>" . (__('businessregistration::businessregistration.applicant_address')) . ":</strong> {$applicant_address}</div>
-                    //     ";
-                    // }
                     return '';
                 })
                 ->sortable()
@@ -206,8 +151,8 @@ class BusinessRegistrationTable extends DataTableComponent
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
                 if (can('business-registration_access')) {
-                $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
-                $buttons .= $view;
+                    $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
+                    $buttons .= $view;
                 }
                 if ($this->type != BusinessRegistrationType::DEREGISTRATION->value) {
                     if (can('business_registration edit') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
@@ -295,7 +240,6 @@ class BusinessRegistrationTable extends DataTableComponent
             return redirect()->back();
         }
 
-        // ✅ Proceed with creation
         $registrationNumber = BusinessRegistration::where('id', $id)->value('registration_number');
 
         $renewal = BusinessRenewal::create([

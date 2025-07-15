@@ -16,14 +16,12 @@
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="text-primary fw-bold">
                             {{ __('businessregistration::businessregistration.business_renewal') }}</h5>
-                        {{-- <div>
-                            @perm('business_renewals create')
-                                <a href="{{ route('admin.business-registration.renewals.create', ['type' => $type]) }}"
-                                    class="btn btn-info"><i class="bx bx-plus"></i>
+                        <div>
+                            <a href="{{ route('admin.business-registration.renewals.create') }}" class="btn btn-info"><i
+                                    class="bx bx-plus"></i>
+                                {{ __('businessregistration::businessregistration.add_business_renewal') }}</a>
 
-                                    {{ __('businessregistration::businessregistration.add_business_renewal') }}</a>
-                            @endperm
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">

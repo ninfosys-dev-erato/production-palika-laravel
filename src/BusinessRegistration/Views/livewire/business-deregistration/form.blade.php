@@ -12,6 +12,7 @@
                     class="form-label fw-bold fs-7 d-block">{{ __('businessregistration::businessregistration.search_by_company_name/registration_number') }}</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="name" wire:model.defer="search"
+                        wire:keydown.enter.prevent="searchBusiness"
                         placeholder={{ __('businessregistration::businessregistration.enter_company_name/registration_number') }}>
                     <button class="btn btn-primary" type="button" wire:click="searchBusiness">
                         {{ __('businessregistration::businessregistration.search') }}
@@ -43,7 +44,7 @@
                                 <i class='bx bx-buildings'></i>
                             </div>
                             <span
-                                class="nav-text">{{ __('businessregistration::businessregistration.business_detail') }}</span>
+                                class="nav-text">{{ __('businessregistration::businessregistration.registration_detail') }}</span>
                             <div class="nav-indicator"></div>
                         </button>
 
@@ -58,10 +59,6 @@
                         </button>
 
                     </div>
-
-
-
-
 
                     <div class="card border-0 shadow-xl bg-white-translucent">
                         <div class="tab-content">
@@ -572,7 +569,7 @@
                                                         class="form-label-peaceful">{{ $doc['name'] ?? __('businessregistration::businessregistration.document') }}</label>
                                                     <br>
                                                     <a href="{{ $doc['url'] }}" target="_blank">
-                                                        {{ $doc['name'] ?? __('businessregistration::businessregistration.document') }}
+                                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
                                                     </a>
                                                 </div>
                                             @endforeach
@@ -605,13 +602,6 @@
                                     </button>
                                 </div>
                             </div>
-
-
-
-
-
-
-
                             <!-- Type Selection Tab -->
                             <div class="tab-pane fade {{ $activeTab === 'type' ? 'show active' : '' }}"
                                 id="type" role="tabpanel">
@@ -619,7 +609,7 @@
                                     <div class="row g-4">
                                         <div class="col-12">
                                             <label for="registration_type_id" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.select_registration_type') }}
+                                                {{ __('businessregistration::businessregistration.select_de_registration_type') }}
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <select wire:model.live="businessDeRegistration.registration_type_id"
@@ -627,7 +617,7 @@
                                                 id="registration_type_id" aria-label="Registration Type"
                                                 wire:change.live="setFields($event.target.value)">
                                                 <option value="">
-                                                    {{ __('businessregistration::businessregistration.select_registration_type') }}
+                                                    {{ __('businessregistration::businessregistration.select_de_registration_type') }}
                                                 </option>
                                                 @foreach ($registrationTypes as $id => $value)
                                                     <option value="{{ $id }}">{{ $value }}
@@ -640,12 +630,12 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                        <div class="divider divider-primary text-start text-primary mb-4">
+                                        <div class="divider divider-primary text-start text-primary">
                                             <div class="divider-text fw-bold fs-6">
-                                                {{ __('businessregistration::businessregistration.application_details') }}
+                                                {{ __('businessregistration::businessregistration.business_de_registration_application_detail') }}
                                             </div>
                                         </div>
-                                        <div class="row g-4">
+                                        <div class="row g-1">
                                             <div class="col-md-6">
                                                 <label
                                                     class="form-label-peaceful">{{ __('businessregistration::businessregistration.fiscal_year') }}</label>
@@ -705,7 +695,7 @@
                                     </div>
                                     <button type="submit" class="btn btn-success-peaceful">
                                         <i
-                                            class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit_registration') }}
+                                            class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit') }}
                                     </button>
                                 </div>
                             </div>

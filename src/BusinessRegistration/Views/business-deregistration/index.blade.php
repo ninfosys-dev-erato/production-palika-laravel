@@ -19,7 +19,7 @@
 
 
                             {{-- {{ $type . ' ' . __('businessregistration::businessregistration.business_list') }} --}}
-                            {{ __('businessregistration::businessregistration.business_list') }}
+                            {{ __('businessregistration::businessregistration.business_deregistration_list') }}
                         </h5>
                         <div>
                             @perm('business_registration create')

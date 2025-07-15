@@ -1,5 +1,5 @@
 <div>
-    <div class="mt-4 p-3 bg-light border rounded shadow-sm">
+    <div class="mt-4 p-3 bg-light border">
         <strong class="text-primary">{{ __('businessregistration::businessregistration.payable_amount') }}:</strong>
         <span
             class="fw-bold text-dark">{{ $businessDeRegistration->amount ?? __('businessregistration::businessregistration.not_defined') }}</span>
@@ -39,25 +39,30 @@
     @endif
 
     @if (!empty($businessDeRegistration->bill))
-        <div class="col-md-12 mb-3">
-            <div class="card-header text-white d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">{{ __('businessregistration::businessregistration.uploaded_payment') }}</h6>
+        <div class="col-12 mb-4 bg-light border">
+
+            <div class=" text-white d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    {{ __('businessregistration::businessregistration.uploaded_payment') }}
+                </h6>
                 <button type="button" class="btn btn-sm btn-light text-primary" data-bs-toggle="modal"
                     data-bs-target="#billPreviewModal">
                     {{ __('businessregistration::businessregistration.view') }}
                 </button>
             </div>
-            <iframe
-                src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessDeRegistration->bill, 'local') }}"
-                frameborder="0"
-                style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-            </iframe>
+
+            <div class="text-center">
+                <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessDeRegistration->bill, 'local') }}"
+                    alt="Uploaded Bill" class="img-fluid rounded shadow-sm border"
+                    style="max-height: 300px; object-fit: contain;">
+            </div>
         </div>
     @endif
 
+
     <div class="modal fade" id="billPreviewModal" tabindex="-1" role="dialog" aria-labelledby="billPreviewModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="billPreviewModalLabel">
