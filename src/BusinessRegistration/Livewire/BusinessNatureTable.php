@@ -58,14 +58,14 @@ class BusinessNatureTable extends DataTableComponent
             Column::make(__('businessregistration::businessregistration.title'), "title")->sortable()->searchable()->collapseOnTablet(),
 
         ];
-        if (can('business-nature_edit') || can('business-nature_delete')) {
+        if (can('business_natures edit') || can('business_natures delete')) {
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('business-nature_edit')) {
+                if (can('business_natures edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
-                if (can('business-nature_delete')) {
+                if (can('business_natures delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -84,7 +84,7 @@ class BusinessNatureTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('business-nature_edit')) {
+        if (!can('business_natures edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -94,7 +94,7 @@ class BusinessNatureTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('business-nature_delete')) {
+        if (!can('business_natures delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -106,7 +106,7 @@ class BusinessNatureTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('business-nature_delete')) {
+        if (!can('business_natures delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
