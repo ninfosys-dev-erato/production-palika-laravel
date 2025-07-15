@@ -11,6 +11,7 @@ use Src\BusinessRegistration\DTO\BusinessRegistrationShowDto;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 use Src\BusinessRegistration\Models\BusinessDeRegistration;
+use Src\BusinessRegistration\Service\BusinessDeRegistrationService;
 use Src\BusinessRegistration\Service\BusinessRegistrationAdminService;
 
 class BusinessDeRegistrationShow extends Component
@@ -27,11 +28,23 @@ class BusinessDeRegistrationShow extends Component
     public array $dynamicFileUrls = [];
 
 
+    public array $citizenshipFrontUrls = [];
+    public array $citizenshipRearUrls = [];
+    public array $applicants = [];
+
+    public array $businessRequiredDocUrls = [];
+
+
     public function mount(BusinessDeRegistration $businessDeRegistration)
     {
+
         $this->businessDeRegistration = $businessDeRegistration;
+        $this->businessDeRegistration->load('businessRegistration', 'businessRegistration.applicants', 'businessRegistration.requiredBusinessDocs');
         $this->rejectionReason = $businessDeRegistration->application_rejection_reason ?? '';
         $this->showBillUpload = $this->businessDeRegistration->status == ApplicationStatusEnum::SENT_FOR_PAYMENT->value;
+
+        $this->generateTemporaryUrlsForCitizenship();
+        $this->generateTemporaryUrlsForDocs();
 
 
         $this->generateTemporaryUrlsFromData();
@@ -41,24 +54,29 @@ class BusinessDeRegistrationShow extends Component
 
     public function generateTemporaryUrlsForCitizenship(): void
     {
-        // For deregistration, get applicants from original business registration
-        if ($this->businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION && $this->businessRegistration->registration_id) {
-            $originalBusiness = BusinessRegistration::withTrashed()->with(['applicants'])->where('id', $this->businessRegistration->registration_id)->first();
-            $applicants = $originalBusiness?->applicants ?? $this->businessRegistration->applicants;
-        } else {
-            $applicants = $this->businessRegistration->applicants;
-        }
-
-        foreach ($applicants as $index => $applicant) {
+        $this->applicants = $this->businessDeRegistration->businessRegistration->applicants->toArray();
+        foreach ($this->applicants as $index => $applicant) {
             $this->citizenshipFrontUrls[$index] = $this->generateTemporaryUrl($applicant->citizenship_front ?? null);
             $this->citizenshipRearUrls[$index]  = $this->generateTemporaryUrl($applicant->citizenship_rear ?? null);
         }
     }
 
+    public function generateTemporaryUrlsForDocs(): void
+    {
+        if (!$this->businessDeRegistration->businessRegistration->relationLoaded('requiredBusinessDocs')) {
+            $this->businessDeRegistration->businessRegistration->load('requiredBusinessDocs');
+        }
+
+        foreach ($this->businessDeRegistration->businessRegistration->requiredBusinessDocs as $doc) {
+            $this->businessRequiredDocUrls[$doc->id] = $this->generateTemporaryUrl($doc->document_filename);
+        }
+    }
+
+
     public function generateTemporaryUrlsFromData(): void
     {
 
-        $data = $this->businessRegistration->data;
+        $data = $this->businessDeRegistration->data;
 
 
         // Decode JSON if needed
@@ -99,12 +117,18 @@ class BusinessDeRegistrationShow extends Component
         $this->validate([
             'amount' => 'required|numeric|min:0',
         ]);
-        $this->businessRegistration->amount = $this->amount;
-        $this->businessRegistration->application_status = ApplicationStatusEnum::SENT_FOR_PAYMENT->value;
-        $service = new BusinessRegistrationAdminService();
-        $service->sentForPayment($this->businessRegistration);
+
+        $businessDeRegistration = $this->businessDeRegistration;
+        if (!$businessDeRegistration) {
+            abort(404, 'Business DeRegistration not found.');
+        }
+        $businessDeRegistration->amount = $this->amount;
+        $businessDeRegistration->application_status = ApplicationStatusEnum::SENT_FOR_PAYMENT->value;
+        $service = new BusinessDeRegistrationService();
+
+        $service->sentForPayment($businessDeRegistration);
         $this->successFlash(__('businessregistration::businessregistration.successfully_sent_for_payment'));
-        return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
+        return redirect()->route('admin.business-deregistration.show', $businessDeRegistration->id);
     }
 
     public function approve()
@@ -112,10 +136,13 @@ class BusinessDeRegistrationShow extends Component
         $this->validate([
             'bill_no' => 'required|string|max:255',
         ]);
-
-        $service = new BusinessRegistrationAdminService();
+        $businessDeRegistration = $this->businessDeRegistration;
+        if (!$businessDeRegistration) {
+            abort(404, 'Business DeRegistration not found.');
+        }
+        $service = new BusinessDeRegistrationService();
         try {
-            $registrationNumber = $service->generateBusinessRegistrationNumber();
+            $registrationNumber = $service->generateBusinessDeRegistrationNumber();
             $registration_date_en = date('Y-m-d');
             $registration_date_ne = $this->adToBs($registration_date_en);
 
@@ -127,9 +154,10 @@ class BusinessDeRegistrationShow extends Component
                 'bill_no' => $this->bill_no,
             ];
 
-            $service->accept($this->businessRegistration, $data);
+
+            $service->accept($businessDeRegistration, $data);
             $this->successFlash(__('businessregistration::businessregistration.business_registration_approved_successfully'));
-            return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
+            return redirect()->route('admin.business-deregistration.show', $businessDeRegistration->id);
         } catch (\Exception $e) {
             logger()->error($e);
             $this->errorFlash('Something went wrong while rejecting.', $e->getMessage());
@@ -140,13 +168,19 @@ class BusinessDeRegistrationShow extends Component
     {
         $this->validate(['rejectionReason' => 'required|string|max:255']);
 
+        $businessDeRegistration = $this->businessDeRegistration;
+        if (!$businessDeRegistration) {
+            abort(404, 'Business DeRegistration not found.');
+        }
         try {
-            $this->businessRegistration->application_rejection_reason = $this->rejectionReason;
-            $dto = BusinessRegistrationShowDto::fromModel($this->businessRegistration);
+            $businessDeRegistration->application_rejection_reason = $this->rejectionReason;
+
+            $dto = BusinessRegistrationShowDto::fromModel($businessDeRegistration); // linter: BusinessDeRegistration used intentionally
             $service = new BusinessRegistrationAdminService();
-            $service->reject($this->businessRegistration, $dto);
+
+            $service->reject($businessDeRegistration, $dto);
             session()->flash('message', 'Recommendation rejected successfully.');
-            return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
+            return redirect()->route('admin.business-deregistration.show', $businessDeRegistration->id);
         } catch (\Exception $e) {
             logger()->error($e);
             $this->errorFlash('Something went wrong while rejecting.', $e->getMessage());
@@ -155,6 +189,7 @@ class BusinessDeRegistrationShow extends Component
 
     public function render()
     {
+
         return view("BusinessRegistration::livewire.business-deregistration.show");
     }
 }

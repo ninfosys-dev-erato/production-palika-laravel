@@ -118,7 +118,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.registration_number') }}:</strong>
-                                    {{ $businessDeRegistration->businessRegistration?->registration_number }}</p>
+                                    {{ $businessDeRegistration?->registration_number }}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.status') }}:</strong>
@@ -247,11 +247,11 @@
     <div>
         <div class="tab-content">
             <div class="tab-pane fade show active" id="navs-pills-business-detail" role="tabpanel">
-                <livewire:business_registration.business_registration_show :$businessDeRegistration />
+                <livewire:business_registration.business_de_registration_show :businessDeRegistration="$businessDeRegistration" />
             </div>
 
             <div class="tab-pane fade" id="navs-pills-bill" role="tabpanel">
-                {{-- <livewire:business_registration.business_registration_upload_bill :$businessDeRegistration /> --}}
+                <livewire:business_registration.business_de_registration_upload_bill :businessDeRegistration="$businessDeRegistration" />
             </div>
 
             <div class="tab-pane fade" id="navs-pills-letter" role="tabpanel">

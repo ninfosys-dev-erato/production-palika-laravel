@@ -2,13 +2,18 @@
 
 namespace Src\BusinessRegistration\Service;
 
+use App\Facades\FileTrackingFacade;
+use App\Traits\HelperDate;
 use Illuminate\Support\Facades\Auth;
 use Src\BusinessRegistration\DTO\BusinessDeRegistrationDto;
+use Src\BusinessRegistration\DTO\BusinessDeRegistrationUploadDto;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Models\BusinessDeregistration;
+use Src\BusinessRegistration\Models\BusinessDeRegistration as ModelsBusinessDeRegistration;
 
 class BusinessDeRegistrationService
 {
+    use HelperDate;
     public function store(BusinessDeRegistrationDto $dto): BusinessDeregistration|bool
     {
         $businessDeRegistration = BusinessDeregistration::create([
@@ -28,6 +33,7 @@ class BusinessDeRegistrationService
             'registration_type_id' => $dto->registration_type_id,
             'application_status' => ApplicationStatusEnum::PENDING,
             'registration_type_id' => $dto->registration_type_id,
+            'bill' => $dto->bill,
 
 
         ]);
@@ -52,6 +58,7 @@ class BusinessDeRegistrationService
             'updated_by' => Auth::user()?->id,
             'registration_type_id' => $dto->registration_type_id,
             'registration_type_id' => $dto->registration_type_id,
+            'bill' => $dto->bill,
         ]);
         return $model;
     }
@@ -63,5 +70,66 @@ class BusinessDeRegistrationService
             'deleted_by' => Auth::user()?->id,
         ]);
         return $model;
+    }
+
+    public function sentForPayment(BusinessDeRegistration $businessDeRegistration): BusinessDeRegistration
+    {
+
+        FileTrackingFacade::recordFile($businessDeRegistration);
+        tap($businessDeRegistration)->update([
+            'amount' => $businessDeRegistration->amount,
+            'application_status' => $businessDeRegistration->application_status,
+            'rejected_by' => null,
+            'application_rejection_reason' => null,
+            'rejected_at' => null,
+        ]);
+
+        return $businessDeRegistration;
+    }
+
+    public function uploadBill(BusinessDeRegistration $businessDeRegistration, BusinessDeRegistrationUploadDto $dto, bool $admin = true): BusinessDeRegistration
+    {
+        FileTrackingFacade::recordFile($businessDeRegistration, $admin);
+
+        tap($businessDeRegistration)->update([
+            'bill' => $dto->bill,
+            'application_status' => $businessDeRegistration->application_status,
+            'rejected_by' => null,
+            'rejected_reason' => null,
+            'rejected_at' => null,
+        ]);
+
+        return $businessDeRegistration;
+    }
+    public function generateBusinessDeRegistrationNumber()
+    {
+        $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
+
+        $lastRegistration = ModelsBusinessDeRegistration::latest('id')->first();
+
+        $newNumber = str_pad($lastRegistration->id + 1, 6, '0', STR_PAD_LEFT);
+
+        $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
+
+        return $newRegistrationNumber;
+    }
+
+    public function accept(BusinessDeRegistration $businessDeRegistration, array $data): BusinessDeRegistration
+    {
+        FileTrackingFacade::recordFile($businessDeRegistration);
+        tap($businessDeRegistration)->update([
+            'application_status' => ApplicationStatusEnum::ACCEPTED->value,
+            'rejected_by' => null,
+            'application_rejection_reason' => null,
+            'rejected_at' => null,
+            'registration_number' => $data['registration_number'],
+            'registration_date' => replaceNumbers($this->adToBs(date('Y-m-d')), true),
+            'registration_date_en' => date('Y-m-d'),
+            'certificate_number' => $data['certificate_number'],
+            'bill_no' => $data['bill_no'],
+            'approved_at' => now(),
+            'approved_by' => Auth::user()->id,
+        ]);
+        return $businessDeRegistration;
     }
 }

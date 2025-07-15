@@ -24,6 +24,7 @@ class BusinessDeRegistrationDto
         public ?string $created_at = null,
         public ?string $updated_at = null,
         public ?int $registration_type_id = null,
+        public ?string $bill = null,
     ) {}
 
     public static function fromLiveWireModel(BusinessDeregistration $model): self
@@ -46,6 +47,7 @@ class BusinessDeRegistrationDto
             created_at: $model->created_at,
             updated_at: $model->updated_at,
             registration_type_id: $model->registration_type_id,
+            bill: $model->bill,
         );
     }
 }
