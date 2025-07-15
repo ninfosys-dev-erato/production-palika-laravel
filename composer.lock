@@ -4,8 +4,74 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1816b64eeeabf095500d41e77a3fbabe",
+    "content-hash": "0df10dad719c125b9b12fe6b577bcbce",
     "packages": [
+        {
+            "name": "anuzpandey/laravel-nepali-date",
+            "version": "2.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/anuzpandey/laravel-nepali-date.git",
+                "reference": "8b30dca9c0558d4b74f00d4e6958769e268148c0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/anuzpandey/laravel-nepali-date/zipball/8b30dca9c0558d4b74f00d4e6958769e268148c0",
+                "reference": "8b30dca9c0558d4b74f00d4e6958769e268148c0",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0|^11.0|^12.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.14.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.8",
+                "orchestra/testbench": "^8.8",
+                "pestphp/pest": "^2.20",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Anuzpandey\\LaravelNepaliDate\\LaravelNepaliDateServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Anuzpandey\\LaravelNepaliDate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "AnuzPandey",
+                    "email": "anuzbvbmaniac123@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Package to convert English Date (A.D.) to Nepali Date (B.S.) and vice-versa.",
+            "homepage": "https://laravel-nepali-date.anuzpandey.com",
+            "keywords": [
+                "anuzpandey",
+                "laravel",
+                "laravel-nepali-date",
+                "nepali-date",
+                "nepali-date-converter"
+            ],
+            "support": {
+                "issues": "https://github.com/anuzpandey/laravel-nepali-date/issues",
+                "source": "https://github.com/anuzpandey/laravel-nepali-date/tree/2.3.1"
+            },
+            "time": "2025-06-22T15:21:47+00:00"
+        },
         {
             "name": "blade-ui-kit/blade-heroicons",
             "version": "2.5.0",
@@ -11477,5 +11543,5 @@
         "php": "^8.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.2.0"
 }
