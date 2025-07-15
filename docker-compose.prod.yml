@@ -93,7 +93,7 @@ services:
       - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/framework:/var/www/html/storage/framework"
       - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/bootstrap/cache:/var/www/html/bootstrap/cache"
       # For publicly accessible uploaded files/images
-      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/public/storage:/var/www/html/public/storage"
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/app/public:/var/www/html/public/storage"
     networks:
       - laravel-network
     extra_hosts:
