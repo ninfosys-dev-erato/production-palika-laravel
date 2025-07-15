@@ -915,7 +915,6 @@ class BusinessRegistrationForm extends Component
         }
     }
 
-
     public function save()
     {
         DB::beginTransaction();
@@ -926,74 +925,50 @@ class BusinessRegistrationForm extends Component
 
             $service = new BusinessRegistrationAdminService();
             $businessApplicantService = new BusinessRegistrationApplicantService();
-
             $businessRequiredDocService = new BusinessRequiredDocService();
-            $businessRegistrationId = null;
 
             switch ($this->action) {
                 case Action::CREATE:
-                    switch ($this->businessRegistrationType) {
-                        case BusinessRegistrationType::DEREGISTRATION:
-                            $dto = BusinessRegistrationAdminDto::fromDeRegistrationLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
-                            $success = $service->deRegisterBusiness($dto, $this->businessRegistration);
+                    $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
+                    $success = $service->store($dto);
 
-                            if ($success) {
+                    if ($success instanceof BusinessRegistration) {
+                        $businessRegistrationId = $success->id;
 
-                                $businessRegistrationId = $success->id;
-                                foreach ($this->personalDetails as $data) {
-                                    $data['business_registration_id'] = $businessRegistrationId;
-                                    $dto = BusinessRegistrationApplicantDto::fromArray($data);
+                        foreach ($this->personalDetails as $data) {
+                            $data['business_registration_id'] = $businessRegistrationId;
+                            $dto = BusinessRegistrationApplicantDto::fromArray($data);
+                            $businessApplicantService->store($dto);
+                        }
 
-
-                                    $businessApplicantService->store($dto);
-                                }
-                            } else {
-                                DB::rollBack();
-                                // $this->errorFlash(__('Business DeRegistration failed'));
-                                return;
+                        foreach ($this->businessRequiredDoc as $field => $filename) {
+                            if (!empty($filename)) {
+                                $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
+                                $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
+                                $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
+                                    businessRegistrationId: $businessRegistrationId,
+                                    documentField: $field,
+                                    documentLabelEn: $documentLabelEn,
+                                    documentLabelNe: $documentLabelNe,
+                                    documentFilename: $filename
+                                );
+                                $businessRequiredDocService->store($dto);
                             }
-                            break;
-                        default:
-                            $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
-                            $success = $service->store($dto);
-                            if ($success instanceof BusinessRegistration) {
-                                $businessRegistrationId = $success->id;
-                                foreach ($this->personalDetails as $data) {
-                                    $data['business_registration_id'] = $businessRegistrationId;
-                                    $dto = BusinessRegistrationApplicantDto::fromArray($data);
+                        }
 
-
-                                    $businessApplicantService->store($dto);
-                                }
-                                // Save required business documents
-                                foreach ($this->businessRequiredDoc as $field => $filename) {
-                                    if (!empty($filename)) {
-                                        $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
-                                        $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
-                                        $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
-                                            businessRegistrationId: $businessRegistrationId,
-                                            documentField: $field,
-                                            documentLabelEn: $documentLabelEn,
-                                            documentLabelNe: $documentLabelNe,
-                                            documentFilename: $filename
-                                        );
-                                        $businessRequiredDocService->store($dto);
-                                    }
-                                }
-                                $this->successFlash(__('Business Registration successful'));
-                            } else {
-                                DB::rollBack();
-                                $this->errorFlash(__('Business Registration failed'));
-                                return;
-                            }
-                            break;
+                        DB::commit();
+                        $this->successFlash(__('businessregistration::businessregistration.business_registration_applied_successfully'));
+                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                    } else {
+                        DB::rollBack();
+                        $this->errorFlash(__('Business Registration failed'));
+                        return;
                     }
-                    DB::commit();
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
 
                 case Action::UPDATE:
                     $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
                     $success = $service->update($dto, $this->businessRegistration);
+
                     if ($success instanceof BusinessRegistration) {
                         $this->businessRegistration->applicants()->delete();
                         foreach ($this->personalDetails as $data) {
@@ -1001,7 +976,7 @@ class BusinessRegistrationForm extends Component
                             $dto = BusinessRegistrationApplicantDto::fromArray($data);
                             $businessApplicantService->store($dto);
                         }
-                        // Delete existing required business documents and save new ones
+
                         $this->businessRegistration->requiredBusinessDocs()->delete();
                         foreach ($this->businessRequiredDoc as $field => $filename) {
                             if (!empty($filename)) {
@@ -1018,25 +993,29 @@ class BusinessRegistrationForm extends Component
                             }
                         }
 
+                        DB::commit();
                         $this->successFlash(__('businessregistration::businessregistration.business_registration_application_updated_successfully'));
+                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
                     } else {
                         DB::rollBack();
-                        $this->errorFlash(__('Business registration update  failed'));
+                        $this->errorFlash(__('Business registration update failed'));
                         return;
                     }
-                    DB::commit();
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
 
                 default:
                     DB::rollBack();
+                    $this->errorFlash(__('Invalid action.'));
                     return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
             }
         } catch (\Throwable $e) {
             DB::rollBack();
             logger($e->getMessage());
-            $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
+            $this->errorFlash('Something went wrong while saving. ' . $e->getMessage());
         }
     }
+
+
+
     /**
      * this function is used to make input field readonly
      * checks type and return true if matches and make input filed readonly

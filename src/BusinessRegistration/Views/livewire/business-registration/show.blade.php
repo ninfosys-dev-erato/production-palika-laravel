@@ -29,11 +29,8 @@
             <div class="card mb-4">
                 <div class="card-header text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold text-primary">
-                        @if ($businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION)
-                            {{ __('businessregistration::businessregistration.business_deregistration_details') }}
-                        @else
-                            {{ __('businessregistration::businessregistration.business_registration_details') }}
-                        @endif
+                        {{ __('businessregistration::businessregistration.business_registration_details') }}
+
                     </h4>
 
 
