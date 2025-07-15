@@ -140,13 +140,15 @@
                     <p class="card-text">{{ replaceNumbersWithLocale($customerCount, true) }}</p>
                 </div>
             </div>
-            <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
-                <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                    <i class="bx bx-task icon-style"></i>
-                    <h5 class="card-title">{{ __('Running Task') }}</h5>
-                    <p class="card-text">{{ replaceNumbersWithLocale($runningTaskCount, true) }}</p>
+            @if (isModuleEnabled('task_tracking'))
+                <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <i class="bx bx-task icon-style"></i>
+                        <h5 class="card-title">{{ __('Running Task') }}</h5>
+                        <p class="card-text">{{ replaceNumbersWithLocale($runningTaskCount, true) }}</p>
+                    </div>
                 </div>
-            </div>
+            @endif
             <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
                 <div class="card-body d-flex flex-column align-items-center justify-content-center">
                     <i class="bx bx-credit-card icon-style"></i>
@@ -154,20 +156,22 @@
                     <p class="card-text">{{ replaceNumbersWithLocale($availableCredits, true) }}</p>
                 </div>
             </div>
-            <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
-                <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                    <i class="bx bx-send icon-style"></i>
-                    <h5 class="card-title">{{ __('Total Chalani') }}</h5>
-                    <p class="card-text">{{ replaceNumbersWithLocale($chalaniCount, true) }}</p>
+            @if (isModuleEnabled('register'))
+                <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <i class="bx bx-send icon-style"></i>
+                        <h5 class="card-title">{{ __('Total Chalani') }}</h5>
+                        <p class="card-text">{{ replaceNumbersWithLocale($chalaniCount, true) }}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
-                <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                    <i class="bx bx-file icon-style"></i>
-                    <h5 class="card-title">{{ __('Total Darta') }}</h5>
-                    <p class="card-text">{{ replaceNumbersWithLocale($dartaCount, true) }}</p>
+                <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <i class="bx bx-file icon-style"></i>
+                        <h5 class="card-title">{{ __('Total Darta') }}</h5>
+                        <p class="card-text">{{ replaceNumbersWithLocale($dartaCount, true) }}</p>
+                    </div>
                 </div>
-            </div>
+            @endif
             <div class="card text-center mx-2 mb-3" style="flex: 0 0 calc(50% - 1rem);">
                 <div class="card-body d-flex flex-column align-items-center justify-content-center">
                     <i class="bx bx-building icon-style"></i>

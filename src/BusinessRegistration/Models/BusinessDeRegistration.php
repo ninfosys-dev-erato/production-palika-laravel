@@ -24,6 +24,7 @@ class BusinessDeregistration extends Model
         'registration_number',
         'data',
         'application_status',
+        'bill',
         'created_at',
         'updated_at',
         'created_by',
@@ -51,7 +52,7 @@ class BusinessDeregistration extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'registration_type_id' => 'integer',
-
+        'bill' => 'string',
 
     ];
 

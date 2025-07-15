@@ -68,6 +68,6 @@ Route::group(['prefix' => 'admin/business-de-registration', 'as' => 'admin.busin
     Route::get('/', [BusinessDeRegistrationAdminController::class, 'index'])->name('index');
     Route::get('/create', [BusinessDeRegistrationAdminController::class, 'create'])->name('create');
     Route::get('/edit/{id}', [BusinessDeRegistrationAdminController::class, 'edit'])->name('edit');
-    Route::get('/view/{id}', [BusinessDeRegistrationAdminController::class, 'view'])->name('view');
+    Route::get('/show/{id}', [BusinessDeRegistrationAdminController::class, 'show'])->name('show');
     Route::get('/preview/{id}', [BusinessDeRegistrationAdminController::class, 'preview'])->name('preview');
 });

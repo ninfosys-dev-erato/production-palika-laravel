@@ -94,8 +94,7 @@
                                                 name="applicant_name" type="text"
                                                 class="form-control @error('businessRegistration.applicant_name') is-invalid @enderror"
                                                 id="applicant_name"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_full_name') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_full_name') }}">
                                             @error('businessRegistration.applicant_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -132,8 +131,7 @@
                                                 name="father_name" type="text"
                                                 class="form-control @error('businessRegistration.father_name') is-invalid @enderror"
                                                 id="father_name"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_father_name') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_father_name') }}">
                                             @error('businessRegistration.father_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -148,8 +146,7 @@
                                                 name="grandfather_name" type="text"
                                                 class="form-control @error('businessRegistration.grandfather_name') is-invalid @enderror"
                                                 id="grandfather_name"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_grandfather_name') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_grandfather_name') }}">
                                             @error('businessRegistration.grandfather_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -164,8 +161,7 @@
                                                 name="phone" type="text"
                                                 class="form-control @error('businessRegistration.phone') is-invalid @enderror"
                                                 id="phone"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_phone') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_phone') }}">
                                             @error('businessRegistration.phone')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -180,8 +176,7 @@
                                                 name="email" type="email"
                                                 class="form-control @error('businessRegistration.email') is-invalid @enderror"
                                                 id="email"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_email') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_email') }}">
                                             @error('businessRegistration.email')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -206,8 +201,7 @@
                                                 name="citizenship_number" type="text"
                                                 class="form-control @error('businessRegistration.citizenship_number') is-invalid @enderror"
                                                 id="citizenship_number"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_citizenship_number') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_citizenship_number') }}">
                                             @error('businessRegistration.citizenship_number')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -223,8 +217,7 @@
                                                 wire:model="personalDetails.{{ $index }}.citizenship_issued_date"
                                                 name="citizenship_issued_date" type="text"
                                                 class="form-control nepali-date @error('businessRegistration.citizenship_issued_date') is-invalid @enderror"
-                                                id="citizenship_issued_date_{{ $index }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                id="citizenship_issued_date_{{ $index }}">
                                             @error('businessRegistration.citizenship_issued_date')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -409,8 +402,7 @@
                                             </label>
                                             <input wire:model="personalDetails.{{ $index }}.applicant_tole"
                                                 type="text" class="form-control" id="tole"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_tole') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_tole') }}">
                                         </div>
 
                                         <!-- Street -->
@@ -420,8 +412,7 @@
                                             </label>
                                             <input wire:model="personalDetails.{{ $index }}.applicant_street"
                                                 type="text" class="form-control" id="street"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_street') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_street') }}">
                                         </div>
                                     </div>
 
@@ -508,7 +499,7 @@
                                         <input wire:model="businessRegistration.application_date"
                                             name="application_date" type="text"
                                             class="nepali-date form-control @error('businessRegistration.application_date') is-invalid @enderror"
-                                            id="application_date" {{ $this->isReadonly ? 'readonly' : '' }}>
+                                            id="application_date">
                                         @error('businessRegistration.application_date')
                                             <div class="invalid-feedback">
                                                 {{ $errors->first('businessRegistration.application_date') }}</div>
@@ -525,8 +516,7 @@
                                             type="text"
                                             class="form-control @error('businessRegistration.entity_name') is-invalid @enderror"
                                             id="entity_name"
-                                            placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_name') }}"
-                                            {{ $this->isReadonly ? 'readonly' : '' }}>
+                                            placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_name') }}">
                                         @error('businessRegistration.entity_name')
                                             <div class="invalid-feedback">
                                                 {{ $errors->first('businessRegistration.entity_name') }}</div>
@@ -544,8 +534,7 @@
                                             name="business_nature" type="text"
                                             class="form-control @error('businessRegistration.business_nature') is-invalid @enderror"
                                             id="business_nature"
-                                            placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_nature_or_category_or_type') }}"
-                                            {{ $this->isReadonly ? 'readonly' : '' }}>
+                                            placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_nature_or_category_or_type') }}">
                                     </div>
 
                                     <!-- Main Goods/Services -->
@@ -557,8 +546,7 @@
                                             name="main_service_or_goods" type="text"
                                             class="form-control @error('businessRegistration.main_service_or_goods') is-invalid @enderror"
                                             id="main_service_or_goods"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_main_goods_services') }}"
-                                            {{ $this->isReadonly ? 'readonly' : '' }}>
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_main_goods_services') }}">
                                         @error('businessRegistration.main_service_or_goods')
                                             <div class="invalid-feedback">
                                                 {{ $errors->first('businessRegistration.main_service_or_goods') }}</div>
@@ -574,8 +562,7 @@
                                             type="text"
                                             class="form-control @error('businessRegistration.purpose') is-invalid @enderror"
                                             id="purpose"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_purpose') }}"
-                                            {{ $this->isReadonly ? 'readonly' : '' }}>
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_purpose') }}">
                                         @error('businessRegistration.purpose')
                                             <div class="invalid-feedback">
                                                 {{ $errors->first('businessRegistration.purpose') }}</div>
@@ -676,8 +663,7 @@
                                         </label>
                                         <input wire:model="businessRegistration.business_tole" type="text"
                                             class="form-control" id="business_tole"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_tole') }}"
-                                            {{ $this->isReadonly ? 'readonly' : '' }}>
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_tole') }}">
                                     </div>
 
                                     <!-- Street -->
@@ -687,8 +673,7 @@
                                         </label>
                                         <input wire:model="businessRegistration.business_street" type="text"
                                             class="form-control" id="business_street"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_street') }}"
-                                            {{ $this->isReadonly ? 'readonly' : '' }}>
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_street') }}">
                                     </div>
                                 </div>
                             </div>
@@ -764,8 +749,7 @@
                                             <input wire:model="businessRegistration.capital_investment"
                                                 name="capital_investment" type="text" class="form-control"
                                                 id="capital_investment"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}">
                                         </div>
                                         <!-- Working Capital -->
                                         <div class="col-md-6">
@@ -775,8 +759,7 @@
                                             <input wire:model="businessRegistration.working_capital"
                                                 name="working_capital" type="text" class="form-control"
                                                 id="working_capital"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}">
                                         </div>
                                         <!-- Fixed Capital -->
                                         <div class="col-md-6">
@@ -786,8 +769,7 @@
                                             <input wire:model="businessRegistration.fixed_capital"
                                                 name="fixed_capital" type="text" class="form-control"
                                                 id="fixed_capital"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}">
                                         </div>
                                     </div>
 
@@ -835,8 +817,7 @@
                                                 <input wire:model="businessRegistration.houseownername"
                                                     name="houseownername" type="text" class="form-control"
                                                     id="houseownername"
-                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}"
-                                                    {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}">
                                             </div>
                                             <!-- Phone -->
                                             <div class="col-md-6">
@@ -845,8 +826,7 @@
                                                 </label>
                                                 <input wire:model="businessRegistration.phone" name="text"
                                                     type="text" class="form-control" id="business_phone"
-                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_land/house_owner_phone') }}"
-                                                    {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_land/house_owner_phone') }}">
                                             </div>
                                             <!-- Monthly Rent -->
                                             <div class="col-md-6">
@@ -856,8 +836,7 @@
                                                 <input wire:model="businessRegistration.monthly_rent"
                                                     name="monthly_rent" type="text" class="form-control"
                                                     id="monthly_rent"
-                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_monthly_rent') }}"
-                                                    {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_monthly_rent') }}">
                                             </div>
                                             <!-- Rent Agreement File -->
                                             <div class="col-md-6">
@@ -902,8 +881,7 @@
                                             <input wire:model="businessRegistration.capital_investment"
                                                 name="capital_investment" type="text" class="form-control"
                                                 id="capital_investment"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}">
                                         </div>
                                         <!-- Operation Date -->
                                         <div class="col-md-6">
@@ -913,8 +891,7 @@
                                             <input wire:model="businessRegistration.operation_date"
                                                 name="operation_date" type="text" class="form-control nepali-date"
                                                 id="operation_date"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_operation_date') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_operation_date') }}">
                                         </div>
                                     </div>
                                     <div class="divider divider-primary text-start text-primary mb-4">
@@ -931,8 +908,7 @@
                                             <input wire:model="businessRegistration.houseownername"
                                                 name="houseownername" type="text" class="form-control"
                                                 id="firm_houseownername"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}">
                                         </div>
                                         <!-- East -->
                                         <div class="col-md-6">
@@ -941,8 +917,7 @@
                                             </label>
                                             <input wire:model="businessRegistration.east" name="east"
                                                 type="text" class="form-control" id="east"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_east') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_east') }}">
                                         </div>
                                         <!-- West -->
                                         <div class="col-md-6">
@@ -951,8 +926,7 @@
                                             </label>
                                             <input wire:model="businessRegistration.west" name="west"
                                                 type="text" class="form-control" id="west"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_west') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_west') }}">
                                         </div>
                                         <!-- North -->
                                         <div class="col-md-6">
@@ -961,8 +935,7 @@
                                             </label>
                                             <input wire:model="businessRegistration.north" name="north"
                                                 type="text" class="form-control" id="north"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_north') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_north') }}">
                                         </div>
                                         <!-- South -->
                                         <div class="col-md-6">
@@ -971,8 +944,7 @@
                                             </label>
                                             <input wire:model="businessRegistration.south" name="south"
                                                 type="text" class="form-control" id="south"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_south') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_south') }}">
                                         </div>
                                         <!-- Land Plot Number -->
                                         <div class="col-md-6">
@@ -982,8 +954,7 @@
                                             <input wire:model="businessRegistration.landplotnumber"
                                                 name="landplotnumber" type="text" class="form-control"
                                                 id="landplotnumber"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_landplotnumber') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_landplotnumber') }}">
                                         </div>
                                         <!-- Area -->
                                         <div class="col-md-6">
@@ -992,8 +963,7 @@
                                             </label>
                                             <input wire:model="businessRegistration.area" name="area"
                                                 type="text" class="form-control" id="area"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_area') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_area') }}">
                                         </div>
                                     </div>
                                 @endif
@@ -1012,8 +982,7 @@
                                             <input wire:model="businessRegistration.capital_investment"
                                                 name="capital_investment" type="text" class="form-control"
                                                 id="capital_investment"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}">
                                         </div>
                                         <!-- Fixed Capital -->
                                         <div class="col-md-6">
@@ -1023,8 +992,7 @@
                                             <input wire:model="businessRegistration.fixed_capital"
                                                 name="fixed_capital" type="text" class="form-control"
                                                 id="fixed_capital"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}">
                                         </div>
                                         <!-- Working Capital -->
                                         <div class="col-md-6">
@@ -1034,8 +1002,7 @@
                                             <input wire:model="businessRegistration.working_capital"
                                                 name="working_capital" type="text" class="form-control"
                                                 id="working_capital"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}">
                                         </div>
                                         <!-- Total Capacity -->
                                         <div class="col-md-6">
@@ -1045,8 +1012,7 @@
                                             <input wire:model="businessRegistration.production_capacity"
                                                 name="production_capacity" type="text" class="form-control"
                                                 id="production_capacity"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_production_capacity') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_production_capacity') }}">
                                         </div>
 
                                         <!-- Required Manpower -->
@@ -1057,8 +1023,7 @@
                                             <input wire:model="businessRegistration.required_manpower"
                                                 name="required_manpower" type="text" class="form-control"
                                                 id="required_manpower"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_required_manpower') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_required_manpower') }}">
                                         </div>
                                         <!-- Number of Shifts for Industry Operation -->
                                         <div class="col-md-6">
@@ -1068,8 +1033,7 @@
                                             <input wire:model="businessRegistration.number_of_shifts"
                                                 name="number_of_shifts" type="text" class="form-control"
                                                 id="number_of_shifts"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_number_of_shifts') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_number_of_shifts') }}">
                                         </div>
                                         <!-- Operation Date -->
                                         <div class="col-md-6">
@@ -1079,8 +1043,7 @@
                                             <input wire:model="businessRegistration.operation_date"
                                                 name="operation_date" type="text" class="form-control nepali-date"
                                                 id="operation_date"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_operation_date') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_operation_date') }}">
                                         </div>
                                         <!-- industry total running day -->
                                         <div class="col-md-6">
@@ -1090,8 +1053,7 @@
                                             <input wire:model="businessRegistration.total_running_day"
                                                 name="total_running_day" type="text"
                                                 class="form-control nepali-date" id="total_running_day"
-                                                placeholder="{{ __('businessregistration::businessregistration.industry_total_running_day') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.industry_total_running_day') }}">
                                         </div>
                                     </div>
                                 @endif
@@ -1110,8 +1072,7 @@
                                             <input wire:model="businessRegistration.financial_source"
                                                 name="financial_source" type="text" class="form-control"
                                                 id="financial_source"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_financial_source') }}"
-                                                {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_financial_source') }}">
                                         </div>
                                     </div>
                                     <div class="row g-4 mt-3">
@@ -1152,8 +1113,7 @@
                                                                 <td>
                                                                     <input type="text" class="form-control"
                                                                         wire:model="personalDetails.{{ $index }}.position"
-                                                                        placeholder="{{ __('businessregistration::businessregistration.position') }}"
-                                                                        {{ $this->isReadonly ? 'readonly' : '' }}>
+                                                                        placeholder="{{ __('businessregistration::businessregistration.position') }}">
                                                                 </td>
                                                             </tr>
                                                         @endforeach
