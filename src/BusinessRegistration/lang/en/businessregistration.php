@@ -442,6 +442,14 @@ return [
     'business_deregistration_lists' => 'Business Deregistration Lists',
     'application_details' => 'Application Details',
     'select_category_enum' => 'Select Category',
+    'business_deregistration_list' => 'Business De Registration List',
+    'enter_company_name/registration_number' => 'Enter company name/registration number',
+    'business_de_registration_form' => 'Business De-Registration Form',
+    'select_de_registration_type' => 'Select De-Registration Type',
+    'registration_detail' => 'Registration Detail',
+    'submit' => 'Submit',
+    'registration_form' => 'Registration Form',
+    'registration_list' => 'Registration List',
 
 
 

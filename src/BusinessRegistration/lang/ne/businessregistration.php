@@ -466,6 +466,13 @@ return [
     'no_required_documents_uploaded' => 'आवश्यक कागजातहरू अपलोड गरिएको छैन।',
     'business_deregistration_lists' => 'व्यवसाय खारेजी सूचीहरू',
     'application_details' => 'आवेदन विवरण',
-    'select_category_enum' => 'श्रेणी चयन गर्नुहोस्',
-
+    'select_category_enum' => 'दर्ता प्रकार चयन गर्नुहोस्',
+    'business_deregistration_list' => 'व्यवसाय खारेजी सूची',
+    'enter_company_name/registration_number' => 'कम्पनीको नाम/दर्ता नम्बर लेख्नुहोस्',
+    'business_de_registration_form' => 'व्यवसाय खारेजी फारम',
+    'select_de_registration_type' => 'खारेजी प्रकार चयन गर्नुहोस्',
+    'registration_detail' => 'दर्ता विवरण',
+    'submit' => 'पेश गर्नुहोस्',
+    'registration_form' => 'दर्ता फारम',
+    'registration_list' => 'दर्ता सूची',
 ];

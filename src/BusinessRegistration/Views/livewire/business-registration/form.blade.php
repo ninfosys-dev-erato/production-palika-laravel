@@ -25,7 +25,8 @@
                     <div class="nav-icon">
                         <i class='bx bx-buildings'></i>
                     </div>
-                    <span class="nav-text">{{ __('businessregistration::businessregistration.business_detail') }}</span>
+                    <span
+                        class="nav-text">{{ __('businessregistration::businessregistration.registration_detail') }}</span>
                     <div class="nav-indicator"></div>
                 </button>
 

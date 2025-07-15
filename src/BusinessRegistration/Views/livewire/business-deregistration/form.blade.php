@@ -43,7 +43,7 @@
                                 <i class='bx bx-buildings'></i>
                             </div>
                             <span
-                                class="nav-text">{{ __('businessregistration::businessregistration.business_detail') }}</span>
+                                class="nav-text">{{ __('businessregistration::businessregistration.registration_detail') }}</span>
                             <div class="nav-indicator"></div>
                         </button>
 
@@ -58,10 +58,6 @@
                         </button>
 
                     </div>
-
-
-
-
 
                     <div class="card border-0 shadow-xl bg-white-translucent">
                         <div class="tab-content">
@@ -605,13 +601,6 @@
                                     </button>
                                 </div>
                             </div>
-
-
-
-
-
-
-
                             <!-- Type Selection Tab -->
                             <div class="tab-pane fade {{ $activeTab === 'type' ? 'show active' : '' }}"
                                 id="type" role="tabpanel">
@@ -619,7 +608,7 @@
                                     <div class="row g-4">
                                         <div class="col-12">
                                             <label for="registration_type_id" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.select_registration_type') }}
+                                                {{ __('businessregistration::businessregistration.select_de_registration_type') }}
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <select wire:model.live="businessDeRegistration.registration_type_id"
@@ -627,7 +616,7 @@
                                                 id="registration_type_id" aria-label="Registration Type"
                                                 wire:change.live="setFields($event.target.value)">
                                                 <option value="">
-                                                    {{ __('businessregistration::businessregistration.select_registration_type') }}
+                                                    {{ __('businessregistration::businessregistration.select_de_registration_type') }}
                                                 </option>
                                                 @foreach ($registrationTypes as $id => $value)
                                                     <option value="{{ $id }}">{{ $value }}
@@ -645,7 +634,7 @@
                                                 {{ __('businessregistration::businessregistration.business_de_registration_application_detail') }}
                                             </div>
                                         </div>
-                                        <div class="row g-2">
+                                        <div class="row g-1">
                                             <div class="col-md-6">
                                                 <label
                                                     class="form-label-peaceful">{{ __('businessregistration::businessregistration.fiscal_year') }}</label>
@@ -705,7 +694,7 @@
                                     </div>
                                     <button type="submit" class="btn btn-success-peaceful">
                                         <i
-                                            class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit_registration') }}
+                                            class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit') }}
                                     </button>
                                 </div>
                             </div>
