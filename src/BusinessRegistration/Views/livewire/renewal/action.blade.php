@@ -1,19 +1,19 @@
+@php
+    use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+@endphp
+@if ($businessRenewal->registration->data)
+    @php
+        $data = is_array($businessRenewal->registration->data)
+            ? $businessRenewal->registration->data
+            : json_decode($businessRenewal->registration->data, true);
+    @endphp
+@endif
 <div class="card">
     <div class="card-body">
-        @php
-            use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
-        @endphp
-        @if ($businessRenewal->registration->data)
-            @php
-                $data = is_array($businessRenewal->registration->data)
-                    ? $businessRenewal->registration->data
-                    : json_decode($businessRenewal->registration->data, true);
-            @endphp
-        @endif
-
         <div class="d-flex justify-content-between align-items-center">
-            <h4 class="mb-0 fw-bold">
+            <h4 class="mb-0 fw-bold text-primary">
                 {{ __('businessregistration::businessregistration.business_registration_details') }}</h4>
+
             <div class="d-flex">
                 @if ($businessRenewal->application_status == Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING)
                     <div class="d-flex justify-content-start mt-3">
@@ -33,6 +33,7 @@
                 @endif
             </div>
         </div>
+        <hr>
 
         <div>
             <dl class="row mb-0">
@@ -40,7 +41,6 @@
 
 
                 @if ($businessRenewal->registration->registration_category == RegistrationCategoryEnum::BUSINESS->value)
-
                     <dt class="col-sm-4">
                         {{ __('businessregistration::businessregistration.capital_investment') }}</dt>
                     <dd class="col-sm-8">{{ $businessRenewal->registration->capital_investment ?? '-' }}</dd>
@@ -71,14 +71,14 @@
 
                     <dt class="col-sm-4">{{ __('businessregistration::businessregistration.rentagreement') }}
                     </dt>
-                    <dd class="col-sm-8">
+                    {{-- <dd class="col-sm-8">
                         @if ($businessRenewal->registration->rentagreement)
                             <a href="{{ asset('storage/' . $businessRenewal->registration->rentagreement) }}"
                                 target="_blank">{{ __('businessregistration::businessregistration.view_uploaded_file') }}</a>
                         @else
                             -
                         @endif
-                    </dd>
+                    </dd> --}}
                 @endif
 
                 {{-- For Firm --}}
@@ -317,7 +317,6 @@
     </div>
 </div>
 
-</div>
 
 @script
     <script>

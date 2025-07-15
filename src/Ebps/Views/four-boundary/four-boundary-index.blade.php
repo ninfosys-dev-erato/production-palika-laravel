@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ebps::ebps.four_boundary_list') }}</h5>
                     </div>
                     <div>
-                        @perm('four_boundaries create')
+                        @perm('ebps_settings create')
                             <a href="{{ route('admin.four_boundaries.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('ebps::ebps.add_four_boundary') }}</a>
                         @endperm

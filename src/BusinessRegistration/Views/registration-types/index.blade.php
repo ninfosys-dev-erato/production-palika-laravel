@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold">
                             {{ __('businessregistration::businessregistration.registration_types') }}</h5>
                         <div>
-                            @perm('registration-type_access')
+                            @perm('business_type create')
                                 {{-- <a href="{{ route('admin.business-registration.registration-types.create') }}"
                                     class="btn btn-info"><i class="bx bx-plus"></i>
                                     {{ __('businessregistration::businessregistration.add_business_registration_types') }}</a> --}}

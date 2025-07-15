@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.land_use_areas') }}
                     </h5>
-                    @perm('ebps_land_use_areas create')
+                    @perm('ebps_settings create')
                         <!-- <a href="{{ route('admin.ebps.land_use_areas.create') }}" class="btn btn-info"><i
                                                 class="bx bx-plus"></i> {{ __('ebps::ebps.land_use_area') }} {{ __('ebps::ebps.add') }}</a> -->
                         <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"

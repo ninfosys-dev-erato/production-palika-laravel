@@ -244,7 +244,7 @@
                                 }
                             </script>
                         </div>
-                        @perm('customer_kyc_update')
+                        @perm('customer_access')
                             @if ($customer->kyc->status->value !== 'accepted')
                                 <div class="row mt-5">
                                     <div class="col-md-12">

@@ -40,10 +40,11 @@ class BusinessRenewalTemplate extends Component
         <table border="1" width="100%" style="border-collapse: collapse; text-align: center; border: 2px solid black;">
             <thead>
                 <tr style="background-color: #f2f2f2; font-weight: bold;">
-                    <th style="padding: 10px; border: 2px solid black;">नवीकरण गर्ने विभाग/सम्बन्धित नाम</th>
-                    <th style="padding: 10px; border: 2px solid black;">नवीकरण गरिएको अवधि</th>
-                    <th style="padding: 10px; border: 2px solid black;">नवीकरण दस्तुरको भौचर नं. र मिति</th>
-                    <th style="padding: 10px; border: 2px solid black;">दस्तखत</th>
+                    <th style="padding: 10px; border: 2px solid black;">आर्थिक वर्ष</th>
+                    <th style="padding: 10px; border: 2px solid black;">नबिकरण गरेको मिति</th>
+                    <th style="padding: 10px; border: 2px solid black;">कर तथा सुल्क र जरिवाना तिरेको रसिद नं </th>
+                    <th style="padding: 10px; border: 2px solid black;">रसिदको मिति </th>
+                    <th style="padding: 10px; border: 2px solid black;">नबिकरण गर्नेको दस्तखत</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,25 +64,31 @@ class BusinessRenewalTemplate extends Component
 
     private function generateTableRows(): string
     {
-        $renewal = $this->renewal;
-        $renewDuration = $this->getRenewalDuration();
-        $billNo = $renewal->bill_no ?? 'N/A';
-        $payment_date = $this->convertEnglishToNepali($renewal->payment_receipt_date) ?? 'N/A';
-        $approvedBy = $renewal->approvedBy?->name ?? 'N/A';
+        $renewal = $this->renewal->load('fiscalYear');
+        $fiscalYear = $this->renewal->fiscalYear->year ?? '';
+        $renewalDate = $this->renewal->renew_date ?? '';
+        $billNo = $this->renewal->bill_no ?? '';
+        $payment_date = $this->renewal->payment_receipt_date ?? '';
 
-        $acceptorSignature = '______________________';
-        if (!empty($renewal->approved_by) && !empty($renewal->approvedBy?->signature)) {
-            $acceptorSignature = '<img src="data:image/jpeg;base64,' . base64_encode(ImageServiceFacade::getImage(config('src.Profile.profile.path'), $renewal->approvedBy->signature)) . '"
-                         alt="Signature" width="80">';
-           
-        }
+        // $renewDuration = $this->getRenewalDuration();
+        // $billNo = $renewal->bill_no ?? 'N/A';
+        // $payment_date = $this->convertEnglishToNepali($renewal->payment_receipt_date) ?? 'N/A';
+        // $approvedBy = $renewal->approvedBy?->name ?? 'N/A';
+
+        // $acceptorSignature = '______________________';
+        // if (!empty($renewal->approved_by) && !empty($renewal->approvedBy?->signature)) {
+        //     $acceptorSignature = '<img src="data:image/jpeg;base64,' . base64_encode(ImageServiceFacade::getImage(config('src.Profile.profile.path'), $renewal->approvedBy->signature)) . '"
+        //                  alt="Signature" width="80">';
+        // }
 
         return "
     <tr>
-        <td style='padding: 10px; border: 2px solid black;'>{$approvedBy}</td>
-        <td style='padding: 10px; border: 2px solid black;'>{$renewDuration}</td>
-        <td style='padding: 10px; border: 2px solid black;'>{$billNo} <br> {$payment_date}</td>
-        <td style='padding: 10px; border: 2px solid black;'>{$acceptorSignature}</td>
+        <td style='padding: 10px; border: 2px solid black;'>{$fiscalYear}</td>
+        <td style='padding: 10px; border: 2px solid black;'>{$renewalDate}</td>
+        <td style='padding: 10px; border: 2px solid black;'>{$billNo}</td>
+        <td style='padding: 10px; border: 2px solid black;'>{$payment_date}</td>
+        <td style='padding: 10px; border: 2px solid black;'></td>
+
     </tr>
 ";
     }
@@ -115,7 +122,6 @@ class BusinessRenewalTemplate extends Component
     public function print()
     {
         $service = new BusinessRenewalAdminService();
-        return $service->getLetter($this->renewal,$this->getTemplate(), 'web');
-        
+        return $service->getLetter($this->renewal, $this->getTemplate(), 'web');
     }
 }

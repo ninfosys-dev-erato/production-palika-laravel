@@ -1,4 +1,11 @@
 <?php return array (
+  'anuzpandey/laravel-nepali-date' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Anuzpandey\\LaravelNepaliDate\\LaravelNepaliDateServiceProvider',
+    ),
+  ),
   'barryvdh/laravel-debugbar' => 
   array (
     'providers' => 

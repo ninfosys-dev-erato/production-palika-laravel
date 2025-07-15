@@ -15,7 +15,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.map_step') }}
                     </h5>
-                    @perm('construction_types_create')
+                    @perm('ebps_settings create')
                         <a href="{{ route('admin.ebps.map_steps.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                             {{ __('ebps::ebps.add_map_step') }}</a>
                     @endperm

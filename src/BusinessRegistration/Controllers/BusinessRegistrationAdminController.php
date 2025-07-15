@@ -18,9 +18,9 @@ class BusinessRegistrationAdminController extends Controller implements HasMiddl
     public static function middleware()
     {
         return [
-            new Middleware('permission:business-registration_access', only: ['index']),
-            new Middleware('permission:business-registration_create', only: ['create']),
-            new Middleware('permission:business-registration_update', only: ['edit']),
+            new Middleware('permission:business_registration access', only: ['index']),
+            new Middleware('permission:business_registration create', only: ['create']),
+            new Middleware('permission:business_registration edit', only: ['edit']),
         ];
     }
 

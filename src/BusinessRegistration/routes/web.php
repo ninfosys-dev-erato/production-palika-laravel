@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Src\BusinessRegistration\Controllers\BusinessDeRegistrationAdminController;
 use Src\BusinessRegistration\Controllers\BusinessNatureAdminController;
 use Src\BusinessRegistration\Controllers\BusinessRegistrationAdminController;
 use Src\BusinessRegistration\Controllers\BusinessRegistrationDashboardController;
@@ -63,6 +64,10 @@ Route::group(['prefix' => 'admin/business-registration', 'as' => 'admin.business
 
 
 //degenerate business route line
-Route::group(['prefix' => 'admin/business-registration', 'as' => 'admin.business-deregistration.', 'middleware' => ['web', 'auth']], function () {
-    Route::get('/', [BusinessRegistrationAdminController::class, 'index'])->name('index');
+Route::group(['prefix' => 'admin/business-de-registration', 'as' => 'admin.business-deregistration.', 'middleware' => ['web', 'auth']], function () {
+    Route::get('/', [BusinessDeRegistrationAdminController::class, 'index'])->name('index');
+    Route::get('/create', [BusinessDeRegistrationAdminController::class, 'create'])->name('create');
+    Route::get('/edit/{id}', [BusinessDeRegistrationAdminController::class, 'edit'])->name('edit');
+    Route::get('/show/{id}', [BusinessDeRegistrationAdminController::class, 'show'])->name('show');
+    Route::get('/preview/{id}', [BusinessDeRegistrationAdminController::class, 'preview'])->name('preview');
 });

@@ -71,7 +71,7 @@ return [
         'icon' => 'bx bx-briefcase',
         'logo' => 'KaryaByabasthapanIcon.png',
         'label' => 'Business Registration System',
-        'perm' => 'business-registration-renewal_access',
+        'perm' => 'business_registration access',
     ],
     [
         'module' => 'ebps',

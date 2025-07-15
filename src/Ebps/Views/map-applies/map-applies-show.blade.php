@@ -312,7 +312,7 @@
                     @empty
                         <div class="col-12 text-center text-muted fst-italic">
                             <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps.no_documents_uploaded') }}.
+                            {{ __('ebps::ebps._no_documents_uploaded') }}.
                         </div>
                     @endforelse
                 </div>

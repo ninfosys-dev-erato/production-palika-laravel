@@ -11,7 +11,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    @perm('structure_types create')
+                    @perm('ebps_settings create')
                         <a href="{{ route('admin.structure_types.create') }}" class="btn btn-info"><i
                                 class="bx bx-plus"></i> Add StructureType</a>
                     @endperm
