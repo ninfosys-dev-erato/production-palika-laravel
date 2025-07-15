@@ -176,7 +176,7 @@ class OrganizationMapApplyForm extends Component
             {
                 $this->getHouseOwnerDistricts();
             }
-             if($this->houseOwnerDetail->distrcit_id)
+             if($this->houseOwnerDetail->district_id)
             {
                  $this->getHouseOwnerLocalBodies();
             }
