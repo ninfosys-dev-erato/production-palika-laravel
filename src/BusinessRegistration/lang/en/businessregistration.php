@@ -430,6 +430,9 @@ return [
     'citizenship_issued_date' => 'Citizenship Issued Date',
     'citizenship_issued_district' => 'Citizenship Issued District',
     'deregistration_already_exists_for_this_business' => 'Deregistration already exists for this business.',
+    "business_de_registration_application_detail" => "Business De-Registration Application Detail",
+    "registration_category_enum" => "Registration Category",
+    'business_name' => 'Business Name',
 
 
 

@@ -284,7 +284,6 @@
             </div>
         </div>
 
-        <p class="text-muted">{{ __('businessregistration::businessregistration.no_data_available') }}</p>
 
     </div>
 

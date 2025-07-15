@@ -82,18 +82,15 @@ class BusinessDeRegistrationTable extends DataTableComponent
                 ->searchable()
                 ->html(),
 
-            Column::make(__('businessregistration::businessregistration.business_details'))
-                ->label(function ($row) {
-                    $businessName = $row->businessRegistration?->entity_name ?? '';
-                    $certificateNumber = $row->registration_number ?? '';
-                    return "
-                    <div><strong>" . (__('businessregistration::businessregistration.business_name')) . ":" . "</strong> {$businessName}</div>
-                    <div><strong>" . (__('businessregistration::businessregistration.certificate_number')) . ":" . "</strong> {$certificateNumber}</div>
-                ";
-                })
+            Column::make(__('businessregistration::businessregistration.business_name'), "businessRegistration.entity_name")
                 ->sortable()
                 ->searchable()
                 ->html(),
+            Column::make(__('businessregistration::businessregistration.certificate_number'), "registration_number")
+                ->sortable()
+                ->searchable()
+                ->html(),
+
             Column::make(__('businessregistration::businessregistration.applicant_name'))
                 ->label(function ($row) {
                     $firstApplicant = $row->businessRegistration?->applicants->first();
@@ -154,10 +151,10 @@ class BusinessDeRegistrationTable extends DataTableComponent
         if (can('business_registration edit') || can('business_registration delete')) {
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                
+
                 $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                 $buttons .= $view;
-                
+
                 if ($this->type != BusinessRegistrationType::DEREGISTRATION->value) {
                     if (can('business_registration edit') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
                         $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';

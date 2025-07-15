@@ -23,7 +23,7 @@ $categories = Cache::remember('business_category_tree', 60, function () use ($se
     </a>
 </li>
 
-<li class="menu-item {{ request('type') === BusinessRegistrationType::DEREGISTRATION->value ? 'active' : '' }}">
+<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.business-deregistration.*') ? 'active' : '' }}">
 
     <a href="{{ route('admin.business-deregistration.index', ['type' => BusinessRegistrationType::DEREGISTRATION]) }}"
         class="menu-link">
