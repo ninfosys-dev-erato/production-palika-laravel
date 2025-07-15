@@ -433,6 +433,12 @@ return [
     "business_de_registration_application_detail" => "Business De-Registration Application Detail",
     "registration_category_enum" => "Registration Category",
     'business_name' => 'Business Name',
+    'no_required_documents_uploaded' => 'No required documents uploaded.',
+    'citizenship' => 'Citizenship',
+    'citizenship_front' => 'Citizenship Front',
+    'no_front_file' => 'No front file uploaded.',
+    'citizenship_rear' => 'Citizenship Rear',
+    'no_rear_file' => 'No rear file uploaded.',
 
 
 

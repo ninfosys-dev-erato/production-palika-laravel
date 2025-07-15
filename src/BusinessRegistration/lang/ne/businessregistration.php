@@ -440,6 +440,11 @@ return [
     'no_applicant_information_available' => 'आवेदकको जानकारी उपलब्ध छैन।',
     'citizenship_issued_date' => 'नागरिकता जारी मिति',
     'citizenship_issued_district' => 'नागरिकता जारी जिल्ला',
+    'citizenship' => 'नागरिकता',
+    'citizenship_front' => 'नागरिकता अगाडिको',
+    'no_front_file' => 'अगाडिको फाइल अपलोड गरिएको छैन।',
+    'citizenship_rear' => 'नागरिकता पछाडिको',
+    'no_rear_file' => 'पछाडिको फाइल अपलोड गरिएको छैन।',
 
     // Filter translations
     'start_date' => 'सुरु मिति',
@@ -458,5 +463,6 @@ return [
     'deregistration_already_exists_for_this_business' => 'यस व्यवसायको लागि खारेजी पहिले नै अवस्थित छ।',
     "business_de_registration_application_detail" => "व्यवसाय दर्ता खारेज गर्ने आवेदन विवरण",
     "registration_category_enum" => "दर्ता प्रकार",
+    'no_required_documents_uploaded' => 'आवश्यक कागजातहरू अपलोड गरिएको छैन।',
 
 ];
