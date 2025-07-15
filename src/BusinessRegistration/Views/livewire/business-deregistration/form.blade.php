@@ -572,7 +572,7 @@
                                                         class="form-label-peaceful">{{ $doc['name'] ?? __('businessregistration::businessregistration.document') }}</label>
                                                     <br>
                                                     <a href="{{ $doc['url'] }}" target="_blank">
-                                                        {{ $doc['name'] ?? __('businessregistration::businessregistration.document') }}
+                                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
                                                     </a>
                                                 </div>
                                             @endforeach
@@ -640,12 +640,12 @@
                                                 </div>
                                             @enderror
                                         </div>
-                                        <div class="divider divider-primary text-start text-primary mb-4">
+                                        <div class="divider divider-primary text-start text-primary">
                                             <div class="divider-text fw-bold fs-6">
-                                                {{ __('businessregistration::businessregistration.application_details') }}
+                                                {{ __('businessregistration::businessregistration.business_de_registration_application_detail') }}
                                             </div>
                                         </div>
-                                        <div class="row g-4">
+                                        <div class="row g-2">
                                             <div class="col-md-6">
                                                 <label
                                                     class="form-label-peaceful">{{ __('businessregistration::businessregistration.fiscal_year') }}</label>

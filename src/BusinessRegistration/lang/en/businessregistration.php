@@ -439,6 +439,8 @@ return [
     'no_front_file' => 'No front file uploaded.',
     'citizenship_rear' => 'Citizenship Rear',
     'no_rear_file' => 'No rear file uploaded.',
+    'business_deregistration_lists' => 'Business Deregistration Lists',
+    'application_details' => 'Application Details',
 
 
 

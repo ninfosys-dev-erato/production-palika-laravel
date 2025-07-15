@@ -464,5 +464,7 @@ return [
     "business_de_registration_application_detail" => "व्यवसाय दर्ता खारेज गर्ने आवेदन विवरण",
     "registration_category_enum" => "दर्ता प्रकार",
     'no_required_documents_uploaded' => 'आवश्यक कागजातहरू अपलोड गरिएको छैन।',
+    'business_deregistration_lists' => 'व्यवसाय खारेजी सूचीहरू',
+    'application_details' => 'आवेदन विवरण',
 
 ];

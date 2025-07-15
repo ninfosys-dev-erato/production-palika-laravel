@@ -32,7 +32,15 @@ class BusinessRegistrationUploadBill extends Component
             'bill' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
         try {
-            $path = ImageServiceFacade::compressAndStoreImage($this->bill, config('src.BusinessRegistration.businessRegistration.bill'), 'local');
+
+            $path = $this->businessRegistration->bill;
+            if ($this->bill) {
+                $path = ImageServiceFacade::compressAndStoreImage(
+                    $this->bill,
+                    config('src.BusinessRegistration.businessRegistration.bill'),
+                    'local'
+                );
+            }
             $this->businessRegistration->bill = $path;
             $this->businessRegistration->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
             $dto = BusinessRegistrationShowDto::fromModel($this->businessRegistration);

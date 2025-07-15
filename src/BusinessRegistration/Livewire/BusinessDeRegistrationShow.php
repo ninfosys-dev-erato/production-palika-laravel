@@ -31,7 +31,7 @@ class BusinessDeRegistrationShow extends Component
 
     public array $citizenshipFrontUrls = [];
     public array $citizenshipRearUrls = [];
-    public array $applicants = [];
+    public $applicants = [];
 
     public array $businessRequiredDocUrls = [];
 
@@ -55,12 +55,15 @@ class BusinessDeRegistrationShow extends Component
 
     public function generateTemporaryUrlsForCitizenship(): void
     {
-        $this->applicants = $this->businessDeRegistration->businessRegistration->applicants->toArray();
+        $this->applicants = $this->businessDeRegistration->businessRegistration->applicants;
+
+
         foreach ($this->applicants as $index => $applicant) {
             $this->citizenshipFrontUrls[$index] = $this->generateTemporaryUrl($applicant->citizenship_front ?? null);
             $this->citizenshipRearUrls[$index]  = $this->generateTemporaryUrl($applicant->citizenship_rear ?? null);
         }
     }
+
 
     public function generateTemporaryUrlsForDocs(): void
     {
