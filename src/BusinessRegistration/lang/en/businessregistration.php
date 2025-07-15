@@ -441,6 +441,7 @@ return [
     'no_rear_file' => 'No rear file uploaded.',
     'business_deregistration_lists' => 'Business Deregistration Lists',
     'application_details' => 'Application Details',
+    'select_category_enum' => 'Select Category',
 
 
 

@@ -158,20 +158,19 @@ class BusinessDeRegistrationTable extends DataTableComponent
                 $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                 $buttons .= $view;
 
-                if ($this->type != BusinessRegistrationType::DEREGISTRATION->value) {
-                    if (can('business_registration edit') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
-                        $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
-                        $buttons .= $edit;
-                    }
+
+                if (can('business_registration edit') && $row->application_status !== ApplicationStatusEnum::ACCEPTED) {
+                    $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
+                    $buttons .= $edit;
                 }
 
-                if (can('business_registration delete') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value && $this->type !=  BusinessRegistrationType::DEREGISTRATION->value) {
+                if (can('business_registration delete') && $row->application_status !== ApplicationStatusEnum::ACCEPTED) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
                     $buttons .= $delete;
                 }
 
 
-                if ($row->application_status === ApplicationStatusEnum::ACCEPTED->value) {
+                if ($row->application_status === ApplicationStatusEnum::ACCEPTED) {
                     $preview = '<button type="button" class="btn btn-primary btn-sm"  wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }

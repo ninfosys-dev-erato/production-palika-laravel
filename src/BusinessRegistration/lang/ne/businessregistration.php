@@ -466,5 +466,6 @@ return [
     'no_required_documents_uploaded' => 'आवश्यक कागजातहरू अपलोड गरिएको छैन।',
     'business_deregistration_lists' => 'व्यवसाय खारेजी सूचीहरू',
     'application_details' => 'आवेदन विवरण',
+    'select_category_enum' => 'श्रेणी चयन गर्नुहोस्',
 
 ];

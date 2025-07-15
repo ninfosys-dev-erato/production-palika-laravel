@@ -170,6 +170,10 @@
                                     {{ $businessRegistration->application_status }}</p>
                             </div>
                             <div class="col-sm-6">
+                                <p><strong>{{ __('businessregistration::businessregistration.business_status') }}:</strong>
+                                    {{ $businessRegistration->business_status?->label() }}</p>
+                            </div>
+                            <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.amount') }}:</strong>
                                     {{ $businessRegistration->amount }}</p>
                             </div>

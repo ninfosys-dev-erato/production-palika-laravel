@@ -16,12 +16,15 @@ trait BusinessRegistrationTemplate
 
     public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration)
     {
+
+        $template = $businessRegistration->registrationType?->form?->template ?? '';
+
         if ($businessRegistration instanceof \Src\BusinessRegistration\Models\BusinessDeRegistration) {
             $businessRegistration = $businessRegistration->businessRegistration;
         }
+
         $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature');
 
-        $template = $businessRegistration->registrationType?->form?->template ?? '';
 
         $fileRecord = FileRecord::where('subject_id',  $businessRegistration->id)->whereNull('deleted_at')->first();
         $regNo = $fileRecord && $fileRecord->reg_no ? replaceNumbers($fileRecord->reg_no, true) : ' ';

@@ -23,9 +23,8 @@ class BusinessDeRegistrationPreview extends Component
     {
         $this->businessDeRegistration = $businessDeRegistration;
 
-
         $this->style = $this->businessDeRegistration->registrationType->form?->styles ?? "";
-        // $this->template = $this->resolveTemplate($this->businessRegistration);
+
         $this->template = $this->resolveTemplate($this->businessDeRegistration);
     }
 

@@ -9,7 +9,7 @@ use Src\BusinessRegistration\DTO\BusinessDeRegistrationDto;
 use Src\BusinessRegistration\DTO\BusinessDeRegistrationUploadDto;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Models\BusinessDeregistration;
-use Src\BusinessRegistration\Models\BusinessDeRegistration as ModelsBusinessDeRegistration;
+use Src\BusinessRegistration\Enums\BusinessStatusEnum;
 
 class BusinessDeRegistrationService
 {
@@ -25,7 +25,6 @@ class BusinessDeRegistrationService
             'application_rejection_reason' => $dto->application_rejection_reason,
             'bill_no' => $dto->bill_no,
             'registration_number' => $dto->registration_number,
-
             'data' =>    json_encode($dto->data),
             'application_status' => $dto->application_status,
             'created_at' => date('Y-m-d H:i:s'),
@@ -34,9 +33,13 @@ class BusinessDeRegistrationService
             'application_status' => ApplicationStatusEnum::PENDING,
             'registration_type_id' => $dto->registration_type_id,
             'bill' => $dto->bill,
-
-
         ]);
+
+        // Update related BusinessRegistration status to pending
+        if ($businessDeRegistration && $businessDeRegistration->businessRegistration) {
+            $businessDeRegistration->businessRegistration->business_status = BusinessStatusEnum::INACTIVE->value;
+            $businessDeRegistration->businessRegistration->save();
+        }
 
         return $businessDeRegistration;
     }
