@@ -39,9 +39,9 @@ trait MapApplyTrait
             '{{global.province}}' => getSetting('palika-province') ?? self::EMPTY_LINES,
             '{{global.district}}' => getSetting('palika-district') ?? self::EMPTY_LINES,
             '{{global.local-body}}' => getSetting('palika-local-body') ?? self::EMPTY_LINES,
-            '{{global.ward}}' => getSetting('palika-ward') ?? self::EMPTY_LINES,
+            '{{global.ward}}' => replaceNumbers(getSetting('palika-ward', true)) ?? self::EMPTY_LINES,
             '{{global.today_date_ad}}' => today()->toDateString(),
-            '{{global.today_date_bs}}' => today()->toDateString(),
+            '{{global.today_date_bs}}' => getFormattedBsDate() ?? self::EMPTY_LINES,
             '{{global.business_status}}' => $mapApply?->businessRegistration?->business_status ?? self::EMPTY_LINES,
             '{{global.registration_number}}' => $mapApply?->businessRegistration?->registration_number ?? self::EMPTY_LINES,
             '{{global.registration_date}}' => $mapApply?->businessRegistration?->registration_date ?? self::EMPTY_LINES,
@@ -97,12 +97,12 @@ trait MapApplyTrait
             '{{customer.permanent_province_id}}' => isset($kyc?->permanentProvince, $kyc?->permanentProvince->title) ? $kyc?->permanentProvince->title : self::EMPTY_LINES,
             '{{customer.permanent_district_id}}' => isset($kyc?->permanentDistrict, $kyc?->permanentDistrict->title) ? $kyc?->permanentDistrict->title : self::EMPTY_LINES,
             '{{customer.permanent_local_body_id}}' => isset($kyc?->permanentLocalBody, $kyc?->permanentLocalBody->title) ? $kyc?->permanentLocalBody->title : self::EMPTY_LINES,
-            '{{customer.permanent_ward}}' => $kyc?->permanent_ward ?? self::EMPTY_LINES,
+            '{{customer.permanent_ward}}' => replaceNumbers($kyc?->permanent_ward, true) ?? self::EMPTY_LINES,
             '{{customer.permanent_tole}}' => $kyc?->permanent_tole ?? self::EMPTY_LINES,
             '{{customer.temporary_province_id}}' => isset($kyc?->temporaryProvince, $kyc?->temporaryProvince->title) ? $kyc?->temporaryProvince->title : self::EMPTY_LINES,
             '{{customer.temporary_district_id}}' => isset($kyc?->temporaryDistrict, $kyc?->temporaryDistrict->title) ? $kyc?->temporaryDistrict->title : self::EMPTY_LINES,
             '{{customer.temporary_local_body_id}}' => isset($kyc?->temporaryLocalBody, $kyc?->temporaryLocalBody->title) ? $kyc?->temporaryLocalBody->title : self::EMPTY_LINES,
-            '{{customer.temporary_ward}}' => $kyc?->temporary_ward ?? self::EMPTY_LINES,
+            '{{customer.temporary_ward}}' => replaceNumbers($kyc?->temporary_ward, true) ?? self::EMPTY_LINES,
             '{{customer.temporary_tole}}' => $kyc?->temporary_tole ?? self::EMPTY_LINES,
             '{{customer.document_issued_date_nepali}}' => $kyc?->document_issued_date_nepali ?? self::EMPTY_LINES,
             '{{customer.document_issued_date_english}}' => $kyc?->document_issued_date_english ?? self::EMPTY_LINES,
@@ -124,14 +124,14 @@ trait MapApplyTrait
         
         return [
             '{{mapApply.houseOwnerName}}' => $houseOwner?->owner_name ?? self::EMPTY_LINES,
-            '{{mapApply.houseOwnerMobileNo}}' => $houseOwner?->mobile_no ?? self::EMPTY_LINES,
+            '{{mapApply.houseOwnerMobileNo}}' => replaceNumbers($houseOwner?->mobile_no, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerFatherName}}' => $houseOwner?->father_name ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerGrandFatherName}}' => $houseOwner?->grand_father_name ?? self::EMPTY_LINES,
-            '{{mapApply.houseOwnerCitizenshipNo}}' => $houseOwner?->citizenship_no ?? self::EMPTY_LINES,
+            '{{mapApply.houseOwnerCitizenshipNo}}' => replaceNumbers($houseOwner?->citizenship_no, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerProvince}}' => isset($houseOwner?->province, $houseOwner?->province->title) ? $houseOwner?->province->title : self::EMPTY_LINES,
             '{{mapApply.houseOwnerDistrict}}' => isset($houseOwner?->district, $houseOwner?->district->title) ? $houseOwner?->district->title : self::EMPTY_LINES,
             '{{mapApply.houseOwnerLocalBody}}' => isset($houseOwner?->local_body, $houseOwner?->local_body->title) ? $houseOwner?->local_body->title : self::EMPTY_LINES,
-            '{{mapApply.houseOwnerWard}}' => $houseOwner?->ward ?? self::EMPTY_LINES,
+            '{{mapApply.houseOwnerWard}}' => replaceNumbers($houseOwner?->ward, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerTole}}' => $houseOwner?->tole ?? self::EMPTY_LINES,
         ];
     }
@@ -140,11 +140,11 @@ trait MapApplyTrait
     {
         return [
             '{{mapApply.applicantName}}' => $mapApply?->full_name ?? self::EMPTY_LINES,
-            '{{mapApply.applicantMobileNo}}' => $mapApply?->mobile_no ?? self::EMPTY_LINES,
+            '{{mapApply.applicantMobileNo}}' => replaceNumbers($mapApply?->mobile_no, true) ?? self::EMPTY_LINES,
             '{{mapApply.applicantProvince}}' => isset($mapApply?->province, $mapApply?->province->title) ? $mapApply?->province->title : self::EMPTY_LINES,
             '{{mapApply.applicantDistrict}}' => isset($mapApply?->district, $mapApply?->district->title) ? $mapApply?->district->title : self::EMPTY_LINES,
             '{{mapApply.applicantLocalBody}}' => isset($mapApply?->localBody, $mapApply?->localBody->title) ? $mapApply?->localBody->title : self::EMPTY_LINES,
-            '{{mapApply.applicantWard}}' => $mapApply?->ward_no ?? self::EMPTY_LINES,
+            '{{mapApply.applicantWard}}' => replaceNumbers($mapApply?->ward_no, true) ?? self::EMPTY_LINES,
         ];
     }
 
@@ -174,8 +174,8 @@ trait MapApplyTrait
                     "<tr>
                         <td style='border: 1px solid #000;'>" . (isset($fort?->title) ? $fort?->title : self::EMPTY_LINES) . "</td>
                         <td style='border: 1px solid #000;'>" . (isset($fort?->direction) ? $fort?->direction : self::EMPTY_LINES) . "</td>
-                        <td style='border: 1px solid #000;'>" . (isset($fort?->distance) ? $fort?->distance : self::EMPTY_LINES) . "</td>
-                        <td style='border: 1px solid #000;'>" . (isset($fort?->lot_no) ? $fort?->lot_no : self::EMPTY_LINES) . "</td>
+                        <td style='border: 1px solid #000;'>" . (isset($fort?->distance) ? replaceNumbers($fort?->distance, true): self::EMPTY_LINES) . "</td>
+                        <td style='border: 1px solid #000;'>" . (isset($fort?->lot_no) ? replaceNumbers($fort?->lot_no, true) : self::EMPTY_LINES) . "</td>
                     </tr>"
                 )->implode('') .
                 '</tbody></table>';
@@ -183,19 +183,20 @@ trait MapApplyTrait
 
         return [
             '{{mapApply.customer.name}}' => isset($mapApply?->customer, $mapApply?->customer->name) ? $mapApply?->customer->name : 'Not Provided',
-            '{{mapApply.landDetail.ward_no}}' => isset($landDetail->ward) ? $landDetail->ward : self::EMPTY_LINES,
+            '{{mapApply.landDetail.ward_no}}' => isset($landDetail->ward) ? replaceNumbers($landDetail->ward, true) : self::EMPTY_LINES,
             '{{mapApply.landDetail.tole}}' => isset($landDetail->tole) ? $landDetail->tole : self::EMPTY_LINES,
-            '{{mapApply.landDetail.plot_no}}' => isset($landDetail->lot_no) ? $landDetail->lot_no : self::EMPTY_LINES,
-            '{{mapApply.landDetail.area}}' => isset($landDetail->area_sqm) ? $landDetail->area_sqm : self::EMPTY_LINES,
+            '{{mapApply.landDetail.plot_no}}' => isset($landDetail->lot_no) ? replaceNumbers($landDetail->lot_no, true) : self::EMPTY_LINES,
+            '{{mapApply.landDetail.area}}' => isset($landDetail->area_sqm) ? replaceNumbers($landDetail->area_sqm, true) : self::EMPTY_LINES,
             '{{mapApply.landDetail.ownership_type}}' => isset($landDetail->ownership) ? $landDetail->ownership : self::EMPTY_LINES,
-            '{{mapApply.landDetail.former_ward}}' => isset($landDetail->ward) ? $landDetail->ward : self::EMPTY_LINES,
+            '{{mapApply.landDetail.former_ward}}' => isset($landDetail->ward) ? replaceNumbers($landDetail->ward, true) : self::EMPTY_LINES,
             '{{mapApply.landDetail.former_localBody}}' => isset($landDetail->localBody, $landDetail->localBody->title) ? $landDetail->localBody->title : self::EMPTY_LINES,
             '{{mapApply.usage}}' => isset($mapApply?->usage) ? $mapApply?->usage : self::EMPTY_LINES,
             '{{mapApply.landDetail.fourForts:name,direction,distance_to,plot_no}}' => $fourBoundariesTable,
             '{{mapApply.constructionType.title}}' => isset($mapApply?->constructionType, $mapApply?->constructionType->title) ? $mapApply?->constructionType->title : self::EMPTY_LINES,
             '{{mapApply.customer.age}}' => isset($mapApply?->customer, $mapApply?->customer->customerDetail, $mapApply?->customer->customerDetail->age) ? $mapApply?->customer->customerDetail->age : self::EMPTY_LINES,
-            '{{customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->phone) ? $mapApply?->customer->phone : self::EMPTY_LINES,
-            '{{mapApply.customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->mobile_no) ? $mapApply?->customer->mobile_no : self::EMPTY_LINES,
+            '{{customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->phone) ? replaceNumbers($mapApply?->customer->phone, true): self::EMPTY_LINES,
+            '{{mapApply.customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->mobile_no) ? replaceNumbers($mapApply?->customer->mobile_no, true) : self::EMPTY_LINES,
+            '{{mapApply.appliedDate}}' => isset($mapApply?->applied_date, $mapApply?->applied_date) ? replaceNumbers($mapApply?->applied_date, true) : self::EMPTY_LINES,
         ];
     }
 }
