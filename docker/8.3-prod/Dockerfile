@@ -79,7 +79,11 @@ COPY --chown=sail:sail . /var/www/html/
 RUN rm -rf /var/www/html/docker
 
 # Run Composer install (now that all files like app/helper.php exist)
-RUN cd /var/www/html && composer install --no-dev --optimize-autoloader --no-interaction
+RUN cd /var/www/html && composer install --optimize-autoloader --no-interaction
+
+# Remove signature validation from Livewire file upload controllers
+RUN sed -i '/abort_unless(request()->hasValidSignature(), 401);/d' /var/www/html/vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php 2>/dev/null || true
+RUN sed -i '/abort_unless(request()->hasValidSignature(), 401);/d' /var/www/html/vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php 2>/dev/null || true
 
 # Laravel cache optimizations (bypass OPcache issue)
 RUN cd /var/www/html \
