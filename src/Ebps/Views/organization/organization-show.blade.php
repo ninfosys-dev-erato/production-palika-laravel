@@ -84,8 +84,8 @@
                         <hr class="w-100 my-3">
                         <p class="mb-0">
                             <strong>{{ __('ebps::ebps.status') }}:</strong>
-                            <span class="badge {{ getTextColor($organization->status->value) }}">
-                                {{ strtoupper($organization->status->value) }}
+                            <span class="badge {{ getTextColor($organization?->status?->value) }}">
+                                {{ strtoupper($organization?->status?->value) }}
                             </span>
                         </p>
                     </div>
@@ -129,7 +129,7 @@
 
                 <div class="card shadow-sm border-0 rounded-lg bg-light h-30 p-4">
                     <div class="row">
-                        @if ($organization->status->value !== 'accepted')
+                        @if ($organization?->status?->value !== 'accepted')
                             <div class="col-md-12">
                                 <livewire:ebps.organization_change_status_form :organization="$organization" :action="\App\Enums\Action::UPDATE" />
                             </div>

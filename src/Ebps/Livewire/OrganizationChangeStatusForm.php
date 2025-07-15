@@ -29,7 +29,7 @@ class OrganizationChangeStatusForm extends Component
             'reason_to_reject' => ['nullable'],
         ];
 
-        if ($this->organization && $this->organization->status->value === 'rejected') {
+        if ($this->organization && $this->organization?->status?->value === 'rejected') {
             $rules['reason_to_reject'] = ['required'];
         }
 
@@ -58,8 +58,8 @@ class OrganizationChangeStatusForm extends Component
 
         $this->organization = $organization;
         $this->action = Action::UPDATE;
-        if ($this->organization->status->value === 'rejected') {
-            $this->reason_to_reject = $this->organization->reason_to_reject;
+        if ($this->organization?->status?->value === 'rejected') {
+            $this->reason_to_reject = $this->organization?->reason_to_reject;
         } else {
             $this->reason_to_reject = null;
 
@@ -72,7 +72,7 @@ class OrganizationChangeStatusForm extends Component
         try{
 
             $this->organization->status = $data['organization']['status'];
-            if ($this->organization->status === 'rejected') {
+            if ($this->organization?->status === 'rejected') {
                 $this->organization->reason_to_reject = !empty($data['reason_to_reject']) ? implode(', ', $data['reason_to_reject']) : null;
             } else {
                 $this->organization->reason_to_reject = null;
