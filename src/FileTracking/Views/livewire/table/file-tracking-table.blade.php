@@ -101,9 +101,13 @@
                         @foreach($this->selectedVisibleColumns as $colIndex => $column)
                             <x-livewire-tables::table.td wire:key="{{ $tableName . '-' . $row->{$primaryKey} . '-datatable-td-' . $column->getSlug() }}"  :$column :$colIndex>
                                 @if($column->isHtml())
-                                    {!! $column->setIndexes($rowIndex, $colIndex)->renderContents($row) !!}
+{{--                                    {!! $column->setIndexes($rowIndex, $colIndex)->renderContents($row) !!}--}}
+                                    {!! $column->renderContents($row) !!}
+
                                 @else
-                                    {{ $column->setIndexes($rowIndex, $colIndex)->renderContents($row) }}
+{{--                                    {{ $column->setIndexes($rowIndex, $colIndex)->renderContents($row) }}--}}
+                                    {!! $column->renderContents($row) !!}
+
                                 @endif
                             </x-livewire-tables::table.td>
                         @endforeach
