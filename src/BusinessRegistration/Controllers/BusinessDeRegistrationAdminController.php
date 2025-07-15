@@ -47,6 +47,23 @@ class BusinessDeRegistrationAdminController extends Controller implements HasMid
         $action = Action::UPDATE;
         return view('BusinessRegistration::business-deregistration.form')->with(compact('businessDeRegistration', 'businessRegistrationType', 'action'));
     }
-    public function view(Request $request, $id) {}
+    public function show(Request $request, $id)
+    {
+        $businessDeRegistration = BusinessDeRegistration::with([
+            'businessRegistration',
+            'businessRegistration.applicants',
+            'businessRegistration.applicants.applicantProvince',
+            'businessRegistration.applicants.applicantDistrict',
+            'businessRegistration.applicants.applicantLocalBody',
+            'businessRegistration.applicants.citizenshipDistrict',
+            'businessRegistration.requiredBusinessDocs',
+            'businessRegistration.fiscalYear',
+            'businessRegistration.businessProvince',
+            'businessRegistration.businessDistrict',
+            'businessRegistration.businessLocalBody',
+        ])->findOrFail($id);
+
+        return view('BusinessRegistration::business-deregistration.show', compact('businessDeRegistration'));
+    }
     public function preview(Request $request, $id) {}
 }

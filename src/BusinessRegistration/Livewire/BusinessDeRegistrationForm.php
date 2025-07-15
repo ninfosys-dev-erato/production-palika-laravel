@@ -178,6 +178,7 @@ class BusinessDeRegistrationForm extends Component
         if ($this->action == Action::UPDATE) {
             $this->search = $this->businessDeRegistration->businessRegistration->entity_name;
             $this->searchBusiness();
+            $this->setFields($this->businessDeRegistration->registration_type_id);
         }
     }
 
