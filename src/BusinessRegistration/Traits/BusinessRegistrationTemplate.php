@@ -5,6 +5,7 @@ namespace Src\BusinessRegistration\Traits;
 use App\Traits\HelperTemplate;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Illuminate\Support\Str;
+use Src\BusinessRegistration\Models\BusinessDeRegistration;
 use Src\FileTracking\Models\FileRecord;
 
 trait BusinessRegistrationTemplate
@@ -13,8 +14,11 @@ trait BusinessRegistrationTemplate
     const EMPTY_LINES = '____________________';
     public $reg_no;
 
-    public function resolveTemplate(BusinessRegistration $businessRegistration)
+    public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration)
     {
+        if ($businessRegistration instanceof \Src\BusinessRegistration\Models\BusinessDeRegistration) {
+            $businessRegistration = $businessRegistration->businessRegistration;
+        }
         $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature');
 
         $template = $businessRegistration->registrationType?->form?->template ?? '';

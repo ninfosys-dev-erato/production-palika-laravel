@@ -58,6 +58,9 @@ class BusinessDeRegistrationTable extends DataTableComponent
         return BusinessDeRegistration::query()
             ->with([
                 'businessRegistration',
+                'businessRegistration.businessProvince',
+                'businessRegistration.businessDistrict',
+                'businessRegistration.businessLocalBody',
                 'businessRegistration.applicants',
                 'businessRegistration.applicants.applicantProvince',
                 'businessRegistration.applicants.applicantDistrict',
@@ -127,9 +130,9 @@ class BusinessDeRegistrationTable extends DataTableComponent
 
             Column::make(__('businessregistration::businessregistration.business_address'))->label(
                 function ($row) {
-                    $province = $row->businessRegistration?->business_province;
-                    $district = $row->businessRegistration?->business_district;
-                    $localBody = $row->businessRegistration?->business_local_body;
+                    $province = $row->businessRegistration?->businessProvince?->title;
+                    $district = $row->businessRegistration?->businessDistrict?->title;
+                    $localBody = $row->businessRegistration?->businessLocalBody?->title;
                     $ward = $row->businessRegistration?->business_ward;
                     $tole = $row->businessRegistration?->business_tole;
                     $street = $row->businessRegistration?->business_street;

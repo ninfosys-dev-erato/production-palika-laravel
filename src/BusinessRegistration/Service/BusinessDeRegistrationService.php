@@ -105,7 +105,7 @@ class BusinessDeRegistrationService
     {
         $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
 
-        $lastRegistration = ModelsBusinessDeRegistration::latest('id')->first();
+        $lastRegistration = BusinessDeRegistration::latest('id')->first();
 
         $newNumber = str_pad($lastRegistration->id + 1, 6, '0', STR_PAD_LEFT);
 
@@ -130,6 +130,19 @@ class BusinessDeRegistrationService
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
         ]);
+        return $businessDeRegistration;
+    }
+
+    public function reject(BusinessDeRegistration $businessDeRegistration, BusinessDeRegistrationUploadDto $businessRegistrationUploadDto)
+    {
+        FileTrackingFacade::recordFile($businessDeRegistration);
+        $resone = tap($businessDeRegistration)->update([
+            'rejected_by' => Auth::user()->id,
+            'application_rejection_reason' => $businessRegistrationUploadDto->application_rejection_reason,
+            'rejected_at' => now(),
+            'application_status' => ApplicationStatusEnum::REJECTED->value
+        ]);
+
         return $businessDeRegistration;
     }
 }

@@ -147,6 +147,15 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 mt-2">
+
+            @if ($businessDeRegistration->application_rejection_reason)
+                <div class="alert alert-danger rounded-bottom-4 mb-0 px-4 py-3 ">
+                    <strong>{{ __('businessregistration::businessregistration.rejection_reason') }}:</strong>
+                    {{ $businessDeRegistration->application_rejection_reason }}
+                </div>
+            @endif
+        </div>
 
         {{-- Additional Applicants Table --}}
         @php
@@ -255,7 +264,7 @@
             </div>
 
             <div class="tab-pane fade" id="navs-pills-letter" role="tabpanel">
-                {{-- <livewire:business_registration.business_registration_preview :$businessDeRegistration /> --}}
+                <livewire:business_registration.business_de_registration_preview :$businessDeRegistration />
             </div>
         </div>
 

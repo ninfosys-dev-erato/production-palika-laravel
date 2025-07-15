@@ -7,6 +7,7 @@ use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Src\BusinessRegistration\DTO\BusinessDeRegistrationUploadDto;
 use Src\BusinessRegistration\DTO\BusinessRegistrationShowDto;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
@@ -175,8 +176,8 @@ class BusinessDeRegistrationShow extends Component
         try {
             $businessDeRegistration->application_rejection_reason = $this->rejectionReason;
 
-            $dto = BusinessRegistrationShowDto::fromModel($businessDeRegistration); // linter: BusinessDeRegistration used intentionally
-            $service = new BusinessRegistrationAdminService();
+            $dto = BusinessDeRegistrationUploadDto::fromModel($businessDeRegistration); // linter: BusinessDeRegistration used intentionally
+            $service = new BusinessDeRegistrationService();
 
             $service->reject($businessDeRegistration, $dto);
             session()->flash('message', 'Recommendation rejected successfully.');
