@@ -4,6 +4,7 @@ namespace Src\BusinessRegistration\Livewire;
 
 use App\Enums\Action;
 use App\Traits\SessionFlash;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Src\BusinessRegistration\DTO\BusinessRenewalAdminDto;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
@@ -65,10 +66,12 @@ class BusinessRenewalForm extends Component
             ->where('business_status', BusinessStatusEnum::ACTIVE->value)
             ->first();
 
+
         if (is_null($this->businessData)) {
             $this->errorToast('No Data found with this name');
             return;
         }
+
         $fiscalYearId = getCurrentFiscalYear()->id;
 
         // Check for same registration number in the same fiscal year
@@ -79,12 +82,24 @@ class BusinessRenewalForm extends Component
         if ($exists) {
             $this->businessData = null;
             $this->errorFlash(__('businessregistration::businessregistration.renewal_already_exists_for_fiscal_year'));
-            return redirect()->back();
+            return;
         }
     }
     public function renewBusiness($businessRegistrationId)
     {
         $this->businessRegistrationId = $businessRegistrationId;
+
+        $renewal = BusinessRenewal::create([
+            'business_registration_id' => $this->businessData->id,
+            'fiscal_year_id' => getCurrentFiscalYear()->id,
+            'registration_no' => $this->businessData->certificate_number,
+            'created_at' => now(),
+            'created_by' => Auth::user()->id,
+            'application_status' => ApplicationStatusEnum::PENDING->value,
+
+        ]);
+        $this->successFlash(__('businessregistration::businessregistration.application_for_renewal_successful'));
+        return redirect()->route('admin.business-registration.renewals.show', ['id' => $renewal->id]);
     }
 
 

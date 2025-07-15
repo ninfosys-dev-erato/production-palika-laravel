@@ -1,7 +1,7 @@
 <?php
 return [
     'business_renewal_document' => 'व्यवसाय नवीकरण कागजात',
-    'edit' => 'सम्पादन गर्नुहोस्',
+    'edit' => 'सम्पादन',
     'create' => 'सिर्जना गर्नुहोस्',
     'create_business_renewal_document' => 'व्यवसाय नवीकरण कागजात सिर्जना गर्नुहोस्',
     'update_business_renewal_document' => 'व्यवसाय नवीकरण कागजात अद्यावधिक गर्नुहोस्',
@@ -475,4 +475,8 @@ return [
     'submit' => 'पेश गर्नुहोस्',
     'registration_form' => 'दर्ता फारम',
     'registration_list' => 'दर्ता सूची',
+    'other_applicants'         => 'अन्य आवेदकहरू',
+    'do_renew_business'          => 'व्यवसाय नविकरण गर्नुहोस्',
+    'business_renewal_form'    => 'नविकरण फारम',
+    'business_renewal_lists'   => 'नविकरण सूची',
 ];

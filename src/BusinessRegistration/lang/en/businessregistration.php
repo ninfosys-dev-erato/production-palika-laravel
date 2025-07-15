@@ -450,6 +450,12 @@ return [
     'submit' => 'Submit',
     'registration_form' => 'Registration Form',
     'registration_list' => 'Registration List',
+    'other_applicants'          => 'Other Applicants',
+    'do_renew_business'           => 'Renew Business',
+    'business_renewal_form'     => 'Business Renewal Form',
+    'business_renewal_lists'    => 'Business Renewal List',
+    'registration_list'         => 'Registration List',
+
 
 
 

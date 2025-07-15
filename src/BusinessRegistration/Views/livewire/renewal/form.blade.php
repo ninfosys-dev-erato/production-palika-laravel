@@ -15,7 +15,7 @@
                     @if ($businessData)
                         <button class="btn btn-success" type="button"
                             wire:click="renewBusiness({{ $businessData->id }})">
-                            {{ __('businessregistration::businessregistration.renew_business') }}
+                            {{ __('businessregistration::businessregistration._do_renew_business') }}
                         </button>
                     @endif
                 </div>
@@ -151,6 +151,41 @@
                     </div>
                 </div>
 
+            </div>
+        @endif
+        @if ($businessData && $businessData->applicants->count() > 1)
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">{{ __('businessregistration::businessregistration.other_applicants') }}</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ __('businessregistration::businessregistration.name') }}</th>
+                                    <th>{{ __('businessregistration::businessregistration.gender') }}</th>
+                                    <th>{{ __('businessregistration::businessregistration.phone') }}</th>
+                                    <th>{{ __('businessregistration::businessregistration.email_address') }}</th>
+                                    <th>{{ __('businessregistration::businessregistration.citizenship_number') }}</th>
+                                    <th>{{ __('businessregistration::businessregistration.position') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($businessData->applicants->slice(1) as $applicant)
+                                    <tr>
+                                        <td>{{ $applicant->applicant_name }}</td>
+                                        <td>{{ $applicant->gender }}</td>
+                                        <td>{{ $applicant->phone }}</td>
+                                        <td>{{ $applicant->email }}</td>
+                                        <td>{{ $applicant->citizenship_number }}</td>
+                                        <td>{{ $applicant->position }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         @endif
     </div>
