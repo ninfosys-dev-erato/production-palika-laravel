@@ -89,12 +89,6 @@ class BusinessRegistrationForm extends Component
         ]
     ];
 
-
-
-
-
-
-
     public $registrationCategories = [];
     public ?bool $showCategory = true;
     public bool $hasDepartment = false;
@@ -375,78 +369,7 @@ class BusinessRegistrationForm extends Component
     }
 
 
-    public function searchBusiness()
-    {
-        $businessData = BusinessRegistration::with(
-            'registrationType',
-            'registrationType.registrationCategory',
-            'requiredBusinessDocs',
-            'applicants' // Eager load applicants
-        )
-            ->whereNull('deleted_at')
-            ->whereNull('deleted_by')
-            ->where('entity_name', $this->search)
-            ->orWhere('registration_number', $this->search)
-            ->first();
 
-        if ($businessData) {
-            $this->businessRegistration = $businessData;
-            $this->businessRegistration->fiscal_year_id = getCurrentFiscalYear()->id;
-
-            // Map applicants to personalDetails
-            $this->personalDetails = $businessData->applicants
-                ->map(function ($applicant) {
-                    $citizenshipFront = $applicant->citizenship_front;
-                    $citizenshipRear = $applicant->citizenship_rear;
-                    return [
-                        'applicant_name' => $applicant->applicant_name,
-                        'gender' => $applicant->gender,
-                        'father_name' => $applicant->father_name,
-                        'grandfather_name' => $applicant->grandfather_name,
-                        'phone' => $applicant->phone,
-                        'email' => $applicant->email,
-                        'citizenship_number' => $applicant->citizenship_number,
-                        'citizenship_issued_date' => $applicant->citizenship_issued_date,
-                        'citizenship_issued_district' => $applicant->citizenship_issued_district,
-                        'applicant_province' => $applicant->applicant_province,
-                        'applicant_district' => $applicant->applicant_district,
-                        'applicant_local_body' => $applicant->applicant_local_body,
-                        'applicant_ward' => $applicant->applicant_ward,
-                        'applicant_tole' => $applicant->applicant_tole,
-                        'applicant_street' => $applicant->applicant_street,
-                        'position' => $applicant->position,
-                        'citizenship_front' => $citizenshipFront,
-                        'citizenship_rear' => $citizenshipRear,
-                        'citizenship_front_url' => $citizenshipFront
-                            ? FileFacade::getTemporaryUrl(
-                                config('src.BusinessRegistration.businessRegistration.registration'),
-                                $citizenshipFront,
-                                'local'
-                            ) : '',
-                        'citizenship_rear_url' => $citizenshipRear
-                            ? FileFacade::getTemporaryUrl(
-                                config('src.BusinessRegistration.businessRegistration.registration'),
-                                $citizenshipRear,
-                                'local'
-                            ) : '',
-                    ];
-                })
-                ->toArray();
-
-            foreach (array_keys($this->personalDetails) as $index) {
-                $this->getApplicantDistricts($index);
-                $this->getApplicantLocalBodies($index);
-                $this->getApplicantWards($index);
-            }
-            $this->getBusinessDistricts();
-            $this->getBusinessLocalBodies();
-            $this->getBusinessWards();
-            $this->action =  Action::CREATE;
-            $this->showData = true;
-        } else {
-            $this->errorToast('No Data found with this name');
-        }
-    }
     public function setFields(int|string $registrationTypeId)
     {
 
@@ -460,8 +383,6 @@ class BusinessRegistrationForm extends Component
         $this->businessRegistration['registration_category'] = $registrationType->registration_category_enum;
 
         $this->requiredBusinessDocuments = config("src.BusinessRegistration.businessRequiredDocs.{$this->registrationTypeEnum}", []);
-
-
 
 
         if (!empty($registrationType->department_id)) {
@@ -515,6 +436,24 @@ class BusinessRegistrationForm extends Component
                 $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
             } elseif ($field['type'] === 'file') {
                 $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
+                // If editing, generate URL(s) for existing value(s)
+                if (!empty($field['value'])) {
+                    if (($field['is_multiple'] ?? 'no') === 'yes' && is_array($field['value'])) {
+                        $field['urls'] = array_map(function ($filename) {
+                            return FileFacade::getTemporaryUrl(
+                                config('src.BusinessRegistration.businessRegistration.registration'),
+                                $filename,
+                                'local'
+                            );
+                        }, $field['value']);
+                    } elseif (is_string($field['value'])) {
+                        $field['url'] = FileFacade::getTemporaryUrl(
+                            config('src.BusinessRegistration.businessRegistration.registration'),
+                            $field['value'],
+                            'local'
+                        );
+                    }
+                }
             }
             return $field;
         })->mapWithKeys(function ($field) {
@@ -721,10 +660,10 @@ class BusinessRegistrationForm extends Component
         };
     }
 
-    public function getRegistrationTypes(int|string $id): void
-    {
-        $this->registrationTypes = RegistrationType::where('registration_category_id', $id)->where('action', $this->businessRegistrationType)->pluck('id', 'title')->toArray();
-    }
+    // public function getRegistrationTypes(int|string $id): void
+    // {
+    //     $this->registrationTypes = RegistrationType::where('registration_category_id', $id)->where('action', $this->businessRegistrationType)->pluck('id', 'title')->toArray();
+    // }
 
 
 
@@ -802,73 +741,7 @@ class BusinessRegistrationForm extends Component
         $this->showRentFields = (int) $value === 1;
     }
 
-    public function handleFileUpload($file, int $index, string $field)
-    {
-        if (!$file) {
-            return;
-        }
 
-        $save = FileFacade::saveFile(
-            path: config('src.BusinessRegistration.businessRegistration.registration'),
-            file: $file,
-            disk: "local",
-            filename: ""
-        );
-
-        // Save file name in personalDetails
-        $this->personalDetails[$index][$field] = $save;
-
-        // Generate temporary URL
-        $this->personalDetails[$index][$field . '_url'] = FileFacade::getTemporaryUrl(
-            path: config('src.BusinessRegistration.businessRegistration.registration'),
-            filename: $save,
-            disk: 'local'
-        );
-    }
-
-    // public function updated($propertyName)
-    // {
-    //     if (preg_match('/^personalDetails\.(\d+)\.citizenship_front$/', $propertyName, $matches)) {
-    //         $index = (int) $matches[1];
-    //         $file = data_get($this->personalDetails, "$index.citizenship_front");
-    //         $this->handleFileUpload($file, $index, 'citizenship_front');
-    //     }
-
-    //     if (preg_match('/^personalDetails\.(\d+)\.citizenship_rear$/', $propertyName, $matches)) {
-    //         $index = (int) $matches[1];
-    //         $file = data_get($this->personalDetails, "$index.citizenship_rear");
-    //         $this->handleFileUpload($file, $index, 'citizenship_rear');
-    //     }
-    // }
-
-
-
-    // Add this method to handle file uploads for each applicant
-    // public function handleApplicantFileUpload(&$applicant, $fileField, $urlField)
-    // {
-    //     $file = $applicant[$fileField] ?? null;
-    //     if ($file && $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-    //         $save = FileFacade::saveFile(
-    //             path: config('src.BusinessRegistration.businessRegistration.registration'),
-    //             file: $file,
-    //             disk: "local",
-    //             filename: ""
-    //         );
-    //         $applicant[$fileField] = $save;
-    //         $applicant[$urlField] = FileFacade::getTemporaryUrl(
-    //             path: config('src.BusinessRegistration.businessRegistration.registration'),
-    //             filename: $save,
-    //             disk: 'local'
-    //         );
-    //     } elseif (!empty($applicant[$fileField]) && is_string($applicant[$fileField])) {
-    //         // If already saved, just get the URL
-    //         $applicant[$urlField] = FileFacade::getTemporaryUrl(
-    //             path: config('src.BusinessRegistration.businessRegistration.registration'),
-    //             filename: $applicant[$fileField],
-    //             disk: 'local'
-    //         );
-    //     }
-    // }
 
     public function updatedPersonalDetails($value, $name)
     {
@@ -880,41 +753,100 @@ class BusinessRegistrationForm extends Component
             $file = $this->personalDetails[$index][$field] ?? null;
 
 
-            $this->handleFileUpload($file, (int) $index, $field);
+            // $this->handleFileUpload($file, (int) $index, $field);
+            $this->handleFileUpload($file, $field, (int)$index, 'personal');
         }
     }
 
     public function updatedBusinessRequiredDoc($value, $field)
     {
         if (isset($this->requiredBusinessDocuments[$field])) {
-            $this->uploadBusinessDocument($value, $field);
+
+
+            $this->handleFileUpload($value, $field, null, 'business');
         }
     }
 
-    public function uploadBusinessDocument($file, string $field)
+    // Add this method to handle file uploads for dynamic fields
+    public function updatedData($value, $name)
+    {
+        $parts = explode('.', $name);
+        $fieldSlug = $parts[0];
+        $fieldKey = $parts[1] ?? null;
+
+        if (!isset($this->data[$fieldSlug])) return;
+        $field = &$this->data[$fieldSlug];
+
+        if ($field['type'] === 'file') {
+            // Single file or multiple files
+            $files = $field['value'];
+            if (!$files) return;
+            if (isset($field['is_multiple']) && $field['is_multiple'] === 'yes') {
+                $urls = [];
+                $filenames = [];
+                foreach ((array)$files as $file) {
+                    if ($file) {
+                        $filename = FileFacade::saveFile(
+                            path: config('src.BusinessRegistration.businessRegistration.registration'),
+                            file: $file,
+                            disk: 'local',
+                            filename: ''
+                        );
+                        $filenames[] = $filename;
+                        $urls[] = FileFacade::getTemporaryUrl(
+                            path: config('src.BusinessRegistration.businessRegistration.registration'),
+                            filename: $filename,
+                            disk: 'local'
+                        );
+                    }
+                }
+                $field['value'] = $filenames;
+                $field['urls'] = $urls;
+            } else {
+                $file = $files;
+                if ($file) {
+                    $filename = FileFacade::saveFile(
+                        path: config('src.BusinessRegistration.businessRegistration.registration'),
+                        file: $file,
+                        disk: 'local',
+                        filename: ''
+                    );
+                    $field['value'] = $filename;
+                    $field['url'] = FileFacade::getTemporaryUrl(
+                        path: config('src.BusinessRegistration.businessRegistration.registration'),
+                        filename: $filename,
+                        disk: 'local'
+                    );
+                }
+            }
+        }
+    }
+
+    private function handleFileUpload($file, $field, $index = null, $target = 'personal')
     {
         if (!$file) return;
 
-        try {
-            $filename = FileFacade::saveFile(
-                path: config('src.BusinessRegistration.businessRegistration.registration'),
-                file: $file,
-                disk: 'local',
-                filename: ''
-            );
+        $filename = FileFacade::saveFile(
+            path: config('src.BusinessRegistration.businessRegistration.registration'),
+            file: $file,
+            disk: 'local',
+            filename: ''
+        );
 
+        $url = FileFacade::getTemporaryUrl(
+            path: config('src.BusinessRegistration.businessRegistration.registration'),
+            filename: $filename,
+            disk: 'local'
+        );
+
+        if ($target === 'personal' && $index !== null) {
+            $this->personalDetails[$index][$field] = $filename;
+            $this->personalDetails[$index][$field . '_url'] = $url;
+        } elseif ($target === 'business') {
             $this->businessRequiredDoc[$field] = $filename;
-
-            $this->businessRequiredDocUrl[$field . '_url'] = FileFacade::getTemporaryUrl(
-                path: config('src.BusinessRegistration.businessRegistration.registration'),
-                filename: $filename,
-                disk: 'local'
-            );
-        } catch (\Exception $e) {
-            $this->errorFlash('Failed to upload document: ' . $e->getMessage());
+            $this->businessRequiredDocUrl[$field . '_url'] = $url;
         }
     }
-
     public function save()
     {
         DB::beginTransaction();
@@ -930,6 +862,7 @@ class BusinessRegistrationForm extends Component
             switch ($this->action) {
                 case Action::CREATE:
                     $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
+
                     $success = $service->store($dto);
 
                     if ($success instanceof BusinessRegistration) {
@@ -967,6 +900,7 @@ class BusinessRegistrationForm extends Component
 
                 case Action::UPDATE:
                     $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
+
                     $success = $service->update($dto, $this->businessRegistration);
 
                     if ($success instanceof BusinessRegistration) {
@@ -1012,16 +946,5 @@ class BusinessRegistrationForm extends Component
             logger($e->getMessage());
             $this->errorFlash('Something went wrong while saving. ' . $e->getMessage());
         }
-    }
-
-
-
-    /**
-     * this function is used to make input field readonly
-     * checks type and return true if matches and make input filed readonly
-     */
-    public function getIsReadonlyProperty(): bool
-    {
-        return $this->businessRegistrationType === BusinessRegistrationType::DEREGISTRATION;
     }
 }

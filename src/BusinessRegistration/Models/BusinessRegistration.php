@@ -68,7 +68,7 @@ class BusinessRegistration extends Model
         'landplotnumber',
         'area',
 
-        'registration_id',
+
 
         'amount',
         'application_rejection_reason',
@@ -256,10 +256,6 @@ class BusinessRegistration extends Model
     {
         $enum = BusinessStatusEnum::tryFrom($this->business_status);
         return $enum ? BusinessStatusEnum::getNepaliLabel($enum) : '';
-    }
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(BusinessRegistration::class, 'registration_id');
     }
 
     public function applicants(): HasMany

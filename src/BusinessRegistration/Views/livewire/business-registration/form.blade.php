@@ -82,7 +82,7 @@
                                         </label>
                                         <select wire:model="personalDetails.{{ $index }}.gender" name="gender"
                                             class="form-control @error('businessRegistration.gender') is-invalid @enderror"
-                                            id="gender" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="gender">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_gender') }}
                                             </option>
@@ -206,8 +206,7 @@
                                             wire:model="personalDetails.{{ $index }}.citizenship_issued_district"
                                             name="citizenship_issued_district"
                                             class="form-control @error('businessRegistration.citizenship_issued_district') is-invalid @enderror"
-                                            id="citizenship_issued_district"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="citizenship_issued_district">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.placeholder_issued_district') }}
                                             </option>
@@ -231,8 +230,7 @@
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.citizenship_front"
                                             type="file" class="form-control"
-                                            id="citizenship_front_{{ $index }}" accept="image/*"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="citizenship_front_{{ $index }}" accept="image/*">
                                         <div wire:loading
                                             wire:target="personalDetails.{{ $index }}.citizenship_front">
                                             <span class="spinner-border spinner-border-sm" role="status"
@@ -256,8 +254,7 @@
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.citizenship_rear"
                                             type="file" class="form-control"
-                                            id="citizenship_rear_{{ $index }}" accept="image/*"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="citizenship_rear_{{ $index }}" accept="image/*">
                                         <div wire:loading
                                             wire:target="personalDetails.{{ $index }}.citizenship_rear">
                                             <span class="spinner-border spinner-border-sm" role="status"
@@ -291,8 +288,7 @@
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_province"
                                             class="form-control" name="applicant_province"
-                                            wire:change="getApplicantDistricts({{ $index }})"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            wire:change="getApplicantDistricts({{ $index }})">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_province') }}
                                             </option>
@@ -310,8 +306,7 @@
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_district"
                                             class="form-control" name="applicant_district"
-                                            wire:change="getApplicantLocalBodies({{ $index }})"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            wire:change="getApplicantLocalBodies({{ $index }})">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_district') }}
                                             </option>
@@ -329,8 +324,7 @@
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_local_body"
                                             class="form-control" name="applicant_local_body"
-                                            wire:change="getApplicantWards({{ $index }})"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            wire:change="getApplicantWards({{ $index }})">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_local_body') }}
                                             </option>
@@ -347,8 +341,7 @@
                                             {{ __('businessregistration::businessregistration.ward') }}
                                         </label>
                                         <select wire:model.live="personalDetails.{{ $index }}.applicant_ward"
-                                            class="form-control" name="applicant_ward"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            class="form-control" name="applicant_ward">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_ward') }}
                                             </option>
@@ -443,7 +436,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <select wire:model="businessRegistration.fiscal_year" class="form-control"
-                                        name="fiscal_year" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        name="fiscal_year">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.fiscal_year') }}
                                         </option>
@@ -552,7 +545,7 @@
                                     </label>
                                     <select wire:model.live="businessRegistration.business_province"
                                         class="form-control" name="business_province"
-                                        wire:change="getBusinessDistricts" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        wire:change="getBusinessDistricts">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_province') }}
                                         </option>
@@ -570,8 +563,7 @@
                                     </label>
                                     <select wire:model.live="businessRegistration.business_district"
                                         class="form-control" name="business_district"
-                                        wire:change="getBusinessLocalBodies"
-                                        {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        wire:change="getBusinessLocalBodies">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_district') }}
                                         </option>
@@ -589,7 +581,7 @@
                                     </label>
                                     <select wire:model.live="businessRegistration.business_local_body"
                                         class="form-control" name="business_local_body"
-                                        wire:change="getBusinessWards" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        wire:change="getBusinessWards">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_local_body') }}
                                         </option>
@@ -606,7 +598,7 @@
                                         {{ __('businessregistration::businessregistration.ward') }}
                                     </label>
                                     <select wire:model.live="businessRegistration.business_ward" class="form-control"
-                                        name="business_ward" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        name="business_ward">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_ward') }}
                                         </option>
@@ -803,7 +795,7 @@
                                             </label>
                                             <input wire:model="businessRegistration.rentagreement"
                                                 name="rentagreement" type="file" class="form-control"
-                                                id="rentagreement" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                                id="rentagreement">
                                             <div wire:loading wire:target="businessRegistration.rentagreement">
                                                 <span class="spinner-border spinner-border-sm" role="status"
                                                     aria-hidden="true"></span>
@@ -1087,8 +1079,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label-peaceful">{{ $label['ne'] }}</label>
                                     <input type="file" wire:model="businessRequiredDoc.{{ $field }}"
-                                        class="form-control" id="{{ $field }}"
-                                        {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        class="form-control" id="{{ $field }}">
                                     <div wire:loading wire:target="businessRequiredDoc.{{ $field }}">
                                         <span class="spinner-border spinner-border-sm" role="status"
                                             aria-hidden="true"></span>
@@ -1118,6 +1109,23 @@
                                         @foreach ($data as $key => $field)
                                             <div class="col-md-6">
                                                 <x-form.field :field="$field" />
+
+                                                @if ($field['type'] === 'file' && !empty($field['url']))
+                                                    <a href="{{ $field['url'] }}" target="_blank"
+                                                        class="btn btn-sm btn-outline-primary mt-2">
+                                                        <i class="bx bx-file"></i>
+                                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                    </a>
+                                                @endif
+                                                @if ($field['type'] === 'file' && !empty($field['urls']) && is_array($field['urls']))
+                                                    @foreach ($field['urls'] as $url)
+                                                        <a href="{{ $url }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-primary mt-2">
+                                                            <i class="bx bx-file"></i>
+                                                            {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                        </a>
+                                                    @endforeach
+                                                @endif
                                             </div>
                                         @endforeach
                                     @endif

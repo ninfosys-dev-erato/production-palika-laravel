@@ -67,9 +67,11 @@
                     @endforeach
                 </select>
             </div>
-            @error('registrationType.registration_category_enum')
-                <div class="invalid-feedback">{{ __($message) }}</div>
-            @enderror
+            <div>
+                @error('registrationType.registration_category_enum')
+                    <small class='text-danger'>{{ __($message) }}</small>
+                @enderror
+            </div>
         </div>
 
         <div class="col-md-6 mb-3">

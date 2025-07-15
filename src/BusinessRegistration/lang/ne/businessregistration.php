@@ -479,4 +479,5 @@ return [
     'do_renew_business'          => 'व्यवसाय नविकरण गर्नुहोस्',
     'business_renewal_form'    => 'नविकरण फारम',
     'business_renewal_lists'   => 'नविकरण सूची',
+    'the_registration_category_enum_is_required' => 'दर्ता प्रकार आवश्यक छ।',
 ];

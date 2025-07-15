@@ -43,7 +43,7 @@ class BusinessRegistrationAdminService
             'created_at'                    => date('Y-m-d H:i:s'),
             'created_by'                     => $businessRegistrationAdminDto->created_by,
             'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
-            'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
+
             'registration_number' => $businessRegistrationAdminDto->registration_number,
             'certificate_number' => $businessRegistrationAdminDto->certificate_number,
             'application_status' => ApplicationStatusEnum::PENDING->value,
@@ -101,7 +101,6 @@ class BusinessRegistrationAdminService
             'created_at'                    => date('Y-m-d H:i:s'),
             'created_by'                     => $businessRegistrationAdminDto->created_by,
             'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
-            'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
             'registration_number' => $businessRegistrationAdminDto->registration_number,
             'certificate_number' => $businessRegistrationAdminDto->certificate_number,
             'application_status' => ApplicationStatusEnum::PENDING->value,
