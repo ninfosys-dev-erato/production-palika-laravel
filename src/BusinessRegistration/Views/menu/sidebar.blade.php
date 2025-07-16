@@ -17,7 +17,8 @@ $registrationTypes = Cache::remember('registration_types_by_enum', 60, function 
         class="menu-header-text">{{ __('businessregistration::businessregistration.business_registration__renewal') }}</span>
 </li>
 
-<li class="menu-item {{ request('type') === BusinessRegistrationType::REGISTRATION->value ? 'active' : '' }}">
+<li
+    class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.business-registration.business-registration.*') ? 'active' : '' }}">
     <a href="{{ route('admin.business-registration.business-registration.index', ['type' => BusinessRegistrationType::REGISTRATION]) }}"
         class="menu-link">
         <i class="menu-icon tf-icons bx bx-video"></i>

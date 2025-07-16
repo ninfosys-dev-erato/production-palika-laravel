@@ -2,7 +2,6 @@
     @push('styles')
         <link rel="stylesheet" href="{{ asset('home') }}/businessstyle.css">
     @endpush
-
     <div>
 
         <!-- Header Card -->
@@ -31,6 +30,7 @@
                             {{ __('businessregistration::businessregistration.personal_details') }}
                         </h5>
                     </div>
+
                     @php
                         $firstApplicant = $businessRegistration->applicants->first();
                     @endphp
@@ -41,6 +41,7 @@
                                     <p><strong>{{ __('businessregistration::businessregistration.name') }}:</strong>
                                         {{ $firstApplicant->applicant_name }}</p>
                                 </div>
+
                                 <div class="col-sm-6">
                                     <p><strong>{{ __('businessregistration::businessregistration.gender') }}:</strong>
                                         {{ $firstApplicant->gender }}</p>
