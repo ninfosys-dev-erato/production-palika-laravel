@@ -481,4 +481,6 @@ return [
     'business_renewal_lists'   => 'नविकरण सूची',
     'the_registration_category_enum_is_required' => 'दर्ता प्रकार आवश्यक छ।',
     'business_registration_applied_successfully' => 'व्यवसाय दर्ता गरिएको छ।',
+    'old_registration_number' => 'पुरानो दर्ता नम्बर',
+    'deregistration_registration_number' => 'खारेजी दर्ता नम्बर',
 ];

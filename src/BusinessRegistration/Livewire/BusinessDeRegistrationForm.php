@@ -200,14 +200,16 @@ class BusinessDeRegistrationForm extends Component
             'businessDistrict',
             'businessLocalBody'
         )
+            ->where('entity_name', $this->search)
             ->whereNull('deleted_at')
-            ->whereNull('deleted_by')
+
             ->where(function ($query) {
                 $query->where('entity_name', $this->search)
                     ->orWhere('registration_number', $this->search);
             })
             ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
             ->first();
+
 
         if ($businessData) {
             if ($this->action == Action::CREATE) {
