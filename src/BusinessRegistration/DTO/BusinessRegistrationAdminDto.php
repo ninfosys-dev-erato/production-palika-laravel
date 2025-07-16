@@ -27,6 +27,7 @@ class BusinessRegistrationAdminDto
         public ?string $business_ward,
         public ?string $business_tole,
         public ?string $business_street,
+        public ?string $purpose,
 
         // New fields
         public ?string $working_capital,
@@ -40,7 +41,7 @@ class BusinessRegistrationAdminDto
         public ?string $operation_date,
         public ?string $others,
         public ?string $houseownername,
-        public ?string $phone,
+        public ?string $house_owner_phone,
         public ?string $monthly_rent,
         public ?string $rentagreement,
         public ?string $east,
@@ -86,6 +87,7 @@ class BusinessRegistrationAdminDto
             business_ward: $businessRegistration->business_ward ?? null,
             business_tole: $businessRegistration->business_tole ?? null,
             business_street: $businessRegistration->business_street ?? null,
+            purpose: $businessRegistration->purpose ?? null,
 
             working_capital: $businessRegistration->working_capital ?? null,
             fixed_capital: $businessRegistration->fixed_capital ?? null,
@@ -98,7 +100,7 @@ class BusinessRegistrationAdminDto
             operation_date: $businessRegistration->operation_date ?? null,
             others: $businessRegistration->others ?? null,
             houseownername: $businessRegistration->houseownername ?? null,
-            phone: $businessRegistration->phone ?? null,
+            house_owner_phone: $businessRegistration->house_owner_phone ?? null,
             monthly_rent: $businessRegistration->monthly_rent ?? null,
             rentagreement: $businessRegistration->rentagreement ?? null,
             east: $businessRegistration->east ?? null,

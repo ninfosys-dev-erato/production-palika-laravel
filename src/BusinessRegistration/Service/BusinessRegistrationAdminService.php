@@ -34,6 +34,7 @@ class BusinessRegistrationAdminService
             'business_tole'                => $businessRegistrationAdminDto->business_tole,
             'business_street'              => $businessRegistrationAdminDto->business_street,
             'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
+            'purpose'                      => $businessRegistrationAdminDto->purpose,
             'entity_name'                  => $businessRegistrationAdminDto->entity_name,
             'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
             'registration_date_en'         => $businessRegistrationAdminDto->registration_date_en,
@@ -59,7 +60,7 @@ class BusinessRegistrationAdminService
             'operation_date'               => $businessRegistrationAdminDto->operation_date,
             'others'                       => $businessRegistrationAdminDto->others,
             'houseownername' => $businessRegistrationAdminDto->houseownername,
-            'phone' => $businessRegistrationAdminDto->phone,
+            'house_owner_phone' => $businessRegistrationAdminDto->house_owner_phone,
             'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
             'rentagreement' => $businessRegistrationAdminDto->rentagreement,
             'east' => $businessRegistrationAdminDto->east,
@@ -90,6 +91,7 @@ class BusinessRegistrationAdminService
             'business_ward'                => $businessRegistrationAdminDto->business_ward,
             'business_tole'                => $businessRegistrationAdminDto->business_tole,
             'business_street'              => $businessRegistrationAdminDto->business_street,
+            'purpose'                      => $businessRegistrationAdminDto->purpose,
             'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
             'entity_name'                  => $businessRegistrationAdminDto->entity_name,
             'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
@@ -116,7 +118,7 @@ class BusinessRegistrationAdminService
             'operation_date'               => $businessRegistrationAdminDto->operation_date,
             'others'                       => $businessRegistrationAdminDto->others,
             'houseownername' => $businessRegistrationAdminDto->houseownername,
-            'phone' => $businessRegistrationAdminDto->phone,
+            'house_owner_phone' => $businessRegistrationAdminDto->house_owner_phone,
             'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
             'rentagreement' => $businessRegistrationAdminDto->rentagreement,
             'east' => $businessRegistrationAdminDto->east,
@@ -197,7 +199,6 @@ class BusinessRegistrationAdminService
             'business_status' => BusinessStatusEnum::ACTIVE->value,
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
-            'business_status' => BusinessStatusEnum::ACTIVE->value,
         ]);
 
         return $businessRegistration;
@@ -220,12 +221,16 @@ class BusinessRegistrationAdminService
 
     public function generateBusinessRegistrationNumber()
     {
+        $fiscalYearKey = key(getSettingWithKey('fiscal-year'));
         $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
 
-        $lastRegistration = BusinessRegistration::latest('id')->first();
+        $lastRegistration = BusinessRegistration::latest('id')
+            ->where('fiscal_year', $fiscalYearKey)
+            ->first();
 
-        $newNumber = str_pad($lastRegistration->id + 1, 6, '0', STR_PAD_LEFT);
+        $lastId = $lastRegistration ? $lastRegistration->id : 0;
 
+        $newNumber = str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
         $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
 
         return $newRegistrationNumber;

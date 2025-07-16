@@ -124,9 +124,11 @@ class BusinessRegistrationShow extends Component
             'bill_no' => 'required|string|max:255',
         ]);
 
+
         $service = new BusinessRegistrationAdminService();
         try {
             $registrationNumber = $service->generateBusinessRegistrationNumber();
+
             $registration_date_en = date('Y-m-d');
             $registration_date_ne = $this->adToBs($registration_date_en);
 
@@ -138,12 +140,13 @@ class BusinessRegistrationShow extends Component
                 'bill_no' => $this->bill_no,
             ];
 
+
             $service->accept($this->businessRegistration, $data);
             $this->successFlash(__('businessregistration::businessregistration.business_registration_approved_successfully'));
             return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
         } catch (\Exception $e) {
             logger()->error($e);
-            $this->errorFlash('Something went wrong while rejecting.', $e->getMessage());
+            $this->errorFlash('Something went wrong while accepting.', $e->getMessage());
         }
     }
 

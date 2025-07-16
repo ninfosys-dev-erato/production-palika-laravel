@@ -166,7 +166,7 @@ class BusinessRegistrationForm extends Component
             'businessRegistration.operation_date' => ['nullable'],
             'businessRegistration.others' => ['nullable'],
             'businessRegistration.houseownername' => ['nullable'],
-            'businessRegistration.phone' => ['nullable'],
+            'businessRegistration.house_owner_phone' => ['nullable'],
             'businessRegistration.monthly_rent' => ['nullable'],
             'businessRegistration.rentagreement' => ['nullable'],
             'businessRegistration.east' => ['nullable'],

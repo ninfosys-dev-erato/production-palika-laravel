@@ -47,6 +47,7 @@ class BusinessRegistration extends Model
         'business_ward',
         'business_tole',
         'business_street',
+        'purpose',
 
         'working_capital',
         'fixed_capital',
@@ -60,6 +61,7 @@ class BusinessRegistration extends Model
         'others',
         'houseownername',
         'monthly_rent',
+        'house_owner_phone',
         'rentagreement',
         'east',
         'west',
@@ -108,6 +110,7 @@ class BusinessRegistration extends Model
         'business_ward' => 'string',
         'business_tole' => 'string',
         'business_street' => 'string',
+        'purpose' => 'string',
 
         'working_capital' => 'string',
         'fixed_capital' => 'string',
@@ -121,6 +124,7 @@ class BusinessRegistration extends Model
         'others' => 'string',
         'houseownername' => 'string',
         'monthly_rent' => 'string',
+        'house_owner_phone' => 'string',
         'rentagreement' => 'string',
         'east' => 'string',
         'west' => 'string',

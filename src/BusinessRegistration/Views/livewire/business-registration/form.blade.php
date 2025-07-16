@@ -775,7 +775,7 @@
                                             <label for="business_phone" class="form-label-peaceful">
                                                 {{ __('businessregistration::businessregistration.land/house_owner_phone') }}
                                             </label>
-                                            <input wire:model="businessRegistration.phone" name="text"
+                                            <input wire:model="businessRegistration.house_owner_phone" name="text"
                                                 type="text" class="form-control" id="business_phone"
                                                 placeholder="{{ __('businessregistration::businessregistration.placeholder_land/house_owner_phone') }}">
                                         </div>
