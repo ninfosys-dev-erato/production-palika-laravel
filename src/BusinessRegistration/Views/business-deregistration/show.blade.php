@@ -117,7 +117,11 @@
                                     {{ $businessDeRegistration->application_date }}</p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.registration_number') }}:</strong>
+                                <p><strong>{{ __('businessregistration::businessregistration.old_registration_number') }}:</strong>
+                                    {{ $businessDeRegistration->businessRegistration?->registration_number }}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong>{{ __('businessregistration::businessregistration.deregistration_registration_number') }}:</strong>
                                     {{ $businessDeRegistration?->registration_number }}</p>
                             </div>
                             <div class="col-sm-6">

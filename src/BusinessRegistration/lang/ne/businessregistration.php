@@ -339,7 +339,7 @@ return [
     'south' => 'दक्षिण',
     'landplotnumber' => 'जग्गा कित्त्ता नम्बर',
     'area' => 'क्षेत्रफल',
-    'is_rented' => 'के व्यवसाय तथा घर बहालमा?',
+    'is_rented' => 'के व्यवसाय तथा घर बहालमा छ?',
     'yes' => 'हो',
     'no' => 'होइन',
     'placeholder_houseownername' => 'घरधनीको नाम लेख्नुहोस्',
@@ -479,4 +479,8 @@ return [
     'do_renew_business'          => 'व्यवसाय नविकरण गर्नुहोस्',
     'business_renewal_form'    => 'नविकरण फारम',
     'business_renewal_lists'   => 'नविकरण सूची',
+    'the_registration_category_enum_is_required' => 'दर्ता प्रकार आवश्यक छ।',
+    'business_registration_applied_successfully' => 'व्यवसाय दर्ता गरिएको छ।',
+    'old_registration_number' => 'पुरानो दर्ता नम्बर',
+    'deregistration_registration_number' => 'खारेजी दर्ता नम्बर',
 ];

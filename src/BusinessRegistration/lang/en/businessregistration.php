@@ -455,6 +455,10 @@ return [
     'business_renewal_form'     => 'Business Renewal Form',
     'business_renewal_lists'    => 'Business Renewal List',
     'registration_list'         => 'Registration List',
+    'the_registration_category_enum_is_required' => 'The registration category enum is required.',
+    'business_registration_applied_successfully' => 'Business registration applied successfully.',
+    'old_registration_number' => 'Old Registration Number',
+    'deregistration_registration_number' => 'Deregistration Registration Number',
 
 
 

@@ -106,12 +106,17 @@ class BusinessDeRegistrationService
     }
     public function generateBusinessDeRegistrationNumber()
     {
+
+        $fiscalYearKey = key(getSettingWithKey('fiscal-year'));
         $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
 
-        $lastRegistration = BusinessDeRegistration::latest('id')->first();
+        $lastRegistration = BusinessDeRegistration::latest('id')
+            ->where('fiscal_year', $fiscalYearKey)
+            ->first();
 
-        $newNumber = str_pad($lastRegistration->id + 1, 6, '0', STR_PAD_LEFT);
+        $lastId = $lastRegistration ? $lastRegistration->id : 0;
 
+        $newNumber = str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
         $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
 
         return $newRegistrationNumber;
