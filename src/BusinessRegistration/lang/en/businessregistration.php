@@ -476,6 +476,7 @@ return [
     'deregistration_details' => 'Deregistration Details',
     'de_registration_application_detail' => 'Deregistration Application Detail',
     'files' => 'Files',
+    'additional_information' => 'Additional Information',
 
 
 

@@ -74,8 +74,8 @@ trait BusinessRegistrationTemplate
             '{{business.entity_name}}' => $businessRegistration->entity_name ?? ' ',
             '{{business.registration_date}}' => replaceNumbers($businessRegistration->registration_date, true) ?? ' ',
             '{{business.registration_date_en}}' => $businessRegistration->registration_date_en ?? ' ',
-            '{{business.registration_number}}' => $businessRegistration->registration_number ?? ' ',
-            '{{business.certificate_number}}' => $businessRegistration->certificate_number ?? ' ',
+            '{{business.registration_number}}' => replaceNumbers($businessRegistration->registration_number, true) ?? ' ',
+            '{{business.certificate_number}}' => replaceNumbers($businessRegistration->certificate_number, true) ?? ' ',
 
             // Applicant details - handle multiple applicants
             '{{business.applicant_name}}' => $this->getApplicantNames($businessRegistration),

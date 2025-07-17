@@ -501,4 +501,5 @@ return [
     'deregistration_details' => 'खारेजी विवरण',
     'de_registration_application_detail' => 'खारेजी आवेदन विवरण',
     'files' => 'फाइलहरू',
+    'additional_information' => 'थप जानकारी',
 ];

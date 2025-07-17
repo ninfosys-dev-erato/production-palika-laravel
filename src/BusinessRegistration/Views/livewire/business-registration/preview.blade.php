@@ -28,7 +28,7 @@
         .a4-container {
             width: 210mm;
             min-height: 297mm;
-            padding: 5mm 10mm;
+            padding: 15mm 25mm;
             margin: auto;
             background: white;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);

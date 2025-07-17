@@ -801,9 +801,9 @@
                                                 Uploading...
                                             </div>
 
-                                            @if($rentagreement_url)
-                                                <a href="{{ $rentagreement_url }}"
-                                                    target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                            @if ($rentagreement_url)
+                                                <a href="{{ $rentagreement_url }}" target="_blank"
+                                                    class="btn btn-sm btn-outline-primary mt-2">
                                                     <i class="bx bx-file"></i>
                                                     {{ __('businessregistration::businessregistration.view_uploaded_file') }}
                                                 </a>
@@ -1106,6 +1106,11 @@
                             <div id="dynamic-form">
                                 <div class="row">
                                     @if (!empty($data))
+                                        <div class="divider divider-primary text-start text-primary mb-4">
+                                            <div class="divider-text fw-bold fs-6">
+                                                {{ __('businessregistration::businessregistration.additional_information') }}
+                                            </div>
+                                        </div>
                                         @foreach ($data as $key => $field)
                                             <div class="col-md-6">
                                                 <x-form.field :field="$field" />
