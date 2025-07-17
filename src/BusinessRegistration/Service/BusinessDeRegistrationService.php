@@ -124,6 +124,7 @@ class BusinessDeRegistrationService
 
     public function accept(BusinessDeRegistration $businessDeRegistration, array $data): BusinessDeRegistration
     {
+        $businessDeRegistration->load('businessRegistration');
         FileTrackingFacade::recordFile($businessDeRegistration);
         tap($businessDeRegistration)->update([
             'application_status' => ApplicationStatusEnum::ACCEPTED->value,
@@ -138,6 +139,13 @@ class BusinessDeRegistrationService
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
         ]);
+        $businessRegistration = $businessDeRegistration->businessRegistration;
+        if ($businessRegistration) {
+            $businessRegistration->update([
+                'business_status' => BusinessStatusEnum::INACTIVE->value,
+                'application_status' => ApplicationStatusEnum::DEREGISTERED->value,
+            ]);
+        }
         return $businessDeRegistration;
     }
 

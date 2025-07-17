@@ -11,6 +11,7 @@ enum ApplicationStatusEnum: string
     case SENT_FOR_APPROVAL = 'sent for approval';
     case ACCEPTED = 'accepted';
     case SENT_FOR_RENEWAL = 'sent for renewal';
+    case DEREGISTERED = 'deregistered';
 
     public function label(): string
     {
@@ -26,7 +27,8 @@ enum ApplicationStatusEnum: string
             self::BILL_UPLOADED => __('Bill Uploaded'),
             self::SENT_FOR_APPROVAL => __('Sent for Approval'),
             self::ACCEPTED => __('Accepted'),
-            self::SENT_FOR_RENEWAL => __('Sent for renewal')
+            self::SENT_FOR_RENEWAL => __('Sent for renewal'),
+            self::DEREGISTERED => __('DeRegistered')
         };
     }
 
@@ -64,6 +66,7 @@ enum ApplicationStatusEnum: string
             self::SENT_FOR_APPROVAL => 'स्वीकृतिका लागि पठाइएको',
             self::ACCEPTED => 'स्वीकृत',
             self::SENT_FOR_RENEWAL => 'नवीकरणको लागि पठाइएको',
+            self::DEREGISTERED => 'खारेजी गरिएको'
         };
     }
     public static function getForWebInNepali(): array

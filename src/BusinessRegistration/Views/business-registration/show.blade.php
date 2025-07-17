@@ -10,7 +10,7 @@
                 <h6>
                     <i class="bx bx-building me-2"></i>
 
-                    {{ __('businessregistration::businessregistration.business_registration_details') }}
+                    {{ __('businessregistration::businessregistration.business_organization_industry_firm_details') }}
 
                 </h6>
                 <a href="javascript:history.back()" class="btn-back">
@@ -163,19 +163,26 @@
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.registration_category') }}:</strong>
-                                    {{ $businessRegistration->registration_category }}
+
+
+                                    {!! \Src\BusinessRegistration\Enums\RegistrationCategoryEnum::tryFrom(
+                                        $businessRegistration->registration_category,
+                                    )?->label() ?? '' !!}
                                 </p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.status') }}:</strong>
-                                    {{ $businessRegistration->application_status }}</p>
+                                <p><strong>{{ __('businessregistration::businessregistration.application_status') }}:</strong>
+
+                                    {!! \Src\BusinessRegistration\Enums\ApplicationStatusEnum::tryFrom(
+                                        $businessRegistration->application_status,
+                                    )?->label() ?? \Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->label() !!}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.business_status') }}:</strong>
                                     {{ $businessRegistration->business_status?->label() }}</p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.amount') }}:</strong>
+                                <p><strong>{{ __('businessregistration::businessregistration.paid_amount') }}:</strong>
                                     {{ $businessRegistration->amount }}</p>
                             </div>
                             <div class="col-sm-6">

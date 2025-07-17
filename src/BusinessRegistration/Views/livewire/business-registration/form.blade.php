@@ -793,16 +793,16 @@
                                             <label for="rentagreement" class="form-label-peaceful">
                                                 {{ __('businessregistration::businessregistration.rentagreement') }}
                                             </label>
-                                            <input wire:model="businessRegistration.rentagreement"
-                                                name="rentagreement" type="file" class="form-control"
-                                                id="rentagreement">
-                                            <div wire:loading wire:target="businessRegistration.rentagreement">
+                                            <input wire:model="rentagreement" name="rentagreement" type="file"
+                                                class="form-control" id="rentagreement">
+                                            <div wire:loading wire:target="rentagreement">
                                                 <span class="spinner-border spinner-border-sm" role="status"
                                                     aria-hidden="true"></span>
                                                 Uploading...
                                             </div>
-                                            @if (!empty($businessRegistration['rentagreement_url']))
-                                                <a href="{{ $businessRegistration['rentagreement_url'] }}"
+
+                                            @if($rentagreement_url)
+                                                <a href="{{ $rentagreement_url }}"
                                                     target="_blank" class="btn btn-sm btn-outline-primary mt-2">
                                                     <i class="bx bx-file"></i>
                                                     {{ __('businessregistration::businessregistration.view_uploaded_file') }}

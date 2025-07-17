@@ -459,6 +459,24 @@ return [
     'business_registration_applied_successfully' => 'Business registration applied successfully.',
     'old_registration_number' => 'Old Registration Number',
     'deregistration_registration_number' => 'Deregistration Registration Number',
+    'business_registration_updated_successfully' => 'Business registration updated successfully.',
+    'business_registration_deleted_successfully' => 'Business registration deleted successfully.',
+    'business_registration_not_found' => 'Business registration not found.',
+    'business_registration_failed' => 'Business registration failed.',
+    'business_registration_applied_successfully' => 'Business registration applied successfully.',
+    'business_deregistration_created_successfully' => 'Business deregistration created successfully.',
+    'business_deregistration_updated_successfully' => 'Business deregistration updated successfully.',
+    'business_deregistration_deleted_successfully' => 'Business deregistration deleted successfully.',
+    'business_deregistration_not_found' => 'Business deregistration not found.',
+    'business_deregistration_failed' => 'Business deregistration failed.',
+    'business_deregistration_applied_successfully' => 'Business deregistration applied successfully.',
+    'address' => 'Address',
+    'number' => 'Number',
+    'paid_amount' => 'Paid Amount',
+    'deregistration_details' => 'Deregistration Details',
+    'de_registration_application_detail' => 'Deregistration Application Detail',
+    'files' => 'Files',
+
 
 
 

@@ -28,6 +28,7 @@ use Src\Customers\Enums\GenderEnum;
 use Src\Employees\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use Src\Address\Models\District;
+use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 
 class BusinessRegistrationForm extends Component
 {
@@ -111,6 +112,10 @@ class BusinessRegistrationForm extends Component
 
     public array $businessRequiredDoc = []; // Holds uploaded file names
     public array $businessRequiredDocUrl = []; // Holds temporary preview URLs
+
+    public $rentagreement; // Holds uploaded file name
+    public $rentagreement_url;
+
 
 
 
@@ -255,6 +260,27 @@ class BusinessRegistrationForm extends Component
             if (! $businessRegistration->relationLoaded('requiredBusinessDocs')) {
                 $businessRegistration->load('requiredBusinessDocs');
             }
+            // if ($businessRegistration && !empty($businessRegistration->rentagreement)) {
+            //     $this->handleFileUpload(
+            //         file: $businessRegistration->rentagreement,
+            //         field: 'rentagreement',
+            //         target: 'businessRegistration'
+            //     );
+            // }
+
+            if ($businessRegistration['registration_category'] == RegistrationCategoryEnum::BUSINESS->value) {
+                $this->showRentFields = true;
+            }
+
+            if ($businessRegistration && !empty($businessRegistration->rentagreement)) {
+                $this->businessRegistration['rentagreement'] = $businessRegistration->rentagreement;
+
+                $this->handleFileUpload(
+                    file: $businessRegistration->rentagreement,
+                    field: 'rentagreement',
+                    target: 'businessRegistration'
+                );
+            }
             $this->personalDetails = $businessRegistration->applicants
                 ->map(function ($applicant) {
                     $citizenshipFront = $applicant->citizenship_front;
@@ -324,9 +350,9 @@ class BusinessRegistrationForm extends Component
             $this->showCategory = false;
             $this->setFields($registration->id);
         }
-        if ($businessRegistrationType == BusinessRegistrationType::REGISTRATION) {
-            $this->showData = true;
-        }
+        // if ($businessRegistrationType == BusinessRegistrationType::REGISTRATION) {
+        //     $this->showData = true;
+        // }
 
         // Ensure requiredBusinessDocuments is set on edit
         if ($this->businessRegistration && !empty($this->businessRegistration['registration_type_id'])) {
@@ -767,6 +793,16 @@ class BusinessRegistrationForm extends Component
         }
     }
 
+    public function updatedRentAgreement($value)
+    {
+        $this->handleFileUpload(
+            file: $value,
+            field: 'rentagreement',
+            target: 'businessRegistration'
+        );
+    }
+
+
     // Add this method to handle file uploads for dynamic fields
     public function updatedData($value, $name)
     {
@@ -826,12 +862,27 @@ class BusinessRegistrationForm extends Component
     {
         if (!$file) return;
 
-        $filename = FileFacade::saveFile(
-            path: config('src.BusinessRegistration.businessRegistration.registration'),
-            file: $file,
-            disk: 'local',
-            filename: ''
-        );
+        if (is_string($file)) {
+
+            $filename = $file;
+        } else {
+
+            $filename = FileFacade::saveFile(
+                path: config('src.BusinessRegistration.businessRegistration.registration'),
+                file: $file,
+                disk: 'local',
+                filename: ''
+            );
+        }
+
+
+        // $filename = FileFacade::saveFile(
+        //     path: config('src.BusinessRegistration.businessRegistration.registration'),
+        //     file: $file,
+        //     disk: 'local',
+        //     filename: ''
+        // );
+
 
         $url = FileFacade::getTemporaryUrl(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
@@ -845,6 +896,9 @@ class BusinessRegistrationForm extends Component
         } elseif ($target === 'business') {
             $this->businessRequiredDoc[$field] = $filename;
             $this->businessRequiredDocUrl[$field . '_url'] = $url;
+        } elseif ($target === 'businessRegistration') {
+            $this->businessRegistration[$field] = $filename;
+            $this->{$field . '_url'} = $url;
         }
     }
     public function save()
@@ -894,7 +948,7 @@ class BusinessRegistrationForm extends Component
                         return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
                     } else {
                         DB::rollBack();
-                        $this->errorFlash(__('Business Registration failed'));
+                        $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
                         return;
                     }
 
@@ -932,7 +986,7 @@ class BusinessRegistrationForm extends Component
                         return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
                     } else {
                         DB::rollBack();
-                        $this->errorFlash(__('Business registration update failed'));
+                        $this->errorFlash(____('businessregistration::businessregistration.business_registration_failed'));
                         return;
                     }
 
