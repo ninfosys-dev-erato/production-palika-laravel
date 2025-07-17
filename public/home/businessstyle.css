@@ -1068,6 +1068,11 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 }
+.invalid-message {
+    color: red;
+    font-size: 85%;
+    margin-top: 0.25rem;
+}
 
 @media (max-width: 768px) {
     .two-column {

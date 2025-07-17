@@ -209,7 +209,7 @@ class BusinessRegistrationForm extends Component
 
             // Business Details
             'businessRegistration.fiscal_year.required' => __('businessregistration::businessregistration.the_fiscal_year_is_required'),
-            'businessRegistration.application_date.required' => __('businessregistration::businessregistration.application_date'),
+            'businessRegistration.application_date.required' => __('businessregistration::businessregistration.application_date_is_required'),
             'businessRegistration.entity_name.required' => __('businessregistration::businessregistration.the_entity_name_is_required'),
 
             // Registration Type
@@ -230,13 +230,11 @@ class BusinessRegistrationForm extends Component
         $this->businessRegistration = $businessRegistration;
         $this->businessRegistrationType = $businessRegistrationType;
 
-
         $this->action = $action;
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
         $this->provinces = getProvinces()->pluck('title', 'id')->toArray();
-        $this->businessRegistration['fiscal_year_id'] = getCurrentFiscalYear()->id;
-        $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('action', $businessRegistrationType)->pluck('title', 'id');
 
+        $this->registrationTypes = RegistrationType::whereNull('deleted_at')->pluck('title', 'id')->toArray();
 
 
         $this->registrationCategories = RegistrationCategory::pluck('title', 'id')->toArray();
@@ -248,10 +246,11 @@ class BusinessRegistrationForm extends Component
         $this->citizenshipDistricts = District::whereNull('deleted_at')->pluck('title', 'id');
 
 
-
-
         $this->departments = Branch::whereNull('deleted_at')->whereNull('deleted_by')->pluck('id', 'title')->toArray();
 
+        if ($this->action == Action::CREATE) {
+            $this->preSetBusinessAddress();
+        }
         if ($this->action == Action::UPDATE && $businessRegistration) {
 
             if (! $businessRegistration->relationLoaded('applicants')) {
@@ -260,13 +259,6 @@ class BusinessRegistrationForm extends Component
             if (! $businessRegistration->relationLoaded('requiredBusinessDocs')) {
                 $businessRegistration->load('requiredBusinessDocs');
             }
-            // if ($businessRegistration && !empty($businessRegistration->rentagreement)) {
-            //     $this->handleFileUpload(
-            //         file: $businessRegistration->rentagreement,
-            //         field: 'rentagreement',
-            //         target: 'businessRegistration'
-            //     );
-            // }
 
             if ($businessRegistration['registration_category'] == RegistrationCategoryEnum::BUSINESS->value) {
                 $this->showRentFields = true;
@@ -350,14 +342,27 @@ class BusinessRegistrationForm extends Component
             $this->showCategory = false;
             $this->setFields($registration->id);
         }
-        // if ($businessRegistrationType == BusinessRegistrationType::REGISTRATION) {
-        //     $this->showData = true;
-        // }
 
-        // Ensure requiredBusinessDocuments is set on edit
         if ($this->businessRegistration && !empty($this->businessRegistration['registration_type_id'])) {
             $this->setFields($this->businessRegistration['registration_type_id']);
         }
+    }
+
+    public function preSetBusinessAddress()
+    {
+
+        $defaultProvinceId = key(getSettingWithKey('palika-province'));
+        $defaultDistrictId = key(getSettingWithKey('palika-district'));
+        $defaultLocalBodyId = key(getSettingWithKey('palika-local-body'));
+
+        $this->businessRegistration['business_province'] = $defaultProvinceId;
+        $this->businessRegistration['business_district'] = $defaultDistrictId;
+        $this->businessRegistration['business_local_body'] = $defaultLocalBodyId;
+
+
+        $this->getBusinessDistricts();
+        $this->getBusinessLocalBodies();
+        $this->getBusinessWards();
     }
 
 
@@ -686,10 +691,7 @@ class BusinessRegistrationForm extends Component
         };
     }
 
-    // public function getRegistrationTypes(int|string $id): void
-    // {
-    //     $this->registrationTypes = RegistrationType::where('registration_category_id', $id)->where('action', $this->businessRegistrationType)->pluck('id', 'title')->toArray();
-    // }
+
 
 
 
@@ -726,6 +728,7 @@ class BusinessRegistrationForm extends Component
     {
         $province = $this->businessRegistration['business_province'] ?? null;
 
+
         $this->businessDistricts = $province
             ? getDistricts($province)->pluck('title', 'id')->toArray()
             : [];
@@ -758,7 +761,51 @@ class BusinessRegistrationForm extends Component
 
     public function setActiveTab($tab)
     {
+
+        $tabsOrder = ['personal', 'business', 'type'];
+
+        $currentIndex = array_search($this->activeTab, $tabsOrder);
+        $targetIndex = array_search($tab, $tabsOrder);
+
+        // Validate only when moving forward not the previous tab
+        if ($targetIndex > $currentIndex) {
+            if ($this->activeTab === 'personal') {
+                $this->validatePersonalTab();
+            } elseif ($this->activeTab === 'business') {
+                $this->validateBusinessTab();
+            } elseif ($this->activeTab === 'type') {
+                $this->validateTypeTab();
+            }
+        }
+
+        // Allow switching tab regardless if moving backward or validation passed
         $this->activeTab = $tab;
+    }
+
+    protected function validatePersonalTab()
+    {
+        $this->validate([
+            'personalDetails.*.applicant_name' => ['required'],
+
+        ]);
+    }
+
+    protected function validateBusinessTab()
+    {
+        $this->validate([
+            'businessRegistration.fiscal_year' => ['required'],
+            'businessRegistration.application_date' => ['required'],
+            'businessRegistration.entity_name' => ['required'],
+
+        ]);
+    }
+
+    protected function validateTypeTab()
+    {
+        $this->validate([
+            'businessRegistration.registration_type_id' => ['required'],
+
+        ]);
     }
     public function rentStatusChanged($value)
     {

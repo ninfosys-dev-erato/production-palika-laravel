@@ -67,11 +67,11 @@
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.applicant_name"
                                             name="applicant_name" type="text"
-                                            class="form-control @error('businessRegistration.applicant_name') is-invalid @enderror"
+                                            class="form-control  @error('personalDetails.' . $index . '.applicant_name') is-invalid @enderror"
                                             id="applicant_name"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_full_name') }}">
-                                        @error('businessRegistration.applicant_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @error('personalDetails.' . $index . '.applicant_name')
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -92,7 +92,7 @@
                                             @endforeach
                                         </select>
                                         @error('businessRegistration.gender')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -107,7 +107,7 @@
                                             id="father_name"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_father_name') }}">
                                         @error('businessRegistration.father_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -122,7 +122,7 @@
                                             id="grandfather_name"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_grandfather_name') }}">
                                         @error('businessRegistration.grandfather_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -137,7 +137,7 @@
                                             id="phone"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_phone') }}">
                                         @error('businessRegistration.phone')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -152,7 +152,7 @@
                                             id="email"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_email') }}">
                                         @error('businessRegistration.email')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
@@ -177,7 +177,7 @@
                                             id="citizenship_number"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_citizenship_number') }}">
                                         @error('businessRegistration.citizenship_number')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -193,7 +193,7 @@
                                             class="form-control nepali-date @error('businessRegistration.citizenship_issued_date') is-invalid @enderror"
                                             id="citizenship_issued_date_{{ $index }}">
                                         @error('businessRegistration.citizenship_issued_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -218,7 +218,7 @@
 
 
                                         @error('businessRegistration.citizenship_issued_district')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -435,7 +435,8 @@
                                         {{ __('businessregistration::businessregistration.fiscal_year') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <select wire:model="businessRegistration.fiscal_year" class="form-control"
+                                    <select wire:model="businessRegistration.fiscal_year"
+                                        class="form-control @error('businessRegistration.fiscal_year') is-invalid @enderror"
                                         name="fiscal_year">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.fiscal_year') }}
@@ -445,6 +446,9 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('businessRegistration.fiscal_year')
+                                        <div class="invalid-message">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <!-- Registration Date -->
@@ -458,7 +462,7 @@
                                         class="nepali-date form-control @error('businessRegistration.application_date') is-invalid @enderror"
                                         id="application_date">
                                     @error('businessRegistration.application_date')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.application_date') }}</div>
                                     @enderror
                                 </div>
@@ -475,7 +479,7 @@
                                         id="entity_name"
                                         placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_name') }}">
                                     @error('businessRegistration.entity_name')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.entity_name') }}</div>
                                     @enderror
                                 </div>
@@ -505,7 +509,7 @@
                                         id="main_service_or_goods"
                                         placeholder="{{ __('businessregistration::businessregistration.placeholder_main_goods_services') }}">
                                     @error('businessRegistration.main_service_or_goods')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.main_service_or_goods') }}</div>
                                     @enderror
                                 </div>
@@ -520,7 +524,7 @@
                                         id="purpose"
                                         placeholder="{{ __('businessregistration::businessregistration.placeholder_purpose') }}">
                                     @error('businessRegistration.purpose')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.purpose') }}</div>
                                     @enderror
                                 </div>
@@ -543,7 +547,7 @@
                                     <label for="business_province" class="form-label-peaceful">
                                         {{ __('businessregistration::businessregistration.business_organization_industry_firm_province') }}
                                     </label>
-                                    <select wire:model.live="businessRegistration.business_province"
+                                    <select wire:model.defer="businessRegistration.business_province"
                                         class="form-control" name="business_province"
                                         wire:change="getBusinessDistricts">
                                         <option value="">
@@ -561,9 +565,8 @@
                                     <label for="business_district" class="form-label-peaceful">
                                         {{ __('businessregistration::businessregistration.business_organization_industry_firm_district') }}
                                     </label>
-                                    <select wire:model.live="businessRegistration.business_district"
-                                        class="form-control" name="business_district"
-                                        wire:change="getBusinessLocalBodies">
+                                    <select wire:model="businessRegistration.business_district" class="form-control"
+                                        name="business_district" wire:change="getBusinessLocalBodies">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_district') }}
                                         </option>
@@ -675,7 +678,7 @@
                                         @endforeach
                                     </select>
                                     @error('businessRegistration.registration_type_id')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.registration_type_id') }}</div>
                                     @enderror
                                 </div>

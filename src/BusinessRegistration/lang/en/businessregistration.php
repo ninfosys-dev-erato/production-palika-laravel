@@ -477,6 +477,8 @@ return [
     'de_registration_application_detail' => 'Deregistration Application Detail',
     'files' => 'Files',
     'additional_information' => 'Additional Information',
+    'the_applicant_name_is_required' => 'The applicant name is required.',
+    'application_date_is_required' => 'The application date is required.',
 
 
 
