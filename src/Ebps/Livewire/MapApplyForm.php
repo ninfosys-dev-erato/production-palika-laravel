@@ -189,7 +189,10 @@ class MapApplyForm extends Component
    
     public function loadWards(): void
     {
-        $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
+        $localBody = getLocalBodies(localBodyId: $this->customerLandDetail?->local_body_id)?->first()
+            ?? getLocalBodies(key(getSettingWithKey('palika-local-body')))?->first();
+    
+        $this->wards = $localBody ? getWards($localBody->id) : [];
     }
 
    
