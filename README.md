@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 # production-palika-php
+=======
+# lalitpurpalika
+
+
+>>>>>>> 2d5411e045f489a4243841a02989edc16bae3d41
 
 ## Getting started
 
@@ -13,14 +19,22 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
+<<<<<<< HEAD
 git remote add origin https://git.intensivestudy.com.np/digital-epalika/production-palika-php.git
+=======
+git remote add origin https://git.ninjainfosys.com.np/palikaprojecthub/lalitpurpalika.git
+>>>>>>> 2d5411e045f489a4243841a02989edc16bae3d41
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
+<<<<<<< HEAD
 -   [ ] [Set up project integrations](https://git.intensivestudy.com.np/digital-epalika/production-palika-php/-/settings/integrations)
+=======
+- [ ] [Set up project integrations](https://git.ninjainfosys.com.np/palikaprojecthub/lalitpurpalika/-/settings/integrations)
+>>>>>>> 2d5411e045f489a4243841a02989edc16bae3d41
 
 ## Collaborate with your team
 
