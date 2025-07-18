@@ -1,0 +1,206 @@
+@font-face {
+    font-family: "Noto Sans Devanagari";
+    src: url("fonts/kalimati.otf") format("truetype");
+}
+
+@font-face {
+    font-family: "Noto Sans Devanagari";
+    src: url("fonts/dev.ttf");
+}
+
+:root {
+    --primary-color: #01399a;
+    --light-theme: #e4f0ff;
+    --dark-theme: #00c6be;
+    --sub-heading: #6c757d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Noto Sans Devanagari", "sans-serif";
+    line-height: 1.6;
+}
+
+.header-section {
+    text-align: center;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 1rem 0rem;
+}
+
+.container {
+    max-width: 45vw;
+    background-color: #f9fafb;
+    margin: 5vh auto;
+    padding: 1vw 1.5vw;
+    min-height: 100vh;
+}
+
+.title {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.54);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.025em;
+}
+
+.indv-complaint {
+    min-width: 100%;
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comp-title {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.54);
+    margin-bottom: 4px;
+}
+
+.comp-detail {
+    font-size: 14px;
+}
+
+.comp-right {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.comp-date {
+    display: flex;
+    gap: 7px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.comp-view {
+    font-size: 12px;
+    padding: 2px 8px;
+    background-color: #0e68a5;
+    border-color: #0e68a5;
+    color: #fff;
+    border-radius: 3px;
+    text-decoration: none;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.comp-view img {
+    width: 15px;
+    height: 15px;
+}
+
+.comp-view:hover {
+    box-shadow: 3px 4px 8px rgba(50, 50, 50, 0.4);
+}
+
+@media (max-width: 640px) {
+    .header-section {
+        padding: 0.3rem 0rem;
+    }
+
+    .container {
+        max-width: 90vw;
+        margin: 5vh auto;
+        padding: 1vw 1.5vw;
+    }
+
+    .title {
+        font-size: 16px;
+        margin-bottom: 0.5rem;
+    }
+
+    .indv-complaint {
+        padding: 8px 10px;
+        margin-bottom: 7px;
+    }
+
+    .comp-title {
+        font-size: 9px;
+        margin-bottom: 3px;
+    }
+
+    .comp-detail {
+        font-size: 11px;
+    }
+
+    .comp-date {
+        display: flex;
+        gap: 3px;
+        font-size: 8px;
+    }
+
+    .comp-view {
+        font-size: 9px;
+        padding: 1px 5px;
+        border-radius: 2px;
+        display: flex;
+        gap: 3px;
+    }
+
+    .comp-view img {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 640px) {
+    .header-section {
+        padding: 0.8rem 0rem;
+    }
+    .container {
+        max-width: 85vw;
+        margin: 6vh auto;
+        padding: 1.3vw 1.6vw;
+    }
+
+    .title {
+        font-size: 14px;
+        margin-bottom: 0.2rem;
+    }
+
+    .indv-complaint {
+        min-width: 100%;
+        padding: 10px 13px;
+        margin-bottom: 9px;
+    }
+
+    .comp-title {
+        font-size: 11px;
+        margin-bottom: 5px;
+    }
+
+    .comp-detail {
+        font-size: 13px;
+    }
+
+    .comp-date {
+        display: flex;
+        gap: 5px;
+        font-size: 10px;
+    }
+
+    .comp-view {
+        font-size: 11px;
+        padding: 2px 7px;
+        border-radius: 2px;
+        display: flex;
+        gap: 5px;
+    }
+
+    .comp-view img {
+        width: 12px;
+        height: 12px;
+    }
+}

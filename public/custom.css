@@ -1,0 +1,132 @@
+/* Additional styles in your new CSS file */
+.custom-checkbox {
+    display: none;
+}
+
+.select2-container--open {
+    z-index: 9999999
+}
+
+.modal-open {
+    z-index: 9999;
+}
+
+.custom-checkbox-label {
+    cursor: pointer;
+    font-size: 16px;
+    /* Ensure the icon is the desired size */
+    margin: 0;
+    /* Remove margin from the label */
+    padding: 0;
+    /* Remove padding from the label */
+}
+
+
+.custom-checkbox:checked+.custom-checkbox-label .bx {
+    color: #ffc107;
+    /* Change the color when checked */
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* Small gap between the checkbox and the star icon */
+}
+
+.form-check-input {
+    margin: 0;
+    /* Remove default margin to reduce the gap */
+    height: 16px;
+    /* Ensure same height as the star icon */
+    width: 16px;
+    /* Match the size with the star icon */
+}
+
+.custom-form-check {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    /* Remove any margin around the form-check */
+    padding: 0;
+    /* Remove any padding around the form-check */
+}
+
+.form-check-custom {
+    display: block;
+    min-height: 1.434375rem;
+    padding-left: 0.5em;
+    /* Reduced left padding */
+    margin-bottom: 0.125rem;
+}
+
+/* Enterprise Navbar Styles */
+.layout-navbar.navbar-detached {
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+    background-color: #ffffff !important;
+    padding: 40px 40px !important;
+}
+
+.layout-navbar.navbar-detached.container-xxl {
+    max-width: 100% !important;
+}
+
+.layout-navbar-fixed .layout-navbar.navbar-detached {
+    width: 100% !important;
+}
+
+.layout-navbar-fixed.layout-menu-collapsed .layout-navbar.navbar-detached {
+    width: 100% !important;
+}
+
+.layout-menu-collapsed .layout-navbar.navbar-detached,
+.layout-without-menu .layout-navbar.navbar-detached {
+    width: 100% !important;
+}
+
+/* Remove any box shadows from navbar elements */
+.layout-navbar .navbar {
+    box-shadow: none !important;
+}
+
+/* Ensure navbar covers full width on all screen sizes */
+@media (max-width: 1199.98px) {
+    .layout-navbar.navbar-detached {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .layout-navbar.navbar-detached {
+        width: 100% !important;
+    }
+}
+
+/* Additional enterprise navbar styling */
+.layout-navbar .navbar-nav-right {
+    align-items: center !important;
+}
+
+.layout-navbar .navbar-brand {
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+.layout-navbar .navbar-text {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+}
+
+.layout-navbar .dropdown-menu {
+    border-radius: 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e5e5e5 !important;
+}
+
+.layout-navbar .avatar {
+    border: 2px solid #e5e5e5 !important;
+}
