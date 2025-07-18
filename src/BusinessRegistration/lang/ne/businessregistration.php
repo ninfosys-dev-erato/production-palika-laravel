@@ -504,4 +504,5 @@ return [
     'additional_information' => 'थप जानकारी',
     'the_applicant_name_is_required' => 'आवेदकको नाम आवश्यक छ।',
     'application_date_is_required' => 'आवेदन मिति आवश्यक छ।',
+    'status' => 'स्थिति',
 ];

@@ -479,6 +479,7 @@ return [
     'additional_information' => 'Additional Information',
     'the_applicant_name_is_required' => 'The applicant name is required.',
     'application_date_is_required' => 'The application date is required.',
+    'status' => 'Status',
 
 
 

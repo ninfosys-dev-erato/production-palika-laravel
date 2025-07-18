@@ -234,7 +234,11 @@ class BusinessRegistrationForm extends Component
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
         $this->provinces = getProvinces()->pluck('title', 'id')->toArray();
 
-        $this->registrationTypes = RegistrationType::whereNull('deleted_at')->pluck('title', 'id')->toArray();
+        // $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('status', true)->pluck('title', 'id')->toArray();
+
+        $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('action', $businessRegistrationType)->where('status', true)->pluck('title', 'id');
+
+
 
 
         $this->registrationCategories = RegistrationCategory::pluck('title', 'id')->toArray();

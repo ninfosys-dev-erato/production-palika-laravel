@@ -69,6 +69,20 @@ class RegistrationTypeTable extends DataTableComponent
                 ->sortable()
                 ->searchable()
                 ->collapseOnTablet(),
+            Column::make(__('businessregistration::businessregistration.status'), 'status')
+                ->label(function ($row) {
+                    $checked = $row->status ? 'checked' : '';
+                    $label = $row->status ? 'Active' : 'Inactive';
+                    return <<<HTML
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" $checked wire:click="toggleStatus({$row->id})">
+                            <!-- <label class="form-check-label">$label</label> -->
+                        </div>
+                    HTML;
+                })
+                ->html()
+                ->collapseOnTablet(),
+
 
         ];
         if (can('business_type edit') || can('business_type delete')) {
@@ -130,5 +144,13 @@ class RegistrationTypeTable extends DataTableComponent
         $records = $this->getSelected();
         $this->clearSelected();
         return Excel::download(new RegistrationTypeExport($records), 'registration-types.xlsx');
+    }
+    public function toggleStatus($id)
+    {
+        $registrationType = RegistrationType::findOrFail($id);
+        $registrationType->status = !$registrationType->status;
+        $registrationType->save();
+
+        $this->successFlash("Status updated successfully.");
     }
 }

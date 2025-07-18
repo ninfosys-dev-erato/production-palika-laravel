@@ -5,7 +5,7 @@ use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 
 $registrationTypes = Cache::remember('registration_types_by_enum', 60, function () {
-    return RegistrationType::select('id', 'title', 'registration_category_enum', 'action')->get();
+    return RegistrationType::select('id', 'title', 'registration_category_enum', 'action', 'status')->where('status', true)->get();
 });
 ?>
 
