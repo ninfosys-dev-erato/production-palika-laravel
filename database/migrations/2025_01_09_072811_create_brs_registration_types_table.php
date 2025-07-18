@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('registration_category_id')->nullable()->constrained('brs_registration_categories')->nullOnDelete();
             $table->foreignId('department_id')->nullable()->constrained('mst_branches')->nullOnDelete();
             $table->string('registration_category_enum')->nullable();
+            $table->string('status')->nullable();
             $table->string('action')->nullable();
             $table->softDeletes();
             $table->timestamps();
