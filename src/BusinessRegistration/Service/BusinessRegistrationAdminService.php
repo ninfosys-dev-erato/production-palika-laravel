@@ -225,12 +225,13 @@ class BusinessRegistrationAdminService
         $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
 
         $lastCount = BusinessRegistration::where('fiscal_year', $fiscalYearKey)
-            ->where('status', 'accepted')
             ->whereNotNull('registration_number')
+            ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
             ->count();
 
         $newNumber = str_pad($lastCount + 1, 6, '0', STR_PAD_LEFT);
         $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
+
 
         return $newRegistrationNumber;
     }
