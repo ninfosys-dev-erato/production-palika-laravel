@@ -224,13 +224,12 @@ class BusinessRegistrationAdminService
         $fiscalYearKey = key(getSettingWithKey('fiscal-year'));
         $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
 
-        $lastRegistration = BusinessRegistration::latest('id')
-            ->where('fiscal_year', $fiscalYearKey)
-            ->first();
+        $lastCount = BusinessRegistration::where('fiscal_year', $fiscalYearKey)
+            ->where('status', 'accepted')
+            ->whereNotNull('registration_number')
+            ->count();
 
-        $lastId = $lastRegistration ? $lastRegistration->id : 0;
-
-        $newNumber = str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
+        $newNumber = str_pad($lastCount + 1, 6, '0', STR_PAD_LEFT);
         $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
 
         return $newRegistrationNumber;
