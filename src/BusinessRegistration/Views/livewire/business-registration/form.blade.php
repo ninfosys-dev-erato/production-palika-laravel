@@ -1153,7 +1153,7 @@
                                     class="badge bg-light text-muted">{{ __('businessregistration::businessregistration.step_3_of_3') }}</span>
                             </div>
 
-                            <button type="submit" class="btn btn-success-peaceful" wire:click="save">
+                            <button type="submit" class="btn btn-success-peaceful">
                                 <i
                                     class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit_registration') }}
                             </button>
