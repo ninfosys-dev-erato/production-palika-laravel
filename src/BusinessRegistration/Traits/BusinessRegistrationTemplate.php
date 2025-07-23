@@ -68,7 +68,7 @@ trait BusinessRegistrationTemplate
     {
         return [
             // Registration type and fiscal year
-            '{{business.fiscal_year}}' => $businessRegistration->fiscalYear?->title ?? ' ',
+            '{{business.fiscal_year}}' => $businessRegistration->fiscalYear?->year ?? ' ',
 
             // Entity and registration details
             '{{business.entity_name}}' => $businessRegistration->entity_name ?? ' ',

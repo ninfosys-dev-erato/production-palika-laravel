@@ -363,16 +363,28 @@ class BusinessRegistrationForm extends Component
         $this->businessRegistration['business_district'] = $defaultDistrictId;
         $this->businessRegistration['business_local_body'] = $defaultLocalBodyId;
 
+        $this->personalDetails[0]['applicant_province'] = $defaultProvinceId;
+        $this->personalDetails[0]['applicant_district'] = $defaultDistrictId;
+        $this->personalDetails[0]['applicant_local_body'] = $defaultLocalBodyId;
+
 
         $this->getBusinessDistricts();
         $this->getBusinessLocalBodies();
         $this->getBusinessWards();
+
+        $this->getApplicantDistricts(0);
+        $this->getApplicantLocalBodies(0);
+        $this->getApplicantWards(0);
     }
 
 
 
     public function addPersonalDetail()
     {
+        $defaultProvinceId = key(getSettingWithKey('palika-province'));
+        $defaultDistrictId = key(getSettingWithKey('palika-district'));
+        $defaultLocalBodyId = key(getSettingWithKey('palika-local-body'));
+
         $this->personalDetails[] = [
             'applicant_name' => '',
             'gender' => '',
@@ -383,9 +395,9 @@ class BusinessRegistrationForm extends Component
             'citizenship_number' => '',
             'citizenship_issued_date' => '',
             'citizenship_issued_district' => '',
-            'applicant_province' => '',
-            'applicant_district' => '',
-            'applicant_local_body' => '',
+            'applicant_province' => $defaultProvinceId,
+            'applicant_district' => $defaultDistrictId,
+            'applicant_local_body' => $defaultLocalBodyId,
             'applicant_ward' => '',
             'applicant_tole' => '',
             'applicant_street' => '',
@@ -395,7 +407,15 @@ class BusinessRegistrationForm extends Component
             'citizenship_front_url' => null,
             'citizenship_rear_url' => null,
         ];
+
+        $index = count($this->personalDetails) - 1;
+
+        // Optionally populate dependent data for the new entry
+        $this->getApplicantDistricts($index);
+        $this->getApplicantLocalBodies($index);
+        $this->getApplicantWards($index);
     }
+
 
     public function removePersonalDetail($index)
     {
