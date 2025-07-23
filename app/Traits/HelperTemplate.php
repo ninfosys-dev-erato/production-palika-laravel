@@ -331,7 +331,7 @@ trait HelperTemplate
                     {$office_name}
                 </div>
                 <div style="font-size: 14pt;">
-                    {$address}
+                  {$province}, {$district} <br> नेपाल
                 </div>
             </div>
         </td>
