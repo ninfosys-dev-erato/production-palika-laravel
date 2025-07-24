@@ -3,6 +3,7 @@
 namespace Src\Employees\Livewire;
 
 use App\Enums\Action;
+use App\Facades\FileFacade;
 use App\Facades\ImageServiceFacade;
 use App\Models\User;
 use App\Rules\MobileNumberIdentifierRule;
@@ -173,7 +174,7 @@ class EmployeeForm extends Component
         $this->employee['is_department_head'] = $this->is_department_head;
 
         if ($this->uploadedImage) {
-            $this->employee->photo = ImageServiceFacade::compressAndStoreImage($this->uploadedImage, 'team');
+            $this->employee->photo = FileFacade::saveFile('team', '', $this->uploadedImage);
         }
 
 
