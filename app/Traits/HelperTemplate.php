@@ -222,6 +222,8 @@ trait HelperTemplate
             '{{global.palika_address}}' => getSetting('palika-address') ?? self::EMPTY_LINES,
             '{{global.palika_email}}' => getSetting('office_email') ?? self::EMPTY_LINES,
             '{{global.palika_phone}}' => getSetting('office_phone') ?? self::EMPTY_LINES,
+            '{{global.palika_logo}}' => getSetting('palika-logo') ?? '',
+            '{{global.palika_campaign_logo}}' => getSetting('palika-campaign-logo') ?? '',
         ];
     }
 

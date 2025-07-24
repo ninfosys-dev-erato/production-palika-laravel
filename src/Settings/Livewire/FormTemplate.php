@@ -55,7 +55,8 @@ class FormTemplate extends Component
                     'global.acceptor_name' => __('settings::settings.acceptor_name'),
                     'global.palika_email' => __('settings::settings.palika_email'),
                     'global.palika_phone' => __('settings::settings.palika_phone'),
-
+                    'global.palika_logo' => __('settings::settings.palika_logo'),
+                    'global.palika_campaign_logo' => __('settings::settings.palika_campaign_logo'),
                 ]
             ],
             [
