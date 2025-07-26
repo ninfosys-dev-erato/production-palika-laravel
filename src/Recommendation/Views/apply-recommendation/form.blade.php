@@ -29,7 +29,7 @@
                             {{ __('recommendation::recommendation.update_applied_recommendation') }}</h5>
                     @endif
                     <div>
-                        @perm('letter_head access')
+                        @perm('recommendation_apply access')
                             <a href="{{ route('admin.recommendations.apply-recommendation.index') }}" class="btn btn-info">
                                 <i
                                     class="bx bx-list-ol"></i>{{ __('recommendation::recommendation.applied_recommendation_list') }}
