@@ -16,7 +16,7 @@ Route::group(['prefix' => 'admin/employees', 'as' => 'admin.employee.', 'middlew
     Route::get('/designation/create', [DesignationController::class, 'create'])->name('designation.create')->middleware('permission:designation_create');
     Route::get('/designation/edit/{id}', [DesignationController::class, 'edit'])->name('designation.edit')->middleware('permission:designation_update');
 
-    Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index')->middleware('permission:employee_access');
-    Route::get('/employee/create', [EmployeeController::class, 'create'])->name('employee.create')->middleware('permission:employee_create');
-    Route::get('/employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit')->middleware('permission:employee_update');
+    Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index')->middleware('permission:employee access');
+    Route::get('/employee/create', [EmployeeController::class, 'create'])->name('employee.create')->middleware('permission:employee create');
+    Route::get('/employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit')->middleware('permission:employee update');
 });

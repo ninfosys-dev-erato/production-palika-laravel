@@ -16,9 +16,9 @@ class EmployeeController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:employee_access', only: ['index']),
-            new Middleware('permission:employee_create', only: ['create']),
-            new Middleware('permission:employee_update', only: ['edit']),
+            new Middleware('permission:employee access', only: ['index']),
+            new Middleware('permission:employee create', only: ['create']),
+            new Middleware('permission:employee update', only: ['edit']),
         ];
     }
 
