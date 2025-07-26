@@ -22,11 +22,11 @@ Route::group(['middleware' => ['auth', 'web'], 'prefix' => 'admin/settings', 'as
     Route::get('/letter-head/create', [LetterHeadController::class, 'create'])->name('letter-head.create')->middleware('permission:letter_head_create');
     Route::get('/letter-head/edit/{id}', [LetterHeadController::class, 'edit'])->name('letter-head.edit')->middleware('permission:letter_head_update');
 
-    Route::get('/form', [FormController::class, 'index'])->name('form.index')->middleware('permission:form_access');
-    Route::get('/back', [FormController::class, 'goBack'])->name('back')->middleware('permission:form_access');
-    Route::get('/form/create', [FormController::class, 'create'])->name('form.create')->middleware('permission:form_create');
-    Route::get('/form/edit/{id}', [FormController::class, 'edit'])->name('form.edit')->middleware('permission:form_update');
-    Route::get('/form/template/{id}', [FormController::class, 'template'])->name('form.template')->middleware('permission:form_update');
+    Route::get('/form', [FormController::class, 'index'])->name('form.index')->middleware('permission:form access');
+    Route::get('/back', [FormController::class, 'goBack'])->name('back')->middleware('permission:form access');
+    Route::get('/form/create', [FormController::class, 'create'])->name('form.create')->middleware('permission:form create');
+    Route::get('/form/edit/{id}', [FormController::class, 'edit'])->name('form.edit')->middleware('permission:form edit');
+    Route::get('/form/template/{id}', [FormController::class, 'template'])->name('form.template')->middleware('permission:form edit');
 
     Route::get('/app-setting', [AppSettingController::class, 'index'])->name('app-setting.index')->middleware('permission:app_setting_access');
 });

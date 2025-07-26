@@ -18,7 +18,7 @@
                         <h5 class="text-primary fw-bold mb-0">
                             {{ __('recommendation::recommendation.form_template_list') }}</h5>
                     </div>
-                    @perm('form_create')
+                    @perm('form create')
                         <div>
                             <a href="{{ route('admin.recommendations.form.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('recommendation::recommendation.add_form_template') }}</a>

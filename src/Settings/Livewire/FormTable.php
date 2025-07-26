@@ -96,21 +96,21 @@ class FormTable extends DataTableComponent
                 ];
         }
 
-        if (can('form_update') || can('form_delete')) {
+        if (can('form edit') || can('form delete')) {
             $actionsColumn = Column::make(__('settings::settings.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('form_update')) {
+                if (can('form edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('form_update')) {
+                if (can('form edit')) {
                     $edit = '<button class="btn btn-info btn-sm" wire:click="template(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('form_delete')) {
+                if (can('form delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -131,7 +131,7 @@ class FormTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('form_update')) {
+        if (!can('form edit')) {
             self::WARNING_FLASH(__('settings::settings.you_cannot_perform_this_action'));
             return false;
         }
@@ -150,7 +150,7 @@ class FormTable extends DataTableComponent
 
     public function template($id)
     {
-        if (!can('form_update')) {
+        if (!can('form edit')) {
             self::WARNING_FLASH(__('settings::settings.you_cannot_perform_this_action'));
             return false;
         }
@@ -166,7 +166,7 @@ class FormTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('form_delete')) {
+        if (!can('form delete')) {
             self::WARNING_FLASH(__('settings::settings.you_cannot_perform_this_action'));
             return false;
         }
@@ -177,7 +177,7 @@ class FormTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('form_delete')) {
+        if (!can('form delete')) {
             self::WARNING_FLASH(__('settings::settings.you_cannot_perform_this_action'));
             return false;
         }

@@ -14,9 +14,9 @@ class CitizenCharterAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:citizencharter_access', only: ['index']),
-            new Middleware('permission:citizencharter_create', only: ['create']),
-            new Middleware('permission:citizencharter_edit', only: ['edit']),
+            new Middleware('permission:digital_board access', only: ['index']),
+            new Middleware('permission:digital_board create', only: ['create']),
+            new Middleware('permission:digital_board edit', only: ['edit']),
         ];
     }
 
