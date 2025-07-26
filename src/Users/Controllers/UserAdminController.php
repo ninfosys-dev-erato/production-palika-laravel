@@ -14,10 +14,10 @@ class UserAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:users_access', only: ['index']),
-            new Middleware('permission:users_create', only: ['create']),
-            new Middleware('permission:users_edit', only: ['edit']),
-            new Middleware('permission:users_manage', only: ['manage', 'roles', 'permission'])
+            new Middleware('permission:users access', only: ['index']),
+            new Middleware('permission:users create', only: ['create']),
+            new Middleware('permission:users edit', only: ['edit']),
+            new Middleware('permission:users manage', only: ['manage', 'roles', 'permission'])
         ];
     }
 

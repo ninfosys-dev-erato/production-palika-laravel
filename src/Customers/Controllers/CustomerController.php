@@ -15,7 +15,7 @@ class CustomerController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:customer_access', only: ['index']),
+            new Middleware('permission:customer access', only: ['index']),
         ];
     }
 
