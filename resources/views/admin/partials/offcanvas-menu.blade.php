@@ -27,7 +27,7 @@
                     @endif
                 @endforeach
 
-                @perm('page_access')
+                @perm('page access')
                     <a href="{{ route('admin.pages.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-file text-primary"></i>
                         {{ __('Pages') }}

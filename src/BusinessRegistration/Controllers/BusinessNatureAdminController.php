@@ -15,8 +15,8 @@ class BusinessNatureAdminController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:business_natures create', only: ['create']),
-            new Middleware('permission:business_natures edit', only: ['edit'])
+            new Middleware('permission:business_settings create', only: ['create']),
+            new Middleware('permission:business_settings edit', only: ['edit'])
         ];
     }
 

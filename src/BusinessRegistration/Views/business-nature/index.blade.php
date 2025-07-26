@@ -17,7 +17,7 @@
                             <h5 class="text-primary fw-bold">
                                 {{ __('businessregistration::businessregistration.nature_of_business') }}</h5>
                             <div>
-                                @perm('business_natures create')
+                                @perm('business_settings create')
                                     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal">
                                         <i class="bx bx-plus"></i>
                                         {{ __('businessregistration::businessregistration.add_nature_of_business') }}

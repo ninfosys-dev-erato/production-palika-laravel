@@ -95,16 +95,16 @@ class ProgramTable extends DataTableComponent
                 ->collapseOnTablet(),
 
         ];
-        if (can('programs edit') || can('programs delete')) {
+        if (can('digital_board edit') || can('digital_board delete')) {
             $actionsColumn = Column::make(__('digitalboard::digitalboard.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('programs edit')) {
+                if (can('digital_board edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('programs delete')) {
+                if (can('digital_board delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -122,7 +122,7 @@ class ProgramTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('programs edit')) {
+        if (!can('digital_board edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -131,7 +131,7 @@ class ProgramTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('programs delete')) {
+        if (!can('digital_board delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -152,7 +152,7 @@ class ProgramTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('programs delete')) {
+        if (!can('digital_board delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

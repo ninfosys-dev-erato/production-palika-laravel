@@ -17,9 +17,9 @@ class RegistrationCategoryAdminController extends Controller implements HasMiddl
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:business_category access', only: ['index']),
-            new Middleware('permission:business_category create', only: ['create']),
-            new Middleware('permission:business_category edit', only: ['edit']),
+            new Middleware('permission:business_settings access', only: ['index']),
+            new Middleware('permission:business_settings create', only: ['create']),
+            new Middleware('permission:business_settings edit', only: ['edit']),
         ];
     }
 

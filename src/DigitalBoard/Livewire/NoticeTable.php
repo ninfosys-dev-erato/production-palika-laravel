@@ -104,16 +104,16 @@ class NoticeTable extends DataTableComponent
                 ->collapseOnTablet(),
 
         ];
-        if (can('notices edit') || can('notices delete')) {
+        if (can('digital_board edit') || can('digital_board delete')) {
             $actionsColumn = Column::make(__('digitalboard::digitalboard.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('notices edit')) {
+                if (can('digital_board edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('notices delete')) {
+                if (can('digital_board delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -131,7 +131,7 @@ class NoticeTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('notices edit')) {
+        if (!can('digital_board edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -140,7 +140,7 @@ class NoticeTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('notices delete')) {
+        if (!can('digital_board delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -162,7 +162,7 @@ class NoticeTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('notices delete')) {
+        if (!can('digital_board delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

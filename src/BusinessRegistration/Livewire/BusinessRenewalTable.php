@@ -128,10 +128,10 @@ class BusinessRenewalTable extends DataTableComponent
                 ->html(),
         ];
 
-        if (can('business_renewals view')) {
+        if (can('business_renewals access')) {
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('business_renewals view')) {
+                if (can('business_renewals access')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="show(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
@@ -186,7 +186,7 @@ class BusinessRenewalTable extends DataTableComponent
 
     public function show($id)
     {
-        if (!can('business_renewals view')) {
+        if (!can('business_renewals access')) {
             $this->errorFlash('Yu cannot perform this action');
             return false;
         }
