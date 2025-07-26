@@ -29,7 +29,7 @@
                             {{ __('recommendation::recommendation.update_recommendation_category') }}</h5>
                     @endif
                     <div>
-                        @perm('recommendation_category access')
+                        @perm('recommendation_settings access')
                             <a href="{{ route('admin.recommendations.recommendation-category.index') }}"
                                 class="btn btn-info"><i
                                     class="bx bx-list-ol"></i>{{ __('recommendation::recommendation.recommendation_category_list') }}</a>

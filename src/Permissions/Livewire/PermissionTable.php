@@ -52,16 +52,16 @@ class PermissionTable extends DataTableComponent
             Column::make(__("Guard Name"), "guard_name"),
         ];
     
-        if (can('permissions_update') || can('permissions_delete')) {
+        if (can('permissions edit') || can('permissions delete')) {
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
                 $buttons = '';
     
-                if (can('permissions_update')) {
+                if (can('permissions edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
     
-                if (can('permissions_delete')) {
+                if (can('permissions delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -82,7 +82,7 @@ class PermissionTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('permissions_delete')) {
+        if (!can('permissions delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -92,7 +92,7 @@ class PermissionTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('permissions_delete')) {
+        if (!can('permissions delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

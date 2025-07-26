@@ -14,9 +14,9 @@ class PermissionAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:permissions_access', only: ['index']),
-            new Middleware('permission:permissions_create', only: ['create']),
-            new Middleware('permission:permissions_update', only: ['edit']),
+            new Middleware('permission:permissions access', only: ['index']),
+            new Middleware('permission:permissions create', only: ['create']),
+            new Middleware('permission:permissions edit', only: ['edit']),
         ];
     }
 
