@@ -17,7 +17,7 @@
                 <div class="card-header d-flex justify-content-between">
                     {{ __('emergencycontacts::emergencycontacts.emergencycontact_list') }}
 
-                    @perm('emergency_contact_create')
+                    @perm('emergency_contact create')
                         <div>
                             <a href="{{ route('admin.emergency-contacts.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>

@@ -167,7 +167,7 @@
                             @endphp
                             @switch($status)
                                 @case(Src\Recommendation\Enums\RecommendationStatusEnum::PENDING)
-                                    @perm('recommendation_status_edit')
+                                    @perm('recommendation status')
                                         @if ($revenue > 0)
                                             <button class="btn btn-info" onclick="Livewire.dispatch('send-for-payment')">
                                                 <i class="bx bx-wallet-alt"></i>
@@ -184,7 +184,7 @@
                                 @break
 
                                 @case(Src\Recommendation\Enums\RecommendationStatusEnum::BILL_UPLOADED)
-                                    @perm('recommendation_status_edit')
+                                    @perm('recommendation status')
                                         <button class="btn btn-info" onclick="Livewire.dispatch('send-to-approver')">
                                             <i class="bx bx-money"></i> {{ __('recommendation::recommendation.verify_payment') }}
                                         </button>
@@ -192,7 +192,7 @@
                                 @break
 
                                 @case(Src\Recommendation\Enums\RecommendationStatusEnum::SENT_FOR_APPROVAL)
-                                    @perm('recommendation_approve')
+                                    @perm('recommendation status')
                                         <button class="btn btn-primary" onclick="Livewire.dispatch('approve-recommendation')">
                                             <i class="bx bx-checkbox-checked"></i>
                                             {{ __('recommendation::recommendation.approve') }}

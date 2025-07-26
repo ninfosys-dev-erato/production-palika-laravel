@@ -15,7 +15,7 @@ return [
         'icon' => 'bx bx-notepad text-info',
         'logo' => 'YojanaByabasthapanIcon.png',
         'label' => 'Recommendation',
-        'perm' => 'recommendation_access',
+        'perm' => 'recommendation access',
     ],
     [
         'module' => 'token',

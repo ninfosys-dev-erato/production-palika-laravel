@@ -36,7 +36,7 @@ class ApplyRecommendationUploadBill extends Component
     #[On('send-to-approver')]
     public function sendToApprover()
     {
-        if(can('recommendation_status_edit')) {
+        if(can('recommendation status')) {
             $service = new RecommendationAdminService();
             $service->review($this->applyRecommendation);
             $this->successFlash(__('recommendation::recommendation.successfully_reviewed'));
