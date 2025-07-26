@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.templates') }}</h5>
                     </div>
                     <div>
-                        @perm('form_create')
+                        @perm('form create')
                             <div>
                                 <a href="{{ route('admin.plan_management_system.form.create') }}" class="btn btn-info"><i
                                         class="bx bx-plus"></i> {{ __('yojana::yojana.add_template') }}</a>

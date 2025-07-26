@@ -17,7 +17,7 @@
                     <div class="d-flex justify-content-between card-header">
                         <h5 class="text-primary fw-bold mb-0">{{ __('settings::settings.form_list') }}</h5>
                     </div>
-                    @perm('form_create')
+                    @perm('form create')
                         <div>
                             <a href="{{ route('admin.setting.form.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('settings::settings.add_form') }}</a>
