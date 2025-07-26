@@ -5,7 +5,7 @@
             <div data-i18n="Analytics">{{ __('Main Menu') }}</div>
         </a>
     </li>
-    @perm('customer_access')
+    @perm('customer access')
         <li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.customer.index') ? 'active' : '' }}">
             <a href="{{ route('admin.customer.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user-circle"></i>
@@ -317,7 +317,7 @@
             @include('Employees::menu.sidebar')
         @endperm
 
-        @perm('users_access')
+        @perm('users access')
             @include('Users::menu.sidebar')
         @endperm
     @endif

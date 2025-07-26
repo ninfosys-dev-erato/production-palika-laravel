@@ -132,7 +132,7 @@ class EmployeeTable extends DataTableComponent
                 }
 
 
-                if ($row->user && $row->user->id && can('users_manage')) {
+                if ($row->user && $row->user->id && can('users manage')) {
 
                     $manage = '&nbsp;<button type="button" class="btn btn-success btn-sm ml-2" wire:click="manage(' . $row->user->id . ')"><i class="bx bx-cog"></i></button>';
                     $buttons .= $manage;

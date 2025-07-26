@@ -4,7 +4,7 @@
         <div class="card-header d-flex justify-content-between">
             <h5 class="text-primary fw-bold">{{ __('Users for Ward ' . $id) }}</h5>
             <div>
-                @perm('users_create')
+                @perm('users create')
                     <a href="{{ route('admin.users.create', ['selectedward' => $id]) }}" class="btn btn-info"><i
                             class="bx bx-plus"></i>
                         {{ __('wards::wards.add_users') }}</a>
