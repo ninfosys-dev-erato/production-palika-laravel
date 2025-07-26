@@ -14,9 +14,9 @@ class RegistrationTypeAdminController extends Controller implements HasMiddlewar
     public static function middleware()
     {
         return [
-            new Middleware('permission:business_registration access', only: ['index']),
-            new Middleware('permission:business_registration create', only: ['create']),
-            new Middleware('permission:business_registration edit', only: ['edit']),
+            new Middleware('permission:business_settings access', only: ['index']),
+            new Middleware('permission:business_settings create', only: ['create']),
+            new Middleware('permission:business_settings edit', only: ['edit']),
         ];
     }
 

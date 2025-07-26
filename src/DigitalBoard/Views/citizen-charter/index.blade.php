@@ -18,7 +18,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('digitalboard::digitalboard.citizen_charters') }}
                         </h5>
                         <div>
-                            @perm('citizencharter_create')
+                            @perm('digital_board create')
                                 <a href="{{ route('admin.digital_board.citizen_charters.create') }}" class="btn btn-info"><i
                                         class="bx bx-plus"></i>
                                     {{ __('digitalboard::digitalboard.add_citizen_charter') }}</a>

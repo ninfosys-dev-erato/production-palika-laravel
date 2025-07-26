@@ -15,9 +15,9 @@ class PageAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:page_access', only: ['index']),
-            new Middleware('permission:page_create', only: ['create']),
-            new Middleware('permission:page_update', only: ['edit']),
+            new Middleware('permission:page access', only: ['index']),
+            new Middleware('permission:page create', only: ['create']),
+            new Middleware('permission:page edit', only: ['edit']),
         ];
     }
 
