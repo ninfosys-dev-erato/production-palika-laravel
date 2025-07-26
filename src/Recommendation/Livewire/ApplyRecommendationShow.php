@@ -37,7 +37,7 @@ class ApplyRecommendationShow extends Component
     #[On('send-for-payment')]
     public function sendForPayment()
     {
-        if(can('recommendation_status_edit')){
+        if(can('recommendation status')){
             $this->showBillUpload = true;
             $this->applyRecommendation->status = RecommendationStatusEnum::SENT_FOR_PAYMENT->value;
             $service = new RecommendationAdminService();
@@ -55,7 +55,7 @@ class ApplyRecommendationShow extends Component
     #[On('approve-recommendation')]
     public function approve()
     {
-        if(can('recommendation_approve')){
+        if(can('recommendation status')){
             $this->applyRecommendation->status = RecommendationStatusEnum::ACCEPTED->value;
             $service = new RecommendationAdminService();
             try{

@@ -16,7 +16,7 @@
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('recommendation::recommendation.applied_recommendation_list') }}</h5>
-                    @perm('apply_recommendation_create')
+                    @perm('recommendation create')
                         <div>
                             <a href="{{ route('admin.recommendations.apply-recommendation.create') }}"
                                 class="btn btn-info"><i class="bx bx-plus"></i>

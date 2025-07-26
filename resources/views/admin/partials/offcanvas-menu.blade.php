@@ -41,7 +41,7 @@
                     </a>
                 @endperm
 
-                @perm('emergency_contact_access')
+                @perm('emergency_contact access')
                     <a href="{{ route('admin.emergency-contacts.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-user-voice text-danger"></i>
                         {{ __('Emergency Contacts') }}
