@@ -329,11 +329,11 @@ trait HelperTemplate
 ">
                     {$palika_name}
                 </div>
-                <div style="font-size: 24pt; font-weight: 600;">
+                <div style="font-size: 22pt; font-weight: 600;">
                     {$office_name}
                 </div>
                 <div style="font-size: 14pt;">
-                  {$province}, {$district} <br> नेपाल
+                  {$address}
                 </div>
             </div>
         </td>
