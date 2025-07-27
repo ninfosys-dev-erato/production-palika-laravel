@@ -15,9 +15,9 @@ class FiscalYearAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:fiscal_year_access', only: ['index']),
-            new Middleware('permission:fiscal_year_create', only: ['create']),
-            new Middleware('permission:fiscal_year_update', only: ['edit']),
+            new Middleware('permission:fiscal_year access', only: ['index']),
+            new Middleware('permission:fiscal_year create', only: ['create']),
+            new Middleware('permission:fiscal_year edit', only: ['edit']),
         ];
     }
 

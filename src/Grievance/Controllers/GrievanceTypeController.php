@@ -15,9 +15,9 @@ class GrievanceTypeController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:grievance_type_access', only: ['index']),
-            new Middleware('permission:grievance_type_create', only: ['create']),
-            new Middleware('permission:grievance_type_update', only: ['edit'])
+            new Middleware('permission:grievance_setting access', only: ['index']),
+            new Middleware('permission:grievance_setting create', only: ['create']),
+            new Middleware('permission:grievance_setting edit', only: ['edit'])
         ];
     }
     function index(Request $request)

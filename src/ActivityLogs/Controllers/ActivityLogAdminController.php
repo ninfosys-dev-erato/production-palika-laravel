@@ -17,7 +17,7 @@ class ActivityLogAdminController extends Controller implements HasMiddleware
         return [
             new Middleware('permission:activity_logs access', only: ['index']),
             new Middleware('permission:activity_logs create', only: ['create']),
-            new Middleware('permission:activity_logs view', only: ['show'])
+            new Middleware('permission:activity_logs access', only: ['show'])
         ];
     }
 

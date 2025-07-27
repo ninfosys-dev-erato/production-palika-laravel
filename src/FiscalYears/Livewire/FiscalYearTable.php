@@ -56,16 +56,16 @@ class FiscalYearTable extends DataTableComponent
         $columns = [
             Column::make(__('fiscalyears::fiscalyears.year'), "year")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('fiscal_year_update') || can('fiscal_year_delete')) {
+        if (can('fiscal_year edit') || can('fiscal_year delete')) {
             $actionsColumn = Column::make(__('fiscalyears::fiscalyears.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('fiscal_year_update')) {
+                if (can('fiscal_year edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('fiscal_year_delete')) {
+                if (can('fiscal_year delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -86,7 +86,7 @@ class FiscalYearTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('fiscal_year_update')) {
+        if (!can('fiscal_year edit')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -95,7 +95,7 @@ class FiscalYearTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('fiscal_year_delete')) {
+        if (!can('fiscal_year delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -106,7 +106,7 @@ class FiscalYearTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('fiscal_year_delete')) {
+        if (!can('fiscal_year delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
