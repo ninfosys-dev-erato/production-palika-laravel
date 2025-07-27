@@ -267,7 +267,7 @@
             'admin.users.*',
             'admin.roles.*',
             'admin.permissions.*'))
-        @perm('system_setting_access')
+        @perm('general_setting access')
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">{{ __('General Settings') }}</span>
             </li>

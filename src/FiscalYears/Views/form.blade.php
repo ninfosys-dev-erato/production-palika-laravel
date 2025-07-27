@@ -26,7 +26,7 @@
                         {{ __('fiscalyears::fiscalyears.edit') }}
                     @endif
                     <div>
-                        @perm('fiscal_years access')
+                        @perm('fiscal_year access')
                             <a href="{{ route('admin.setting.fiscal-years.index') }}" class="btn btn-info"><i
                                     class="bx bx-list-ol"></i>{{ __('fiscalyears::fiscalyears.fiscal_year_list') }}</a>
                         @endperm

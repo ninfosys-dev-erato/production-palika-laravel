@@ -16,7 +16,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('downloads::downloads.download_list') }}</h5>
                     </div>
 
-                    @perm('downloads_create')
+                    @perm('downloads create')
                         <div>
                             <a href="{{ route('admin.downloads.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('downloads::downloads.add_download') }}</a>
