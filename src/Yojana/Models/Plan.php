@@ -246,9 +246,9 @@ class Plan extends Model
 
     public function getRemainingAmountAttribute()
     {
-        return $this->budgetSources->whereNull('deleted_at')->sum('remaining_amount') + $this->getReceivedAmountAttribute();
+        // return $this->budgetSources->whereNull('deleted_at')->sum('remaining_amount') + $this->getReceivedAmountAttribute();
+        return $this->allocated_budget - $this->total_payment - $this->total_advance_paid - $this->total_transfer_amount + $this->received_amount;
     }
-
 
     public function getTransferredAmountAttribute()
     {
@@ -289,7 +289,7 @@ class Plan extends Model
     }
     public function getTotalPaymentAttribute()
     {
-        return $this->payments()->whereNull('deleted_at')->sum('total_paid_amount');
+        return $this->payments()->whereNull('deleted_at')->sum('paid_amount');
     }
 
     public function department() : BelongsTo

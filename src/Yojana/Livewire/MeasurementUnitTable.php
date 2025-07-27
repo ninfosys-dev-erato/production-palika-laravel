@@ -56,15 +56,15 @@ class MeasurementUnitTable extends DataTableComponent
             Column::make(__('yojana::yojana.measurement_type'), "type.title") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('yojana::yojana.title'), "title") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('measurement_units edit') || can('measurement_units delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('measurement_units edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('measurement_units delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -81,7 +81,7 @@ Column::make(__('yojana::yojana.title'), "title") ->sortable()->searchable()->co
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('measurement_units edit')){
+        if(!can('plan_basic_settings edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -90,7 +90,7 @@ Column::make(__('yojana::yojana.title'), "title") ->sortable()->searchable()->co
     }
     public function delete($id)
     {
-        if(!can('measurement_units delete')){
+        if(!can('plan_basic_settings delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -99,7 +99,7 @@ Column::make(__('yojana::yojana.title'), "title") ->sortable()->searchable()->co
         $this->successToast(__('yojana::yojana.measurement_unit_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('measurement_units delete')){
+        if(!can('plan_basic_settings delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

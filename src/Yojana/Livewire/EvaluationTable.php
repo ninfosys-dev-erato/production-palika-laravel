@@ -71,8 +71,8 @@ class EvaluationTable extends DataTableComponent
                 $evaluationDate = $row->evaluation_date ?? "N/A";
                 $completionDate = $row->completion_date ?? "N/A";
                 return "
-                    <strong>Evaluation Date:</strong> {$evaluationDate} <br>
-                    <strong>Completion Date:</strong> {$completionDate}
+                    <strong>".__('yojana::yojana.evaluation_date').":</strong> {$evaluationDate} <br>
+                    <strong>".__('yojana::yojana.completion_date').":</strong> {$completionDate}
                 ";
             })->html()->sortable()->searchable()->collapseOnTablet(),
 
@@ -80,8 +80,8 @@ class EvaluationTable extends DataTableComponent
                 $installmentNo = $row->installment_no->label() ?? "N/A";
                 $evaluationAmount = __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($row->evaluation_amount ?? 0), true);
                 return "
-                    <strong>Installment No:</strong> {$installmentNo} <br>
-                    <strong>Amount:</strong> {$evaluationAmount}
+                    <strong>".__('yojana::yojana.installment').":</strong> {$installmentNo} <br>
+                    <strong>".__('yojana::yojana.amount').":</strong> {$evaluationAmount}
                 ";
             })->html()->sortable()->searchable()->collapseOnTablet(),
 
@@ -158,6 +158,7 @@ class EvaluationTable extends DataTableComponent
         $service->delete(Evaluation::findOrFail($id));
         $this->successFlash(__('yojana::yojana.evaluation_deleted_successfully'));
     }
+    
     public function deleteSelected()
     {
         if (!can('evaluations delete')) {

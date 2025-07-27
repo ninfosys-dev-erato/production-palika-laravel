@@ -112,7 +112,7 @@ class AdvancePaymentTable extends DataTableComponent
             return false;
         }
         //        return redirect()->route('admin.advance_payments.edit',['id'=>$id]);
-        $this->dispatch('edit-advance-payment', $id);
+        $this->dispatch('load-advance-payment', $id);
     }
     public function delete($id)
     {

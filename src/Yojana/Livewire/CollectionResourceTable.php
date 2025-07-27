@@ -58,15 +58,15 @@ Column::make("Quantity", "quantity") ->sortable()->searchable()->collapseOnTable
 Column::make("Rate Type", "rate_type") ->sortable()->searchable()->collapseOnTablet(),
 Column::make("Rate", "rate") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('collection_resources edit') || can('collection_resources delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('collection_resources edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="fa fa-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('collection_resources delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="fa fa-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -83,7 +83,7 @@ Column::make("Rate", "rate") ->sortable()->searchable()->collapseOnTablet(),
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('collection_resources edit')){
+        if(!can('plan_basic_settings edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -91,7 +91,7 @@ Column::make("Rate", "rate") ->sortable()->searchable()->collapseOnTablet(),
     }
     public function delete($id)
     {
-        if(!can('collection_resources delete')){
+        if(!can('plan_basic_settings delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -100,7 +100,7 @@ Column::make("Rate", "rate") ->sortable()->searchable()->collapseOnTablet(),
         $this->successFlash("Collection Resource Deleted Successfully");
     }
     public function deleteSelected(){
-        if(!can('collection_resources delete')){
+        if(!can('plan_basic_settings delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

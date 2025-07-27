@@ -54,15 +54,15 @@ class CargoHandlingTable extends DataTableComponent
 Column::make("Unit Id", "unit_id") ->sortable()->searchable()->collapseOnTablet(),
 Column::make("Material Id", "material_id") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('cargo_handlings edit') || can('cargo_handlings delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('cargo_handlings edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="fa fa-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('cargo_handlings delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="fa fa-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -79,7 +79,7 @@ Column::make("Material Id", "material_id") ->sortable()->searchable()->collapseO
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('cargo_handlings edit')){
+        if(!can('plan_basic_settings edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -87,7 +87,7 @@ Column::make("Material Id", "material_id") ->sortable()->searchable()->collapseO
     }
     public function delete($id)
     {
-        if(!can('cargo_handlings delete')){
+        if(!can('plan_basic_settings delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -96,7 +96,7 @@ Column::make("Material Id", "material_id") ->sortable()->searchable()->collapseO
         $this->successFlash("Cargo Handling Deleted Successfully");
     }
     public function deleteSelected(){
-        if(!can('cargo_handlings delete')){
+        if(!can('plan_basic_settings delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }
