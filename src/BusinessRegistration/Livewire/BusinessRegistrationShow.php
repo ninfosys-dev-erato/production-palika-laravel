@@ -127,7 +127,7 @@ class BusinessRegistrationShow extends Component
 
         $service = new BusinessRegistrationAdminService();
         try {
-            $registrationNumber = $service->generateBusinessRegistrationNumber();
+            $registrationNumber = $service->generateBusinessRegistrationNumber($this->businessRegistration->fiscal_year);
 
             $registration_date_en = date('Y-m-d');
             $registration_date_ne = $this->adToBs($registration_date_en);

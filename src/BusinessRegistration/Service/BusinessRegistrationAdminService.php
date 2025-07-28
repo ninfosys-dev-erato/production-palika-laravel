@@ -14,6 +14,7 @@ use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 use Src\BusinessRegistration\Enums\BusinessStatusEnum;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Traits\BusinessRegistrationTemplate;
+use Src\Settings\Models\FiscalYear;
 use Src\Settings\Models\Setting;
 
 class BusinessRegistrationAdminService
@@ -219,21 +220,35 @@ class BusinessRegistrationAdminService
         return $businessRegistration;
     }
 
-    public function generateBusinessRegistrationNumber()
-    {
-        $fiscalYearKey = key(getSettingWithKey('fiscal-year'));
-        $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
+    // public function generateBusinessRegistrationNumber()
+    // {
+    //     $fiscalYearKey = key(getSettingWithKey('fiscal-year'));
+    //     $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
 
-        $lastCount = BusinessRegistration::where('fiscal_year', $fiscalYearKey)
+    //     $lastCount = BusinessRegistration::where('fiscal_year', $fiscalYearKey)
+    //         ->whereNotNull('registration_number')
+    //         ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
+    //         ->count();
+
+    //     $newNumber = str_pad($lastCount + 1, 6, '0', STR_PAD_LEFT);
+    //     $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
+
+
+    //     return $newRegistrationNumber;
+    // }
+
+    public function generateBusinessRegistrationNumber($fiscalYearId)
+    {
+        $fiscalYearName = FiscalYear::findorFail($fiscalYearId);
+        $fiscalYear = $this->convertNepaliToEnglish($fiscalYearName->year);
+
+        $lastCount = BusinessRegistration::where('fiscal_year', $fiscalYearId)
             ->whereNotNull('registration_number')
-            ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
             ->count();
 
         $newNumber = str_pad($lastCount + 1, 6, '0', STR_PAD_LEFT);
-        $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
 
-
-        return $newRegistrationNumber;
+        return $newNumber . '/' . $fiscalYear;
     }
 
     public function getLetter(BusinessRegistration $businessRegistration, $request = 'web')
