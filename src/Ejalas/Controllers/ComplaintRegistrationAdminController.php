@@ -56,6 +56,7 @@ class ComplaintRegistrationAdminController extends Controller
     }
     public function report()
     {
+
         return view('Ejalas::complaint-registration.report');
     }
     function fiscalYearReport()

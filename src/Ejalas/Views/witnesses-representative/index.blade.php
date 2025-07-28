@@ -16,7 +16,7 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('witnesses_representatives create')
+                        @perm('jms_judicial_management create')
                             <a href="{{ route('admin.ejalas.witnesses_representatives.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_witnesses_representative') }}</a>
                         @endperm

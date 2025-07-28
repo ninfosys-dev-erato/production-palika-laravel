@@ -16,19 +16,21 @@ class JudicialCommitteeAdminController extends Controller
         //$this->middleware('permission:judicial_committees create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::judicial-committee.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::judicial-committee.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $judicialCommittee = JudicialCommittee::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::judicial-committee.form')->with(compact('action','judicialCommittee'));
+        return view('Ejalas::judicial-committee.form')->with(compact('action', 'judicialCommittee'));
     }
-
 }

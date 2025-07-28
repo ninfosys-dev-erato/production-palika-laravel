@@ -260,7 +260,7 @@ class PermissionSeeder extends Seeder
             // -------------------
             // RECOMMENDATION MODULE
             // -------------------        
-            
+
             ['name' => 'recommendation_apply access', 'guard' => 'web'],
             ['name' => 'recommendation_apply create', 'guard' => 'web'],
             ['name' => 'recommendation_apply delete', 'guard' => 'web'],
@@ -385,6 +385,27 @@ class PermissionSeeder extends Seeder
             ['name' => 'wards create', 'guard' => 'web'],
             ['name' => 'wards delete', 'guard' => 'web'],
             ['name' => 'wards edit', 'guard' => 'web'],
+
+            // -------------------
+            // JMS Ejalas Module
+            // -------------------
+            ['name' => 'jms_settings create', 'guard' => 'web'],
+            ['name' => 'jms_settings access', 'guard' => 'web'],
+            ['name' => 'jms_settings edit', 'guard' => 'web'],
+            ['name' => 'jms_settings delete', 'guard' => 'web'],
+
+            ['name' => 'jms_judicial_management create', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management access', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management edit', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management delete', 'guard' => 'web'],
+
+
+            ['name' => 'jms_reconciliation_center access', 'guard' => 'web'],
+
+
+            ['name' => 'jms_report access', 'guard' => 'web'],
+
+
 
             // -------------------
             // YOJANA MODULE

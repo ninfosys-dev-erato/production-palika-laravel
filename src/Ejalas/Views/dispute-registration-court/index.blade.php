@@ -16,7 +16,7 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('dispute_registration_courts create')
+                        @perm('jms_judicial_management create')
                             <a href="{{ route('admin.ejalas.dispute_registration_courts.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_dispute_registration_court') }}</a>
                         @endperm

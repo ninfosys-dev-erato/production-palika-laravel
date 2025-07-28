@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.settlement_list') }}</h5>
                     </div>
                     <div>
-                        @perm('settlements create')
+                        @perm('jms_judicial_management create')
                             <a href="{{ route('admin.ejalas.settlements.create', ['from' => $from]) }}"
                                 class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('ejalas::ejalas.add_settlement') }}</a>

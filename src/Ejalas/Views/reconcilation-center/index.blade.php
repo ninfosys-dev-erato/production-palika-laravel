@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.reconciliation_center_list') }}</h5>
                     </div>
                     <div>
-                        @perm('reconciliation_centers create')
+                        @perm('jms_settings create')
                             <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_reconciliation_center') }}
                             </button>
