@@ -147,7 +147,7 @@
                                             {{ __('businessregistration::businessregistration.email_address') }}
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.email" name="email"
-                                            type="email"
+                                            type="text"
                                             class="form-control @error('businessRegistration.email') is-invalid @enderror"
                                             id="email"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_email') }}">
