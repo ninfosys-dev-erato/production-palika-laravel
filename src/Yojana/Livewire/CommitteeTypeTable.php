@@ -73,7 +73,7 @@ class CommitteeTypeTable extends DataTableComponent
     }
     public function edit($id)
     {
-        if (!can('committee_type_update')) {
+        if (!can('committee_settings_update')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -83,7 +83,7 @@ class CommitteeTypeTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('committee_type_delete')) {
+        if (!can('committee_settings_delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -93,7 +93,7 @@ class CommitteeTypeTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('committee_type_delete')) {
+        if (!can('committee_settings_delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

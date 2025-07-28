@@ -33,7 +33,7 @@ class ProjectInchargeForm extends Component
     {
         return [
             'projectIncharge.employee_id' => ['required'],
-            'projectIncharge.remarks' => ['required'],
+            'projectIncharge.remarks' => ['nullable'],
             'projectIncharge.plan_id' => ['required'],
             'projectIncharge.is_active' => ['nullable'],
 ];

@@ -125,7 +125,7 @@ class ConsumerCommitteeMemberTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('consumer_committee_members edit')) {
+        if (!can('committee_settings_edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -133,7 +133,7 @@ class ConsumerCommitteeMemberTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('consumer_committee_members delete')) {
+        if (!can('committee_settings_delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -143,7 +143,7 @@ class ConsumerCommitteeMemberTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('consumer_committee_members delete')) {
+        if (!can('committee_settings_delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

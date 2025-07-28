@@ -164,7 +164,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('consumer_committees edit')){
+        if(!can('committee_settings_edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -173,7 +173,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
 
     public function delete($id)
     {
-        if(!can('consumer_committees delete')){
+        if(!can('committee_settings_delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -182,7 +182,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
         $this->successFlash(__('yojana::yojana.consumer_committee_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('consumer_committees delete')){
+        if(!can('committee_settings_delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }
@@ -198,7 +198,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
 
     public function printRegistrationCertificate($id)
     {
-        if(!can('consumer_committees edit')){
+        if(!can('committee_settings_edit')){
         SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
         return false;
         }
@@ -207,7 +207,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
     }
     public function printAccountOperationLetter($id)
     {
-        if(!can('consumer_committees edit')){
+        if(!can('committee_settings_edit')){
         SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
         return false;
         }
@@ -217,7 +217,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
 
     public function printAccountClosureLetter($id)
     {
-        if(!can('consumer_committees edit')){
+        if(!can('committee_settings_edit')){
         SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
         return false;
         }
@@ -227,7 +227,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
 
     public function printLetter($letterType,$id)
     {
-        if(!can('consumer_committees edit')){
+        if(!can('committee_settings_edit')){
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }

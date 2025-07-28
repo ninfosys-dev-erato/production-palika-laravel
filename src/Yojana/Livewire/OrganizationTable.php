@@ -134,7 +134,7 @@ class OrganizationTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('organizations edit')) {
+        if (!can('committee_settings_edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -142,7 +142,7 @@ class OrganizationTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('organizations delete')) {
+        if (!can('committee_settings_delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -152,7 +152,7 @@ class OrganizationTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('organizations delete')) {
+        if (!can('committee_settings_delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

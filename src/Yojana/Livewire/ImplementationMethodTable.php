@@ -21,6 +21,7 @@ class ImplementationMethodTable extends DataTableComponent
     protected $model = ImplementationMethod::class;
 
     public $plans;
+    public $query;
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
@@ -48,7 +49,7 @@ class ImplementationMethodTable extends DataTableComponent
             ->where('deleted_at', null)
             ->where('deleted_by', null)
             ->orderBy('created_at', 'DESC'); // Select some things
-
+        $this->query = $query->get();
         $this->plans = $query->get()[0]->plans;
         return $query;
     }
@@ -68,22 +69,22 @@ class ImplementationMethodTable extends DataTableComponent
                 ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('yojana::yojana.total_plans'))
                 ->label(function ($row) {
-                    $totalPlans = $this->plans->where('implementationMethod.model',$row->model->value);
-                    return replaceNumbersWithLocale(count($totalPlans), true);
+                     $totalPlans = $row->plans?->count() ?? 0;
+                    return replaceNumbersWithLocale($totalPlans, true);
                 })->html()
                 ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('yojana::yojana.operating_plans'))
                 ->label(function ($row) {
-                    $operatingPlans = $this->plans
-                        ->where('implementationMethod.model',$row->model->value)
+                    $operatingPlans = $row->plans
+//                        ->where('implementationMethod.model',$row->model->value)
                         ->where('status','!=' ,PlanStatus::Completed);
                     return replaceNumbersWithLocale(count($operatingPlans), true);
                 })->html()
                 ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('yojana::yojana.completed_plans'))
                 ->label(function ($row) {
-                    $completedPlans = $this->plans
-                        ->where('implementationMethod.model',$row->model->value)
+                    $completedPlans = $row->plans
+//                        ->where('implementationMethod.model',$row->model->value)
                         ->where('status','=' ,PlanStatus::Completed);
                     return replaceNumbersWithLocale(count($completedPlans), true);
                 })->html()
