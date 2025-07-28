@@ -2,6 +2,7 @@
 
 use Frontend\BusinessPortal\Ebps\Controllers\BuildingRegistrationController;
 use Frontend\BusinessPortal\Ebps\Controllers\MapApplyController;
+use Frontend\BusinessPortal\Ebps\Controllers\OrganizationController;
 
 Route::group(['prefix' =>'organization/ebps/map-apply', 'as'=>'organization.ebps.map_apply.','middleware'=>['web'] ], function () {
     Route::get('/',[MapApplyController::class,'index'])->name('index');
@@ -12,6 +13,10 @@ Route::group(['prefix' =>'organization/ebps/map-apply', 'as'=>'organization.ebps
     Route::get('/apply-step/{mapStep}/{mapApply}', [MapApplyController::class, 'mapApplyStep'])->name('apply-map-step');
     Route::get('/step/preview/{mapApplyStep}', [MapApplyController::class, 'previewMapStep'])->name('preview-map-step');
     Route::get('/additionalForm/{id}',[MapApplyController::class,'additionalForm'])->name('additionalForm');
+});
+
+Route::group(['prefix' =>'organization/', 'as'=>'organization.','middleware'=>['web'] ], function () {
+    Route::get('/profile',[OrganizationController::class, 'show'])->name('profile');
 });
 
 
