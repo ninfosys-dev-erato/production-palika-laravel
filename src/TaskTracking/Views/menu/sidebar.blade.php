@@ -7,6 +7,12 @@
         <div data-i18n="Tasks">{{ __('tasktracking::tasktracking.tasks') }}</div>
     </a>
 </li>
+<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.anusuchi.report') ? 'active' : '' }}">
+    <a href="{{ route('admin.anusuchis.report') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-building"></i>
+        <div data-i18n="Task Type">{{ __('tasktracking::tasktracking.make_report') }}</div>
+    </a>
+</li>
 <li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.task.projects.index') ? 'active' : '' }}">
     <a href="{{ route('admin.task.projects.index') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-bell-plus"></i>
@@ -22,26 +28,15 @@
 <li class="menu-item" style="">
     <a href="#" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-checkbox-square"></i>
-        <div data-i18n="{{ __('tasktracking::tasktracking.public_settings') }}">{{ __('tasktracking::tasktracking.report_settings') }} </div>
+        <div data-i18n="{{ __('tasktracking::tasktracking.public_settings') }}">
+            {{ __('tasktracking::tasktracking.report_settings') }} </div>
     </a>
     <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{ route('admin.anusuchis.index') }}" class="menu-link">
-                    <div data-i18n="{{ __('tasktracking::tasktracking.anusuchis')}}">{{ __('tasktracking::tasktracking.anusuchis') }}</div>
-                </a>
-            </li>
+        <li class="menu-item ">
+            <a href="{{ route('admin.anusuchis.index') }}" class="menu-link">
+                <div data-i18n="{{ __('tasktracking::tasktracking.anusuchis') }}">
+                    {{ __('tasktracking::tasktracking.anusuchis') }}</div>
+            </a>
+        </li>
     </ul>
 </li>
-<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.anusuchi.index') ? 'active' : '' }}">
-    <a href="{{ route('admin.anusuchis.template') }}" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-building"></i>
-        <div data-i18n="Task Type">{{ __('tasktracking::tasktracking.template') }}</div>
-    </a>
-</li>
-<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.anusuchi.report') ? 'active' : '' }}">
-    <a href="{{ route('admin.anusuchis.report') }}" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-building"></i>
-        <div data-i18n="Task Type">{{ __('tasktracking::tasktracking.make_report') }}</div>
-    </a>
-</li>
-

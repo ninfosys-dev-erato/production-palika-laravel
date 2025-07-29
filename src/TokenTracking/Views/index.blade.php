@@ -16,9 +16,10 @@
                             {{ __('tokentracking::tokentracking.register_token_list') }}</h5>
                     </div>
                     <div>
-                        @perm('register_tokens create')
+                        @perm('tok_token action')
                             <a href="{{ route('admin.register_tokens.create') }}" class="btn btn-info"><i
-                                    class="bx bx-plus"></i> {{ __('tokentracking::tokentracking.add_register_token') }}</a>
+                                    class="bx bx-plus"></i>
+                                {{ __('tokentracking::tokentracking.add_register_token') }}</a>
                         @endperm
                     </div>
                 </div>
@@ -42,7 +43,6 @@
                 <div class="modal-body">
                     <div class="card-body">
                         <livewire:token_tracking.token_feedback_form :action="\App\Enums\Action::CREATE" />
-
                     </div>
                 </div>
             </div>

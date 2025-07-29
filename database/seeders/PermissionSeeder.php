@@ -377,6 +377,32 @@ class PermissionSeeder extends Seeder
 
             ['name' => 'jms_reconciliation_center access', 'guard' => 'web'],
             ['name' => 'jms_report access', 'guard' => 'web'],
+            // -------------------
+            // TOK Token Management Module
+            // -------------------
+            ['name' => 'tok_token access', 'guard' => 'web'],
+            ['name' => 'tok_token_feedback access', 'guard' => 'web'],
+            ['name' => 'tok_token_report access', 'guard' => 'web'],
+            ['name' => 'tok_token action', 'guard' => 'web'],
+            ['name' => 'tok_token_feedback action', 'guard' => 'web'],
+
+            // -------------------
+            // TSK Task Tracking Module
+            // -------------------
+            ['name' => 'tsk_setting access', 'guard' => 'web'],
+            ['name' => 'tsk_setting create', 'guard' => 'web'],
+            ['name' => 'tsk_setting edit', 'guard' => 'web'],
+            ['name' => 'tsk_setting delete', 'guard' => 'web'],
+            ['name' => 'tsk_management access', 'guard' => 'web'],
+            ['name' => 'tsk_management create', 'guard' => 'web'],
+            ['name' => 'tsk_management edit', 'guard' => 'web'],
+            ['name' => 'tsk_management delete', 'guard' => 'web'],
+            ['name' => 'tsk_management print', 'guard' => 'web'],
+
+
+
+
+
 
 
 

@@ -16,9 +16,10 @@
                             {{ __('tokentracking::tokentracking.token_feedback_list') }}</h5>
                     </div>
                     <div>
-                        @perm('register_tokens create')
+                        @perm('tok_token_feedback action')
                             <a href="{{ route('admin.token_feedbacks.create') }}" class="btn btn-info"><i
-                                    class="bx bx-plus"></i> {{ __('tokentracking::tokentracking.add_token_feedback') }}</a>
+                                    class="bx bx-plus"></i>
+                                {{ __('tokentracking::tokentracking.add_token_feedback') }}</a>
                         @endperm
                     </div>
                 </div>

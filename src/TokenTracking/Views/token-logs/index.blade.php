@@ -16,7 +16,7 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('token_logs create')
+                        @perm('tok_token action')
                             <a href="{{ route('admin.token_logs.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('tokentracking::tokentracking.add_token_log') }}</a>
                         @endperm
