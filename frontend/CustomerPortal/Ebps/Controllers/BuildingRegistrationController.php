@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Src\Ebps\Enums\ApplicationTypeEnum;
 use Src\Ebps\Models\BuildingConstructionType;
+use Src\Ebps\Models\DocumentFile;
 use Src\Ebps\Models\MapApply;
+use Src\Ebps\Models\MapApplyDetail;
 use Src\Ebps\Models\MapApplyStep;
 use Src\Ebps\Models\MapStep;
 
@@ -59,19 +61,20 @@ class BuildingRegistrationController extends Controller
     function show($id)
     {
         $mapApply = MapApply::with([
-            'fiscalYear', 
-            'landDetail.fourBoundaries', 
-            'landDetail.localBody', 
-            'constructionType', 
-            'houseOwner.province', 
-            'houseOwner.district', 
-            'houseOwner.localBody', 
+            'fiscalYear',
+            'landDetail.fourBoundaries',
+            'landDetail.localBody',
+            'constructionType',
+            'houseOwner.province',
+            'houseOwner.district',
+            'houseOwner.localBody',
             'landOwner.province',
             'landOwner.district',
             'landOwner.localBody',
             'province',
-            'district', 
-            'localBody','detail',
+            'district',
+            'localBody',
+            'detail',
             'landDetail',
             'buildingConstructionType',
             'fiscalYear',
@@ -84,7 +87,12 @@ class BuildingRegistrationController extends Controller
             'buildingRoofType'
         ])->findOrFail($id);
 
-        return view('CustomerPortal.Ebps::building-registration-show')->with(compact('mapApply'));
+        $documents = DocumentFile::where('map_apply_id', $mapApply->id)->get();
+        $mapApplyDetail = MapApplyDetail::with(['organization.localBody', 'organization.district'])->where('map_apply_id', $id)->first();
+
+        $organization = $mapApplyDetail?->organization;
+
+        return view('CustomerPortal.Ebps::building-registration-show')->with(compact('mapApply', 'documents', 'organization'));
 
     }
 

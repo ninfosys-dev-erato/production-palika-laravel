@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Src\Ebps\Enums\FormPositionEnum;
 use Src\Ebps\Models\DocumentFile;
 use Src\Ebps\Models\MapApply;
+use Src\Ebps\Models\MapApplyDetail;
 use Src\Ebps\Models\MapApplyStep;
 use Src\Ebps\Models\MapStep;
 use PDF;
@@ -49,7 +50,11 @@ class MapApplyAdminController extends Controller
         ])->where('id', $id)->first();
         $documents = DocumentFile::where('map_apply_id', $mapApply->id)->get();
 
-        return view('Ebps::map-applies.map-applies-show')->with(compact('mapApply', 'documents'));
+        $mapApplyDetail = MapApplyDetail::with(['organization.localBody', 'organization.district'])->where('map_apply_id', $id)->first();
+
+        $organization = $mapApplyDetail?->organization;
+
+        return view('Ebps::map-applies.map-applies-show')->with(compact('mapApply', 'documents', 'organization'));
 
     }
 

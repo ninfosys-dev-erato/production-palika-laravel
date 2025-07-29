@@ -1,143 +1,297 @@
 <x-layout.customer-app header="Map Apply View">
-    <!-- Header Card -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body bg-opacity-10 border-start border-primary border-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="h4 mb-1 fw-bold text-primary">{{ __('ebps::ebps.map_apply_details') }}</h2>
-                    <p class="small mb-0">{{ __('ebps::ebps.submission_id') }}: <strong>{{ $mapApply->submission_id }}</strong></p>
-                </div>
-                <div>
-                    <span class="badge bg-primary">{{ $mapApply->fiscalYear->year ?? 'N/A' }}</span>
-                </div>
-            </div>
-        </div>
+    <style>
+        :root {
+            --primary-color: #14539A;
+            --secondary-color: #E04622;
+            --accent-color: #F1C40F;
+            --light-bg: #f8f9fa;
+            --border-color: #d9e2ef;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+        }
+
+        .section-card {
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 0 1.5rem;
+        }
+
+        .section-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.5rem 0.5rem 0 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-subheader {
+            background-color: #e9ecef;
+            border-left: 4px solid var(--primary-color);
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .data-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.6rem 0;
+        }
+
+        .data-label {
+            width: 35%;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .data-value {
+            width: 65%;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .badge-fiscal-year {
+            background-color: var(--accent-color);
+            color: #212529;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.3rem;
+        }
+
+        .info-box {
+            background-color: rgba(20, 83, 154, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .table thead th {
+            background-color: #e9ecef;
+            color: var(--primary-color);
+        }
+
+        @media print {
+
+            .btn-print,
+            .btn-outline-primary {
+                display: none !important;
+            }
+
+            .section-card {
+                page-break-inside: avoid;
+            }
+
+            .section-header {
+                background-color: #f1f1f1 !important;
+                color: black !important;
+            }
+        }
+    </style>
+
+
+    <div class="d-flex justify-content-end gap-2 mb-3">
+        <a href="javascript:history.back()" class="btn btn-outline-primary">
+            <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
+        </a>
+
+        {{-- <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
+            <i class="bx bx-printer"></i> Download PDF
+        </button> --}}
+
     </div>
 
-    <div class="row g-4">
-        <!-- Personal Information Card -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex align-items-center">
-                        <i class="ti ti-user-circle text-primary me-2"></i>
-                        <h3 class="h5 fw-semibold mb-0 text-primary">{{ __('ebps::ebps.personal_information') }}</h3>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">{{ __('ebps::ebps.full_name') }}</label>
-                            <div class="fw-medium">{{ $mapApply->full_name ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">{{ __('ebps::ebps.age') }}</label>
-                            <div class="fw-medium">{{ $mapApply->age ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">{{ __('ebps::ebps.applied_date') }}</label>
-                            <div class="fw-medium">{{ $mapApply->applied_date ?? 'N/A' }}</div>
-                        </div>
-
-                    </div>
-                </div>
+    <div class="container mb-5 p-0 shadow-sm rounded">
+        <!-- Header -->
+        <div class="section-header">
+            <div>
+                <i class="fas fa-map-marked-alt me-2"></i> {{ __('ebps::ebps.map_apply_details') }}
+            </div>
+            <div>
+                <span class="badge badge-fiscal-year"> आ.व. {{ $mapApply->fiscalYear->year ?? 'N/A' }}</span>
             </div>
         </div>
 
-        <!-- Application Details Card -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex align-items-center">
-                        <i class="ti ti-file-description text-primary me-2"></i>
-                        <h3 class="h5 fw-semibold mb-0 text-primary">{{__('ebps::ebps.application_details')}}</h3>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">{{__('ebps::ebps.usage')}}</label>
-                            <div class="fw-medium">{{ $mapApply->usage ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small">{{__('ebps::ebps.fiscal_year')}}</label>
-                            <div class="fw-medium">{{ $mapApply->fiscalYear->year ?? 'N/A' }}</div>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label text-muted small">{{__('ebps::ebps.construction_type')}}</label>
-                            <div class="fw-medium">{{ $mapApply->constructionType->title ?? 'N/A' }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="section-card">
 
-        <!-- Land Details Card -->
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex align-items-center">
-                        <i class="ti ti-map-pin text-primary me-2"></i>
-                        <h3 class="h5 fw-semibold mb-0 text-primary">{{__('ebps::ebps.land_details')}}</h3>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-3 bg-light bg-opacity-50">
-                                <label class="form-label text-muted small">{{ __('ebps::ebps.local_body') }}</label>
-                                <div class="fw-medium">{{ $mapApply->landDetail->localBody->title ?? 'N/A' }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-3 bg-light bg-opacity-50">
-                                <label class="form-label text-muted small">{{ __('ebps::ebps.ward') }}</label>
-                                <div class="fw-medium">{{ $mapApply->landDetail->ward ?? 'N/A' }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-3 bg-light bg-opacity-50">
-                                <label class="form-label text-muted small">{{ __('ebps::ebps.tole') }}</label>
-                                <div class="fw-medium">{{ $mapApply->landDetail->tole ?? 'N/A' }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-3 bg-light bg-opacity-50">
-                                <label class="form-label text-muted small">{{ __('ebps::ebps.area') }}</label>
-                                <div class="fw-medium">{{ $mapApply->landDetail->area_sqm ?? 'N/A' }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-3 bg-light bg-opacity-50">
-                                <label class="form-label text-muted small">{{ __('ebps::ebps.lot_no') }}</label>
-                                <div class="fw-medium">{{ $mapApply->landDetail->lot_no ?? 'N/A' }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded-3 bg-light bg-opacity-50">
-                                <label class="form-label text-muted small">{{ __('ebps::ebps.seat_no') }}</label>
-                                <div class="fw-medium">{{ $mapApply->landDetail->seat_no ?? 'N/A' }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <!-- 1. Personal Information -->
+            <div>
 
-        <!-- Four Boundary Details Card -->
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex align-items-center">
-                        <i class="ti ti-border-all text-primary me-2"></i>
-                        <h3 class="h5 fw-semibold mb-0 text-primary">{{ __('ebps::ebps.four_boundary_details') }}</h3>
+                <div class="section-subheader">
+                    <i class="fas fa-user me-2"></i> {{ __('आवेदकको विवरण') }}
+                </div>
+                <div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ebps::ebps.submission_id') }}:</div>
+                        <div class="data-value">{{ $mapApply->submission_id ?? 'N/A' }}</div>
+                    </div>
+
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ebps::ebps.full_name') }}:</div>
+                        <div class="data-value">{{ $mapApply->full_name ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ebps::ebps.age') }}:</div>
+                        <div class="data-value">{{ $mapApply->age ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ebps::ebps.applied_date') }}:</div>
+                        <div class="data-value">{{ $mapApply->applied_date ?? 'N/A' }}</div>
                     </div>
                 </div>
-                <div class="card-body">
+
+
+                <!-- 2. Application Details -->
+                <div class="section-subheader mt-4">
+                    <i class="fas fa-file-alt me-2"></i> {{ __('ebps::ebps.application_details') }}
+                </div>
+                <div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ebps::ebps.usage') }}:</div>
+                        <div class="data-value">{{ $mapApply->usage ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ebps::ebps.fiscal_year') }}:</div>
+                        <div class="data-value">{{ $mapApply->fiscalYear->year ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ebps::ebps.construction_type') }}:</div>
+                        <div class="data-value">{{ $mapApply->constructionType->title ?? 'N/A' }}</div>
+                    </div>
+                </div>
+
+
+                <div class="mb-4">
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i>घर धनी विवरण
+                    </div>
+                    <div class="px-3 mb-4">
+                        <div class="data-row">
+                            <div class="data-label">नाम:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->owner_name ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">फोन नं:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->mobile_no ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">नागरिकता नं:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->citizenship_no ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">जारी मिति:</div>
+                            <div class="data-value">
+                                {{ $mapApply->houseOwner->citizenship_issued_date ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">जारी जिल्ला:</div>
+                            <div class="data-value">
+                                {{ $mapApply->houseOwner->citizenship_issued_at ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">प्रदेश:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->province->title ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">पालिका:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->localBody->title ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">टोल:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->tole ?? '-' }}</div>
+
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">फोटो:</div>
+                            <div class="data-value">
+                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $mapApply?->houseOwner?->photo, 'local', 'tempUrl') }}"
+                                    target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- 3. Land Details -->
+                <div class="section-subheader mt-4">
+                    <i class="fas fa-map-pin me-2"></i> {{ __('ebps::ebps.land_details') }}
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="data-row">
+                            <div class="data-label">{{ __('ebps::ebps.local_body') }}:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->localBody->title ?? 'N/A' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="data-row">
+                            <div class="data-label">{{ __('ebps::ebps.ward') }}:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->ward ?? 'N/A' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="data-row">
+                            <div class="data-label">{{ __('ebps::ebps.tole') }}:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->tole ?? 'N/A' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <div class="data-row">
+                            <div class="data-label">{{ __('ebps::ebps.area') }}:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->area_sqm ?? 'N/A' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <div class="data-row">
+                            <div class="data-label">{{ __('ebps::ebps.lot_no') }}:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->lot_no ?? 'N/A' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-3">
+                        <div class="data-row">
+                            <div class="data-label">{{ __('ebps::ebps.seat_no') }}:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->seat_no ?? 'N/A' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Four Boundary Details -->
+                <div class="section-subheader mt-4">
+                    <i class="fas fa-border-all me-2"></i> {{ __('ebps::ebps.four_boundary_details') }}
+                </div>
+                <div>
                     @if ($mapApply->landDetail->fourBoundaries->isNotEmpty())
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
-                                <thead class="table-light">
+                            <table class="table table-bordered table-hover mb-0">
+                                <thead>
                                     <tr>
                                         <th>{{ __('ebps::ebps.title') }}</th>
                                         <th>{{ __('ebps::ebps.direction') }}</th>
@@ -158,41 +312,126 @@
                             </table>
                         </div>
                     @else
-                        <div class="alert alert-info mb-0">
+                        <div class="alert alert-info mb-0 mt-2">
                             <i class="ti ti-info-circle me-2"></i>
                             {{ __('ebps::ebps.no_boundary_details_available') }}.
                         </div>
                     @endif
                 </div>
-            </div>
-        </div>
 
-        <!-- Signature Card -->
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex align-items-center">
-                        <i class="ti ti-signature text-primary me-2"></i>
-                        <h3 class="h5 fw-semibold mb-0 text-primary">{{ __('ebps::ebps.signature') }}</h3>
+                <div class="section-subheader">
+                    <i class="fas fa-user me-2"></i> {{ __('संस्था/परामर्शदाताहरु') }}
+                </div>
+                <div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('परामर्शदाता') }}:</div>
+                        <div class="data-value">{{ $organization->org_name_ne ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('इमेल') }}:</div>
+                        <div class="data-value">{{ $organization->org_email ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('फोन नम्बर') }}:</div>
+                        <div class="data-value">{{ $organization->org_contact ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ठेगाना') }}:</div>
+                        <div class="data-value">
+                            {{ $organization->localBody->title . ', ' . $organization->district->title ?? 'N/A' }}
+                        </div>
                     </div>
                 </div>
-                <div class="card-body text-center">
+
+                <!-- 5. Signature -->
+                <div class="section-subheader mt-5 d-flex align-items-center">
+                    <i class="fas fa-signature me-2 fs-4 text-primary"></i>
+                    <h5 class="mb-0 text-primary fw-semibold">{{ __('ebps::ebps.signature') }}</h5>
+                </div>
+
+                <div class="text-center border rounded p-4 bg-light mt-3">
+
                     @if ($mapApply->signature)
-                        <div class="border p-3 rounded d-inline-block shadow-sm bg-light bg-opacity-50 mb-2">
-                            <img src="{{ asset('storage/' . $mapApply->signature) }}" alt="Signature"
-                                class="img-fluid rounded" style="max-width: 200px;">
-                        </div>
-                        <div class="small text-muted">{{ __('ebps::ebps.signature') }}</div>
+                        @php
+                            $fileUrl = customFileAsset(
+                                config('src.Ebps.ebps.path'),
+                                $mapApply->signature,
+                                'local',
+                                'tempUrl',
+                            );
+                        @endphp
+
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary">
+                            <i class="bx bx-file me-1"></i>
+                            {{ __('yojana::yojana.view_uploaded_file') }}
+                        </a>
                     @else
-                        <div class="d-flex align-items-center justify-content-center h-100">
-                            <div class="text-muted fst-italic">
-                                <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                                {{ __('ebps::ebps.no_signature_uploaded') }}.
-                            </div>
+                        <div class="text-muted fst-italic">
+                            <i class="ti ti-file-off fs-2 d-block mb-2"></i>
+                            {{ __('ebps::ebps._no_signature_uploaded') }}
                         </div>
                     @endif
+                </div>
+
+                <div class="section-subheader mt-4">
+                    <i class="fas fa-signature me-2"></i> {{ __('ebps::ebps.other_documents') }}
+                </div>
+
+                <div class="row">
+                    @forelse ($documents as $document)
+                        @php
+                            $fileUrl = customFileAsset(
+                                config('src.Ebps.ebps.path'),
+                                $document->file,
+                                'local',
+                                'tempUrl',
+                            );
+                            $extension = pathinfo($document->file, PATHINFO_EXTENSION);
+                            $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                        @endphp
+
+                        <div class="col-md-4 mb-3 text-center">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body">
+                                    <h6 class="text-truncate" title="{{ $document->title }}">{{ $document->title }}
+                                    </h6>
+                                    <a href="{{ $fileUrl }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm mt-2">
+                                        <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12 text-center text-muted fst-italic">
+                            <i class="ti ti-file-off fs-2 d-block mb-2"></i>
+                            {{ __('ebps::ebps._no_documents_uploaded') }}.
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
 </x-layout.customer-app>
+
+<script>
+    function downloadPdf(id) {
+        fetch(`/admin/ebps/map-applies/print-form/${id}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'map_apply_exports.pdf';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(console.error);
+    }
+</script>

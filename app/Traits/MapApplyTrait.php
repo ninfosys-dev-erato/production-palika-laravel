@@ -217,6 +217,10 @@ trait MapApplyTrait
             '{{customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->phone) ? replaceNumbers($mapApply?->customer->phone, true): self::EMPTY_LINES,
             '{{mapApply.customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->mobile_no) ? replaceNumbers($mapApply?->customer->mobile_no, true) : self::EMPTY_LINES,
             '{{mapApply.appliedDate}}' => isset($mapApply?->applied_date, $mapApply?->applied_date) ? replaceNumbers($mapApply?->applied_date, true) : self::EMPTY_LINES,
+            '{{mapApply.year_of_house_built}}' => isset($mapApply?->year_of_house_built, $mapApply?->year_of_house_built) ? replaceNumbers($mapApply?->year_of_house_built, true) : self::EMPTY_LINES,
+            '{{mapApply.no_of_rooms}}' => isset($mapApply?->no_of_rooms, $mapApply?->no_of_rooms) ? replaceNumbers($mapApply?->no_of_rooms, true) : self::EMPTY_LINES,
+            '{{mapApply.storey_no}}' => isset($mapApply?->storey_no, $mapApply?->storey_no) ? replaceNumbers($mapApply?->storey_no, true) : self::EMPTY_LINES,
+            '{{mapApply.area_of_building_plinth}}' => isset($mapApply?->area_of_building_plinth, $mapApply?->area_of_building_plinth) ? replaceNumbers($mapApply?->area_of_building_plinth, true) : self::EMPTY_LINES,
         ];
     }
 }

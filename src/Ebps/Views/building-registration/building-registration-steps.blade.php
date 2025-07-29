@@ -1,24 +1,35 @@
 <x-layout.app header="{{ __('ebps::ebps.building_registration_steps') }}">
+
+    <div class="d-flex justify-content-end gap-2">
+        <a href="{{ route('admin.ebps.building-registrations.index') }}" class="btn btn-outline-primary">
+            <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
+        </a>
+    </div>
+
     <div class="container py-4">
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-header bg-white border-bottom py-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <i class="bx bx-map-alt text-primary fs-3 me-2"></i>
-                        <div>
-                            <h3 class="text-primary fw-bold mb-0">
-                                {{ __('ebps::ebps.building_registration_overview') }}
+                <div class="d-flex flex-wrap align-items-start justify-content-between">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex align-items-center mb-1">
+                            <i class="bx bx-map-alt text-primary fs-3 me-2"></i>
+                            <h3 class="text-primary fw-bold mb-0">{{ __('ebps::ebps.building_registration_overview') }}
                             </h3>
-                            <h6 class="text-primary mb-0 mt-2">
-                                {{ $mapApply->submission_id }} - {{ $mapApply->full_name }}
-                            </h6>
                         </div>
+                        <h6 class="text-primary mb-0 ms-4">
+                            {{ $mapApply->submission_id }} – {{ $mapApply->full_name }}
+                        </h6>
                     </div>
 
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('admin.ebps.building-registrations.index') }}"
-                            class="btn btn-outline-primary">
-                            <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
+                    <div class="mt-2 mt-md-0 d-flex gap-2">
+                        <a href="{{ route('admin.ebps.change-owner', ['id' => $mapApply->id]) }}"
+                            class="btn btn-outline-secondary btn-sm">
+                            <i class="bx bx-user me-1"></i> {{ __('ebps::ebps.change_owner') }}
+                        </a>
+
+                        <a href="{{ route('admin.ebps.change-organization', ['id' => $mapApply->id]) }}"
+                            class="btn btn-outline-secondary btn-sm">
+                            <i class="bx bx-user me-1"></i> {{ __('ebps::ebps.change_organization') }}
                         </a>
                     </div>
                 </div>

@@ -188,11 +188,14 @@ class MapApplyForm extends Component
     }
    
     public function loadWards(): void
-    {
-        $localBody = getLocalBodies(localBodyId: $this->customerLandDetail?->local_body_id)?->first()
-            ?? getLocalBodies(key(getSettingWithKey('palika-local-body')))?->first();
-    
-        $this->wards = $localBody ? getWards($localBody->id) : [];
+    {  
+        $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
+        
+        if ($localBody) {
+            $this->wards = getWards($localBody->wards);
+        } else {
+            $this->wards = [];
+        }
     }
 
    
@@ -397,6 +400,7 @@ class MapApplyForm extends Component
                 $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
                 DB::commit();
                 $this->successFlash(__('ebps::ebps.map_apply_created_successfully'));
+                dd('eta ayo ra');
                 return redirect()->route('admin.ebps.map_applies.index');
 
             case Action::UPDATE:

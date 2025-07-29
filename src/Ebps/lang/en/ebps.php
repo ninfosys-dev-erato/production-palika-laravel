@@ -632,4 +632,5 @@ return [
     'organization_profile' => 'Organization Profile',
     'organization_information_and_documents' => 'Organization Information and Documents',
     'Tax clearance document uploaded successfully!' => 'Tax clearance document uploaded successfully!',
+    'no_signature_uploaded' => 'No Signature Uploaded',
 ];

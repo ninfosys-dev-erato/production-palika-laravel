@@ -6,9 +6,9 @@
             </li>
             <li class="breadcrumb-item active" aria-current="page">
                 @if (isset($mapApply))
-                    (__('ebps::ebps.create'))
+                    {{ __('ebps::ebps.create') }}
                 @else
-                    (__(ebpps::ebps.edit))
+                    {{ __('ebps::ebps.edit') }}
                 @endif
             </li>
         </ol>
@@ -24,7 +24,7 @@
                     @endif
                     <div>
                         <a href="{{ route('customer.ebps.apply.map-apply.index') }}" class="btn btn-info">
-                            <i class="bx bx-list-ol"></i>{{ __('map_apply_list') }}
+                            <i class="bx bx-list-ol"></i>{{ __('ebps::ebps.map_apply_list') }}
                         </a>
                     </div>
                 </div>
