@@ -438,7 +438,7 @@
                                     </label>
                                     <select wire:model="businessRegistration.fiscal_year"
                                         class="form-control @error('businessRegistration.fiscal_year') is-invalid @enderror"
-                                        name="fiscal_year">
+                                        wire:change="fiscalYearChanged($event.target.value)" name="fiscal_year">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.fiscal_year') }}
                                         </option>
@@ -502,7 +502,6 @@
                                     <div class="col-md-6">
                                         <label for="registration_date" class="form-label-peaceful">
                                             {{ __('businessregistration::businessregistration.registration_date') }}
-
                                         </label>
                                         <input wire:model="businessRegistration.registration_date"
                                             name="registration_date" type="text" class="form-control nepali-date"
@@ -515,7 +514,7 @@
 
 
                                     <!-- Registration Number -->
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <label for="registration_number" class="form-label-peaceful">
                                             {{ __('businessregistration::businessregistration.registration_number') }}
 
@@ -524,6 +523,22 @@
                                             name="registration_number" type="text" class="form-control"
                                             id="registration_number"
                                             placeholder="{{ __('businessregistration::businessregistration.enter_registration_number') }}">
+                                        @error('businessRegistration.registration_number')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div> --}}
+
+                                    <div class="col-md-6">
+                                        <label for="registration_number" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_number') }}
+                                        </label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input wire:model="businessRegistration.registration_number"
+                                                name="registration_number" type="number" class="form-control w-50"
+                                                id="registration_number" min="1">
+
+                                            <span class="fw-bold">/ {{ $selectedFiscalYearText }}</span>
+                                        </div>
                                         @error('businessRegistration.registration_number')
                                             <div class="invalid-message">{{ $message }}</div>
                                         @enderror
