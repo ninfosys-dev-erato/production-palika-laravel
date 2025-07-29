@@ -194,6 +194,28 @@ worker_connections 1024;  # Adjust based on expected load
    - Alpine.js errors: Laravel Livewire Tables JavaScript provides the missing functions
    - Versioned vendor files: Proper MIME types for files like nepali.datepicker.v4.0.8.min.js
 
+6. **Rappasoft Laravel Livewire Tables 502/404 errors**:
+   ```bash
+   # Check current asset state
+   docker exec -it container-name emergency-asset-fix check
+   
+   # Apply emergency fix (creates assets manually)
+   docker exec -it container-name emergency-asset-fix fix
+   
+   # Full diagnostic and fix
+   docker exec -it container-name emergency-asset-fix full
+   
+   # Test nginx access to assets
+   docker exec -it container-name emergency-asset-fix test
+   ```
+   
+   The container serves rappasoft assets from two paths for compatibility:
+   - `/rappasoft/laravel-livewire-tables/` (primary)
+   - `/vendor/rappasoft/laravel-livewire-tables/` (fallback)
+   
+   If you're getting 502 errors, it's likely due to nginx configuration conflicts.
+   The emergency fix script creates minimal working assets and tests access.
+
 ### Debug Mode
 For debugging, temporarily enable:
 ```bash
@@ -225,6 +247,11 @@ docker exec -it container-name log-cleanup clean 14
 
 # Republish vendor assets if missing
 docker exec -it container-name publish-vendor-assets
+
+# Emergency rappasoft asset fix (for 502/404 errors)
+docker exec -it container-name emergency-asset-fix check
+docker exec -it container-name emergency-asset-fix fix
+docker exec -it container-name emergency-asset-fix full
 ```
 
 ## 📈 Performance Benchmarks

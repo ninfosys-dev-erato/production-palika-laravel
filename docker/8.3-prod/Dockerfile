@@ -118,11 +118,13 @@ COPY docker/8.3-prod/performance.conf /etc/performance.conf
 COPY docker/8.3-prod/logrotate.conf /etc/logrotate.d/laravel
 COPY docker/8.3-prod/log-cleanup.sh /usr/local/bin/log-cleanup
 COPY docker/8.3-prod/publish-vendor-assets.sh /usr/local/bin/publish-vendor-assets
+COPY docker/8.3-prod/emergency-asset-fix.sh /usr/local/bin/emergency-asset-fix
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
     && chmod +x /usr/local/bin/log-cleanup \
-    && chmod +x /usr/local/bin/publish-vendor-assets
+    && chmod +x /usr/local/bin/publish-vendor-assets \
+    && chmod +x /usr/local/bin/emergency-asset-fix
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/
