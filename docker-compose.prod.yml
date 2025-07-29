@@ -86,6 +86,11 @@ services:
       REDIS_PORT: "${REDIS_PORT:-6379}"
       # Memcached Settings
       MEMCACHED_HOST: "${MEMCACHED_HOST:-127.0.0.1}"
+    volumes:
+      # Bind mount to specific host paths for persistent storage
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/app:/var/www/html/storage/app"
+      # For publicly accessible uploaded files/images
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/app/public:/var/www/html/public/storage"
     networks:
       - laravel-network
     extra_hosts:
