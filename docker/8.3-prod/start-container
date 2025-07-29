@@ -99,12 +99,18 @@ EOF
     print_status "Setting up log rotation..."
     echo "0 2 * * * /usr/sbin/logrotate -f /etc/logrotate.d/laravel 2>/dev/null || /usr/local/bin/log-cleanup rotate" > /etc/cron.d/logrotate-laravel
     echo "0 */6 * * * /usr/local/bin/log-cleanup clean 3" >> /etc/cron.d/logrotate-laravel
-    echo "*/30 * * * * /usr/local/bin/log-cleanup status | grep -q 'consider running cleanup' && /usr/local/bin/log-cleanup emergency" >> /etc/cron.d/logrotate-laravel
+    echo "*/30 * * * /usr/local/bin/log-cleanup status | grep -q 'consider running cleanup' && /usr/local/bin/log-cleanup emergency" >> /etc/cron.d/logrotate-laravel
     chmod 0644 /etc/cron.d/logrotate-laravel
     
     # Create logrotate state directory
     mkdir -p /var/lib/logrotate
     touch /var/lib/logrotate/status
+    
+    # Ensure vendor assets are available (runtime check)
+    if [ ! -f "/var/www/html/public/rappasoft/laravel-livewire-tables/core.min.js" ]; then
+        print_status "Vendor assets missing, publishing now..."
+        cd /var/www/html && /usr/local/bin/publish-vendor-assets
+    fi
     
     # Start services
     print_status "Starting services..."

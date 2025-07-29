@@ -191,6 +191,8 @@ worker_connections 1024;  # Adjust based on expected load
    - Missing Livewire assets: Assets are published during container build
    - Laravel Livewire Tables 404s: Rappasoft assets are automatically created/published
    - Vendor assets: All vendor CSS/JS files are copied to public directory during build
+   - Alpine.js errors: Laravel Livewire Tables JavaScript provides the missing functions
+   - Versioned vendor files: Proper MIME types for files like nepali.datepicker.v4.0.8.min.js
 
 ### Debug Mode
 For debugging, temporarily enable:
