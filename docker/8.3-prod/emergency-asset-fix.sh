@@ -136,37 +136,124 @@ restart_nginx() {
     fi
 }
 
+# Function to check storage configuration
+check_storage_config() {
+    print_status "Checking Laravel storage configuration..."
+    
+    echo "=== Storage Symlinks ==="
+    ls -la /var/www/html/public/storage 2>/dev/null || echo "storage symlink does not exist"
+    
+    echo -e "\n=== Storage Directories ==="
+    ls -la /var/www/html/storage/app/ 2>/dev/null || echo "storage/app directory missing"
+    ls -la /var/www/html/storage/app/public/ 2>/dev/null || echo "storage/app/public directory missing"
+    ls -la /var/www/html/storage/app/private/ 2>/dev/null || echo "storage/app/private directory missing"
+    
+    echo -e "\n=== Customer KYC Directory ==="
+    find /var/www/html/storage -name "*customer-kyc*" -type d 2>/dev/null || echo "No customer-kyc directories found"
+    find /var/www/html/storage -name "*customer-kyc*" -type d -exec ls -la {} \; 2>/dev/null
+    
+    echo -e "\n=== Sample Customer KYC Files ==="
+    find /var/www/html/storage -path "*/customer-kyc/images/*" -name "*.jpg" | head -5 2>/dev/null || echo "No customer-kyc image files found"
+}
+
+# Function to fix storage configuration
+fix_storage_config() {
+    print_status "Fixing Laravel storage configuration..."
+    
+    # Create storage directories
+    mkdir -p /var/www/html/storage/app/public
+    mkdir -p /var/www/html/storage/app/private
+    mkdir -p /var/www/html/storage/app/private/customer-kyc/images
+    
+    # Set proper permissions
+    chown -R www-data:www-data /var/www/html/storage
+    chmod -R 755 /var/www/html/storage
+    
+    # Create/recreate storage symlink
+    print_status "Creating storage symlink..."
+    rm -f /var/www/html/public/storage 2>/dev/null || true
+    cd /var/www/html && php artisan storage:link --force 2>/dev/null || {
+        print_warning "Artisan command failed, creating symlink manually..."
+        ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
+    }
+    
+    # Verify symlink
+    if [ -L "/var/www/html/public/storage" ]; then
+        print_status "Storage symlink created successfully"
+        ls -la /var/www/html/public/storage
+    else
+        print_error "Failed to create storage symlink"
+    fi
+}
+
+# Function to test storage access
+test_storage_access() {
+    print_status "Testing storage access..."
+    
+    # Test basic storage endpoint
+    if curl -s -o /dev/null -w "%{http_code}" "http://localhost/storage/" | grep -q "200\|403\|404"; then
+        echo -e "${GREEN}✓${NC} /storage/ - Endpoint reachable"
+    else
+        echo -e "${RED}✗${NC} /storage/ - Not accessible"
+    fi
+    
+    # Test if we can create a test file and access it
+    echo "test" > /var/www/html/storage/app/public/test.txt
+    if curl -s -o /dev/null -w "%{http_code}" "http://localhost/storage/test.txt" | grep -q "200"; then
+        echo -e "${GREEN}✓${NC} /storage/test.txt - Test file accessible"
+    else
+        echo -e "${RED}✗${NC} /storage/test.txt - Test file not accessible"
+    fi
+    rm -f /var/www/html/storage/app/public/test.txt
+}
+
 # Main function
 main() {
     case "${1:-check}" in
         "check")
             check_current_state
+            check_storage_config
             ;;
         "fix")
             print_warning "Applying emergency asset fix..."
             create_assets_manually
+            fix_storage_config
             restart_nginx
             check_current_state
             ;;
         "test")
             test_nginx_access
+            test_storage_access
+            ;;
+        "storage")
+            check_storage_config
+            ;;
+        "storage-fix")
+            fix_storage_config
+            restart_nginx
+            test_storage_access
             ;;
         "full")
             print_status "Running full emergency fix..."
             check_current_state
+            check_storage_config
             create_assets_manually
+            fix_storage_config
             restart_nginx
             test_nginx_access
+            test_storage_access
             ;;
         "help"|"-h"|"--help")
             echo "Usage: $0 [command]"
             echo ""
             echo "Commands:"
-            echo "  check  - Check current asset state (default)"
-            echo "  fix    - Create assets manually and restart nginx"
-            echo "  test   - Test nginx access to assets"
-            echo "  full   - Run complete emergency fix procedure"
-            echo "  help   - Show this help message"
+            echo "  check      - Check current asset and storage state (default)"
+            echo "  fix        - Create assets manually, fix storage, and restart nginx"
+            echo "  test       - Test nginx access to assets and storage"
+            echo "  storage    - Check storage configuration only"
+            echo "  storage-fix - Fix storage configuration and test access"
+            echo "  full       - Run complete emergency fix procedure"
+            echo "  help       - Show this help message"
             ;;
         *)
             print_error "Unknown command: $1"

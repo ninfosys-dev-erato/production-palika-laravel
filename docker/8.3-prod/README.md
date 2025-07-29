@@ -216,123 +216,31 @@ worker_connections 1024;  # Adjust based on expected load
    If you're getting 502 errors, it's likely due to nginx configuration conflicts.
    The emergency fix script creates minimal working assets and tests access.
 
+7. **Storage files 403 Forbidden errors** (customer-kyc images, etc.):
+   ```bash
+   # Check storage configuration and symlinks
+   docker exec -it container-name emergency-asset-fix storage
+   
+   # Fix storage configuration and test access
+   docker exec -it container-name emergency-asset-fix storage-fix
+   
+   # Full check including storage
+   docker exec -it container-name emergency-asset-fix check
+   ```
+   
+   The container allows access to storage files in specific directories:
+   - `/storage/app/public/` (standard Laravel public storage)
+   - `/storage/customer-kyc/` (customer KYC documents and images)
+   
+   Storage files are served with proper MIME types:
+   - `.jpg/.jpeg` → `image/jpeg`
+   - `.png` → `image/png`
+   - `.gif` → `image/gif`
+   - `.pdf` → `application/pdf`
+   
+   If you're getting 403 errors for customer KYC images, the nginx rules now allow access
+   to `/storage/customer-kyc/` paths while maintaining security for other storage areas.
+
 ### Debug Mode
 For debugging, temporarily enable:
-```bash
-APP_DEBUG=true
 ```
-
-### Log Analysis
-```bash
-# Check nginx logs
-docker exec -it container-name tail -f /tmp/nginx-error.log
-
-# Check PHP-FPM logs
-docker exec -it container-name tail -f /tmp/php8.3-fpm-www-error.log
-
-# Check Laravel logs
-docker exec -it container-name tail -f /var/www/html/storage/logs/laravel.log
-
-# Check log status and sizes
-docker exec -it container-name log-cleanup status
-
-# Manual log rotation
-docker exec -it container-name log-cleanup rotate
-
-# Emergency log cleanup (if disk space is low)
-docker exec -it container-name log-cleanup emergency
-
-# Clean old compressed logs
-docker exec -it container-name log-cleanup clean 14
-
-# Republish vendor assets if missing
-docker exec -it container-name publish-vendor-assets
-
-# Emergency rappasoft asset fix (for 502/404 errors)
-docker exec -it container-name emergency-asset-fix check
-docker exec -it container-name emergency-asset-fix fix
-docker exec -it container-name emergency-asset-fix full
-```
-
-## 📈 Performance Benchmarks
-
-This setup is optimized for:
-- **High concurrency**: 1000+ concurrent connections
-- **Low latency**: <50ms response times for cached content
-- **High throughput**: 10,000+ requests per second
-- **Memory efficiency**: <512MB memory usage under normal load
-
-## 📋 Log Rotation & Management
-
-### Automatic Log Rotation
-The container includes comprehensive log rotation to prevent disk space issues:
-
-- **Daily rotation**: All logs are rotated daily at 2 AM
-- **Size-based rotation**: Logs rotate when reaching size limits
-- **Compression**: Old logs are compressed to save space
-- **Retention periods**:
-  - Nginx logs: 7 days
-  - PHP-FPM logs: 7 days
-  - Laravel logs: 14 days
-  - Supervisor logs: 5 days
-  - OPcache logs: 3 days
-
-### Scheduled Tasks
-```bash
-# Daily at 2 AM - Full log rotation
-0 2 * * * logrotate -f /etc/logrotate.d/laravel
-
-# Every 6 hours - Clean old compressed logs
-0 */6 * * * log-cleanup clean 3
-
-# Every 30 minutes - Emergency cleanup if disk > 80%
-*/30 * * * * log-cleanup status | grep -q 'consider running cleanup' && log-cleanup emergency
-```
-
-### Manual Log Management
-```bash
-# Check current log status
-docker exec -it container-name log-cleanup status
-
-# Force log rotation
-docker exec -it container-name log-cleanup rotate
-
-# Emergency cleanup (truncates all logs)
-docker exec -it container-name log-cleanup emergency
-
-# Clean compressed logs older than N days
-docker exec -it container-name log-cleanup clean 7
-
-# Get help
-docker exec -it container-name log-cleanup help
-```
-
-### Log Locations
-- **Active logs**: `/tmp/*.log` and `/var/www/html/storage/logs/*.log`
-- **Rotated logs**: Same locations with `.YYYYMMDD_HHMMSS.gz` suffix
-- **Log sizes**: Monitored automatically, alerts when disk usage > 80%
-
-## 🔄 Updates and Maintenance
-
-### Regular Maintenance
-1. **Security updates**: Regularly update base image
-2. **Log rotation**: Automatic via cron and supervisor
-3. **Cache clearing**: Laravel cache optimization
-4. **OPcache reset**: Automatic on container restart
-
-### Backup Strategy
-- **Database**: Regular database backups
-- **Files**: Volume mounts for persistent storage
-- **Configuration**: Version control for all configs
-
-## 📞 Support
-
-For issues or questions:
-1. Check the logs first
-2. Review this documentation
-3. Check Laravel and Docker documentation
-4. Monitor system resources
-
----
-
-**Note**: This setup is designed for production use with security and performance as top priorities. Always test thoroughly in a staging environment before deploying to production. 
