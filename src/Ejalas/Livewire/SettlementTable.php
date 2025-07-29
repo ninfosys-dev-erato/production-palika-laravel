@@ -97,7 +97,7 @@ class SettlementTable extends DataTableComponent
                 ->collapseOnTablet(),
             BooleanColumn::make(__('ejalas::ejalas.is_settled'), "is_settled")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete'))) {
+        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print'))) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -111,8 +111,10 @@ class SettlementTable extends DataTableComponent
                     $buttons .= $delete;
                 }
 
-                $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                $buttons .= $preview;
+                if (can('jms_judicial_management print')) {
+                    $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $buttons .= $preview;
+                }
 
                 return $buttons;
             })->html();

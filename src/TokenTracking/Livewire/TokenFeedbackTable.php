@@ -103,7 +103,7 @@ class TokenFeedbackTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('register_tokens edit')) {
+        if (!can('tok_token_feedback action')) {
             SessionFlash::WARNING_FLASH(__('tokentracking::tokentracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -111,7 +111,7 @@ class TokenFeedbackTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('register_tokens delete')) {
+        if (!can('tok_token_feedback action')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -121,7 +121,7 @@ class TokenFeedbackTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('register_tokens delete')) {
+        if (!can('tok_token_feedback action')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

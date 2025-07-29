@@ -256,7 +256,15 @@ class BuildingRegistrationForm extends Component
     
     public function loadWards(): void
     {
-        $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
+        // $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
+
+         $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
+        
+        if ($localBody) {
+            $this->wards = getWards($localBody->wards);
+        } else {
+            $this->wards = [];
+        }
     }
 
     public function mount(
@@ -297,8 +305,8 @@ class BuildingRegistrationForm extends Component
         $this->organizations    = Organization::whereNull('deleted_at')->get();
         $this->fiscalYears      = FiscalYear::whereNull('deleted_at')->get();
         $this->issuedDistricts  = District::whereNull('deleted_at')->get();
-        $this->localBodies      = getLocalBodies(district_ids: $districtId)->pluck('title', 'id')->toArray();
-
+        $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+       
         $this->provinces = $this->applicantProvinces = $this->landOwnerProvinces = $this->houseOwnerProvinces = $provinces;
 
         $this->wards = [];

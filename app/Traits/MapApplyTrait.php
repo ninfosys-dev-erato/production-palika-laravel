@@ -3,11 +3,11 @@
 namespace App\Traits;
 
 use App\Facades\ImageServiceFacade;
-use Src\Ebps\Models\MapApplyStep;
 use Src\Ebps\Models\MapApplyStepTemplate;
 
 trait MapApplyTrait
 {
+    use HelperTemplate;
     const EMPTY_LINES = '____________________';
     
     public function resolveMapStepTemplate($mapApply, $mapStep, $form): string
@@ -21,8 +21,8 @@ trait MapApplyTrait
         $signatures = '______________________';
 
         $letter = [
-            'header' => getLetterHeader(null),
-            'footer' => getLetterFooter(null),
+            'header' => $this->getLetterHeader(null),
+            // 'footer' => $this->getLetterFooter(null),
         ];
 
         $template = MapApplyStepTemplate::where('form_id', $form->id)->first();
@@ -35,7 +35,7 @@ trait MapApplyTrait
         
         $data = [
             '{{global.letter-head}}' => $letter['header'] ?? self::EMPTY_LINES,
-            '{{global.letter-head-footer}}' => $letter['footer'] ?? self::EMPTY_LINES,
+            // '{{global.letter-head-footer}}' => $letter['footer'] ?? self::EMPTY_LINES,
             '{{global.province}}' => getSetting('palika-province') ?? self::EMPTY_LINES,
             '{{global.district}}' => getSetting('palika-district') ?? self::EMPTY_LINES,
             '{{global.local-body}}' => getSetting('palika-local-body') ?? self::EMPTY_LINES,

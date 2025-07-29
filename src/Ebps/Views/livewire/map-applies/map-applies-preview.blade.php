@@ -167,7 +167,7 @@
                                     wire:model="selectedStatus">
                                     <option value="">{{ __('ebps::ebps.change_status') }}</option>
                                     @foreach ($mapApplyStatusEnum as $status)
-                                        <option value="{{ $status->value }}">{{ __($status->name) }}</option>
+                                        <option value="{{ $status->value }}">{{ $status->label() }}</option>
                                     @endforeach
                                 </select>
                                 <div class="position-absolute top-50 end-0 translate-middle-y pe-3 pointer-events-none">

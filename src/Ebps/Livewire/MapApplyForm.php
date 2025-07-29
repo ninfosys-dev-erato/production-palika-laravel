@@ -238,7 +238,9 @@ class MapApplyForm extends Component
         $this->mapApplyDetail = new MapApplyDetail();
 
         $this->organizations  = Organization::whereNull('deleted_at')->get();
-        $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+       
+        // $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
         $this->ownerships = LandOwernshipEnum::cases();
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
         $this->wards = [];
