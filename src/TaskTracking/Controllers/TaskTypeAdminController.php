@@ -14,25 +14,27 @@ class TaskTypeAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:task_type_access', only: ['index']),
-            new Middleware('permission:task_type_create', only: ['create']),
-            new Middleware('permission:task_type_update', only: ['edit']),
-    ];
-}
+            // new Middleware('permission:task_type_access', only: ['index']),
+            // new Middleware('permission:task_type_create', only: ['create']),
+            // new Middleware('permission:task_type_update', only: ['edit']),
+        ];
+    }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('TaskTracking::task-type-index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('TaskTracking::task-type-form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $taskType = TaskType::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('TaskTracking::task-type-form')->with(compact('action','taskType'));
+        return view('TaskTracking::task-type-form')->with(compact('action', 'taskType'));
     }
-
 }
