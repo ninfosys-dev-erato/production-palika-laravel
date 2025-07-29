@@ -25,17 +25,21 @@ print_error() {
 main() {
     print_status "Starting hardened Laravel application container..."
     
-    # Create essential directories
+    # Create essential directories with proper permissions
     print_status "Setting up directories..."
-    mkdir -p /var/log/nginx /var/log/php8.3-fpm /var/log/supervisor /run/php /var/run 2>/dev/null || true
+    mkdir -p /run/php /var/run 2>/dev/null || true
+    mkdir -p /var/run/php 2>/dev/null || true
+    mkdir -p /var/lib/nginx/body /var/lib/nginx/fastcgi /var/lib/nginx/proxy 2>/dev/null || true
+    mkdir -p /var/lib/nginx/scgi /var/lib/nginx/uwsgi 2>/dev/null || true
+    mkdir -p /etc/nginx/sites-enabled 2>/dev/null || true
     
-    # Try to set permissions, but don't fail if we can't
+    # Set proper permissions for nginx directories
     print_status "Setting up permissions..."
-    chown -R www-data:www-data /var/log/nginx /var/log/php8.3-fpm 2>/dev/null || true
+    chown -R www-data:www-data /var/lib/nginx /run/php /var/run/php 2>/dev/null || true
+    chmod -R 755 /var/lib/nginx /run/php /var/run/php 2>/dev/null || true
     
     # Create nginx sites symlink
     print_status "Setting up nginx configuration..."
-    mkdir -p /etc/nginx/sites-enabled 2>/dev/null || true
     ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default 2>/dev/null || true
     
     # Create temporary OPcache blacklist in /tmp (always works)
@@ -47,10 +51,21 @@ main() {
 /var/www/html/.env
 EOF
     
-    # Test configurations but don't fail on errors
+    # Test configurations
     print_status "Testing configurations..."
-    nginx -t 2>/dev/null && print_status "Nginx configuration OK" || print_warning "Nginx test skipped due to permissions"
-    php-fpm8.3 -t 2>/dev/null && print_status "PHP-FPM configuration OK" || print_warning "PHP-FPM test skipped"
+    if nginx -t 2>/dev/null; then
+        print_status "Nginx configuration OK"
+    else
+        print_error "Nginx configuration test failed:"
+        nginx -t 2>&1 || true
+    fi
+    
+    if php-fpm8.3 -t 2>/dev/null; then
+        print_status "PHP-FPM configuration OK"
+    else
+        print_error "PHP-FPM configuration test failed:"
+        php-fpm8.3 -t 2>&1 || true
+    fi
     
     # Database connectivity check
     print_status "Checking database connectivity..."
@@ -68,6 +83,17 @@ EOF
     else
         print_warning "Database variables not set, skipping connectivity check"
     fi
+    
+    # Ensure Laravel storage directories exist and have proper permissions
+    print_status "Setting up Laravel storage directories..."
+    mkdir -p /var/www/html/storage/logs 2>/dev/null || true
+    mkdir -p /var/www/html/storage/app/public 2>/dev/null || true
+    mkdir -p /var/www/html/storage/framework/cache 2>/dev/null || true
+    mkdir -p /var/www/html/storage/framework/sessions 2>/dev/null || true
+    mkdir -p /var/www/html/storage/framework/views 2>/dev/null || true
+    mkdir -p /var/www/html/bootstrap/cache 2>/dev/null || true
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+    chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
     
     # Start services
     print_status "Starting services..."

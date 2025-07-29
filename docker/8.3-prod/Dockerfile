@@ -77,14 +77,22 @@ RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/cache \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/log/nginx \
-    && mkdir -p /var/log/php${PHP_VERSION}-fpm \
-    && mkdir -p /var/log/supervisor \
     && mkdir -p /run/php \
+    && mkdir -p /var/lib/nginx/body \
+    && mkdir -p /var/lib/nginx/fastcgi \
+    && mkdir -p /var/lib/nginx/proxy \
+    && mkdir -p /var/lib/nginx/scgi \
+    && mkdir -p /var/lib/nginx/uwsgi \
+    && mkdir -p /etc/nginx/sites-enabled \
+    && mkdir -p /etc/php/${PHP_VERSION}/fpm/pool.d \
+    && mkdir -p /etc/php/${PHP_VERSION}/fpm/conf.d \
     && chown -R www-data:www-data /var/www/html/storage \
     && chown -R www-data:www-data /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/lib/nginx \
+    && chown -R www-data:www-data /run/php \
     && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && chmod -R 755 /var/www/html/bootstrap/cache \
+    && chmod -R 755 /var/lib/nginx
 
 # Security: Remove unnecessary files and set proper permissions
 RUN rm -rf /var/www/html/docker \
@@ -114,7 +122,6 @@ COPY --chown=www-data:www-data . /var/www/html/
 
 # Security: Remove sensitive files
 RUN rm -rf /var/www/html/docker \
-    && rm -f /var/www/html/.env.example \
     && rm -f /var/www/html/.gitignore \
     && rm -f /var/www/html/README.md
 
@@ -137,8 +144,24 @@ RUN cd /var/www/html \
 
 # Security: Set proper ownership after all operations
 RUN chown -R www-data:www-data /var/www/html \
-    && chown -R www-data:www-data /var/log/nginx \
-    && chown -R www-data:www-data /var/log/php${PHP_VERSION}-fpm
+    && chown -R www-data:www-data /var/lib/nginx \
+    && chown -R www-data:www-data /run/php \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache \
+    && chmod -R 755 /var/lib/nginx
+
+# Create nginx sites-enabled symlink
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Ensure Laravel storage structure is complete
+RUN mkdir -p /var/www/html/storage/app/public \
+    && mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/framework/cache/data \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && chown -R www-data:www-data /var/www/html/storage \
+    && chmod -R 775 /var/www/html/storage
 
 # Security: Remove unnecessary capabilities and set proper file permissions
 RUN setcap -r /usr/bin/php${PHP_VERSION} 2>/dev/null || true
