@@ -46,17 +46,18 @@ class GrievanceDashboardController extends Controller implements HasMiddleware
                 $grievancesInvestigatingCount,
                 $grievancesClosedCount
             ] = Cache::remember('grievance_dashboard_data', now()->addMinutes(5), function () {
-                return Concurrency::run([
-                    fn() => GrievanceDetail::whereDate('created_at', '=', now()->startOfDay()->toDateString())
-                        ->count() ?? 0,
-                    fn() => GrievanceDetail::whereNull('deleted_at')->get() ?? 0,
-                    fn() => GrievanceDetail::where('status', GrievanceStatusEnum::UNSEEN)
-                        ->count() ?? 0,
-                    fn() => GrievanceDetail::where('status', GrievanceStatusEnum::INVESTIGATING)
-                        ->count() ?? 0,
-                    fn() => GrievanceDetail::where('status', GrievanceStatusEnum::CLOSED)
-                        ->count() ?? 0,
-                ]);
+                // Execute queries sequentially instead of using Concurrency::run()
+                $grievancesTodayCount = GrievanceDetail::whereDate('created_at', '=', now()->startOfDay()->toDateString())
+                    ->count() ?? 0;
+                $grievanceCount = GrievanceDetail::whereNull('deleted_at')->get() ?? 0;
+                $grievancesUnseenCount = GrievanceDetail::where('status', GrievanceStatusEnum::UNSEEN)
+                    ->count() ?? 0;
+                $grievancesInvestigatingCount = GrievanceDetail::where('status', GrievanceStatusEnum::INVESTIGATING)
+                    ->count() ?? 0;
+                $grievancesClosedCount = GrievanceDetail::where('status', GrievanceStatusEnum::CLOSED)
+                    ->count() ?? 0;
+                    
+                return [$grievancesTodayCount, $grievanceCount, $grievancesUnseenCount, $grievancesInvestigatingCount, $grievancesClosedCount];
             });
         } catch (\Exception $e) {
             Cache::forget('grievance_dashboard_data');

@@ -16,12 +16,11 @@ class CrawlerHandler extends Controller
 
     public function getWebsiteData(): JsonResponse
     {
-
-        [$sliders, $notices, $galleries] = Concurrency::run([
-            fn () => getSliders(),
-            fn () => getNotices(),
-            fn () => getGalleries(),
-        ]);
+        // Execute functions sequentially instead of using Concurrency::run()
+        $sliders = getSliders();
+        $notices = getNotices();
+        $galleries = getGalleries();
+        
         return $this->generalSuccess([
             'data' => [
                 'sliders' => $sliders,

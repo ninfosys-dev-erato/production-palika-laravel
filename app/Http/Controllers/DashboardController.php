@@ -63,33 +63,53 @@ class DashboardController extends Controller
                 $wardCount,
                 $branchCount,
             ] = Cache::remember('dashboard_data', now()->addMinutes(5), function () {
-                return Concurrency::run([
-                    fn() => User::all()->count() ?? 0,
-                    fn() => Employee::whereNull('deleted_at')->whereNull('deleted_by')->get() ?? 0,
-                    fn() => GrievanceDetail::whereNull('deleted_at')->get() ?? 0,
-                    fn() => ApplyRecommendation::count() ?? 0,
-                    fn() => Meeting::count() ?? 0,
-                    fn() => Customer::count() ?? 0,
-                    fn() => CommitteeType::withCount('meetings')->latest()->get()->pluck('meetings_count', 'name')->toArray() ?? [],
-                    fn() => Recommendation::withCount('applyRecommendations')
-                        ->get()
-                        ->pluck('apply_recommendations_count', 'title')->toArray() ?? [],
-                    fn() => Notice::whereNull('deleted_at')
-                        ->count() ?? 0,
-                    fn() => Video::whereNull('deleted_at')
-                        ->count() ?? 0,
-                    fn() => Program::whereNull('deleted_at')
-                        ->count() ?? 0,
-                    fn() => PopUp::whereNull('deleted_at')
-                        ->count() ?? 0,
-                    fn() => CitizenCharter::whereNull('deleted_at')
-                        ->count() ?? 0,
-                    fn() => Task::whereIn('status', ['todo', 'inprogress'])->count() ?? 0,
-                    fn() => FileRecord::where('is_chalani', true)->count() ?? 0,
-                    fn() => FileRecord::where('is_chalani', false)->whereNotNull('reg_no')->where('reg_no', '<>', '')->count() ?? 0,
-                    fn() => Ward::count() ?? 0,
-                    fn() => Branch::count() ?? 0,
-                ]);
+                // Execute queries sequentially instead of using Concurrency::run()
+                $userCount = User::all()->count() ?? 0;
+                $employeeCount = Employee::whereNull('deleted_at')->whereNull('deleted_by')->get() ?? 0;
+                $grievanceCount = GrievanceDetail::whereNull('deleted_at')->get() ?? 0;
+                $applyRecommendationCount = ApplyRecommendation::count() ?? 0;
+                $meetingCount = Meeting::count() ?? 0;
+                $customerCount = Customer::count() ?? 0;
+                $meetingsByCommittee = CommitteeType::withCount('meetings')->latest()->get()->pluck('meetings_count', 'name')->toArray() ?? [];
+                $recommendationsByType = Recommendation::withCount('applyRecommendations')
+                    ->get()
+                    ->pluck('apply_recommendations_count', 'title')->toArray() ?? [];
+                $noticeCount = Notice::whereNull('deleted_at')
+                    ->count() ?? 0;
+                $videoCount = Video::whereNull('deleted_at')
+                    ->count() ?? 0;
+                $programCount = Program::whereNull('deleted_at')
+                    ->count() ?? 0;
+                $popUpCount = PopUp::whereNull('deleted_at')
+                    ->count() ?? 0;
+                $citizenCharterCount = CitizenCharter::whereNull('deleted_at')
+                    ->count() ?? 0;
+                $runningTaskCount = Task::whereIn('status', ['todo', 'inprogress'])->count() ?? 0;
+                $chalaniCount = FileRecord::where('is_chalani', true)->count() ?? 0;
+                $dartaCount = FileRecord::where('is_chalani', false)->whereNotNull('reg_no')->where('reg_no', '<>', '')->count() ?? 0;
+                $wardCount = Ward::count() ?? 0;
+                $branchCount = Branch::count() ?? 0;
+
+                return [
+                    $userCount,
+                    $employeeCount,
+                    $grievanceCount,
+                    $applyRecommendationCount,
+                    $meetingCount,
+                    $customerCount,
+                    $meetingsByCommittee,
+                    $recommendationsByType,
+                    $noticeCount,
+                    $videoCount,
+                    $programCount,
+                    $popUpCount,
+                    $citizenCharterCount,
+                    $runningTaskCount,
+                    $chalaniCount,
+                    $dartaCount,
+                    $wardCount,
+                    $branchCount,
+                ];
             });
         } catch (\Exception $e) {
             Cache::forget('dashboard_data');

@@ -33,15 +33,16 @@ class MeetingDashboardController extends Controller implements HasMiddleware
                 $commiteeMember,
                 $meetingsByCommittee
             ] = Cache::remember('meeting_dashboard_data', now()->addMinutes(5), function () {
-                return Concurrency::run([
-                    fn () => Meeting::count(),
-                    fn () => Meeting::whereDate('created_at', now()->toDateString())->count(),
-                    fn () => Meeting::whereDate('start_date', '>=', now()->toDateString())->count(),
-                    fn () => Meeting::whereDate('end_date', '<', now()->toDateString())->count(),
-                    fn () => CommitteeType::withCount('meetings')->latest()->get()->pluck('meetings_count', 'name')->toArray(),
-                    fn () => DB::table('met_committee_members')->count(),
-                    fn () => Meeting::withCount('committee')->get(),
-                ]);
+                // Execute queries sequentially instead of using Concurrency::run()
+                $totalMeetings = Meeting::count();
+                $todayMeetings = Meeting::whereDate('created_at', now()->toDateString())->count();
+                $upcomingMeetings = Meeting::whereDate('start_date', '>=', now()->toDateString())->count();
+                $completedMeetings = Meeting::whereDate('end_date', '<', now()->toDateString())->count();
+                $meetingChart = CommitteeType::withCount('meetings')->latest()->get()->pluck('meetings_count', 'name')->toArray();
+                $commiteeMember = DB::table('met_committee_members')->count();
+                $meetingsByCommittee = Meeting::withCount('committee')->get();
+                
+                return [$totalMeetings, $todayMeetings, $upcomingMeetings, $completedMeetings, $meetingChart, $commiteeMember, $meetingsByCommittee];
             });
         } catch (\Exception $e) {
             Cache::forget('meeting_dashboard_data');
