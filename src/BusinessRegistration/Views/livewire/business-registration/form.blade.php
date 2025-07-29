@@ -347,7 +347,7 @@
                                                 {{ __('businessregistration::businessregistration.select_ward') }}
                                             </option>
                                             @foreach ($applicantWards[$index] ?? [] as $id => $title)
-                                                <option value="{{ $id }}">
+                                                <option value="{{ $title }}">
                                                     {{ replaceNumbers($title, true) }}
                                                 </option>
                                             @endforeach
@@ -670,7 +670,7 @@
                                             {{ __('businessregistration::businessregistration.select_ward') }}
                                         </option>
                                         @foreach ($businessWards as $id => $title)
-                                            <option value="{{ $id }}"> {{ replaceNumbers($title, true) }}
+                                            <option value="{{ $title }}"> {{ replaceNumbers($title, true) }}
                                             </option>
                                         @endforeach
                                     </select>
