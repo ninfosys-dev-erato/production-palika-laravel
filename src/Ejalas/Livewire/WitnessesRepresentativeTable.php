@@ -57,7 +57,7 @@ class WitnessesRepresentativeTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.witness_address'), "address")->sortable()->searchable()->collapseOnTablet(),
             BooleanColumn::make(__('ejalas::ejalas.is_first_party'), "is_first_party")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('jms_judicial_management edit') || can('jms_judicial_management delete')) {
+        if (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print')) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -71,8 +71,10 @@ class WitnessesRepresentativeTable extends DataTableComponent
                     $buttons .= $delete;
                 }
 
-                $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                $buttons .= $preview;
+                if (can('jms_judicial_management print')) {
+                    $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $buttons .= $preview;
+                }
 
 
                 return $buttons;

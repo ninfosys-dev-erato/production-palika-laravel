@@ -126,7 +126,7 @@ class HearingScheduleTable extends DataTableComponent
                 ->collapseOnTablet(),
 
         ];
-        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete'))) {
+        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print'))) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -136,12 +136,14 @@ class HearingScheduleTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm me-1" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
+                    $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
-                $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                $buttons .= $preview;
+                if (can('jms_judicial_management print')) {
+                    $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $buttons .= $preview;
+                }
 
 
                 return $buttons;

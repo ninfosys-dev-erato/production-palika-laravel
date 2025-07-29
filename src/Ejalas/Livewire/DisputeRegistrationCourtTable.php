@@ -59,7 +59,7 @@ class DisputeRegistrationCourtTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.dispute_status'), "status")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.status_date'), "decision_date")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('jms_judicial_management edit') || can('jms_judicial_management delete')) {
+        if (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print')) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -73,8 +73,10 @@ class DisputeRegistrationCourtTable extends DataTableComponent
                     $buttons .= $delete;
                 }
 
-                $preview = '<button type="button" class="btn btn-primary btn-sm ms-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                $buttons .= $preview;
+                if (can('jms_judicial_management print')) {
+                    $preview = '<button type="button" class="btn btn-primary btn-sm ms-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $buttons .= $preview;
+                }
 
                 return $buttons;
             })->html();

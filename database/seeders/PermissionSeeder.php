@@ -373,6 +373,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'jms_judicial_management access', 'guard' => 'web'],
             ['name' => 'jms_judicial_management edit', 'guard' => 'web'],
             ['name' => 'jms_judicial_management delete', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management print', 'guard' => 'web'],
 
             ['name' => 'jms_reconciliation_center access', 'guard' => 'web'],
             ['name' => 'jms_report access', 'guard' => 'web'],

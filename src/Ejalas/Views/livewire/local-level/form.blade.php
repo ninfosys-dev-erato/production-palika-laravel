@@ -15,7 +15,8 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label" for='short_title'>{{ __('ejalas::ejalas.ejalashlocallevellistsurname') }}</label>
+                    <label class="form-label"
+                        for='short_title'>{{ __('ejalas::ejalas.ejalashlocallevellistsurname') }}</label>
                     <input wire:model='localLevel.short_title' name='short_title' type='text' class='form-control'
                         placeholder="{{ __('ejalas::ejalas.enter_short_title') }}">
                     <div>
@@ -27,7 +28,8 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label" for='type'>{{ __('ejalas::ejalas.ejalashlocallevellisttype') }}</label>
+                    <label class="form-label"
+                        for='type'>{{ __('ejalas::ejalas.ejalashlocallevellisttype') }}</label>
                     <select wire:model='localLevel.type' name='type' type='text' class='form-control'>
                         <option value="" hidden>{{ __('ejalas::ejalas.select_level') }}</option>
                         @foreach ($localLevelTypes as $localLevelType)
@@ -103,7 +105,7 @@
             <div class='col-md-6'>
                 <div class='form-group'>
                     <label class="form-label" for='mobile_no'>{{ __('ejalas::ejalas.mobile_no') }}</label>
-                    <input wire:model='localLevel.mobile_no' name='mobile_no' type='number' class='form-control'
+                    <input wire:model='localLevel.mobile_no' name='mobile_no' type='text' class='form-control'
                         placeholder="{{ __('ejalas::ejalas.enter_mobile_no') }}">
                     <div>
                         @error('localLevel.mobile_no')
@@ -151,7 +153,8 @@
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
+        <button type="submit" class="btn btn-primary"
+            wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
         <a href="{{ route('admin.ejalas.local_levels.index') }}" wire:loading.attr="disabled"
             class="btn btn-danger">{{ __('ejalas::ejalas.back') }}</a>
     </div>

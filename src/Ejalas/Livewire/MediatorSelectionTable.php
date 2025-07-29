@@ -61,7 +61,7 @@ class MediatorSelectionTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.mediator_type'), "mediator_type")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.mediator_selection_date'), "selection_date")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('jms_judicial_management edit') || can('jms_judicial_management delete')) {
+        if (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print')) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -75,8 +75,10 @@ class MediatorSelectionTable extends DataTableComponent
                     $buttons .= $delete;
                 }
 
-                $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                $buttons .= $preview;
+                if (can('jms_judicial_management print')) {
+                    $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $buttons .= $preview;
+                }
 
 
                 return $buttons;

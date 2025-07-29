@@ -58,7 +58,7 @@ class LegalDocumentTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.document_date'), "document_date")->sortable()->searchable()->collapseOnTablet(),
             // Column::make(__('ejalas::ejalas.document_details'), "document_details")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('jms_judicial_management edit') || can('jms_judicial_management delete')) {
+        if (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print')) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -72,8 +72,10 @@ class LegalDocumentTable extends DataTableComponent
                     $buttons .= $delete;
                 }
 
-                $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                $buttons .= $preview;
+                if (can('jms_judicial_management print')) {
+                    $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $buttons .= $preview;
+                }
 
                 return $buttons;
             })->html();

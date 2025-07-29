@@ -217,7 +217,7 @@ class ComplaintRegistrationTable extends DataTableComponent
                 )
                 ->html()
         ];
-        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete'))) {
+        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print'))) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -234,9 +234,10 @@ class ComplaintRegistrationTable extends DataTableComponent
                 $view = '<button type="button" class="btn btn-success btn-sm me-1"  wire:click="view(' . $row->id . ')"><i class="bx bx-show"></i></button>';
                 $buttons .= $view;
 
-
-                $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                $buttons .= $preview;
+                if (can('jms_judicial_management print')) {
+                    $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $buttons .= $preview;
+                }
 
                 return $buttons;
             })->html();
