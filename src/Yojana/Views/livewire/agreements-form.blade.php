@@ -514,7 +514,7 @@
 
             <div class="col-md-3 mt-3">
                 <div class="form-check">
-                    <input class="form-check-input m-1" type="checkbox" wire:model="isDepositRequired"
+                    <input class="form-check-input m-1" type="checkbox"
                            name="isDepositRequired" id="isDepositRequired" wire:change="toggleDepositField">
                     <label class="form-check-label form-label" for="isDepositRequired">
                         {{ __('yojana::yojana.is_deposit_required') }}

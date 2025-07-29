@@ -382,17 +382,25 @@ class PermissionSeeder extends Seeder
             // -------------------
             // YOJANA MODULE
             // -------------------
-            ['name' => 'committee_settings_create', 'guard' => 'web'],
-            ['name' => 'committee_settings_edit', 'guard' => 'web'],
-            ['name' => 'committee_settings_delete', 'guard' => 'web'],
-            ['name' => 'plan_basic_settings create', 'guard' => 'web'],
-            ['name' => 'plan_basic_settings edit', 'guard' => 'web'],
-            ['name' => 'plan_basic_settings delete', 'guard' => 'web'],
+            // Plan Permissions
             ['name' => 'plan create', 'guard' => 'web'],
             ['name' => 'plan edit', 'guard' => 'web'],
             ['name' => 'plan delete', 'guard' => 'web'],
             ['name' => 'plan show', 'guard' => 'web'],
             ['name' => 'plan print', 'guard' => 'web'],
+            ['name' => 'plan settings', 'guard' => 'web'],
+
+            // Plan Basic Settings Permissions
+            ['name' => 'plan_basic_settings create', 'guard' => 'web'],
+            ['name' => 'plan_basic_settings edit', 'guard' => 'web'],
+            ['name' => 'plan_basic_settings delete', 'guard' => 'web'],
+
+            // Plan Committee Settings Permissions
+            ['name' => 'plan_committee_settings create', 'guard' => 'web'],
+            ['name' => 'plan_committee_settings edit', 'guard' => 'web'],
+            ['name' => 'plan_committee_settings delete', 'guard' => 'web'],
+
+            // Plan Log Books Permissions
             ['name' => 'plan_log_books create', 'guard' => 'web'],
             ['name' => 'plan_log_books edit', 'guard' => 'web'],
             ['name' => 'plan_log_books delete', 'guard' => 'web'],

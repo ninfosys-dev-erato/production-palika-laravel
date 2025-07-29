@@ -16,7 +16,7 @@
                         </h5>
                     </div>
                     {{--             <div> --}}
-                    {{--                 @perm('committee_settings_create') --}}
+                    {{--                 @perm('plan_committee_settings create') --}}
                     {{--                    <a href="{{route('admin.consumer_committee_members.create')}}" class="btn btn-info"><i class="bx bx-plus"></i> {{__('yojana::yojana.add_consumer_committee_member')}}</a> --}}
                     {{--                 @endperm --}}
                     {{--             </div> --}}

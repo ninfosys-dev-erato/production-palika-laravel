@@ -9,7 +9,7 @@
                 <th> {{ __('yojana::yojana.evaluation_amount') }}</th>
                 <th> {{ __('yojana::yojana.total_deduction') }}</th>
                 <th> {{ __('yojana::yojana.payment_amount') }}</th>
-                @if (can('payments edit') || can('payments delete'))
+                @if (can('plan edit') || can('plan delete'))
                     <th>{{__('yojana::yojana.actions')}}</th>
                 @endif
             </tr>
@@ -38,21 +38,21 @@
                     <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($row->total_deduction ?? 0), true) }}</td>
                     <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format(($row->paid_amount ?? 0) + ($row->vat_amount ?? 0)), true) }}</td>
 
-                    @if (can('payments edit') || can('payments delete'))
+                    @if (can('plan edit') || can('plan delete'))
                         <td>
-                            @if (can('payments edit'))
+                            @if (can('plan edit'))
                                 <button class="btn btn-primary btn-sm" wire:click="edit({{ $row->id }})"
                                         title>
                                     <i class="bx bx-edit"></i>
                                 </button>
                             @endif
-                            @if (can('payments edit'))
+                            @if (can('plan edit'))
                                 <button class="btn btn-info btn-sm" wire:click="printWorkOrder({{ $row->id }})"
                                     title>
                                     <i class="bx bx-file"></i>
                                 </button>
                             @endif
-                                @if (can('payments delete'))
+                                @if (can('plan delete'))
                                 <button class="btn btn-danger btn-sm" wire:click="delete({{ $row->id }})"
                                     title>
                                     <i class="bx bx-trash"></i>
