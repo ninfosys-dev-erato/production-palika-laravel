@@ -125,7 +125,13 @@ class CustomerMapApplyForm extends Component
 
     public function loadWards(): void
     {
-        $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
+        $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
+        
+        if ($localBody) {
+            $this->wards = getWards($localBody->wards);
+        } else {
+            $this->wards = [];
+        }
     }
 
 
@@ -166,7 +172,8 @@ class CustomerMapApplyForm extends Component
         $this->landDetails = CustomerLandDetail::where('customer_id', $this->customer_id)->get() ?? [];
         $this->houseOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
 
-        $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+       
         $this->ownerships = LandOwernshipEnum::cases();
         $this->wards = [];
         $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::MAP_APPLIES)->get();

@@ -13,7 +13,7 @@
                 <div class='form-group'>
                     <label class="form-label" for='applied_date'>{{ __('Applied Date') }}</label>
                     <input wire:model='mapApply.applied_date' id="applied_date" name='applied_date' type='text'
-                        class='nepali-date form-control' placeholder='Enter Applied Date'>
+                        class='nepali-date form-control' placeholder='{{__('ebps::ebps.enter_applied_date')}}'>
                     <div>
                         @error('mapApply.applied_date')
                             <small class='text-danger'>{{ $message }}</small>
@@ -103,9 +103,9 @@
                 </div>
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
-                        <label for='area_sqm'>{{ __('ebps::ebps.area_Sqm') }}</label>
+                        <label for='area_sqm'>{{ __('ebps::ebps.area_sqm') }}</label>
                         <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='number'
-                            class='form-control' placeholder="{{ __('ebps::ebps.enter_area_Sqm') }}">
+                            class='form-control' placeholder="{{ __('ebps::ebps.enter_area_sqm') }}">
                         <div>
                             @error('customerLandDetail.area_sqm')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -248,7 +248,7 @@
             @endforeach
 
             <div class="divider divider-primary text-start text-primary font-14">
-                <div class="divider-text ">{{ __('ebps::ebps.details') }}</div>
+                <div class="divider-text ">{{ __('ebps::ebps.consturction_details') }}</div>
             </div>
 
             <div class='col-md-6 mb-3'>
@@ -343,22 +343,25 @@
                     <div class="divider-text">{{ __('More Documents') }}</div>
                 </div>
 
-            @if ($openModal)
-                <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">{{ __('ebps::ebps.create_customer') }}</h5>
-                                <button type="button" wire:click="closeCustomerKycModal"
-                                    class="btn btn-light d-flex justify-content-center align-items-center shadow-sm"
-                                    style="width: 40px; height: 40px; border: none; background-color: transparent;">
-                                    <span style="color: red; font-size: 20px;">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <livewire:customers.customer_form :$action :$isModalForm :isForGrievance="false" />
+                @if ($openModal)
+                    <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ __('ebps::ebps.create_customer') }}</h5>
+                                    <button type="button" wire:click="closeCustomerKycModal"
+                                        class="btn btn-light d-flex justify-content-center align-items-center shadow-sm"
+                                        style="width: 40px; height: 40px; border: none; background-color: transparent;">
+                                        <span style="color: red; font-size: 20px;">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <livewire:customers.customer_form :$action :$isModalForm :isForGrievance="false" />
+                                </div>
                             </div>
                         </div>
+                    </div>
+                @endif
 
                 <div class="col-md-12">
                     <div class="list-group">
