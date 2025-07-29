@@ -76,6 +76,7 @@ publish_vendor_assets() {
         find vendor/rappasoft/laravel-livewire-tables -name "*.css" -o -name "*.js" | while read file; do
             filename=$(basename "$file")
             cp "$file" "public/rappasoft/laravel-livewire-tables/$filename" 2>/dev/null || true
+            cp "$file" "public/vendor/rappasoft/laravel-livewire-tables/$filename" 2>/dev/null || true
         done
     fi
     
@@ -114,6 +115,11 @@ EOF
 }
 EOF
     
+    # Also create in vendor directory for compatibility
+    mkdir -p public/vendor/rappasoft/laravel-livewire-tables
+    cp public/rappasoft/laravel-livewire-tables/core.min.css public/vendor/rappasoft/laravel-livewire-tables/core.min.css
+    cp public/rappasoft/laravel-livewire-tables/core.min.js public/vendor/rappasoft/laravel-livewire-tables/core.min.js
+    
     cat > public/rappasoft/laravel-livewire-tables/thirdparty.css << 'EOF'
 /* Laravel Livewire Tables Third Party CSS */
 EOF
@@ -121,6 +127,10 @@ EOF
     cat > public/rappasoft/laravel-livewire-tables/thirdparty.min.js << 'EOF'
 /* Laravel Livewire Tables Third Party JavaScript */
 EOF
+    
+    # Copy to vendor directory as well
+    cp public/rappasoft/laravel-livewire-tables/thirdparty.css public/vendor/rappasoft/laravel-livewire-tables/thirdparty.css
+    cp public/rappasoft/laravel-livewire-tables/thirdparty.min.js public/vendor/rappasoft/laravel-livewire-tables/thirdparty.min.js
     
     # Copy other vendor CSS/JS files to public directory
     print_status "Copying additional vendor assets..."
