@@ -37,15 +37,15 @@
 
                 @if (empty($isCompletelyEmpty))
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ !$preview ? 'active' : '' }} fw-semibold px-4 py-3" id="form-tab"
-                            data-bs-toggle="tab" data-bs-target="#form-content" type="button" role="tab">
+                        <button class="nav-link {{ $activeTab === 'form' ? 'active' : '' }} fw-semibold px-4 py-3" 
+                            wire:click="switchTab('form')" type="button" role="tab">
                             <i class="bx bx-edit-alt me-2"></i>{{ __('ebps::ebps.form_input') }}
                         </button>
                     </li>
                 @endif
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $preview ? 'active' : '' }} fw-semibold px-4 py-3" id="preview-tab"
-                        data-bs-toggle="tab" data-bs-target="#preview-content" type="button" role="tab">
+                    <button class="nav-link {{ $activeTab === 'preview' ? 'active' : '' }} fw-semibold px-4 py-3" 
+                        wire:click="switchTab('preview')" type="button" role="tab">
                         <i class="bx bx-show me-2"></i>{{ __('ebps::ebps.previewedit') }}
                     </button>
                 </li>
@@ -54,7 +54,7 @@
             <div class="tab-content p-0">
                 <!-- Form Input Tab -->
                 @if (empty($isCompletelyEmpty))
-                    <div class="tab-pane fade {{ !$preview ? 'show active' : '' }}" id="form-content">
+                    <div class="tab-pane fade {{ $activeTab === 'form' ? 'show active' : '' }}" id="form-content">
                         <div class="p-4">
                             @foreach ($letters as $formId => $letterContent)
                                 @php
@@ -130,7 +130,7 @@
                 @endif
 
                 <!-- Preview/Edit Tab -->
-                <div class="tab-pane fade {{ $preview ? 'show active' : '' }}" id="preview-content">
+                <div class="tab-pane fade {{ $activeTab === 'preview' ? 'show active' : '' }}" id="preview-content">
                     <div class="p-4">
                         @foreach ($letters as $formId => $letterContent)
                             @php
@@ -173,8 +173,8 @@
                                                     class="text-muted">{{ __('ebps::ebps.make_changes_to_your_document_here') }}</small>
                                             </div>
                                             <div class="p-4">
-                                                <x-form.ck-editor-input id="map_letter_{{ $formId }}"
-                                                    name="letters[{{ $formId }}]" :value="$letters[$formId] ?? ''" />
+                                                <x-form.ck-editor-dynamic id="map_letter_{{ $formId }}"
+                                                    :formId="$formId" :value="$letters[$formId] ?? ''" />
                                             </div>
                                         </div>
 
@@ -200,6 +200,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Prevent default Bootstrap tab behavior and use Livewire instead
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove Bootstrap tab event listeners
+            const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
+            tabButtons.forEach(button => {
+                button.removeAttribute('data-bs-toggle');
+                button.removeAttribute('data-bs-target');
+            });
+        });
+    </script>
 
     <style>
         /* Modern styling for the document editor */
@@ -228,6 +240,24 @@
             border-bottom: none;
             padding: 0 1rem;
             margin-top: 0.5rem;
+        }
+
+        /* Prevent tab content from collapsing */
+        .tab-pane {
+            transition: opacity 0.3s ease;
+        }
+
+        .tab-pane.fade {
+            opacity: 0;
+        }
+
+        .tab-pane.fade.show {
+            opacity: 1;
+        }
+
+        /* Ensure tab content stays visible during updates */
+        .tab-content {
+            min-height: 400px;
         }
 
         .nav-tabs-modern .nav-link {

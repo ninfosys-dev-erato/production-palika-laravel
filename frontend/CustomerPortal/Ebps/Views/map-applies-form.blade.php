@@ -19,7 +19,8 @@
                 <div class="card-header d-flex justify-content-between">
                     @if (!isset($mapApply))
                         <h5 class="text-primary fw-bold mb-0">
-                            {{ !isset($mapApply) ? __('ebps::ebps.create_mapApply') : __('ebps::ebps.update_map_apply') }}</h5>
+                            {{ !isset($mapApply) ? __('ebps::ebps.create_mapapply') : __('ebps::ebps.update_map_apply') }}
+                        </h5>
                     @endif
                     <div>
                         <a href="{{ route('customer.ebps.apply.map-apply.index') }}" class="btn btn-info">

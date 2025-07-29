@@ -37,15 +37,15 @@
 
                 @if (empty($isCompletelyEmpty))
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ !$preview ? 'active' : '' }} fw-semibold px-4 py-3" id="form-tab"
-                            data-bs-toggle="tab" data-bs-target="#form-content" type="button" role="tab">
+                        <button class="nav-link {{ $activeTab === 'form' ? 'active' : '' }} fw-semibold px-4 py-3" 
+                            wire:click="switchTab('form')" type="button" role="tab">
                             <i class="bx bx-edit-alt me-2"></i>{{ __('ebps::ebps.form_input') }}
                         </button>
                     </li>
                 @endif
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $preview ? 'active' : '' }} fw-semibold px-4 py-3" id="preview-tab"
-                        data-bs-toggle="tab" data-bs-target="#preview-content" type="button" role="tab">
+                    <button class="nav-link {{ $activeTab === 'preview' ? 'active' : '' }} fw-semibold px-4 py-3" 
+                        wire:click="switchTab('preview')" type="button" role="tab">
                         <i class="bx bx-show me-2"></i>{{ __('ebps::ebps.previewedit') }}
                     </button>
                 </li>
@@ -54,7 +54,7 @@
             <div class="tab-content p-0">
                 <!-- Form Input Tab -->
                 @if (empty($isCompletelyEmpty))
-                    <div class="tab-pane fade {{ !$preview ? 'show active' : '' }}" id="form-content">
+                    <div class="tab-pane fade {{ $activeTab === 'form' ? 'show active' : '' }}" id="form-content">
                         <div class="p-4">
                             @foreach ($letters as $formId => $letterContent)
                                 @php
@@ -123,7 +123,7 @@
                 @endif
 
                 <!-- Preview/Edit Tab -->
-                <div class="tab-pane fade {{ $preview ? 'show active' : '' }}" id="preview-content">
+                <div class="tab-pane fade {{ $activeTab === 'preview' ? 'show active' : '' }}" id="preview-content">
                     <div class="p-4">
                         @foreach ($letters as $formId => $letterContent)
                             @php

@@ -25,6 +25,7 @@ class BuildingRegistrationApplyStepForm extends Component
     public array $data = [];
     public bool $edit = false;
     public bool $generate = false;
+    public string $activeTab = 'preview';
 
     public function mount(MapStep $mapStep, MapApply $mapApply)
     {
@@ -91,14 +92,28 @@ class BuildingRegistrationApplyStepForm extends Component
         $formId = $form->id;
         if (isset($this->letters[$formId])) {
             $this->letters[$formId] = $this->resolveMapStepTemplate($this->mapApply, $this->mapStep, $form);
-            $this->dispatch('update-editor', ['letter' => $this->letters[$formId]]);
+            $this->dispatch('update-editor-' . $formId, ['content' => $this->letters[$formId]]);
             $this->successToast(__('Reset Successfully.'));
         }
+    }
+
+    public function updateLetter($formId, $content)
+    {
+        $this->letters[(int)$formId] = $content;
     }
 
     public function togglePreview()
     {
         $this->preview = !$this->preview;
+        // Switch to preview tab when toggling preview mode
+        if ($this->preview) {
+            $this->activeTab = 'preview';
+        }
+    }
+
+    public function switchTab($tab)
+    {
+        $this->activeTab = $tab;
     }
 
     public function save($formId, $data = null)
