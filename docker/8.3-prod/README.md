@@ -184,6 +184,11 @@ worker_connections 1024;  # Adjust based on expected load
 2. **Memory issues**: Adjust PHP-FPM and OPcache memory settings
 3. **Performance issues**: Monitor logs and adjust worker processes
 4. **Security alerts**: Check fail2ban logs if enabled
+5. **Asset loading issues**: 
+   - CSS/JS 403 Forbidden: Livewire and vendor assets are configured to be accessible
+   - CSP violations: Content Security Policy allows common CDNs (jsdelivr, cdnjs, etc.)
+   - MIME type errors: Nginx serves JS/CSS with correct content types
+   - Missing Livewire assets: Assets are published during container build
 
 ### Debug Mode
 For debugging, temporarily enable:

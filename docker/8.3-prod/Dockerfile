@@ -137,12 +137,13 @@ RUN cd /var/www/html && composer install --optimize-autoloader --no-dev --no-int
 RUN sed -i '/abort_unless(request()->hasValidSignature(), 401);/d' /var/www/html/vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php 2>/dev/null || true
 RUN sed -i '/abort_unless(request()->hasValidSignature(), 401);/d' /var/www/html/vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php 2>/dev/null || true
 
-# Laravel optimizations
+# Laravel optimizations and asset publishing
 RUN cd /var/www/html \
     && php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
     && rm -f bootstrap/cache/*.php \
+    && php artisan livewire:publish --assets \
     && php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache || true
