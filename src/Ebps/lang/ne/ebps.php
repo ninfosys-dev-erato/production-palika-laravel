@@ -606,7 +606,28 @@ return [
     'document_status' => 'कागजातको स्थिति',
     'enter_document_name' => 'कागजातको नाम प्रविष्ट गर्नुहोस्',
     'other_documents' => 'अन्य कागजातहरू',
-    'no_documents_uploaded' => 'कुनै कागजातहरू अपलोड गरिएको छैन'
-
-
+    'no_documents_uploaded' => 'कुनै कागजातहरू अपलोड गरिएको छैन',
+    
+    // Tax Clearance related translations
+    'tax_clearances' => 'कर चुक्ता कागजातहरू',
+    'tax_clearance_document' => 'कर चुक्ता कागजात',
+    'no_tax_clearances_found' => 'कुनै कर चुक्ता कागजातहरू फेला परेनन्',
+    'upload_your_first_tax_clearance_above' => 'माथिको फारमबाट आफ्नो पहिलो कर चुक्ता कागजात अपलोड गर्नुहोस्',
+    'tax_clearances_and_renewal' => 'कर चुक्ता र नवीकरण',
+    'year' => 'वर्ष',
+    'upload_date' => 'अपलोड मिति',
+    'view_document' => 'कागजात हेर्नुहोस्',
+    'organization_renewal' => 'संस्था नवीनीकरण',
+    'upload_renewal_documents' => 'नवीनीकरण कागजातहरू अपलोड गर्नुहोस्',
+    'renewal_required' => 'नवीनीकरण आवश्यक',
+    'renewal_document' => 'नवीनीकरण कागजात',
+    'renewal_date' => 'नवीनीकरण मिति',
+    'renewal_remarks' => 'नवीनीकरण टिप्पणीहरू',
+    'enter_renewal_remarks' => 'नवीनीकरण टिप्पणीहरू प्रविष्ट गर्नुहोस्',
+    'upload_renewal' => 'नवीनीकरण अपलोड गर्नुहोस्',
+    'accepted_formats_pdf_jpg_jpeg_png' => 'स्वीकृत फारमेटहरू: PDF, JPG, JPEG, PNG',
+    'uploading' => 'अपलोड गर्दै',
+    'organization_profile' => 'संस्था प्रोफाइल',
+    'organization_information_and_documents' => 'संस्था जानकारी र कागजातहरू',
+    'Tax clearance document uploaded successfully!' => 'कर चुक्ता कागजात सफलतापूर्वक अपलोड गरियो!',
 ];
