@@ -127,15 +127,28 @@ class BusinessRegistrationShow extends Component
 
         $service = new BusinessRegistrationAdminService();
         try {
-            $registrationNumber = $service->generateBusinessRegistrationNumber($this->businessRegistration->fiscal_year);
 
-            $registration_date_en = date('Y-m-d');
-            $registration_date_ne = $this->adToBs($registration_date_en);
+            $registrationNumber = $this->businessRegistration->registration_number;
+            $registrationDateEn = $this->businessRegistration->registration_date_en;
+            $registrationDateNe = $this->businessRegistration->registration_date;
+
+            if (!$registrationNumber) {
+                $registrationNumber = $service->generateBusinessRegistrationNumber($this->businessRegistration->fiscal_year);
+            }
+            if ($registrationNumber && $registrationDateNe && !$registrationDateEn) {
+                $registrationDateEn = $this->bsToAd($registrationDateNe);
+            }
+
+            // If both are missing, generate both
+            if (!$registrationDateEn && !$registrationDateNe) {
+                $registrationDateEn = date('Y-m-d');
+                $registrationDateNe = $this->adToBs($registrationDateEn);
+            }
 
             $data = [
                 'registration_number' => $registrationNumber,
-                'registration_date' => $registration_date_ne,
-                'registration_date_en' => $registration_date_en,
+                'registration_date' => $registrationDateNe,
+                'registration_date_en' => $registrationDateEn,
                 'certificate_number' => $registrationNumber,
                 'bill_no' => $this->bill_no,
             ];

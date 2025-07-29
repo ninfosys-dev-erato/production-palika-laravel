@@ -199,6 +199,10 @@
                                     {{ $businessRegistration->business_street ? ', ' . $businessRegistration->business_street : '' }}
                                 </p>
                             </div>
+                            <div class="col-sm-6">
+                                <p><strong>{{ __('businessregistration::businessregistration.purpose') }}:</strong>
+                                    {{ $businessRegistration->purpose }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

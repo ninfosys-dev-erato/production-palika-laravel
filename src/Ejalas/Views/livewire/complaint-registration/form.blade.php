@@ -131,9 +131,9 @@
             </div>
             <div>
                 @perm('jms_settings create')
-                    <button type="button" class="btn btn-primary" wire:click="addParty">
-                        {{ __('ejalas::ejalas.add_party') }}
-                    </button>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal"><i
+                            class="bx bx-plus"></i>
+                        {{ __('ejalas::ejalas.add_complainer_details') }}</button>
                 @endperm
             </div>
         </div>
@@ -173,9 +173,9 @@
             </div>
             <div>
                 @perm('jms_settings create')
-                    <button type="button" class="btn btn-primary" wire:click="addDefender">
-                        {{ __('ejalas::ejalas.add_defender') }}
-                    </button>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal-defender"><i
+                            class="bx bx-plus"></i>
+                        {{ __('ejalas::ejalas.add_defender_details') }}</button>
                 @endperm
             </div>
         </div>

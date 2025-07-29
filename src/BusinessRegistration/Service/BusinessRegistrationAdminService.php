@@ -38,6 +38,7 @@ class BusinessRegistrationAdminService
             'purpose'                      => $businessRegistrationAdminDto->purpose,
             'entity_name'                  => $businessRegistrationAdminDto->entity_name,
             'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
+            'registration_date'            => $businessRegistrationAdminDto->registration_date,
             'registration_date_en'         => $businessRegistrationAdminDto->registration_date_en,
             'application_date'             => $businessRegistrationAdminDto->application_date,
             'application_date_en'         => $businessRegistrationAdminDto->application_date_en,

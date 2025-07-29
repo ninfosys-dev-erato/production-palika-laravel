@@ -25,7 +25,7 @@ class SettlementReport extends Component
     public $startDate;
     public $endDate;
     public $settledStatus = 1;
-
+    public $settlements = [];
 
     protected $rules = [
         'startDate' => 'required',
@@ -45,8 +45,35 @@ class SettlementReport extends Component
         $startDate = $this->bsToAd($this->startDate);
         $endDate = $this->bsToAd($this->endDate);
 
-        $this->dispatch('getSearchDate', $startDate, $endDate, $this->settledStatus);
+        $this->settlements = Settlement::with('complaintRegistration')
+            ->whereNull('deleted_at')
+            ->whereBetween('settlement_date', [$startDate, $endDate])
+            ->when($this->settledStatus, function ($query) {
+                $query->where('is_settled', $this->settledStatus);
+            })
+            ->latest()
+            ->get();
+
+        foreach ($this->settlements as $settlement) {
+            $settlement->settlement_date_bs = replaceNumbers(
+                $this->adToBs(Carbon::parse($settlement->settlement_date)->format('Y-m-d')),
+                true
+            );
+        }
     }
+
+    public function clear()
+    {
+        $this->reset(['startDate', 'endDate', 'settlements']);
+    }
+
+    public function export()
+    {
+        // Export functionality can be implemented here
+        $this->searchReport();
+        // Add export logic
+    }
+
     public function downloadPdf()
     {
         $this->validate();

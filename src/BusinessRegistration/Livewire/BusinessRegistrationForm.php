@@ -64,6 +64,9 @@ class BusinessRegistrationForm extends Component
     public $citizenShipRearPhotoUrl;
     public $citizenshipRearPhoto;
 
+    public $showRegistrationDetailsFields = false;
+    public $is_previouslyRegistered = 0;
+
 
     public array $personalDetails = [
         [
@@ -158,6 +161,9 @@ class BusinessRegistrationForm extends Component
             'businessRegistration.is_rented' => ['nullable'],
             'businessRegistration.purpose' => ['nullable'],
             'businessRegistration.registration_category' => ['nullable'],
+
+            'businessRegistration.registration_date' => ['nullable'],
+            'businessRegistration.registration_number' => ['nullable'],
 
             // New fields for business registration
             'businessRegistration.working_capital' => ['nullable'],
@@ -266,6 +272,9 @@ class BusinessRegistrationForm extends Component
 
             if ($businessRegistration['registration_category'] == RegistrationCategoryEnum::BUSINESS->value) {
                 $this->showRentFields = true;
+            }
+            if (!empty($businessRegistration['registration_number'])) {
+                $this->showRegistrationDetailsFields = true;
             }
 
             if ($businessRegistration && !empty($businessRegistration->rentagreement)) {
@@ -836,7 +845,29 @@ class BusinessRegistrationForm extends Component
         $this->businessRegistration['is_rented'] = $value;
 
         $this->showRentFields = (int) $value === 1;
+
+        // Reset rent fields when "No" is selected
+        if ((int) $value === 0) {
+            $this->businessRegistration['houseownername'] = '';
+            $this->businessRegistration['house_owner_phone'] = '';
+            $this->businessRegistration['monthly_rent'] = '';
+            $this->rentagreement = null;
+            $this->rentagreement_url = '';
+        }
     }
+
+
+    public function previouslyRegisteredChanged($value)
+    {
+        $this->showRegistrationDetailsFields = (int) $value === 1;
+
+        // Reset registration fields when "No" is selected
+        if ((int) $value === 0) {
+            $this->businessRegistration['registration_date'] = '';
+            $this->businessRegistration['registration_number'] = '';
+        }
+    }
+
 
 
 
@@ -988,7 +1019,9 @@ class BusinessRegistrationForm extends Component
                 case Action::CREATE:
                     $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
 
+
                     $success = $service->store($dto);
+
 
                     if ($success instanceof BusinessRegistration) {
                         $businessRegistrationId = $success->id;
@@ -1057,7 +1090,7 @@ class BusinessRegistrationForm extends Component
                         return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
                     } else {
                         DB::rollBack();
-                        $this->errorFlash(____('businessregistration::businessregistration.business_registration_failed'));
+                        $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
                         return;
                     }
 

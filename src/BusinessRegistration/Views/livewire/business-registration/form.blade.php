@@ -3,6 +3,7 @@
 @endpush
 @php
     use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+    use App\Enums\Action;
 @endphp
 <form wire:submit.prevent="save" enctype="multipart/form-data">
     @csrf
@@ -466,6 +467,68 @@
                                             {{ $errors->first('businessRegistration.application_date') }}</div>
                                     @enderror
                                 </div>
+
+
+                                @if ($action == Action::CREATE)
+                                    <div class="col-md-12">
+                                        <label class="form-label-peaceful d-block">
+                                            {{ __('businessregistration::businessregistration.is_business_previously_registered') }}
+                                        </label>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                    id="is_previously_registered_yes" name="is_previouslyRegistered"
+                                                    wire:model="is_previouslyRegistered" value="1"
+                                                    wire:change="previouslyRegisteredChanged($event.target.value)">
+                                                <label class="form-check-label"
+                                                    for="is_previously_registered_yes">{{ __('businessregistration::businessregistration.yes') }}</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                    id="is_previously_registered_no" name="is_previouslyRegistered"
+                                                    wire:model="is_previouslyRegistered" value="0"
+                                                    wire:change="previouslyRegisteredChanged($event.target.value)">
+                                                <label class="form-check-label"
+                                                    for="is_previously_registered_no">{{ __('businessregistration::businessregistration.no') }}</label>
+                                            </div>
+                                        </div>
+                                        @error('businessRegistration.is_previouslyRegistered')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endif
+                                @if ($showRegistrationDetailsFields)
+                                    <!-- Registration Date -->
+                                    <div class="col-md-6">
+                                        <label for="registration_date" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_date') }}
+
+                                        </label>
+                                        <input wire:model="businessRegistration.registration_date"
+                                            name="registration_date" type="text" class="form-control nepali-date"
+                                            id="registration_date"
+                                            placeholder="{{ __('businessregistration::businessregistration.enter_registration_date') }}">
+                                        @error('businessRegistration.registration_date')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Registration Number -->
+                                    <div class="col-md-6">
+                                        <label for="registration_number" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_number') }}
+
+                                        </label>
+                                        <input wire:model="businessRegistration.registration_number"
+                                            name="registration_number" type="text" class="form-control"
+                                            id="registration_number"
+                                            placeholder="{{ __('businessregistration::businessregistration.enter_registration_number') }}">
+                                        @error('businessRegistration.registration_number')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endif
+
 
                                 <!-- Entity Name -->
                                 <div class="col-12">

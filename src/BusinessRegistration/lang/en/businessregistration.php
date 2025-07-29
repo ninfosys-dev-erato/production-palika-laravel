@@ -480,10 +480,13 @@ return [
     'the_applicant_name_is_required' => 'The applicant name is required.',
     'application_date_is_required' => 'The application date is required.',
     'status' => 'Status',
-
-
-
-
+    "is_business_previously_registered" => "Is Business Previously Registered?",
+    "yes" => "Yes",
+    "no" => "No",
+    "registration_date" => "Registration Date",
+    "registration_number" => "Registration Number",
+    "enter_registration_date" => "Enter registration date",
+    "enter_registration_number" => "Enter registration number"
 
 
 

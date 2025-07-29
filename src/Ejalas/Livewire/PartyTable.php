@@ -186,17 +186,14 @@ class PartyTable extends DataTableComponent
                 }
 
                 if (can('jms_settings delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
-                    $buttons .= $delete;
+
 
                     if ($this->type == null) {
-
                         $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                         $buttons .= $delete;
                     }
 
                     if ($this->type) {
-
                         $deleteEntry = '<button type="button" class="btn btn-warning btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="deleteEntry(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                         $buttons .= $deleteEntry;
                     }

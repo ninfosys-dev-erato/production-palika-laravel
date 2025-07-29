@@ -109,7 +109,7 @@ class BusinessRegistrationAdminDto
             south: $businessRegistration->south ?? null,
             landplotnumber: $businessRegistration->landplotnumber ?? null,
             area: $businessRegistration->area ?? null,
-            is_rented: $businessRegistration->is_rented,
+            is_rented: $businessRegistration->is_rented ?? false,
             total_running_day: $businessRegistration->total_running_day,
 
             registration_type_id: $businessRegistration->registration_type_id,

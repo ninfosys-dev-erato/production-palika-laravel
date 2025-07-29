@@ -92,6 +92,7 @@ class BusinessRegistration extends Model
         'is_rented',
         'registration_category',
         'business_status',
+        'is_previouslyRegistered',
     ];
 
     protected $casts = [
@@ -148,6 +149,7 @@ class BusinessRegistration extends Model
         'application_status' => 'string',
         'total_running_day' => 'string',
         'is_rented' => 'string',
+        'is_previouslyRegistered' => 'string',
         'registration_category' => 'string',
         'business_status' => BusinessStatusEnum::class,
     ];

@@ -99,13 +99,13 @@ trait BusinessRegistrationTemplate
 
             // Business details (relationships)
             '{{business.business_nature}}' => $businessRegistration->business_nature ?? ' ',
-            '{{business.business_purpose}}' => $businessRegistration->business_purpose ?? ' ',
+            '{{business.business_purpose}}' => $businessRegistration->purpose ?? ' ',
             '{{business.main_service_or_goods}}' => $businessRegistration->main_service_or_goods ?? ' ',
             '{{business.total_capital}}' => $businessRegistration->total_capital ?? ' ',
             '{{business.business_province}}' => $businessRegistration->businessProvince?->title ?? ' ',
             '{{business.business_district}}' => $businessRegistration->businessDistrict?->title ?? ' ',
             '{{business.business_local_body}}' => $businessRegistration->businessLocalBody?->title ?? ' ',
-            '{{business.business_ward}}' => $businessRegistration->business_ward ?? ' ',
+            '{{business.business_ward}}' => replaceNumbers($businessRegistration->business_ward, true) ?? ' ',
             '{{business.business_tole}}' => $businessRegistration->business_tole ?? ' ',
             '{{business.business_street}}' => $businessRegistration->business_street ?? ' ',
 
@@ -266,11 +266,16 @@ trait BusinessRegistrationTemplate
     private function getApplicantWards($businessRegistration)
     {
         $applicants = $businessRegistration->applicants;
+
         if ($applicants->isEmpty()) {
-            return $businessRegistration->applicant_ward ?? ' ';
+            return replaceNumbers($businessRegistration->applicant_ward ?? ' ', true);
         }
-        return $applicants->pluck('applicant_ward')->filter()->implode(', ');
+
+        $wards = $applicants->pluck('applicant_ward')->filter()->implode(', ');
+
+        return replaceNumbers($wards, true);
     }
+
 
     private function getApplicantToles($businessRegistration)
     {

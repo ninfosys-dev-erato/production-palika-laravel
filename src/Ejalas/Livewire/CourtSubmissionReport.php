@@ -24,8 +24,7 @@ class CourtSubmissionReport extends Component
     use SessionFlash, HelperDate;
     public $startDate;
     public $endDate;
-
-
+    public $courtSubmissions = [];
 
     protected $rules = [
         'startDate' => 'required',
@@ -45,8 +44,32 @@ class CourtSubmissionReport extends Component
         $startDate = $this->bsToAd($this->startDate);
         $endDate = $this->bsToAd($this->endDate);
 
-        $this->dispatch('getSearchDate', $startDate, $endDate);
+        $this->courtSubmissions = CourtSubmission::with(['complaintRegistration', 'judicialMember'])
+            ->whereNull('deleted_at')
+            ->whereBetween('discussion_date', [$startDate, $endDate])
+            ->latest()
+            ->get();
+
+        foreach ($this->courtSubmissions as $submission) {
+            $submission->discussion_date_bs = replaceNumbers(
+                $this->adToBs(Carbon::parse($submission->discussion_date)->format('Y-m-d')),
+                true
+            );
+        }
     }
+
+    public function clear()
+    {
+        $this->reset(['startDate', 'endDate', 'courtSubmissions']);
+    }
+
+    public function export()
+    {
+        // Export functionality can be implemented here
+        $this->searchReport();
+        // Add export logic
+    }
+
     public function downloadPdf()
     {
         $this->validate();
