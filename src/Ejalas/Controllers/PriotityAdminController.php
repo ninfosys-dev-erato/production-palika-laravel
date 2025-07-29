@@ -16,19 +16,21 @@ class PriotityAdminController extends Controller
         //$this->middleware('permission:priotities create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::priotity.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::priotity.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $priotity = Priotity::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::priotity.form')->with(compact('action','priotity'));
+        return view('Ejalas::priotity.form')->with(compact('action', 'priotity'));
     }
-
 }

@@ -16,19 +16,21 @@ class JudicialMemberAdminController extends Controller
         //$this->middleware('permission:judicial_members create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::judicial-member.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::judicial-member.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $judicialMember = JudicialMember::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::judicial-member.form')->with(compact('action','judicialMember'));
+        return view('Ejalas::judicial-member.form')->with(compact('action', 'judicialMember'));
     }
-
 }

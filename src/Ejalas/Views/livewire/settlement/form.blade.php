@@ -114,7 +114,7 @@
                 <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.settlement_detail_list') }}</h5>
             </div>
             <div>
-                @perm('settlement_detail create')
+                @perm('jms_judicial_management create')
                     <button data-bs-toggle="modal" data-bs-target="#indexModal" class="btn btn-info"><i
                             class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_settlement_detail') }}</button>
                 @endperm
@@ -245,9 +245,11 @@
                                 <textarea class="form-control" id="detail" wire:model="settlementDetail.detail" rows="4" required></textarea>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">
-                            {{ $editIndex === null ? 'Save' : 'Update' }}
-                        </button>
+                        @perm('jms_judicial_management create')
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('ejalas::ejalas.save') }}
+                            </button>
+                        @endperm
                     </form>
                 </div>
             </div>

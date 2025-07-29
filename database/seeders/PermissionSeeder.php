@@ -149,44 +149,19 @@ class PermissionSeeder extends Seeder
             // -------------------
             // GRANT MANAGEMENT MODULE
             // -------------------
-            ['name' => 'affiliations create', 'guard' => 'web'],
-            ['name' => 'cash_grants create', 'guard' => 'web'],
-            ['name' => 'cash_grants delete', 'guard' => 'web'],
-            ['name' => 'cash_grants edit', 'guard' => 'web'],
-            ['name' => 'cash_grants view', 'guard' => 'web'],
-            ['name' => 'cooperative_farmers create', 'guard' => 'web'],
-            ['name' => 'cooperative_farmers delete', 'guard' => 'web'],
-            ['name' => 'cooperative_farmers edit', 'guard' => 'web'],
-            ['name' => 'cooperative_types create', 'guard' => 'web'],
-            ['name' => 'cooperative_types delete', 'guard' => 'web'],
-            ['name' => 'cooperative_types edit', 'guard' => 'web'],
-            ['name' => 'enterprise_farmers create', 'guard' => 'web'],
-            ['name' => 'enterprise_farmers delete', 'guard' => 'web'],
-            ['name' => 'enterprise_farmers edit', 'guard' => 'web'],
-            ['name' => 'enterprise_types create', 'guard' => 'web'],
-            ['name' => 'enterprise_types delete', 'guard' => 'web'],
-            ['name' => 'enterprise_types edit', 'guard' => 'web'],
-            ['name' => 'enterprises create', 'guard' => 'web'],
-            ['name' => 'enterprises delete', 'guard' => 'web'],
-            ['name' => 'enterprises edit', 'guard' => 'web'],
-            ['name' => 'enterprises view', 'guard' => 'web'],
-            ['name' => 'farmer_groups create', 'guard' => 'web'],
-            ['name' => 'farmer_groups delete', 'guard' => 'web'],
-            ['name' => 'farmer_groups edit', 'guard' => 'web'],
-            ['name' => 'grant_details create', 'guard' => 'web'],
-            ['name' => 'grant_details delete', 'guard' => 'web'],
-            ['name' => 'grant_details edit', 'guard' => 'web'],
-            ['name' => 'grant_offices create', 'guard' => 'web'],
-            ['name' => 'grant_programs create', 'guard' => 'web'],
-            ['name' => 'grant_release create', 'guard' => 'web'],
-            ['name' => 'grant_types create', 'guard' => 'web'],
-            ['name' => 'grant_types delete', 'guard' => 'web'],
-            ['name' => 'grant_types edit', 'guard' => 'web'],
-            ['name' => 'grants create', 'guard' => 'web'],
-            ['name' => 'groups create', 'guard' => 'web'],
-            ['name' => 'helplessness_types create', 'guard' => 'web'],
-            ['name' => 'helplessness_types delete', 'guard' => 'web'],
-            ['name' => 'helplessness_types edit', 'guard' => 'web'],
+            ['name' => 'gms_settings access', 'guard' => 'web'],
+            ['name' => 'gms_settings create', 'guard' => 'web'],
+            ['name' => 'gms_settings edit', 'guard' => 'web'],
+            ['name' => 'gms_settings delete', 'guard' => 'web'],
+
+            ['name' => 'gms_report access', 'guard' => 'web'],
+
+            ['name' => 'gms_activity access', 'guard' => 'web'],
+            ['name' => 'gms_activity create', 'guard' => 'web'],
+            ['name' => 'gms_activity edit', 'guard' => 'web'],
+            ['name' => 'gms_activity delete', 'guard' => 'web'],
+            ['name' => 'gms_activity view', 'guard' => 'web'],
+
 
             // -------------------
             // GRIEVANCE MODULE
@@ -260,7 +235,7 @@ class PermissionSeeder extends Seeder
             // -------------------
             // RECOMMENDATION MODULE
             // -------------------        
-            
+
             ['name' => 'recommendation_apply access', 'guard' => 'web'],
             ['name' => 'recommendation_apply create', 'guard' => 'web'],
             ['name' => 'recommendation_apply delete', 'guard' => 'web'],
@@ -385,6 +360,24 @@ class PermissionSeeder extends Seeder
             ['name' => 'wards create', 'guard' => 'web'],
             ['name' => 'wards delete', 'guard' => 'web'],
             ['name' => 'wards edit', 'guard' => 'web'],
+
+            // -------------------
+            // JMS Ejalas Module
+            // -------------------
+            ['name' => 'jms_settings create', 'guard' => 'web'],
+            ['name' => 'jms_settings access', 'guard' => 'web'],
+            ['name' => 'jms_settings edit', 'guard' => 'web'],
+            ['name' => 'jms_settings delete', 'guard' => 'web'],
+
+            ['name' => 'jms_judicial_management create', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management access', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management edit', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management delete', 'guard' => 'web'],
+
+            ['name' => 'jms_reconciliation_center access', 'guard' => 'web'],
+            ['name' => 'jms_report access', 'guard' => 'web'],
+
+
 
             // -------------------
             // YOJANA MODULE

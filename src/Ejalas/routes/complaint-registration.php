@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Src\Ejalas\Controllers\ComplaintRegistrationAdminController;
 
 Route::group(['prefix' => 'admin/complaint_registrations', 'as' => 'admin.ejalas.complaint_registrations.', 'middleware' => ['web', 'auth', 'check_module:ejalash']], function () {
-    Route::get('/{from?}', [ComplaintRegistrationAdminController::class, 'index'])->name('index');
+    Route::get('complaint_entry/{from?}', [ComplaintRegistrationAdminController::class, 'index'])->name('index');
     Route::get('/create/{from?}', [ComplaintRegistrationAdminController::class, 'create'])->name('create');
     Route::get('/edit/{from?}/{id}', [ComplaintRegistrationAdminController::class, 'edit'])->name('edit');
     Route::get('/view/{id}', [ComplaintRegistrationAdminController::class, 'view'])->name('view');

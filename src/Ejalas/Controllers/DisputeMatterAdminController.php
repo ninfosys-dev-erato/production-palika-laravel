@@ -16,19 +16,21 @@ class DisputeMatterAdminController extends Controller
         //$this->middleware('permission:dispute_matters create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::dispute-matter.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::dispute-matter.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $disputeMatter = DisputeMatter::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::dispute-matter.form')->with(compact('action','disputeMatter'));
+        return view('Ejalas::dispute-matter.form')->with(compact('action', 'disputeMatter'));
     }
-
 }

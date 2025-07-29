@@ -15,9 +15,9 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.dispute_area_list') }}</h5>
                     </div>
                     <div>
-                        @perm('dispute_areas create')
+                        @perm('jms_settings create')
                             <!-- <a href="{{ route('admin.ejalas.dispute_areas.create') }}" class="btn btn-info"><i
-                                                    class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_dispute_area') }}</a> -->
+                                                        class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_dispute_area') }}</a> -->
 
                             <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_dispute_area') }}

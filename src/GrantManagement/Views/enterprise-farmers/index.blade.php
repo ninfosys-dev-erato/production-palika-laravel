@@ -17,7 +17,7 @@
                             {{ __('grantmanagement::grantmanagement.enterprise_farmer_list') }}</h5>
                     </div>
                     <div>
-                        @perm('enterprise_farmers create')
+                        @perm('gms_activity create')
                             <a href="{{ route('admin.enterprise_farmers.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('grantmanagement::grantmanagement.add_enterprise_farmer') }}</a>

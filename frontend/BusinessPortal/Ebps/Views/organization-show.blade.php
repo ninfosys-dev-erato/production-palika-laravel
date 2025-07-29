@@ -28,7 +28,7 @@
 
 @endphp
 
-<x-layout.app header="Organization Detail">
+<x-layout.business-app header="Organization Detail">
     <div class="my-2">
         <div class="row">
             <div class="col-md-12 d-flex justify-content-end mb-3">
@@ -37,7 +37,7 @@
                 </button>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-lg border-0 rounded-lg h-80">
+                <div class="card shadow-md border-0 rounded-lg h-100">
                     <div class="card-body bg-white text-center d-flex flex-column align-items-center"
                         style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
 
@@ -127,41 +127,9 @@
 
                 </div>
 
-                <div class="card shadow-sm border-0 rounded-lg bg-light h-30 p-4">
-                    <div class="row">
-                        @if ($organization?->status?->value !== 'accepted')
-                            <div class="col-md-12">
-                                <livewire:ebps.organization_change_status_form :organization="$organization" :action="\App\Enums\Action::UPDATE" />
-                            </div>
-                        @else
-                            <div class="col-md-12 d-flex flex-column justify-content-between">
-                                <div>
-                                    <p class="mb-2">
-                                        {{ __('ebps::ebps.the_organization_is_active_you_may_choose_to_deactivate_it_below') }}
-                                    </p>
-                                </div>
-                                <div class="text-right">
-                                    <form
-                                        action="{{ route('admin.ebps.organizations.deactivate', $organization->id) }}"
-                                        method="POST">
-                                        @csrf
-                                        @if ($organization->is_active)
-                                            <button type="submit" class="btn btn-danger"
-                                                wire:confirm='Are you sure you want to deactivate?'>
-                                                {{ __('ebps::ebps.deactivate_organization') }}
-                                            </button>
-                                        @else
-                                            <button type="submit" class="btn btn-success"
-                                                wire:confirm='Are you sure you want to activate?'>
-                                                {{ __('ebps::ebps.activate_organization') }}
-                                            </button>
-                                        @endif
-                                    </form>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+               
+                <livewire:business_portal.ebps.organiztaion_renewal_form theme="bootstrap-4" :$organization />
+
             </div>
         </div>
 
@@ -180,6 +148,12 @@
                         {{ __('ebps::ebps.other_document') }}
                     </button>
                 </li>
+                {{-- <li class="nav-item" role="presentation">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#navs-pills-tax" aria-controls="navs-pills-logs" aria-selected="false">
+                        {{ __('ebps::ebps.tax_clearance') }}
+                    </button>
+                </li> --}}
 
             </ul>
 
@@ -258,6 +232,31 @@
                         </div>
                     </div>
                 </div>
+                {{-- <div class="tab-pane fade" id="navs-pills-tax" role="tabpanel">
+                    <div class="card-01">
+                        <div class="row">
+                            <div class="card-body border shadow-lg bg-light flex-fill" style="border-radius: 2px;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>{{ __('ebps::ebps.tax_document') }}:</strong><br>
+                                        @if ($organization->taxClearances)
+                                            @php
+                                                $taxClearance = $organization->taxClearances->first();
+                                            @endphp
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalTaxImage"
+                                                onclick="showTaxImage('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')">
+                                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}"
+                                                    alt="" class="img-fluid" />
+                                            </a>
+                                        @else
+                                            <p>{{ __('ebps::ebps.not_provided') }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
 
                 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
                     aria-hidden="true">
@@ -291,6 +290,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal fade" id="taxImageModal" tabindex="-1" aria-labelledby="taxImageModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-fullscreen">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ __('ebps::ebps.tax_clearance_document') }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body d-flex justify-content-center align-items-center">
+                                <img id="taxImageModalImg" src="" alt="Tax Clearance Document" class="img-fluid"
+                                    style="max-height: 100%; max-width: 100%;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tax Clearances Section -->
                 <div class="card shadow-sm border-0 rounded-lg bg-white mb-4 mt-4">
                     <div class="card-header bg-transparent border-0 pb-0">
                         <h5 class="fw-bold text-dark mb-0">
@@ -299,35 +316,34 @@
                         </h5>
                     </div>
                     <div class="card-body p-4">
-                        @if ($organization->taxClearances && $organization->taxClearances->count() > 0)
+                        @if($organization->taxClearances && $organization->taxClearances->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead class="table-light">
                                         <tr>
                                             <th class="fw-semibold">{{ __('ebps::ebps.year') }}</th>
                                             <th class="fw-semibold">{{ __('ebps::ebps.document') }}</th>
-
+                                           
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($organization->taxClearances as $taxClearance)
+                                        @foreach($organization->taxClearances as $taxClearance)
                                             <tr>
                                                 <td>
-                                                    <span
-                                                        class="badge bg-primary rounded-pill">{{ $taxClearance->year }}</span>
+                                                    <span class="badge bg-primary rounded-pill">{{ $taxClearance->year }}</span>
                                                 </td>
                                                 <td>
-                                                    @if ($taxClearance->document)
-                                                        <a href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#taxImageModal"
-                                                            onclick="showTaxImageModal('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')"
-                                                            class="btn btn-sm btn-outline-primary">
+                                                    @if($taxClearance->document)
+                                                        <a href="#" 
+                                                           data-bs-toggle="modal" 
+                                                           data-bs-target="#taxImageModal"
+                                                           onclick="showTaxImageModal('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')"
+                                                           class="btn btn-sm btn-outline-primary">
                                                             <i class="bx bx-image me-1"></i>
                                                             {{ __('ebps::ebps.view_document') }}
                                                         </a>
                                                     @else
-                                                        <span
-                                                            class="text-muted">{{ __('ebps::ebps.not_provided') }}</span>
+                                                        <span class="text-muted">{{ __('ebps::ebps.not_provided') }}</span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -341,8 +357,7 @@
                                     <i class="bx bx-receipt text-muted" style="font-size: 3rem;"></i>
                                 </div>
                                 <h6 class="text-muted mb-2">{{ __('ebps::ebps.no_tax_clearances_found') }}</h6>
-                                <p class="text-muted small">
-                                    {{ __('ebps::ebps.upload_your_first_tax_clearance_above') }}</p>
+                                <p class="text-muted small">{{ __('ebps::ebps.upload_your_first_tax_clearance_above') }}</p>
                             </div>
                         @endif
                     </div>
@@ -360,8 +375,10 @@
                     function showTaxImageModal(src) {
                         document.getElementById('taxImageModalImg').src = src;
                     }
+
+                    
                 </script>
             </div>
         </div>
     </div>
-</x-layout.app>
+</x-layout.business-app>

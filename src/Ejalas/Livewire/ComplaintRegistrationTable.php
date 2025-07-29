@@ -217,27 +217,27 @@ class ComplaintRegistrationTable extends DataTableComponent
                 )
                 ->html()
         ];
-        if (!$this->report && (can('complaint_registrations edit') || can('complaint_registrations delete'))) {
+        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete'))) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('complaint_registrations edit')) {
+                if (can('jms_judicial_management edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('complaint_registrations delete')) {
+                if (can('jms_judicial_management delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm me-1" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
-                if (can('complaint_registrations view')) {
-                    $view = '<button type="button" class="btn btn-success btn-sm me-1"  wire:click="view(' . $row->id . ')"><i class="bx bx-show"></i></button>';
-                    $buttons .= $view;
-                }
-                if (can('complaint_registrations print')) {
-                    $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                    $buttons .= $preview;
-                }
+
+                $view = '<button type="button" class="btn btn-success btn-sm me-1"  wire:click="view(' . $row->id . ')"><i class="bx bx-show"></i></button>';
+                $buttons .= $view;
+
+
+                $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                $buttons .= $preview;
+
                 return $buttons;
             })->html();
 
@@ -249,7 +249,7 @@ class ComplaintRegistrationTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('complaint_registrations edit')) {
+        if (!can('jms_judicial_management edit')) {
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
@@ -260,7 +260,7 @@ class ComplaintRegistrationTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('complaint_registrations delete')) {
+        if (!can('jms_judicial_management delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -270,7 +270,7 @@ class ComplaintRegistrationTable extends DataTableComponent
     }
     public function view($id)
     {
-        if (!can('complaint_registrations view')) {
+        if (!can('jms_judicial_management access')) {
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
@@ -280,7 +280,7 @@ class ComplaintRegistrationTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('complaint_registrations delete')) {
+        if (!can('jms_judicial_management delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

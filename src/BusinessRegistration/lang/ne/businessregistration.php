@@ -505,4 +505,11 @@ return [
     'the_applicant_name_is_required' => 'आवेदकको नाम आवश्यक छ।',
     'application_date_is_required' => 'आवेदन मिति आवश्यक छ।',
     'status' => 'स्थिति',
+    "is_business_previously_registered" => "व्यवसाय पुरानो दर्ता गरिएको छ?",
+    "yes" => "हो",
+    "no" => "होइन",
+    "registration_date" => "दर्ता मिति",
+    "registration_number" => "दर्ता नम्बर",
+    "enter_registration_date" => "दर्ता मिति लेख्नुहोस्",
+    "enter_registration_number" => "दर्ता नम्बर लेख्नुहोस्"
 ];

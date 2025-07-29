@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.dispute_deadline_list') }}</h5>
                     </div>
                     <div>
-                        @perm('dispute_deadlines create')
+                        @perm('jms_judicial_management create')
                             <a href="{{ route('admin.ejalas.dispute_deadlines.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_dispute_deadline') }}</a>
                         @endperm

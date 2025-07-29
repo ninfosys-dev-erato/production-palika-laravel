@@ -16,8 +16,8 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('complaint_registrations create')
-                            <a href="{{ route('admin.ejalas.complaint_registrations.create', ['from' => 'reconciliationcenter']) }}"
+                        @perm('jms_judicial_management create')
+                            <a href="{{ route('admin.ejalas.complaint_registrations.create', ['from' => $from]) }}"
                                 class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('ejalas::ejalas.add_complaint_registration') }}</a>
                         @endperm

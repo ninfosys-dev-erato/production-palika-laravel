@@ -16,19 +16,21 @@ class RegistrationIndicatorAdminController extends Controller
         //$this->middleware('permission:registration_indicators create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::registration-indicator.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::registration-indicator.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $registrationIndicator = RegistrationIndicator::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::registration-indicator.form')->with(compact('action','registrationIndicator'));
+        return view('Ejalas::registration-indicator.form')->with(compact('action', 'registrationIndicator'));
     }
-
 }

@@ -84,24 +84,22 @@ class CourtSubmissionTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.submission_decision_date'), "submission_decision_date")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.decision_authority'), "judicialMember.title")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (!$this->report && (can('court_submissions edit') || can('court_submissions delete'))) {
+        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete'))) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('court_submissions edit')) {
+                if (can('jms_judicial_management edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('court_submissions delete')) {
+                if (can('jms_judicial_management delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
-                if (can('court_submissions print')) {
-                    $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                    $buttons .= $preview;
-                }
 
+                $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                $buttons .= $preview;
 
                 return $buttons;
             })->html();
@@ -114,7 +112,7 @@ class CourtSubmissionTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('court_submissions edit')) {
+        if (!can('jms_judicial_management edit')) {
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
@@ -122,7 +120,7 @@ class CourtSubmissionTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('court_submissions delete')) {
+        if (!can('jms_judicial_management delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -132,7 +130,7 @@ class CourtSubmissionTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('court_submissions delete')) {
+        if (!can('jms_judicial_management delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
