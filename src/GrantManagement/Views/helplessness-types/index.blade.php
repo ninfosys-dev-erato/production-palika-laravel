@@ -17,9 +17,9 @@
                             {{ __('grantmanagement::grantmanagement.helplessness_type_list') }}</h5>
                     </div>
                     <div>
-                        @perm('helplessness_types create')
+                        @perm('gms_settings create')
                             <!-- <a href="{{ route('admin.helplessness_types.create') }}" class="btn btn-info"><i
-                                                class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_helplessness_type') }}</a> -->
+                                                    class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_helplessness_type') }}</a> -->
 
                             <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                                 data-bs-target="#indexModal">

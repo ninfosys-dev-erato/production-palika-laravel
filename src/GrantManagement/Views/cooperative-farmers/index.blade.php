@@ -17,7 +17,7 @@
                             {{ __('grantmanagement::grantmanagement.cooperative_farmer_list') }}</h5>
                     </div>
                     <div>
-                        @perm('cooperative_farmers create')
+                        @perm('gms_activity create')
                             <a href="{{ route('admin.cooperative_farmers.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('grantmanagement::grantmanagement.add_cooperative_farmer') }}</a>

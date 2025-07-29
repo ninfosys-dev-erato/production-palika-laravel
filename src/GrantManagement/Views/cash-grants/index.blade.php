@@ -16,7 +16,7 @@
                             {{ __('grantmanagement::grantmanagement.cash_grant_list') }}</h5>
                     </div>
                     <div>
-                        @perm('cash_grants create')
+                        @perm('gms_activity create')
                             <a href="{{ route('admin.cash_grants.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_cash_grant') }}</a>
                         @endperm
