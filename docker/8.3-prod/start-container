@@ -28,14 +28,14 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-print_status "Starting Laravel application container..."
+print_status "Starting hardened Laravel application container..."
 
-# Set correct ownership for Laravel directories
-print_status "Setting up Laravel directories and permissions..."
-chown -R sail:sail /var/www/html/storage
-chown -R sail:sail /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage
-chmod -R 775 /var/www/html/bootstrap/cache
+# Security: Set up proper file permissions
+print_status "Setting up security and permissions..."
+chown -R www-data:www-data /var/www/html/storage
+chown -R www-data:www-data /var/www/html/bootstrap/cache
+chmod -R 755 /var/www/html/storage
+chmod -R 755 /var/www/html/bootstrap/cache
 
 # Create required directories if they don't exist
 mkdir -p /var/www/html/storage/logs
@@ -43,79 +43,52 @@ mkdir -p /var/www/html/storage/app
 mkdir -p /var/www/html/storage/framework/cache
 mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/log/nginx
+mkdir -p /var/log/php8.3-fpm
 mkdir -p /var/log/supervisor
+mkdir -p /run/php
+mkdir -p /var/run
 
-# Ensure proper ownership for all storage directories
-chown -R sail:sail /var/www/html/storage
-chown -R sail:sail /var/www/html/bootstrap/cache
+# Security: Ensure proper ownership for all directories
+chown -R www-data:www-data /var/www/html/storage
+chown -R www-data:www-data /var/www/html/bootstrap/cache
+chown -R www-data:www-data /var/log/nginx
+chown -R www-data:www-data /var/log/php8.3-fpm
 
-# Create opcache preload file if it doesn't exist
-if [ ! -f /var/www/html/config/opcache.php ]; then
-    print_status "Creating opcache preload file..."
-    cat > /var/www/html/config/opcache.php << 'EOF'
-<?php
-// OPcache preload script for Laravel
-if (!function_exists('opcache_compile_file')) {
-    return;
-}
-
-// Define the application root
-$appRoot = dirname(__DIR__);
-
-// Preload Composer autoloader
-$autoloader = $appRoot . '/vendor/autoload.php';
-if (file_exists($autoloader)) {
-    require_once $autoloader;
-}
-
-// Preload Laravel framework files
-$preloadFiles = [
-    '/vendor/laravel/framework/src/Illuminate/Foundation/Application.php',
-    '/vendor/laravel/framework/src/Illuminate/Container/Container.php',
-    '/vendor/laravel/framework/src/Illuminate/Support/ServiceProvider.php',
-    '/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php',
-    '/vendor/laravel/framework/src/Illuminate/Http/Request.php',
-    '/vendor/laravel/framework/src/Illuminate/Http/Response.php',
-    '/vendor/laravel/framework/src/Illuminate/Routing/Router.php',
-    '/vendor/laravel/framework/src/Illuminate/View/View.php',
-    '/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php',
-];
-
-foreach ($preloadFiles as $file) {
-    $fullPath = $appRoot . $file;
-    if (file_exists($fullPath)) {
-        opcache_compile_file($fullPath);
-    }
-}
-
-// Preload application files
-$appFiles = [
-    '/app/Http/Kernel.php',
-    '/app/Providers/AppServiceProvider.php',
-    '/app/Providers/RouteServiceProvider.php',
-    '/config/app.php',
-    '/config/database.php',
-];
-
-foreach ($appFiles as $file) {
-    $fullPath = $appRoot . $file;
-    if (file_exists($fullPath)) {
-        opcache_compile_file($fullPath);
-    }
-}
+# Security: Create OPcache blacklist file
+if [ ! -f /var/www/html/config/opcache-blacklist.txt ]; then
+    print_status "Creating OPcache blacklist..."
+    cat > /var/www/html/config/opcache-blacklist.txt << 'EOF'
+# OPcache blacklist for files that should not be cached
+/var/www/html/storage/
+/var/www/html/bootstrap/cache/
+/var/www/html/.env
 EOF
-    chown sail:sail /var/www/html/config/opcache.php
+    chown www-data:www-data /var/www/html/config/opcache-blacklist.txt
 fi
 
-# Check the database connection
+# Security: Create nginx sites-enabled directory and symlink
+mkdir -p /etc/nginx/sites-enabled
+ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Security: Test nginx configuration
+print_status "Testing nginx configuration..."
+nginx -t
+
+# Security: Test PHP-FPM configuration
+print_status "Testing PHP-FPM configuration..."
+php-fpm8.3 -t
+
+# Check the database connection with timeout
+print_status "Checking database connectivity..."
 timeout=30
-while ! mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" --silent; do
+while ! mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" --silent 2>/dev/null; do
   timeout=$((timeout - 1))
   if [ $timeout -eq 0 ]; then
-    echo "Database connection timeout, continuing anyway..."
+    print_warning "Database connection timeout, continuing anyway..."
     break
   fi
-  echo "Waiting for database... ($timeout seconds remaining)"
+  print_status "Waiting for database... ($timeout seconds remaining)"
   sleep 1
 done
 
@@ -133,20 +106,90 @@ Route::get('/health', function () {
         'environment' => app()->environment(),
         'laravel_version' => app()->version(),
         'php_version' => PHP_VERSION,
+        'nginx_version' => $_SERVER['SERVER_SOFTWARE'] ?? 'unknown',
     ]);
 });
 EOF
 fi
 
-# Ensure log files exist and have proper permissions
+# Security: Ensure log files exist and have proper permissions
 touch /var/www/html/storage/logs/laravel.log
-chown sail:sail /var/www/html/storage/logs/laravel.log
+chown www-data:www-data /var/www/html/storage/logs/laravel.log
 chmod 664 /var/www/html/storage/logs/laravel.log
 
-# Start supervisor (this will run the Laravel application)
+# Security: Set up log rotation
+cat > /etc/logrotate.d/laravel << 'EOF'
+/var/www/html/storage/logs/*.log {
+    daily
+    missingok
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+    create 664 www-data www-data
+    postrotate
+        kill -USR1 $(cat /var/run/nginx.pid 2>/dev/null) 2>/dev/null || true
+    endscript
+}
+EOF
+
+# Security: Create fail2ban configuration (if available)
+if command -v fail2ban-client &> /dev/null; then
+    print_status "Configuring fail2ban..."
+    cat > /etc/fail2ban/jail.local << 'EOF'
+[nginx-http-auth]
+enabled = true
+filter = nginx-http-auth
+port = http,https
+logpath = /var/log/nginx/error.log
+
+[nginx-limit-req]
+enabled = true
+filter = nginx-limit-req
+port = http,https
+logpath = /var/log/nginx/access.log
+maxretry = 10
+EOF
+fi
+
+# Security: Set up system limits
+cat >> /etc/security/limits.conf << 'EOF'
+www-data soft nofile 65536
+www-data hard nofile 65536
+www-data soft nproc 32768
+www-data hard nproc 32768
+EOF
+
+# Performance: Optimize kernel parameters
+cat >> /etc/sysctl.conf << 'EOF'
+# Network optimizations
+net.core.somaxconn = 65535
+net.core.netdev_max_backlog = 5000
+net.ipv4.tcp_max_syn_backlog = 65535
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_keepalive_time = 1200
+net.ipv4.tcp_max_tw_buckets = 2000000
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_tw_recycle = 0
+net.ipv4.ip_local_port_range = 1024 65535
+EOF
+
+# Apply sysctl changes
+sysctl -p 2>/dev/null || true
+
+# Apply security hardening
+print_status "Applying security hardening..."
+source /etc/security.conf
+
+# Apply performance optimizations
+print_status "Applying performance optimizations..."
+source /etc/performance.conf
+
 print_status "Starting supervisor daemon..."
 print_status "Laravel application is ready!"
-print_status "Application will be available on port 80"
+print_status "Nginx will be available on port 80"
+print_status "PHP-FPM is configured for optimal performance"
+print_status "Security hardening measures are in place"
 
 # Execute supervisor in foreground
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
