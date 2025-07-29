@@ -21,7 +21,7 @@ enum MapApplyStatusEnum: string
             self::NOT_APPLIED => __('Not Applied'),
             self::PENDING => __('Pending'),
             self::UNDER_REVIEW => __('under review'),
-            self::MODIFY => __('modify'),
+            self::MODIFY => __('Modify'),
             self::ACCEPTED => __('Accepted'),
         };
     }

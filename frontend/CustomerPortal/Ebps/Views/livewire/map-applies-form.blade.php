@@ -248,7 +248,7 @@
             @endforeach
 
             <div class="divider divider-primary text-start text-primary font-14">
-                <div class="divider-text ">{{ __('ebps::ebps.consturction_details') }}</div>
+                <div class="divider-text ">{{ __('ebps::ebps.construction_details') }}</div>
             </div>
 
             <div class='col-md-6 mb-3'>

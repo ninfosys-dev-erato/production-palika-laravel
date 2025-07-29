@@ -90,9 +90,14 @@ class OrganizationMapApplyStep extends Component
         $formId = $form->id;
         if (isset($this->letters[$formId])) {
             $this->letters[$formId] = $this->resolveMapStepTemplate($this->mapApply, $this->mapStep, $form);
-            $this->dispatch('update-editor', ['letter' => $this->letters[$formId]]);
+            $this->dispatch('update-editor-' . $formId, ['content' => $this->letters[$formId]]);
             $this->successToast(__('Reset Successfully.'));
         }
+    }
+
+    public function updateLetter($formId, $content)
+    {
+        $this->letters[(int)$formId] = $content;
     }
 
     public function togglePreview()
