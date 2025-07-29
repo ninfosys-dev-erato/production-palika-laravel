@@ -95,11 +95,22 @@ EOF
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
     chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
     
+    # Set up log rotation cron job
+    print_status "Setting up log rotation..."
+    echo "0 2 * * * /usr/sbin/logrotate -f /etc/logrotate.d/laravel 2>/dev/null || /usr/local/bin/log-cleanup rotate" > /etc/cron.d/logrotate-laravel
+    echo "0 */6 * * * /usr/local/bin/log-cleanup clean 3" >> /etc/cron.d/logrotate-laravel
+    echo "*/30 * * * * /usr/local/bin/log-cleanup status | grep -q 'consider running cleanup' && /usr/local/bin/log-cleanup emergency" >> /etc/cron.d/logrotate-laravel
+    chmod 0644 /etc/cron.d/logrotate-laravel
+    
+    # Create logrotate state directory
+    mkdir -p /var/lib/logrotate
+    touch /var/lib/logrotate/status
+    
     # Start services
     print_status "Starting services..."
     print_status "Laravel application container is ready!"
     
-    # Start supervisor to manage nginx and php-fpm
+    # Start supervisor to manage nginx, php-fpm, cron and log rotation
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 }
 

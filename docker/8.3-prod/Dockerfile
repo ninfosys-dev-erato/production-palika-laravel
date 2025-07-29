@@ -58,6 +58,8 @@ RUN apt-get install -y --no-install-recommends \
     libpng-dev \
     dnsutils \
     nano \
+    cron \
+    logrotate \
     $MYSQL_CLIENT \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -113,9 +115,12 @@ COPY docker/8.3-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/8.3-prod/start-container /usr/local/bin/start-container
 COPY docker/8.3-prod/security.conf /etc/security.conf
 COPY docker/8.3-prod/performance.conf /etc/performance.conf
+COPY docker/8.3-prod/logrotate.conf /etc/logrotate.d/laravel
+COPY docker/8.3-prod/log-cleanup.sh /usr/local/bin/log-cleanup
 
-# Make script executable
-RUN chmod +x /usr/local/bin/start-container
+# Make scripts executable
+RUN chmod +x /usr/local/bin/start-container \
+    && chmod +x /usr/local/bin/log-cleanup
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/

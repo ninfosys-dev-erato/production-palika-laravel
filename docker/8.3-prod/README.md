@@ -111,11 +111,18 @@ Key environment variables (set in `.env`):
 - **Process monitoring**: Supervisor manages all processes
 
 ### Logging
-- **Nginx access logs**: `/var/log/nginx/access.log`
-- **Nginx error logs**: `/var/log/nginx/error.log`
-- **PHP-FPM logs**: `/var/log/php8.3-fpm/`
+- **Nginx access logs**: `/tmp/nginx-access.log`
+- **Nginx error logs**: `/tmp/nginx-error.log`
+- **PHP-FPM logs**: `/tmp/php8.3-fpm*.log`
 - **Laravel logs**: `/var/www/html/storage/logs/`
-- **Supervisor logs**: `/var/log/supervisor/`
+- **Supervisor logs**: `/tmp/*-supervisor.log`
+
+### Log Management
+- **Automatic rotation**: Daily log rotation with compression
+- **Size limits**: Logs rotated when reaching size limits
+- **Retention**: Configurable retention periods (3-14 days)
+- **Emergency cleanup**: Automatic cleanup when disk usage > 80%
+- **Manual tools**: `log-cleanup` command for manual management
 
 ### Performance Monitoring
 - **Slow query logging**: PHP-FPM slow log enabled
@@ -133,6 +140,8 @@ Key environment variables (set in `.env`):
 - [x] Session security
 - [x] Error handling
 - [x] Logging and monitoring
+- [x] Log rotation and cleanup
+- [x] Disk space monitoring
 - [x] Network hardening
 - [x] Kernel parameter optimization
 
@@ -185,13 +194,25 @@ APP_DEBUG=true
 ### Log Analysis
 ```bash
 # Check nginx logs
-docker exec -it container-name tail -f /var/log/nginx/error.log
+docker exec -it container-name tail -f /tmp/nginx-error.log
 
 # Check PHP-FPM logs
-docker exec -it container-name tail -f /var/log/php8.3-fpm/www-error.log
+docker exec -it container-name tail -f /tmp/php8.3-fpm-www-error.log
 
 # Check Laravel logs
 docker exec -it container-name tail -f /var/www/html/storage/logs/laravel.log
+
+# Check log status and sizes
+docker exec -it container-name log-cleanup status
+
+# Manual log rotation
+docker exec -it container-name log-cleanup rotate
+
+# Emergency log cleanup (if disk space is low)
+docker exec -it container-name log-cleanup emergency
+
+# Clean old compressed logs
+docker exec -it container-name log-cleanup clean 14
 ```
 
 ## 📈 Performance Benchmarks
@@ -202,11 +223,61 @@ This setup is optimized for:
 - **High throughput**: 10,000+ requests per second
 - **Memory efficiency**: <512MB memory usage under normal load
 
+## 📋 Log Rotation & Management
+
+### Automatic Log Rotation
+The container includes comprehensive log rotation to prevent disk space issues:
+
+- **Daily rotation**: All logs are rotated daily at 2 AM
+- **Size-based rotation**: Logs rotate when reaching size limits
+- **Compression**: Old logs are compressed to save space
+- **Retention periods**:
+  - Nginx logs: 7 days
+  - PHP-FPM logs: 7 days
+  - Laravel logs: 14 days
+  - Supervisor logs: 5 days
+  - OPcache logs: 3 days
+
+### Scheduled Tasks
+```bash
+# Daily at 2 AM - Full log rotation
+0 2 * * * logrotate -f /etc/logrotate.d/laravel
+
+# Every 6 hours - Clean old compressed logs
+0 */6 * * * log-cleanup clean 3
+
+# Every 30 minutes - Emergency cleanup if disk > 80%
+*/30 * * * * log-cleanup status | grep -q 'consider running cleanup' && log-cleanup emergency
+```
+
+### Manual Log Management
+```bash
+# Check current log status
+docker exec -it container-name log-cleanup status
+
+# Force log rotation
+docker exec -it container-name log-cleanup rotate
+
+# Emergency cleanup (truncates all logs)
+docker exec -it container-name log-cleanup emergency
+
+# Clean compressed logs older than N days
+docker exec -it container-name log-cleanup clean 7
+
+# Get help
+docker exec -it container-name log-cleanup help
+```
+
+### Log Locations
+- **Active logs**: `/tmp/*.log` and `/var/www/html/storage/logs/*.log`
+- **Rotated logs**: Same locations with `.YYYYMMDD_HHMMSS.gz` suffix
+- **Log sizes**: Monitored automatically, alerts when disk usage > 80%
+
 ## 🔄 Updates and Maintenance
 
 ### Regular Maintenance
 1. **Security updates**: Regularly update base image
-2. **Log rotation**: Configured via logrotate
+2. **Log rotation**: Automatic via cron and supervisor
 3. **Cache clearing**: Laravel cache optimization
 4. **OPcache reset**: Automatic on container restart
 
