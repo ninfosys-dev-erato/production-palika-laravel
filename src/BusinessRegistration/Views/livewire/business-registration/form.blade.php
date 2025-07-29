@@ -513,6 +513,7 @@
                                         @enderror
                                     </div>
 
+
                                     <!-- Registration Number -->
                                     <div class="col-md-6">
                                         <label for="registration_number" class="form-label-peaceful">
@@ -1226,8 +1227,10 @@
             </div>
         </div>
     </div>
-
 </form>
+
+
+
 
 @script
     <script>
@@ -1243,5 +1246,68 @@
                 @this.set('businessRegistration.department_id', $(this).val());
             })
         })
+
+        // Initialize Nepali date pickers for conditional fields
+        document.addEventListener('livewire:initialized', () => {
+            // Function to initialize date pickers
+            function initDatePickers() {
+                document.querySelectorAll('.nepali-date').forEach(function(input) {
+                    if (!input.classList.contains('ndp-initialized')) {
+                        input.nepaliDatePicker({
+                            language: "ne",
+                            ndpYear: true,
+                            ndpMonth: true,
+                            unicodeDate: true,
+                            onChange: function() {
+                                input.dispatchEvent(new Event('input', {
+                                    bubbles: true
+                                }));
+                            }
+                        });
+                        input.classList.add('ndp-initialized');
+                    }
+                });
+            }
+
+            // Listen for custom event from Livewire
+            Livewire.on('init-date-pickers', () => {
+                setTimeout(() => {
+                    initDatePickers();
+                }, 100);
+            });
+
+            // Listen for registration date specific event
+            Livewire.on('init-registration-date', () => {
+                setTimeout(() => {
+                    initDatePickers();
+                    console.log('hi');
+                }, 100);
+            });
+
+            // Initialize on tab changes
+            Livewire.on('tab-changed', () => {
+                setTimeout(() => {
+                    initDatePickers();
+                }, 100);
+            });
+
+            // Initialize when conditional fields are shown
+            Livewire.hook('message.processed', (message, component) => {
+                setTimeout(() => {
+                    initDatePickers();
+                }, 100);
+            });
+
+            // Initialize after DOM mutations (for conditional rendering)
+            Livewire.hook('element.updated', (el, component) => {
+                // Check if the updated element or its children contain nepali-date inputs
+                const nepaliInputs = el.querySelectorAll('.nepali-date');
+                if (nepaliInputs.length > 0) {
+                    setTimeout(() => {
+                        initDatePickers();
+                    }, 100);
+                }
+            });
+        });
     </script>
 @endscript

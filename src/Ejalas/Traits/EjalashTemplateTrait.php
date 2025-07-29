@@ -4,13 +4,14 @@ namespace Src\Ejalas\Traits;
 
 use App\Facades\ImageServiceFacade;
 use App\Traits\HelperDate;
+use App\Traits\HelperTemplate;
 use Src\Ebps\Models\MapApplyStep;
 use Src\Ebps\Models\MapApplyStepTemplate;
 use Src\Settings\Models\Form;
 
 trait EjalashTemplateTrait
 {
-    use HelperDate;
+    use HelperDate, HelperTemplate;
     function resolveEjalasTemplate($model, $value = null)
     {
         if (!$model) {
@@ -20,8 +21,7 @@ trait EjalashTemplateTrait
         $modelName = class_basename($this->model);
 
         $data = [
-            '{{global.letter-head}}' => getLetterHeader(null),
-            '{{global.letter-head-footer}}' => getLetterFooter(null),
+            '{{global.letter-head}}' => $this->getLetterHeader(null),
             '{{global.province}}' => getSetting('palika-province'),
             '{{global.officeName}}' => getSetting('palika-name'),
             '{{global.district}}' => getSetting('palika-district'),
@@ -30,7 +30,7 @@ trait EjalashTemplateTrait
             '{{global.today_date_ad}}' => today()->toDateString(),
             '{{global.today_date_bs}}' => today()->toDateString(),
         ];
-        // Load relationships dynamically based on model type
+
         switch ($modelName) {
 
             case "ComplaintRegistration":

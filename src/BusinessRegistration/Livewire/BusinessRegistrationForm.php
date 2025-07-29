@@ -274,6 +274,7 @@ class BusinessRegistrationForm extends Component
                 $this->showRentFields = true;
             }
             if (!empty($businessRegistration['registration_number'])) {
+
                 $this->showRegistrationDetailsFields = true;
             }
 
@@ -865,6 +866,11 @@ class BusinessRegistrationForm extends Component
         if ((int) $value === 0) {
             $this->businessRegistration['registration_date'] = '';
             $this->businessRegistration['registration_number'] = '';
+        }
+
+        // Dispatch event to initialize date pickers when conditional fields are shown
+        if ((int) $value === 1) {
+            $this->dispatch('init-registration-date');
         }
     }
 
