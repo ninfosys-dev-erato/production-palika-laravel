@@ -398,6 +398,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'tsk_management edit', 'guard' => 'web'],
             ['name' => 'tsk_management delete', 'guard' => 'web'],
             ['name' => 'tsk_management print', 'guard' => 'web'],
+            ['name' => 'tsk_management view', 'guard' => 'web'],
 
 
 

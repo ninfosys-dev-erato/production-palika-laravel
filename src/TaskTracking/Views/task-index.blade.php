@@ -13,7 +13,7 @@
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="text-primary fw-bold mb-0">{{ __('tasktracking::tasktracking.task_list') }}</h5>
                     <div>
-                        @perm('task_create')
+                        @perm('tsk_management create')
                             <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#taskModal">
                                 <i class="bx bx-plus"></i> {{ __('tasktracking::tasktracking.add_task') }}
                             </button>

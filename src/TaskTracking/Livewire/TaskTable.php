@@ -141,19 +141,21 @@ class TaskTable extends DataTableComponent
                 ->searchable()
                 ->collapseOnTablet(),
         ];
-        if (can('task_update') || can('task_delete')) {
+        if (can('tsk_management edit') || can('tsk_management delete') || can('tsk_management view')) {
             $actionsColumn = Column::make(__('tasktracking::tasktracking.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->task_id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
-                $buttons .= $view;
+                if (can('tsk_management view')) {
+                    $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->task_id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
+                    $buttons .= $view;
+                }
 
-                if (can('task_update')) {
+                if (can('tsk_management edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->task_id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('task_delete')) {
+                if (can('tsk_management delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -169,7 +171,7 @@ class TaskTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('task_update')) {
+        if (!can('tsk_management edit')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -177,7 +179,7 @@ class TaskTable extends DataTableComponent
     }
     public function view($id)
     {
-        if (!can('task_view')) {
+        if (!can('tsk_management view')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -185,7 +187,7 @@ class TaskTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('task_delete')) {
+        if (!can('tsk_management delete')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -195,7 +197,7 @@ class TaskTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('task_delete')) {
+        if (!can('tsk_management delete')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }

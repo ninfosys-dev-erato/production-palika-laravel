@@ -23,7 +23,7 @@
                         {{ $action->value === 'create' ? __('tasktracking::tasktracking.create') . ' ' . __('tasktracking::tasktracking.task') : __('tasktracking::tasktracking.update') . ' ' . __('tasktracking::tasktracking.task') }}
                     </h5>
                     <div>
-                        @perm('task access')
+                        @perm('tsk_setting edit')
                             <a href="javascript:history.back()" class="btn btn-info"><i
                                     class="bx bx-arrow-back"></i>{{ __('tasktracking::tasktracking.back') }}</a>
                         @endperm
