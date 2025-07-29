@@ -1,116 +1,107 @@
-# Hardened Laravel Production Docker Setup
+# Production Laravel Docker Container
 
-This is a production-ready, hardened Docker configuration for Laravel applications with nginx + php-fpm architecture.
+This Docker configuration provides a hardened, production-ready Laravel application container with Nginx and PHP-FPM.
 
-## 🛡️ Security Features
+## Quick Start
 
-### Container Security
-- **Non-root user**: Runs as `www-data` user instead of root
-- **Capability restrictions**: Drops unnecessary capabilities, adds only required ones
-- **Read-only filesystem**: Mounts `/tmp` and `/var/tmp` as read-only tmpfs
-- **Security options**: `no-new-privileges` enabled
-- **Resource limits**: Configured ulimits for file descriptors and processes
+### Prerequisites
 
-### Network Security
-- **Rate limiting**: Implemented at nginx level for API and general requests
-- **Security headers**: Comprehensive security headers including CSP, HSTS, X-Frame-Options
-- **IP filtering**: Reverse proxy ready configuration
-- **Kernel hardening**: Network security parameters optimized
+1. Ensure you have Docker and Docker Compose installed
+2. Create a `.env` file in your project root with all required environment variables
+3. Set `APP_ABBREVIATION` in your `.env` file (used for directory naming)
 
-### Application Security
-- **PHP hardening**: Disabled dangerous functions, secure session settings
-- **File access control**: Prevents access to sensitive files and directories
-- **Error handling**: Disabled error display, proper logging
-- **Session security**: HttpOnly, Secure, SameSite cookies
+### Setup Host Directories
 
-### Web Server Security
-- **Nginx hardening**: Hidden version, secure defaults
-- **Access control**: Denied access to sensitive files and directories
-- **Request validation**: Proper FastCGI configuration
-- **Logging**: Comprehensive access and error logging
-
-## ⚡ Performance Optimizations
-
-### Nginx Performance
-- **Worker processes**: Auto-configured based on CPU cores
-- **Connection pooling**: Optimized keepalive settings
-- **Gzip compression**: Enabled for all text-based content
-- **Static file caching**: Long-term caching for static assets
-- **Buffer optimization**: Optimized buffer sizes for high throughput
-
-### PHP-FPM Performance
-- **Process management**: Dynamic process manager with optimized settings
-- **Memory optimization**: 256MB memory limit, optimized OPcache
-- **Request handling**: Optimized timeout and buffer settings
-- **OPcache**: Aggressive caching with 256MB memory allocation
-
-### System Performance
-- **Kernel tuning**: Optimized network and I/O parameters
-- **File system**: Optimized read-ahead and I/O scheduler
-- **Memory management**: Optimized swap and dirty page ratios
-- **Network stack**: BBR congestion control, optimized TCP settings
-
-## 📁 File Structure
-
-```
-docker/8.3-prod/
-├── Dockerfile              # Main container definition
-├── nginx.conf              # Nginx main configuration
-├── default.conf            # Nginx site configuration
-├── php.ini                 # PHP configuration
-├── php-fpm.conf            # PHP-FPM main configuration
-├── www.conf                # PHP-FPM pool configuration
-├── opcache.ini             # OPcache optimization
-├── supervisord.conf        # Process management
-├── start-container         # Container startup script
-├── security.conf           # Security hardening
-├── performance.conf        # Performance optimization
-└── README.md              # This file
-```
-
-## 🚀 Quick Start
-
-1. **Build the image**:
-   ```bash
-   docker build -f docker/8.3-prod/Dockerfile -t laravel-prod .
-   ```
-
-2. **Run with docker-compose**:
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
-
-3. **Check health**:
-   ```bash
-   curl http://localhost:3000/health
-   ```
-
-## 🔧 Configuration
-
-### Environment Variables
-All Laravel environment variables are supported. Key ones for production:
+**IMPORTANT**: Before running the container, you must set up the host directories with proper permissions:
 
 ```bash
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://yourdomain.com
-DB_HOST=your-database-host
-DB_DATABASE=your-database
-DB_USERNAME=your-username
-DB_PASSWORD=your-password
+# Run the setup script to create and configure host directories
+./docker/8.3-prod/setup-host-directories.sh
 ```
 
-### Volume Mounts
-The setup includes persistent storage for:
-- Laravel storage directory
-- Nginx logs
-- PHP-FPM logs
-- Supervisor logs
+This script will:
+- Create all necessary directories in `/mnt/data/digital-epalika/${APP_ABBREVIATION}/`
+- Set proper ownership (1000:1000 to match container's www-data user)
+- Set appropriate permissions for Laravel storage and cache directories
+- Create nginx log files
 
-### Network Configuration
-- **Internal network**: `172.20.0.0/16` subnet
-- **Port mapping**: Host port 3000 → Container port 80
-- **Health check**: `/health` endpoint
+### Running the Container
+
+```bash
+# Build and start the container
+docker-compose -f docker-compose.prod.yml up --build
+
+# Or run in background
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+## Troubleshooting
+
+### Permission Errors
+
+If you see permission denied errors:
+
+1. **Run the setup script first**: `./docker/8.3-prod/setup-host-directories.sh`
+2. **Check directory ownership**: Ensure `/mnt/data/digital-epalika/` exists and is writable
+3. **Verify APP_ABBREVIATION**: Check your `.env` file has the correct value
+
+### Nginx Configuration Errors
+
+If nginx fails to start:
+
+1. **Missing fastcgi_params**: This is now included in the Docker build
+2. **Log directory issues**: The setup script creates proper log directories
+
+### Container Restart Loop
+
+If the container keeps restarting:
+
+1. Check logs: `docker-compose -f docker-compose.prod.yml logs`
+2. Verify all required environment variables are set in `.env`
+3. Ensure database connectivity (check `DB_HOST`, `DB_PORT`, etc.)
+
+## Directory Structure
+
+The container uses the following mounted volumes:
+
+```
+/mnt/data/digital-epalika/${APP_ABBREVIATION}/
+├── storage/
+│   ├── app/
+│   ├── logs/
+│   └── framework/
+├── bootstrap/cache/
+└── logs/
+    ├── nginx/
+    ├── php-fpm/
+    └── supervisor/
+```
+
+## Security Features
+
+- Non-root user execution (www-data)
+- Security headers in nginx configuration
+- Rate limiting
+- File access restrictions
+- OPcache optimization with blacklist
+- Disabled unnecessary PHP functions
+
+## Container Configuration
+
+- **PHP Version**: 8.3
+- **Web Server**: Nginx
+- **Process Manager**: PHP-FPM
+- **Supervisor**: For process management
+- **Health Checks**: Built-in health endpoint
+
+## Environment Variables
+
+Key environment variables (set in `.env`):
+
+- `APP_ABBREVIATION`: Used for directory naming and container identification
+- `APP_PORT`: Port to expose the application (default: 3000)
+- Database settings: `DB_HOST`, `DB_PORT`, `DB_DATABASE`, etc.
+- Application settings: `APP_KEY`, `APP_URL`, etc.
 
 ## 📊 Monitoring
 
@@ -175,6 +166,12 @@ worker_connections 1024;  # Adjust based on expected load
 ### Common Issues
 
 1. **Permission errors**: Ensure volume mounts have correct ownership
+   ```bash
+   # Fix host directory permissions
+   sudo chown -R 1000:1000 /mnt/data/digital-epalika/${APP_ABBREVIATION}/
+   sudo chmod -R 755 /mnt/data/digital-epalika/${APP_ABBREVIATION}/
+   ```
+
 2. **Memory issues**: Adjust PHP-FPM and OPcache memory settings
 3. **Performance issues**: Monitor logs and adjust worker processes
 4. **Security alerts**: Check fail2ban logs if enabled

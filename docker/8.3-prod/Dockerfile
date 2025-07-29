@@ -18,6 +18,11 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Security: Update package lists and upgrade existing packages
 RUN apt-get update && apt-get upgrade -y
 
+# Add PHP 8.3 PPA repository
+RUN apt-get install -y software-properties-common \
+    && add-apt-repository ppa:ondrej/php -y \
+    && apt-get update
+
 # Install essential packages with security hardening
 RUN apt-get install -y --no-install-recommends \
     nginx \
@@ -60,9 +65,10 @@ RUN apt-get install -y --no-install-recommends \
 # Install Composer globally
 RUN curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
-# Security: Create non-root user and group
-RUN groupadd --force -g $WWWGROUP www-data \
-    && useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u $WWWUSER www-data
+# Security: Create non-root user and group (handle existing www-data)
+RUN groupmod -g $WWWGROUP www-data \
+    && usermod -u $WWWUSER -g $WWWGROUP www-data \
+    && usermod -d /var/www/html www-data
 
 # Security: Create necessary directories with proper permissions
 RUN mkdir -p /var/www/html/storage/logs \
@@ -90,6 +96,7 @@ RUN rm -rf /var/www/html/docker \
 # Copy configuration files
 COPY docker/8.3-prod/nginx.conf /etc/nginx/nginx.conf
 COPY docker/8.3-prod/default.conf /etc/nginx/sites-available/default
+COPY docker/8.3-prod/fastcgi_params /etc/nginx/fastcgi_params
 COPY docker/8.3-prod/php.ini /etc/php/${PHP_VERSION}/fpm/conf.d/99-sail.ini
 COPY docker/8.3-prod/php-fpm.conf /etc/php/${PHP_VERSION}/fpm/php-fpm.conf
 COPY docker/8.3-prod/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
