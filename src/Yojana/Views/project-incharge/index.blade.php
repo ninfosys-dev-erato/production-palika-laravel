@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.project_incharge_list') }}</h5>
                     </div>
                     <div>
-                        @perm('project_incharge create')
+                        @perm('plan create')
                             <a href="{{ route('admin.project_incharge.create') }}" data-bs-toggle="modal"
                                 data-bs-target="#indexModal" onclick="resetForm()" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_project_incharge') }}</a>

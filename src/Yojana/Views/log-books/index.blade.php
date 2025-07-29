@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.log_book_list') }}</h5>
                     </div>
                     <div>
-                        @perm('log_books create')
+                        @perm('plan_log_books create')
                             <a href="{{ route('admin.log_books.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('yojana::yojana.add_log_book') }}</a>
                         @endperm

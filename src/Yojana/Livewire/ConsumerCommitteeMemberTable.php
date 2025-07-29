@@ -101,15 +101,15 @@ class ConsumerCommitteeMemberTable extends DataTableComponent
                 ->sortable()->searchable()->collapseOnTablet(),
         ];
 
-        if (can('consumer_committee_members edit') || can('consumer_committee_members delete')) {
+        if (can('committee_settings_edit') || can('committee_settings_delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('consumer_committee_members edit')) {
+                if (can('committee_settings_edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('consumer_committee_members delete')) {
+                if (can('committee_settings_delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }

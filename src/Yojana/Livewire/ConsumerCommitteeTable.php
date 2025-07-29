@@ -81,10 +81,10 @@ Column::make(__('yojana::yojana.number_of_attendees'), "number_of_attendees") ->
 Column::make(__('yojana::yojana.bank'), 'bank.title') ->sortable()->searchable()->collapseOnTablet(),
 BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('consumer_committees edit') || can('consumer_committees delete')) {
+        if (can('committee_settings_edit') || can('committee_settings_delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('consumer_committees edit')) {
+                if (can('committee_settings_edit')) {
                     $edit = '<button wire:ignore class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
@@ -93,22 +93,22 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
                     $buttons .= $edit;
                 }
 
-//                if (can('consumer_committees edit')) {
+//                if (can('committee_settings_edit')) {
 //                    $print = '<button class="btn btn-info btn-sm" wire:click="printRegistrationCertificate(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
 //                    $buttons .= $print;
 //                }
 //
-//                if (can('consumer_committees edit')) {
+//                if (can('committee_settings_edit')) {
 //                    $print = '<button class="btn btn-info btn-sm" wire:click="printAccountOperationLetter(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
 //                    $buttons .= $print;
 //                }
 //
-//                if (can('consumer_committees edit')) {
+//                if (can('committee_settings_edit')) {
 //                    $print = '<button class="btn btn-info btn-sm" wire:click="printAccountClosureLetter(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
 //                    $buttons .= $print;
 //                }
 
-                if (can('consumer_committees edit')) {
+                if (can('committee_settings_edit')) {
                     $buttons .= '
         <button
             class="btn btn-info btn-sm" wire:ignore
@@ -143,7 +143,7 @@ BooleanColumn::make(__('yojana::yojana.formation_minute'), "formation_minute") -
     ';
                 }
 
-                if (can('consumer_committees delete')) {
+                if (can('committee_settings_delete')) {
                     $delete = '<button wire:ignore type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="top"

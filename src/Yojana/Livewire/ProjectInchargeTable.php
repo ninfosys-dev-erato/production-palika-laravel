@@ -61,16 +61,16 @@ class ProjectInchargeTable extends DataTableComponent
             Column::make(__('yojana::yojana.remarks'), "remarks") ->sortable()->searchable()->collapseOnTablet(),
          BooleanColumn::make(__('yojana::yojana.is_active'), "is_active") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('project_incharge edit') || can('project_incharge delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('project_incharge edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('project_incharge delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -87,7 +87,7 @@ class ProjectInchargeTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('project_incharge edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -97,7 +97,7 @@ class ProjectInchargeTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('project_incharge delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -106,7 +106,7 @@ class ProjectInchargeTable extends DataTableComponent
         $this->successFlash(__('yojana::yojana.project_incharge_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('project_incharge delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

@@ -18,7 +18,7 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('project_activity_groups create')
+                        @perm('plan_basic_settings create')
                             <a data-bs-toggle="modal" data-bs-target="#indexModal" class="btn btn-info"
                                 onclick="resetForm()"></i> {{ __('yojana::yojana.add_project_activity_group') }}</a>
                         @endperm

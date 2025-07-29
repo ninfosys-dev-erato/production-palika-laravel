@@ -389,7 +389,20 @@ class PermissionSeeder extends Seeder
             // -------------------
             // YOJANA MODULE
             // -------------------
-            // (No explicit permissions found)
+            ['name' => 'committee_settings_create', 'guard' => 'web'],
+            ['name' => 'committee_settings_edit', 'guard' => 'web'],
+            ['name' => 'committee_settings_delete', 'guard' => 'web'],
+            ['name' => 'plan_basic_settings create', 'guard' => 'web'],
+            ['name' => 'plan_basic_settings edit', 'guard' => 'web'],
+            ['name' => 'plan_basic_settings delete', 'guard' => 'web'],
+            ['name' => 'plan create', 'guard' => 'web'],
+            ['name' => 'plan edit', 'guard' => 'web'],
+            ['name' => 'plan delete', 'guard' => 'web'],
+            ['name' => 'plan show', 'guard' => 'web'],
+            ['name' => 'plan print', 'guard' => 'web'],
+            ['name' => 'plan_log_books create', 'guard' => 'web'],
+            ['name' => 'plan_log_books edit', 'guard' => 'web'],
+            ['name' => 'plan_log_books delete', 'guard' => 'web'],
 
         ];
         foreach ($permissions as $permission) {

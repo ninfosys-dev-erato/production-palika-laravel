@@ -101,14 +101,14 @@ class ImplementationAgencyTable extends DataTableComponent
         //            // Column::make(__('yojana::yojana.agreement_recommendation_letter'), "agreement_recommendation_letter")->sortable()->searchable()->collapseOnTablet(),
         //            // Column::make(__('yojana::yojana.deposit_voucher'), "deposit_voucher")->sortable()->searchable()->collapseOnTablet(),
         //        ];
-        if (can('implementation_agencies edit') || can('implementation_agencies delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
-                if (can('implementation_agencies edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
-                if (can('implementation_agencies print')) {
+                if (can('plan print')) {
                     $print = '<button type="button" class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp';
                     $buttons .= $print;
                 }
@@ -123,7 +123,7 @@ class ImplementationAgencyTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('implementation_agencies edit')) {
+        if (!can('plan edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -144,7 +144,7 @@ class ImplementationAgencyTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('implementation_agencies delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -154,7 +154,7 @@ class ImplementationAgencyTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('implementation_agencies delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

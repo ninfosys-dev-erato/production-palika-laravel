@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.budget_heads') }}</h5>
                     </div>
                     <div>
-                        @perm('budget_heads create')
+                        @perm('plan_basic_settings create')
                             <button class="btn btn-info" onclick="resetForm()" data-bs-toggle="modal"
                                 data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('yojana::yojana.add_budget_head') }}

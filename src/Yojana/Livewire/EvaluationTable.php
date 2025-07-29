@@ -106,20 +106,20 @@ class EvaluationTable extends DataTableComponent
             // Column::make(__('yojana::yojana.expense_report'), "expense_report")->sortable()->searchable()->collapseOnTablet(),
             // Column::make(__('yojana::yojana.other_document'), "other_document")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('evaluations edit') || can('evaluations delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
-                if (can('evaluations edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
-                if (can('payment')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="payment(' . $row->id . ')" ><i class="bx bx-money"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('evaluations delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -135,7 +135,7 @@ class EvaluationTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('evaluations edit')) {
+        if (!can('plan edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -150,7 +150,7 @@ class EvaluationTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('evaluations delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -161,7 +161,7 @@ class EvaluationTable extends DataTableComponent
     
     public function deleteSelected()
     {
-        if (!can('evaluations delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

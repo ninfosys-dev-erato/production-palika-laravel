@@ -46,7 +46,7 @@
                                 {{ __('yojana::yojana.consumer_committee_member_list') }}</h5>
                         </div>
                         <div>
-                            @perm('consumer_committee_members create')
+                            @perm('committee_settings_create')
                                 <a href="{{ route('admin.consumer_committee_members.create', $consumerCommittee->id) }}"
                                     class="btn btn-info"><i class="bx bx-plus"></i>
                                     {{ __('yojana::yojana.add_consumer_committee_member') }}</a>

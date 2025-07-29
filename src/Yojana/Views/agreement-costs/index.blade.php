@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.agreement_cost_list') }}</h5>
                     </div>
                     <div>
-                        @perm('agreement_costs create')
+                        @perm('plan create')
                             <a href="{{ route('admin.agreement_costs.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_agreement_cost') }}</a>
                         @endperm
