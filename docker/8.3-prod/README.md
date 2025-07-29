@@ -186,9 +186,11 @@ worker_connections 1024;  # Adjust based on expected load
 4. **Security alerts**: Check fail2ban logs if enabled
 5. **Asset loading issues**: 
    - CSS/JS 403 Forbidden: Livewire and vendor assets are configured to be accessible
-   - CSP violations: Content Security Policy allows common CDNs (jsdelivr, cdnjs, etc.)
+   - CSP violations: Content Security Policy allows common CDNs (jsdelivr, cdnjs, tailwindcss, buttons.github.io)
    - MIME type errors: Nginx serves JS/CSS with correct content types
    - Missing Livewire assets: Assets are published during container build
+   - Laravel Livewire Tables 404s: Rappasoft assets are automatically created/published
+   - Vendor assets: All vendor CSS/JS files are copied to public directory during build
 
 ### Debug Mode
 For debugging, temporarily enable:
@@ -218,6 +220,9 @@ docker exec -it container-name log-cleanup emergency
 
 # Clean old compressed logs
 docker exec -it container-name log-cleanup clean 14
+
+# Republish vendor assets if missing
+docker exec -it container-name publish-vendor-assets
 ```
 
 ## 📈 Performance Benchmarks

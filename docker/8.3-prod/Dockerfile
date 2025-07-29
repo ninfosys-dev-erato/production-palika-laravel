@@ -117,10 +117,12 @@ COPY docker/8.3-prod/security.conf /etc/security.conf
 COPY docker/8.3-prod/performance.conf /etc/performance.conf
 COPY docker/8.3-prod/logrotate.conf /etc/logrotate.d/laravel
 COPY docker/8.3-prod/log-cleanup.sh /usr/local/bin/log-cleanup
+COPY docker/8.3-prod/publish-vendor-assets.sh /usr/local/bin/publish-vendor-assets
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
-    && chmod +x /usr/local/bin/log-cleanup
+    && chmod +x /usr/local/bin/log-cleanup \
+    && chmod +x /usr/local/bin/publish-vendor-assets
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/
@@ -143,7 +145,7 @@ RUN cd /var/www/html \
     && php artisan route:clear \
     && php artisan view:clear \
     && rm -f bootstrap/cache/*.php \
-    && php artisan livewire:publish --assets \
+    && /usr/local/bin/publish-vendor-assets \
     && php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache || true
@@ -168,6 +170,8 @@ RUN mkdir -p /var/www/html/storage/app/public \
     && mkdir -p /var/www/html/storage/framework/views \
     && chown -R www-data:www-data /var/www/html/storage \
     && chmod -R 775 /var/www/html/storage
+
+
 
 # Security: Remove unnecessary capabilities and set proper file permissions
 RUN setcap -r /usr/bin/php${PHP_VERSION} 2>/dev/null || true
