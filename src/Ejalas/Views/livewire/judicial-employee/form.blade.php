@@ -89,8 +89,8 @@
                 <div class='form-group'>
                     <label class="form-label"
                         for='join_date'>{{ __('ejalas::ejalas.ejalashemployeerestorationdate') }}</label>
-                    <input wire:model='judicialEmployee.join_date' name='join_date' type='date' class='form-control'
-                        placeholder="{{ __('ejalas::ejalas.enter_join_date') }}">
+                    <input wire:model='judicialEmployee.join_date' name='join_date' type='date'
+                        class='form-control nepali-date' placeholder="{{ __('ejalas::ejalas.enter_join_date') }}">
                     <div>
                         @error('judicialEmployee.join_date')
                             <small class='text-danger'>{{ __($message) }}</small>

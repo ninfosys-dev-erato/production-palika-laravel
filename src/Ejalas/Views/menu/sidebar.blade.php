@@ -18,7 +18,7 @@
 
 @perm('jms_settings access')
     <li
-        class="menu-item has-sub {{ request()->routeIs('admin.ejalas.judicial_committees.*', 'admin.ejalas.judicial_members.*', 'admin.ejalas.dispute_area.*', 'admin.ejalas.local_levels.*', 'admin.ejalas.levels.*', 'admin.ejalas.mediators.*', 'admin.ejalas.dispute_matters.*', 'admin.ejalas.registration_indicators.*', 'admin.ejalas.priorities.*', 'admin.ejalas.parties.*', 'admin.ejalas.reconciliation_centers.*', 'admin.ejalas.judicial_employees.*') ? 'active open' : '' }}">
+        class="menu-item has-sub {{ request()->routeIs('admin.ejalas.judicial_committees.*', 'admin.ejalas.judicial_members.*', 'admin.ejalas.dispute_areas.*', 'admin.ejalas.local_levels.*', 'admin.ejalas.levels.*', 'admin.ejalas.mediators.*', 'admin.ejalas.dispute_matters.*', 'admin.ejalas.registration_indicators.*', 'admin.ejalas.priotities.*', 'admin.ejalas.parties.*', 'admin.ejalas.reconciliation_centers.*', 'admin.ejalas.judicial_employees.*') ? 'active open' : '' }}">
         <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-cog"></i>
             <div data-i18n="Ejalas Management">{{ __('ejalas::ejalas.ejalas_management') }}</div>
@@ -36,7 +36,7 @@
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.judicial_members') }}</div>
                 </a>
             </li>
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.dispute_area.*') ? 'active' : '' }}">
+            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.dispute_areas.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.dispute_areas.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-map"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.dispute_area') }}</div>
