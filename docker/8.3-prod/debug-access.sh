@@ -62,6 +62,10 @@ show_storage_info() {
     echo "Customer KYC directory:"
     ls -la /var/www/html/storage/app/private/customer-kyc/ 2>/dev/null || echo "Cannot access customer-kyc directory"
     echo ""
+
+    echo "File Tracking directory:"
+    ls -la /var/www/html/storage/app/private/fileTracking/ 2>/dev/null || echo "Cannot access File Tracking directory"
+    echo ""
     
     echo "Laravel logs:"
     ls -la /var/www/html/storage/logs/ 2>/dev/null || echo "Cannot access logs directory"
