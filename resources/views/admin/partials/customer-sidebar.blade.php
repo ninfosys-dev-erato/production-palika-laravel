@@ -94,7 +94,7 @@
                         class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.ebps.building-registrations.*') ? 'active' : '' }}">
                         <a href="{{ route('customer.ebps.building-registrations.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-calendar"></i>
-                            <div data-i18n="FiscalYear">{{ __('Building Registration') }}</div>
+                            <div data-i18n="FiscalYear">{{ __('ebps::ebps.building_registration_application') }}</div>
                         </a>
                     </li>
                 </ul>

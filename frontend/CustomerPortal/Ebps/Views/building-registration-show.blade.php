@@ -475,13 +475,13 @@
                             <div class="data-value">{{ $mapApply->buildingDetail->mobile_no ?? '१२३' }}</div>
                         </div>
 
-                        <div class="data-row">
+                        {{-- <div class="data-row">
                             <strong class="data-label">४.४ उमेर:</strong>
                             <span class="data-value">{{ $mapApply->age ?? '-' }}</span>
-                        </div>
+                        </div> --}}
                         <div class="data-row">
 
-                            <div class="data-label">४.५ निर्माण मिति:</div>
+                            <div class="data-label">४.४ निर्माण मिति:</div>
                             <div class="data-value">{{ $mapApply->buildingDetail->build_date ?? '२०८१-०१-२५' }}
                             </div>
                         </div>
@@ -577,7 +577,7 @@
                     @empty
                         <div class="col-12 text-center text-muted fst-italic">
                             <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps._no_documents_uploaded') }}.
+                            {{ __('ebps::ebps.no_documents_uploaded') }}.
                         </div>
                     @endforelse
                 </div>

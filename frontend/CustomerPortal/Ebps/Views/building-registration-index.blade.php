@@ -4,7 +4,7 @@
             <li class="breadcrumb-item"><a href="{{ route('customer.dashboard') }}"><i class="bx bx-home-alt"></i></a>
             <li class="breadcrumb-item"><a href="#">{{ __('ebps::ebps.building_registration') }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ __('ebps::ebos.list') }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ __('ebps::ebps.list') }}</li>
         </ol>
     </nav>
 

@@ -142,10 +142,10 @@
                         <div class="data-label">{{ __('ebps::ebps.full_name') }}:</div>
                         <div class="data-value">{{ $mapApply->full_name ?? 'N/A' }}</div>
                     </div>
-                    <div class="data-row">
+                    {{-- <div class="data-row">
                         <div class="data-label">{{ __('ebps::ebps.age') }}:</div>
                         <div class="data-value">{{ $mapApply->age ?? 'N/A' }}</div>
-                    </div>
+                    </div> --}}
                     <div class="data-row">
                         <div class="data-label">{{ __('ebps::ebps.applied_date') }}:</div>
                         <div class="data-value">{{ $mapApply->applied_date ?? 'N/A' }}</div>
@@ -405,7 +405,7 @@
                     @empty
                         <div class="col-12 text-center text-muted fst-italic">
                             <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps._no_documents_uploaded') }}.
+                            {{ __('ebps::ebps.no_documents_uploaded') }}.
                         </div>
                     @endforelse
                 </div>

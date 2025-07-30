@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Src\Ebps\Enums\ApplicationTypeEnum;
 use Src\Ebps\Models\BuildingConstructionType;
+use Src\Ebps\Models\DocumentFile;
 use Src\Ebps\Models\MapApply;
+use Src\Ebps\Models\MapApplyDetail;
 use Src\Ebps\Models\MapApplyStep;
 use Src\Ebps\Models\MapStep;
 
@@ -85,7 +87,12 @@ class BuildingRegistrationController extends Controller
             'buildingRoofType'
         ])->findOrFail($id);
 
-        return view('BusinessPortal.Ebps::building-registration-show')->with(compact('mapApply'));
+         $documents = DocumentFile::where('map_apply_id', $mapApply->id)->get();
+        $mapApplyDetail = MapApplyDetail::with(['organization.localBody', 'organization.district'])->where('map_apply_id', $id)->first();
+
+        $organization = $mapApplyDetail?->organization;
+
+        return view('BusinessPortal.Ebps::building-registration-show')->with(compact('mapApply', 'documents', 'organization'));
 
     }
 
