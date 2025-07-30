@@ -840,7 +840,7 @@
 
             @endif
 
-           <div class="divider divider-primary text-start text-primary font-14">
+            <div class="divider divider-primary text-start text-primary font-14">
                 <div class="divider-text ">{{ __('ebps::ebps.applicant_details') }}</div>
             </div>
 

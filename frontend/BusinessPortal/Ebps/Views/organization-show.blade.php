@@ -127,7 +127,7 @@
 
                 </div>
 
-               
+
                 <livewire:business_portal.ebps.organiztaion_renewal_form theme="bootstrap-4" :$organization />
 
             </div>
@@ -300,8 +300,8 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body d-flex justify-content-center align-items-center">
-                                <img id="taxImageModalImg" src="" alt="Tax Clearance Document" class="img-fluid"
-                                    style="max-height: 100%; max-width: 100%;" />
+                                <img id="taxImageModalImg" src="" alt="Tax Clearance Document"
+                                    class="img-fluid" style="max-height: 100%; max-width: 100%;" />
                             </div>
                         </div>
                     </div>
@@ -316,34 +316,35 @@
                         </h5>
                     </div>
                     <div class="card-body p-4">
-                        @if($organization->taxClearances && $organization->taxClearances->count() > 0)
+                        @if ($organization->taxClearances && $organization->taxClearances->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead class="table-light">
                                         <tr>
                                             <th class="fw-semibold">{{ __('ebps::ebps.year') }}</th>
                                             <th class="fw-semibold">{{ __('ebps::ebps.document') }}</th>
-                                           
+
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($organization->taxClearances as $taxClearance)
+                                        @foreach ($organization->taxClearances as $taxClearance)
                                             <tr>
                                                 <td>
-                                                    <span class="badge bg-primary rounded-pill">{{ $taxClearance->year }}</span>
+                                                    <span
+                                                        class="badge bg-primary rounded-pill">{{ $taxClearance->year }}</span>
                                                 </td>
                                                 <td>
-                                                    @if($taxClearance->document)
-                                                        <a href="#" 
-                                                           data-bs-toggle="modal" 
-                                                           data-bs-target="#taxImageModal"
-                                                           onclick="showTaxImageModal('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')"
-                                                           class="btn btn-sm btn-outline-primary">
+                                                    @if ($taxClearance->document)
+                                                        <a href="#" data-bs-toggle="modal"
+                                                            data-bs-target="#taxImageModal"
+                                                            onclick="showTaxImageModal('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')"
+                                                            class="btn btn-sm btn-outline-primary">
                                                             <i class="bx bx-image me-1"></i>
                                                             {{ __('ebps::ebps.view_document') }}
                                                         </a>
                                                     @else
-                                                        <span class="text-muted">{{ __('ebps::ebps.not_provided') }}</span>
+                                                        <span
+                                                            class="text-muted">{{ __('ebps::ebps.not_provided') }}</span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -357,7 +358,8 @@
                                     <i class="bx bx-receipt text-muted" style="font-size: 3rem;"></i>
                                 </div>
                                 <h6 class="text-muted mb-2">{{ __('ebps::ebps.no_tax_clearances_found') }}</h6>
-                                <p class="text-muted small">{{ __('ebps::ebps.upload_your_first_tax_clearance_above') }}</p>
+                                <p class="text-muted small">
+                                    {{ __('ebps::ebps.upload_your_first_tax_clearance_above') }}</p>
                             </div>
                         @endif
                     </div>
@@ -375,8 +377,6 @@
                     function showTaxImageModal(src) {
                         document.getElementById('taxImageModalImg').src = src;
                     }
-
-                    
                 </script>
             </div>
         </div>

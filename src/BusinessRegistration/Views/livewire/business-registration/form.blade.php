@@ -537,7 +537,6 @@
                                                 name="registration_number" type="number" class="form-control w-50"
                                                 id="registration_number" min="1">
 
-                                            <span class="fw-bold">/ {{ $selectedFiscalYearText }}</span>
                                         </div>
                                         @error('businessRegistration.registration_number')
                                             <div class="invalid-message">{{ $message }}</div>

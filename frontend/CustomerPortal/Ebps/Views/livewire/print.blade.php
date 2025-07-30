@@ -17,7 +17,7 @@
                             {{-- <span class="text-muted fw-semibold">{{ __('Edit') }}</span> --}}
                             <input type="checkbox" class="form-check-input toggle-switch" id="previewToggle"
                                 {{ $preview ? 'checked' : '' }} wire:click="togglePreview">
-                            <span class="text-muted fw-semibold">{{ __('ebps::ebps.Preview') }}</span>
+                            <span class="text-muted fw-semibold">{{ __('ebps::ebps.preview') }}</span>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
             <ul class="nav nav-tabs nav-tabs-modern" role="tablist">
                 @if (empty($data))
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $activeTab === 'form' ? 'active' : '' }} fw-semibold px-4 py-3" 
+                        <button class="nav-link {{ $activeTab === 'form' ? 'active' : '' }} fw-semibold px-4 py-3"
                             wire:click="switchTab('form')" type="button" role="tab">
                             <i class="bx bx-edit-alt me-2"></i>{{ __('ebps::ebps.form_input') }}
                         </button>
@@ -35,7 +35,7 @@
                 @endif
 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab === 'preview' ? 'active' : '' }} fw-semibold px-4 py-3" 
+                    <button class="nav-link {{ $activeTab === 'preview' ? 'active' : '' }} fw-semibold px-4 py-3"
                         wire:click="switchTab('preview')" type="button" role="tab">
                         <i class="bx bx-show me-2"></i>{{ __('ebps::ebps.previewedit') }}
                     </button>
@@ -63,7 +63,8 @@
                                             <div class="card shadow-sm h-100">
                                                 <div class="card-header bg-light py-3">
                                                     <h6 class="mb-0 fw-bold">
-                                                        <i class="bx bx-list-ul me-2"></i>{{ __('ebps::ebps.form_fields') }}
+                                                        <i
+                                                            class="bx bx-list-ul me-2"></i>{{ __('ebps::ebps.form_fields') }}
                                                     </h6>
                                                 </div>
                                                 <div class="card-body p-4">
@@ -116,222 +117,223 @@
                 <!-- Preview/Edit Tab -->
                 <div class="tab-pane fade {{ $activeTab === 'preview' ? 'show active' : '' }}" id="preview-content">
                     <div class="p-4">
-                    @foreach ($letters as $formId => $letterContent)
-                        @php
-                            $form = Src\Settings\Models\Form::where('id', $formId)->first();
-                            $formTitle = $form->title;
-                        @endphp
+                        @foreach ($letters as $formId => $letterContent)
+                            @php
+                                $form = Src\Settings\Models\Form::where('id', $formId)->first();
+                                $formTitle = $form->title;
+                            @endphp
 
-                        <div class="mb-4">
-                            <div class="section-title d-flex align-items-center mb-3">
-                                <div class="section-line bg-primary"></div>
-                                <h6 class="mb-0 text-primary fw-bold">{{ $formTitle }}</h6>
-                            </div>
-
-                            <div class="card shadow-sm">
-                                <div
-                                    class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
-                                    <h6 class="mb-0 fw-bold">
-                                        <i class="bx bx-edit me-2"></i>{{ __('ebps::ebps.document_content') }}
-                                    </h6>
-                                    <div class="btn-group">
-                                        <button class="btn btn-primary btn-sm" type="button"
-                                            wire:loading.attr="disabled" wire:click="save({{ $formId }})">
-                                            <i class="bx bx-save me-1"></i> {{ __('ebps::ebps.save') }}
-                                        </button>
-                                        <button class="btn btn-outline-secondary btn-sm" type="button"
-                                            wire:loading.attr="disabled" wire:click="resetLetter({{ $formId }})">
-                                            <i class="bx bx-reset me-1"></i> {{ __('ebps::ebps.reset') }}
-                                        </button>
-                                    </div>
+                            <div class="mb-4">
+                                <div class="section-title d-flex align-items-center mb-3">
+                                    <div class="section-line bg-primary"></div>
+                                    <h6 class="mb-0 text-primary fw-bold">{{ $formTitle }}</h6>
                                 </div>
 
-                                <div class="card-body p-0">
-                                    <div class="editor-container {{ $preview ? 'd-none' : '' }}">
-                                        <div class="p-3 bg-light border-bottom d-flex align-items-center">
-                                            <span class="badge bg-primary me-2">
-                                                <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.edit_mode') }}
-                                            </span>
-                                            <small
-                                                class="text-muted">{{ __('ebps::ebps.make_changes_to_your_document_here') }}</small>
+                                <div class="card shadow-sm">
+                                    <div
+                                        class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bx bx-edit me-2"></i>{{ __('ebps::ebps.document_content') }}
+                                        </h6>
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary btn-sm" type="button"
+                                                wire:loading.attr="disabled" wire:click="save({{ $formId }})">
+                                                <i class="bx bx-save me-1"></i> {{ __('ebps::ebps.save') }}
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-sm" type="button"
+                                                wire:loading.attr="disabled"
+                                                wire:click="resetLetter({{ $formId }})">
+                                                <i class="bx bx-reset me-1"></i> {{ __('ebps::ebps.reset') }}
+                                            </button>
                                         </div>
-                                        <div class="p-4">
-                                            {{-- <x-form.ck-editor-input label=""
+                                    </div>
+
+                                    <div class="card-body p-0">
+                                        <div class="editor-container {{ $preview ? 'd-none' : '' }}">
+                                            <div class="p-3 bg-light border-bottom d-flex align-items-center">
+                                                <span class="badge bg-primary me-2">
+                                                    <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.edit_mode') }}
+                                                </span>
+                                                <small
+                                                    class="text-muted">{{ __('ebps::ebps.make_changes_to_your_document_here') }}</small>
+                                            </div>
+                                            <div class="p-4">
+                                                {{-- <x-form.ck-editor-input label=""
                                                     id="map_letter_{{ $form->title }}"
                                                     name="letters[{{ $formId }}]" :value="$letterContent" /> --}}
-                                            <x-form.ck-editor-input id="map_letter_{{ $formId }}"
-                                                name="letters[{{ $formId }}]" :value="$letters[$formId] ?? ''" />
+                                                <x-form.ck-editor-input id="map_letter_{{ $formId }}"
+                                                    name="letters[{{ $formId }}]" :value="$letters[$formId] ?? ''" />
+                                            </div>
+
+                                            />
                                         </div>
 
-                                        />
-                                    </div>
-
-                                    <div class="preview-container {{ !$preview ? 'd-none' : '' }}">
-                                        <div class="p-3 bg-light border-bottom d-flex align-items-center">
-                                            <span class="badge bg-success me-2">
-                                                <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.preview_mode') }}
-                                            </span>
-                                            <small
-                                                class="text-muted">{{ __('ebps::ebps.this_is_how_your_document_will_appear') }}</small>
-                                        </div>
-                                        <div class="p-4 preview-content">
-                                            {!! $letterContent !!}
+                                        <div class="preview-container {{ !$preview ? 'd-none' : '' }}">
+                                            <div class="p-3 bg-light border-bottom d-flex align-items-center">
+                                                <span class="badge bg-success me-2">
+                                                    <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.preview_mode') }}
+                                                </span>
+                                                <small
+                                                    class="text-muted">{{ __('ebps::ebps.this_is_how_your_document_will_appear') }}</small>
+                                            </div>
+                                            <div class="p-4 preview-content">
+                                                {!! $letterContent !!}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <hr class="my-4">
-                    @endforeach
+                            <hr class="my-4">
+                        @endforeach
+                    </div>
+                    {{-- </div> --}}
                 </div>
-                {{-- </div> --}}
             </div>
         </div>
+
+        <style>
+            /* Modern styling for the document editor */
+            .document-editor-container {
+                font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            }
+
+            .card {
+                border-radius: 0.75rem;
+                border: none;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+                transition: all 0.3s ease;
+            }
+
+            .card:hover {
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            }
+
+            .card-header {
+                border-top-left-radius: 0.75rem !important;
+                border-top-right-radius: 0.75rem !important;
+            }
+
+            /* Modern tabs */
+            .nav-tabs-modern {
+                border-bottom: none;
+                padding: 0 1rem;
+                margin-top: 0.5rem;
+            }
+
+            .nav-tabs-modern .nav-link {
+                border: none;
+                border-bottom: 3px solid transparent;
+                color: #6c757d;
+                transition: all 0.3s ease;
+                border-radius: 0;
+                position: relative;
+            }
+
+            .nav-tabs-modern .nav-link:hover {
+                color: #0d6efd;
+                background-color: rgba(13, 110, 253, 0.05);
+            }
+
+            .nav-tabs-modern .nav-link.active {
+                color: #0d6efd;
+                background-color: transparent;
+                border-bottom: 3px solid #0d6efd;
+            }
+
+            /* Section title styling */
+            .section-title {
+                position: relative;
+            }
+
+            .section-line {
+                width: 4px;
+                height: 20px;
+                background-color: #0d6efd;
+                margin-right: 10px;
+                border-radius: 2px;
+            }
+
+            /* Form controls */
+            .form-control {
+                border-radius: 0.5rem;
+                padding: 0.625rem 0.75rem;
+                border: 1px solid #dee2e6;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                transition: all 0.2s ease;
+            }
+
+            .form-control:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            }
+
+            /* Toggle switch */
+            .toggle-switch {
+                cursor: pointer;
+                width: 3rem;
+                height: 1.5rem;
+                background-color: #e9ecef;
+                border-radius: 1.5rem;
+                position: relative;
+                transition: all 0.3s ease;
+                border: 1px solid #ced4da;
+            }
+
+            .toggle-switch:checked {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+
+            /* Buttons */
+            .btn {
+                border-radius: 0.5rem;
+                padding: 0.5rem 1rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+
+            .btn-primary {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+
+            .btn-primary:hover {
+                background-color: #0b5ed7;
+                border-color: #0a58ca;
+            }
+
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            /* Letter preview */
+            .letter-preview {
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+                background-color: #fff;
+            }
+
+            /* Badges */
+            .badge {
+                font-weight: 500;
+                padding: 0.35em 0.65em;
+                border-radius: 0.375rem;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 767.98px) {
+                .row {
+                    flex-direction: column;
+                }
+
+                .col-md-6 {
+                    margin-bottom: 1.5rem;
+                }
+
+                .col-md-6:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        </style>
+
     </div>
-
-    <style>
-        /* Modern styling for the document editor */
-        .document-editor-container {
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-        }
-
-        .card {
-            border-radius: 0.75rem;
-            border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            border-top-left-radius: 0.75rem !important;
-            border-top-right-radius: 0.75rem !important;
-        }
-
-        /* Modern tabs */
-        .nav-tabs-modern {
-            border-bottom: none;
-            padding: 0 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .nav-tabs-modern .nav-link {
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: #6c757d;
-            transition: all 0.3s ease;
-            border-radius: 0;
-            position: relative;
-        }
-
-        .nav-tabs-modern .nav-link:hover {
-            color: #0d6efd;
-            background-color: rgba(13, 110, 253, 0.05);
-        }
-
-        .nav-tabs-modern .nav-link.active {
-            color: #0d6efd;
-            background-color: transparent;
-            border-bottom: 3px solid #0d6efd;
-        }
-
-        /* Section title styling */
-        .section-title {
-            position: relative;
-        }
-
-        .section-line {
-            width: 4px;
-            height: 20px;
-            background-color: #0d6efd;
-            margin-right: 10px;
-            border-radius: 2px;
-        }
-
-        /* Form controls */
-        .form-control {
-            border-radius: 0.5rem;
-            padding: 0.625rem 0.75rem;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-        }
-
-        .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-
-        /* Toggle switch */
-        .toggle-switch {
-            cursor: pointer;
-            width: 3rem;
-            height: 1.5rem;
-            background-color: #e9ecef;
-            border-radius: 1.5rem;
-            position: relative;
-            transition: all 0.3s ease;
-            border: 1px solid #ced4da;
-        }
-
-        .toggle-switch:checked {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-
-        /* Buttons */
-        .btn {
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-
-        .btn-primary:hover {
-            background-color: #0b5ed7;
-            border-color: #0a58ca;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        /* Letter preview */
-        .letter-preview {
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-            background-color: #fff;
-        }
-
-        /* Badges */
-        .badge {
-            font-weight: 500;
-            padding: 0.35em 0.65em;
-            border-radius: 0.375rem;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 767.98px) {
-            .row {
-                flex-direction: column;
-            }
-
-            .col-md-6 {
-                margin-bottom: 1.5rem;
-            }
-
-            .col-md-6:last-child {
-                margin-bottom: 0;
-            }
-        }
-    </style>
-
-</div>
