@@ -65,5 +65,9 @@ class BusinessDeRegistrationAdminController extends Controller implements HasMid
 
         return view('BusinessRegistration::business-deregistration.show', compact('businessDeRegistration'));
     }
-    public function preview(Request $request, $id) {}
+    public function preview(Request $request, $id)
+    {
+        $businessDeRegistration = BusinessDeRegistration::where('id', $id)->first();
+        return view('BusinessRegistration::business-deregistration.preview')->with(compact('businessDeRegistration'));
+    }
 }

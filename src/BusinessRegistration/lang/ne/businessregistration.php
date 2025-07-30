@@ -1,7 +1,7 @@
 <?php
 return [
     'business_renewal_document' => 'व्यवसाय नवीकरण कागजात',
-    'edit' => 'सम्पादन गर्नुहोस्',
+    'edit' => 'सम्पादन',
     'create' => 'सिर्जना गर्नुहोस्',
     'create_business_renewal_document' => 'व्यवसाय नवीकरण कागजात सिर्जना गर्नुहोस्',
     'update_business_renewal_document' => 'व्यवसाय नवीकरण कागजात अद्यावधिक गर्नुहोस्',
@@ -440,6 +440,11 @@ return [
     'no_applicant_information_available' => 'आवेदकको जानकारी उपलब्ध छैन।',
     'citizenship_issued_date' => 'नागरिकता जारी मिति',
     'citizenship_issued_district' => 'नागरिकता जारी जिल्ला',
+    'citizenship' => 'नागरिकता',
+    'citizenship_front' => 'नागरिकता अगाडिको',
+    'no_front_file' => 'अगाडिको फाइल अपलोड गरिएको छैन।',
+    'citizenship_rear' => 'नागरिकता पछाडिको',
+    'no_rear_file' => 'पछाडिको फाइल अपलोड गरिएको छैन।',
 
     // Filter translations
     'start_date' => 'सुरु मिति',
@@ -458,5 +463,20 @@ return [
     'deregistration_already_exists_for_this_business' => 'यस व्यवसायको लागि खारेजी पहिले नै अवस्थित छ।',
     "business_de_registration_application_detail" => "व्यवसाय दर्ता खारेज गर्ने आवेदन विवरण",
     "registration_category_enum" => "दर्ता प्रकार",
-
+    'no_required_documents_uploaded' => 'आवश्यक कागजातहरू अपलोड गरिएको छैन।',
+    'business_deregistration_lists' => 'व्यवसाय खारेजी सूचीहरू',
+    'application_details' => 'आवेदन विवरण',
+    'select_category_enum' => 'दर्ता प्रकार चयन गर्नुहोस्',
+    'business_deregistration_list' => 'व्यवसाय खारेजी सूची',
+    'enter_company_name/registration_number' => 'कम्पनीको नाम/दर्ता नम्बर लेख्नुहोस्',
+    'business_de_registration_form' => 'व्यवसाय खारेजी फारम',
+    'select_de_registration_type' => 'खारेजी प्रकार चयन गर्नुहोस्',
+    'registration_detail' => 'दर्ता विवरण',
+    'submit' => 'पेश गर्नुहोस्',
+    'registration_form' => 'दर्ता फारम',
+    'registration_list' => 'दर्ता सूची',
+    'other_applicants'         => 'अन्य आवेदकहरू',
+    'do_renew_business'          => 'व्यवसाय नविकरण गर्नुहोस्',
+    'business_renewal_form'    => 'नविकरण फारम',
+    'business_renewal_lists'   => 'नविकरण सूची',
 ];

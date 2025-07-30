@@ -49,19 +49,16 @@ class BusinessRegistrationShow extends Component
         }
 
         foreach ($this->businessRegistration->requiredBusinessDocs as $doc) {
-            $this->businessRequiredDocUrls[$doc->id] = $this->generateTemporaryUrl($doc->document_filename);
+            $this->businessRequiredDocUrls[$doc->id] = $doc->document_filename
+                ? $this->generateTemporaryUrl($doc->document_filename)
+                : null;
         }
     }
 
     public function generateTemporaryUrlsForCitizenship(): void
     {
-        // For deregistration, get applicants from original business registration
-        if ($this->businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION && $this->businessRegistration->registration_id) {
-            $originalBusiness = BusinessRegistration::withTrashed()->with(['applicants'])->where('id', $this->businessRegistration->registration_id)->first();
-            $applicants = $originalBusiness?->applicants ?? $this->businessRegistration->applicants;
-        } else {
-            $applicants = $this->businessRegistration->applicants;
-        }
+
+        $applicants = $this->businessRegistration->applicants;
 
         foreach ($applicants as $index => $applicant) {
             $this->citizenshipFrontUrls[$index] = $this->generateTemporaryUrl($applicant->citizenship_front ?? null);
@@ -71,13 +68,9 @@ class BusinessRegistrationShow extends Component
 
     public function generateTemporaryUrlsFromData(): void
     {
-        // For deregistration, get data from original business registration
-        if ($this->businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION && $this->businessRegistration->registration_id) {
-            $originalBusiness = BusinessRegistration::withTrashed()->where('id', $this->businessRegistration->registration_id)->first();
-            $data = $originalBusiness?->data ?? $this->businessRegistration->data;
-        } else {
-            $data = $this->businessRegistration->data;
-        }
+
+        $data = $this->businessRegistration->data;
+
 
         // Decode JSON if needed
         if (is_string($data)) {

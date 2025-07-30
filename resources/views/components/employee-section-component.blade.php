@@ -21,6 +21,7 @@
                             <div class="flex flex-col gap-2 md:gap-3">
                                 <div class="rounded-lg overflow-hidden h-32 md:h-40 relative group">
                                     <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $representative->photo) }}"
+{
                                         alt="{{ $representative->title }}"
                                         class="w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-105">
                                     <div

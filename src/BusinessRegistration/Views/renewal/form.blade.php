@@ -18,20 +18,18 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="text-primary fw-bold mb-0">
-                {{ __('businessregistration::businessregistration.business_registration_form') }}
+                {{ __('businessregistration::businessregistration.business_renewal_form') }}
             </h5>
             <a href="{{ route('admin.business-registration.business-registration.index') }}" class="btn btn-info"><i
-                    class="bx bx-list-ul"></i>{{ __('businessregistration::businessregistration.business_registration_lists') }}</a>
+                    class="bx bx-list-ul"></i>{{ __('businessregistration::businessregistration.business_renewal_lists') }}</a>
         </div>
-        <div class="card-body">
-            @if (isset($businessRegistration))
-                {{-- <livewire:business_registration.business_registration_form :$action :$businessRegistration /> --}}
 
-                <livewire:business_registration.business_registration_form :$businessRegistration :$action
-                    :$businessRegistrationType />
-            @else
-                <livewire:business_registration.business_registration_form :$action :$businessRegistrationType />
-            @endif
-        </div>
+
     </div>
+
+    @if (isset($businessRegistration))
+        <livewire:business_registration.business_renewal_form :$businessRegistration :$action />
+    @else
+        <livewire:business_registration.business_renewal_form :$action />
+    @endif
 </x-layout.app>

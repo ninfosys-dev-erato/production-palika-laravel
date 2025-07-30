@@ -196,6 +196,7 @@ trait MapApplyTrait
             '{{mapApply.customer.age}}' => isset($mapApply?->customer, $mapApply?->customer->customerDetail, $mapApply?->customer->customerDetail->age) ? $mapApply?->customer->customerDetail->age : self::EMPTY_LINES,
             '{{customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->phone) ? replaceNumbers($mapApply?->customer->phone, true): self::EMPTY_LINES,
             '{{mapApply.customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->mobile_no) ? replaceNumbers($mapApply?->customer->mobile_no, true) : self::EMPTY_LINES,
+            '{{mapApply.appliedDate}}' => isset($mapApply?->applied_date, $mapApply?->applied_date) ? replaceNumbers($mapApply?->applied_date, true) : self::EMPTY_LINES,
         ];
     }
 }

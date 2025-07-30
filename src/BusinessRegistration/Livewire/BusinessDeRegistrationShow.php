@@ -7,6 +7,7 @@ use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Src\BusinessRegistration\DTO\BusinessDeRegistrationUploadDto;
 use Src\BusinessRegistration\DTO\BusinessRegistrationShowDto;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
@@ -30,7 +31,7 @@ class BusinessDeRegistrationShow extends Component
 
     public array $citizenshipFrontUrls = [];
     public array $citizenshipRearUrls = [];
-    public array $applicants = [];
+    public $applicants = [];
 
     public array $businessRequiredDocUrls = [];
 
@@ -54,12 +55,15 @@ class BusinessDeRegistrationShow extends Component
 
     public function generateTemporaryUrlsForCitizenship(): void
     {
-        $this->applicants = $this->businessDeRegistration->businessRegistration->applicants->toArray();
+        $this->applicants = $this->businessDeRegistration->businessRegistration->applicants;
+
+
         foreach ($this->applicants as $index => $applicant) {
             $this->citizenshipFrontUrls[$index] = $this->generateTemporaryUrl($applicant->citizenship_front ?? null);
             $this->citizenshipRearUrls[$index]  = $this->generateTemporaryUrl($applicant->citizenship_rear ?? null);
         }
     }
+
 
     public function generateTemporaryUrlsForDocs(): void
     {
@@ -175,8 +179,8 @@ class BusinessDeRegistrationShow extends Component
         try {
             $businessDeRegistration->application_rejection_reason = $this->rejectionReason;
 
-            $dto = BusinessRegistrationShowDto::fromModel($businessDeRegistration); // linter: BusinessDeRegistration used intentionally
-            $service = new BusinessRegistrationAdminService();
+            $dto = BusinessDeRegistrationUploadDto::fromModel($businessDeRegistration); // linter: BusinessDeRegistration used intentionally
+            $service = new BusinessDeRegistrationService();
 
             $service->reject($businessDeRegistration, $dto);
             session()->flash('message', 'Recommendation rejected successfully.');

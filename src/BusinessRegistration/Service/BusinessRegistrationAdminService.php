@@ -71,6 +71,7 @@ class BusinessRegistrationAdminService
             'is_rented' => $businessRegistrationAdminDto->is_rented,
             'total_running_day' => $businessRegistrationAdminDto->total_running_day,
             'registration_category' => $businessRegistrationAdminDto->registration_category,
+            'business_status' => BusinessStatusEnum::ACTIVE->value,
         ]);
 
         return $businessRegistration;
@@ -160,7 +161,8 @@ class BusinessRegistrationAdminService
             'rejected_by' => Auth::user()->id,
             'application_rejection_reason' => $businessRegistrationAdminDto->application_rejection_reason,
             'rejected_at' => now(),
-            'application_status' => ApplicationStatusEnum::REJECTED->value
+            'application_status' => ApplicationStatusEnum::REJECTED->value,
+            'business_status' => BusinessStatusEnum::INACTIVE->value,
         ]);
 
         return $businessRegistration;
@@ -196,6 +198,7 @@ class BusinessRegistrationAdminService
             'business_status' => BusinessStatusEnum::ACTIVE->value,
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
+            'business_status' => BusinessStatusEnum::ACTIVE->value,
         ]);
 
         return $businessRegistration;

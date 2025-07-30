@@ -31,17 +31,16 @@ class BusinessRenewalAdminController extends Controller implements HasMiddleware
 
     function create(Request $request)
     {
-        $businessRegistrationType = BusinessRegistrationType::from($request->query('type'));
         $action = Action::CREATE;
-        return view('BusinessRegistration::renewal.form')->with(compact('action', 'businessRegistrationType'));
+        return view('BusinessRegistration::renewal.form')->with(compact('action'));
     }
 
     function edit(Request $request)
     {
-        $businessRegistrationType = $request->query('type');
+
         $businessRenewal = BusinessRenewal::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('BusinessRegistration::renewal.form')->with(compact('action', 'businessRenewal', 'businessRegistrationType'));
+        return view('BusinessRegistration::renewal.form')->with(compact('action', 'businessRenewal'));
     }
 
     public function view(Request $request)

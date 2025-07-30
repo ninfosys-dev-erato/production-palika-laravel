@@ -30,6 +30,7 @@ use Src\Employees\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use Src\Address\Models\District;
 use Src\BusinessRegistration\DTO\BusinessDeRegistrationDto;
+use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Models\BusinessDeRegistration;
 
 class BusinessDeRegistrationForm extends Component
@@ -197,14 +198,16 @@ class BusinessDeRegistrationForm extends Component
             'fiscalYear',
             'businessProvince',
             'businessDistrict',
-            'businessLocalBody',
+            'businessLocalBody'
         )
             ->whereNull('deleted_at')
             ->whereNull('deleted_by')
-            ->where('entity_name', $this->search)
-            ->orWhere('registration_number', $this->search)
+            ->where(function ($query) {
+                $query->where('entity_name', $this->search)
+                    ->orWhere('registration_number', $this->search);
+            })
+            ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
             ->first();
-
 
         if ($businessData) {
             if ($this->action == Action::CREATE) {

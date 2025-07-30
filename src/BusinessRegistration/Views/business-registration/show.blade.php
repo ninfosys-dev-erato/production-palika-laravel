@@ -10,13 +10,9 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6>
                     <i class="bx bx-building me-2"></i>
-                    @if (
-                        $businessRegistration->registration_type ===
-                            \Src\BusinessRegistration\Enums\BusinessRegistrationType::DEREGISTRATION)
-                        {{ __('businessregistration::businessregistration.business_deregistration_details') }}
-                    @else
-                        {{ __('businessregistration::businessregistration.business_registration_details') }}
-                    @endif
+
+                    {{ __('businessregistration::businessregistration.business_registration_details') }}
+
                 </h6>
                 <a href="javascript:history.back()" class="btn-back">
                     <i class="bx bx-arrow-back me-2"></i>
@@ -36,26 +32,7 @@
                         </h5>
                     </div>
                     @php
-                        // For deregistration, get applicants from the original business registration
-                        if (
-                            $businessRegistration->registration_type ===
-                                \Src\BusinessRegistration\Enums\BusinessRegistrationType::DEREGISTRATION &&
-                            $businessRegistration->registration_id
-                        ) {
-                            $originalBusiness = \Src\BusinessRegistration\Models\BusinessRegistration::withTrashed()
-                                ->with([
-                                    'applicants',
-                                    'applicants.applicantProvince',
-                                    'applicants.applicantDistrict',
-                                    'applicants.applicantLocalBody',
-                                    'applicants.citizenshipDistrict',
-                                ])
-                                ->where('id', $businessRegistration->registration_id)
-                                ->first();
-                            $firstApplicant = $originalBusiness?->applicants->first();
-                        } else {
-                            $firstApplicant = $businessRegistration->applicants->first();
-                        }
+                        $firstApplicant = $businessRegistration->applicants->first();
                     @endphp
                     @if ($firstApplicant)
                         <div class="card-body">
@@ -66,7 +43,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <p><strong>{{ __('businessregistration::businessregistration.gender') }}:</strong>
-                                        {{ ucfirst($firstApplicant->gender) }}</p>
+                                        {{ $firstApplicant->gender }}</p>
                                 </div>
                                 <div class="col-sm-6">
                                     <p><strong>{{ __('businessregistration::businessregistration.phone') }}:</strong>
@@ -150,38 +127,18 @@
                     </div>
                     <div class="card-body">
                         <div class="row gy-2 mt-2">
-                            @php
-                                // For deregistration, show original business details
-                                if (
-                                    $businessRegistration->registration_type ===
-                                        \Src\BusinessRegistration\Enums\BusinessRegistrationType::DEREGISTRATION &&
-                                    $businessRegistration->registration_id
-                                ) {
-                                    $originalBusiness = \Src\BusinessRegistration\Models\BusinessRegistration::withTrashed()
-                                        ->with([
-                                            'fiscalYear',
-                                            'businessProvince',
-                                            'businessDistrict',
-                                            'businessLocalBody',
-                                        ])
-                                        ->where('id', $businessRegistration->registration_id)
-                                        ->first();
-                                    $businessData = $originalBusiness ?? $businessRegistration;
-                                } else {
-                                    $businessData = $businessRegistration;
-                                }
-                            @endphp
+
                             <div class="col-sm-12">
                                 <p><strong>{{ __('businessregistration::businessregistration.name') }}:</strong>
-                                    {{ $businessData->entity_name }}</p>
+                                    {{ $businessRegistration->entity_name }}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.fiscal_year') }}:</strong>
-                                    {{ $businessData->fiscalYear->year }}</p>
+                                    {{ $businessRegistration->fiscalYear->year }}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.registration_date') }}:</strong>
-                                    {{ $businessData->registration_date }}
+                                    {{ $businessRegistration->registration_date }}
                                 </p>
                             </div>
                             <div class="col-sm-6">
@@ -190,27 +147,31 @@
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.nature_of_business') }}:</strong>
-                                    {{ $businessData->business_nature }}
+                                    {{ $businessRegistration->business_nature }}
                                 </p>
                             </div>
                             <div class="col-sm-12">
                                 <p><strong>{{ __('businessregistration::businessregistration.main_goods_services') }}:</strong>
-                                    {{ $businessData->main_service_or_goods }}</p>
+                                    {{ $businessRegistration->main_service_or_goods }}</p>
                             </div>
 
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.registration_number') }}:</strong>
-                                    {{ $businessData->registration_number }}
+                                    {{ $businessRegistration->registration_number }}
                                 </p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.registration_category') }}:</strong>
-                                    {{ $businessData->registration_category }}
+                                    {{ $businessRegistration->registration_category }}
                                 </p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.status') }}:</strong>
                                     {{ $businessRegistration->application_status }}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong>{{ __('businessregistration::businessregistration.business_status') }}:</strong>
+                                    {{ $businessRegistration->business_status?->label() }}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.amount') }}:</strong>
@@ -222,12 +183,12 @@
                             </div>
                             <div class="col-12">
                                 <p><strong>{{ __('businessregistration::businessregistration.address') }}:</strong>
-                                    {{ $businessData->businessProvince?->title ?? '' }}
-                                    {{ $businessData->businessDistrict ? ', ' . $businessData->businessDistrict->title : '' }}
-                                    {{ $businessData->businessLocalBody ? ', ' . $businessData->businessLocalBody->title : '' }}
-                                    {{ $businessData->business_ward ? ', ' . __('businessregistration::businessregistration.ward') . ' ' . $businessData->business_ward : '' }}
-                                    {{ $businessData->business_tole ? ', ' . $businessData->business_tole : '' }}
-                                    {{ $businessData->business_street ? ', ' . $businessData->business_street : '' }}
+                                    {{ $businessRegistration->businessProvince?->title ?? '' }}
+                                    {{ $businessRegistration->businessDistrict ? ', ' . $businessRegistration->businessDistrict->title : '' }}
+                                    {{ $businessRegistration->businessLocalBody ? ', ' . $businessRegistration->businessLocalBody->title : '' }}
+                                    {{ $businessRegistration->business_ward ? ', ' . __('businessregistration::businessregistration.ward') . ' ' . $businessRegistration->business_ward : '' }}
+                                    {{ $businessRegistration->business_tole ? ', ' . $businessRegistration->business_tole : '' }}
+                                    {{ $businessRegistration->business_street ? ', ' . $businessRegistration->business_street : '' }}
                                 </p>
                             </div>
                         </div>
@@ -250,29 +211,7 @@
 
 
         {{-- Additional Applicants Table --}}
-        @php
-            // For deregistration, get applicants from the original business registration
-            if (
-                $businessRegistration->registration_type ===
-                    \Src\BusinessRegistration\Enums\BusinessRegistrationType::DEREGISTRATION &&
-                $businessRegistration->registration_id
-            ) {
-                $originalBusiness = \Src\BusinessRegistration\Models\BusinessRegistration::withTrashed()
-                    ->with([
-                        'applicants',
-                        'applicants.applicantProvince',
-                        'applicants.applicantDistrict',
-                        'applicants.applicantLocalBody',
-                        'applicants.citizenshipDistrict',
-                    ])
-                    ->where('id', $businessRegistration->registration_id)
-                    ->first();
-                $applicants = $originalBusiness?->applicants ?? collect();
-            } else {
-                $applicants = $businessRegistration->applicants;
-            }
-        @endphp
-        @if ($applicants->count() > 1)
+        @if ($businessRegistration->applicants->count() > 1)
             <div class="card row g-2 mt-4">
                 <div class="col-12">
                     <div>
@@ -301,7 +240,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($applicants->skip(1) as $applicant)
+                                    @foreach ($businessRegistration->applicants->skip(1) as $applicant)
                                         <tr>
                                             <td>{{ $applicant->applicant_name }}</td>
                                             <td>
@@ -330,9 +269,6 @@
                 </div>
             </div>
         @endif
-
-
-
 
     </div>
 
@@ -384,6 +320,5 @@
                 <livewire:business_registration.business_registration_preview :$businessRegistration />
             </div>
         </div>
-
     </div>
 </x-layout.app>

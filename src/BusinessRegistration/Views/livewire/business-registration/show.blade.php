@@ -3,39 +3,21 @@
         use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
         use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 
-        // For deregistration, get the original business registration data
-        if (
-            $businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION &&
-            $businessRegistration->registration_id
-        ) {
-            $originalBusiness = \Src\BusinessRegistration\Models\BusinessRegistration::withTrashed()
-                ->where('id', $businessRegistration->registration_id)
-                ->first();
-            $displayData = $originalBusiness?->data ?? $businessRegistration->data;
-            $displayApplicants = $originalBusiness?->applicants ?? $businessRegistration->applicants;
-        } else {
-            $displayData = $businessRegistration->data;
-            $displayApplicants = $businessRegistration->applicants;
-        }
+        $data = is_array($businessRegistration->data)
+            ? $businessRegistration->data
+            : json_decode($businessRegistration->data, true);
     @endphp
     <div class="row mb-3">
-        @if ($displayData)
-            @php
-                $data = is_array($displayData) ? $displayData : json_decode($displayData, true);
+        @if ($data)
 
-            @endphp
 
             {{-- 1. Show all non-file fields first --}}
             <div class="card mb-4">
                 <div class="card-header text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold text-primary">
-                        @if ($businessRegistration->registration_type === BusinessRegistrationType::DEREGISTRATION)
-                            {{ __('businessregistration::businessregistration.business_deregistration_details') }}
-                        @else
-                            {{ __('businessregistration::businessregistration.business_registration_details') }}
-                        @endif
-                    </h4>
+                        {{ __('businessregistration::businessregistration.business_registration_details') }}
 
+                    </h4>
 
                     <div class="d-flex gap-2">
                         @if ($businessRegistration->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::REJECTED->value)
@@ -55,7 +37,6 @@
                                 {{ __('businessregistration::businessregistration.send_for_payment') }}
                             </button>
                         @endif
-
                         @if (
                             $businessRegistration->application_status ===
                                 Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED->value)
@@ -105,8 +86,14 @@
                             </dt>
                             <dd class="col-sm-8">
                                 @if ($businessRegistration->rentagreement)
-                                    <a href="{{ asset('storage/' . $businessRegistration->rentagreement) }}"
-                                        target="_blank">{{ __('businessregistration::businessregistration.view_uploaded_file') }}</a>
+                                    <a href="{{ App\Facades\FileFacade::getTemporaryUrl(
+                                        path: config('src.BusinessRegistration.businessRegistration.registration'),
+                                        filename: $businessRegistration->rentagreement,
+                                        disk: 'local',
+                                    ) }}"
+                                        target="_blank">
+                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                    </a>
                                 @else
                                     -
                                 @endif
@@ -186,9 +173,6 @@
                         @endif
                     </dl>
 
-
-
-
                     <dl class="row mb-0">
                         @foreach ($data as $key => $field)
                             @if ($field['type'] !== 'file')
@@ -250,53 +234,76 @@
             {{-- 2. Show all files separately --}}
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h4 class="fw-bold">
+                    <h4 class="fw-bold text-primary">
                         {{ __('businessregistration::businessregistration.business_registration_files') }}</h4>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-
                         {{-- Citizenship Front --}}
-                        @foreach ($displayApplicants as $index => $applicant)
-                            <div class="col-md-6">
-                                <strong>Citizenship ({{ $applicant->applicant_name }})</strong><br>
-                                @if (!empty($citizenshipFrontUrls[$index]))
-                                    <a href="{{ $citizenshipFrontUrls[$index] }}" target="_blank"
-                                        class="btn btn-sm btn-outline-primary mt-2">
-                                        <i class="bx bx-file"></i>
-                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                    </a>
-                                @endif
+                        @forelse ($businessRegistration->applicants as $index => $applicant)
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+                                <div class="border p-3 rounded  h-100">
+                                    <strong class="d-block mb-2 text-primary">
+                                        {{ __('businessregistration::businessregistration.citizenship') }}
+                                        ({{ $applicant->applicant_name }})
+                                    </strong>
 
-                                @if (!empty($citizenshipRearUrls[$index]))
-                                    <a href="{{ $citizenshipRearUrls[$index] }}" target="_blank"
-                                        class="btn btn-sm btn-outline-primary mt-2">
-                                        <i class="bx bx-file"></i>
-                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                    </a>
-                                @endif
+                                    @if (!empty($citizenshipFrontUrls[$index]))
+                                        <a href="{{ $citizenshipFrontUrls[$index] }}" target="_blank"
+                                            class="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2 mb-2">
+                                            <i class="bx bx-file"></i>
+                                            {{ __('businessregistration::businessregistration.citizenship_front') }}
+                                        </a>
+                                    @else
+                                        <span
+                                            class="text-muted d-block mb-2">{{ __('businessregistration::businessregistration.no_front_file') }}</span>
+                                    @endif
+
+                                    @if (!empty($citizenshipRearUrls[$index]))
+                                        <a href="{{ $citizenshipRearUrls[$index] }}" target="_blank"
+                                            class="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bx bx-file"></i>
+                                            {{ __('businessregistration::businessregistration.citizenship_rear') }}
+                                        </a>
+                                    @else
+                                        <span
+                                            class="text-muted d-block">{{ __('businessregistration::businessregistration.no_rear_file') }}</span>
+                                    @endif
+                                </div>
                             </div>
-                        @endforeach
-
-
-                        @foreach ($businessRegistration->requiredBusinessDocs as $item)
-                            <div class="col-md-3">
-                                <strong>{{ $item->document_label_ne }}</strong><br>
-
-                                @if (!empty($businessRequiredDocUrls[$item->id]))
-                                    <a href="{{ $businessRequiredDocUrls[$item->id] }}" target="_blank"
-                                        class="btn btn-sm btn-outline-primary mt-2">
-                                        <i class="bx bx-file"></i>
-                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                    </a>
-                                @else
-                                    <span class="text-muted">No file available</span>
-                                @endif
+                        @empty
+                            <div class="col-12">
+                                <p class="text-muted">
+                                    {{ __('businessregistration::businessregistration.no_applicants') }}</p>
                             </div>
-                        @endforeach
+                        @endforelse
 
 
+                        @forelse ($businessRegistration->requiredBusinessDocs as $item)
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+                                <div class="border p-3 rounded h-100">
+                                    <strong class="d-block mb-2 text-primary">
+                                        {{ $item->document_label_ne }}
+                                    </strong>
 
+                                    @if (!empty($businessRequiredDocUrls[$item->id]))
+                                        <a href="{{ $businessRequiredDocUrls[$item->id] }}" target="_blank"
+                                            class="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bx bx-file"></i>
+                                            {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted d-block mt-2">No file available</span>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <p class="text-muted">
+                                    {{ __('businessregistration::businessregistration.no_required_documents_uploaded') }}
+                                </p>
+                            </div>
+                        @endforelse
 
                         @foreach ($data as $key => $field)
                             @if ($field['type'] === 'file')
@@ -305,23 +312,30 @@
                                     $urls = $dynamicFileUrls[$key] ?? [];
                                 @endphp
 
-                                <div class="col-md-3">
-                                    <strong>{{ $field['label_ne'] ?? $field['label'] }}</strong><br>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+                                    <div class="border p-3 rounded h-100">
+                                        <strong
+                                            class="d-block mb-2 text-primary">{{ $field['label_ne'] ?? $field['label'] }}</strong>
 
-                                    @foreach ($files as $index => $fileValue)
-                                        @if (!empty($urls[$index]))
-                                            <a href="{{ $urls[$index] }}" target="_blank"
-                                                class="btn btn-sm btn-outline-primary mt-2 d-block">
-                                                <i class="bx bx-file"></i>
-                                                {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                            </a>
-                                        @else
-                                            <span class="text-muted d-block mt-2">No file available</span>
-                                        @endif
-                                    @endforeach
+
+
+                                        @foreach ($files as $index => $fileValue)
+                                            @if (!empty($urls[$index]))
+                                                <a href="{{ $urls[$index] }}" target="_blank"
+                                                    class="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2 mb-2">
+                                                    <i class="bx bx-file"></i>
+                                                    {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                </a>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endif
                         @endforeach
+
+
+
+
 
                     </div>
                 </div>
