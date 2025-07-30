@@ -261,13 +261,25 @@
                                                     </span>
                                                 </div>
 
+                                                @php
+
+                                                    $submitterEnum = Src\Ebps\Enums\FormSubmitterEnum::tryFrom(
+                                                        $mapStep->form_submitter,
+                                                    );
+                                                @endphp
+
                                                 <p class="card-text text-muted small mb-3">
                                                     <i class="bx bx-user me-1"></i>
-                                                    {{ __('Submitter') }}: {{ ucfirst($mapStep->form_submitter) }}
+                                                    {{ __('ebps::ebps.submitter') }}:
+                                                    {{ $submitterEnum ? $submitterEnum->label() : ucfirst($mapStep->form_submitter) }}
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if (!$isDisabled && $status != 'accepted' && $canApply && $mapStep->form_submitter === 'municipality')
+                                                    @if (
+                                                        !$isDisabled &&
+                                                            $status != 'accepted' &&
+                                                            $canApply &&
+                                                            $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::HOUSEOWNER)
                                                         <a href="{{ route('customer.ebps.apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
