@@ -139,12 +139,19 @@ RUN rm -rf /var/www/html/docker \
     && rm -f /var/www/html/README.md
 
 # Install Composer dependencies
-RUN cd /var/www/html && composer install --optimize-autoloader --no-dev --no-interaction
+RUN cd /var/www/html && composer install --optimize-autoloader --no-interaction
 
 # Remove development dependencies and debugbar references from production
 RUN cd /var/www/html \
     && composer remove barryvdh/laravel-debugbar --no-interaction --ignore-platform-reqs 2>/dev/null || true \
+    && composer remove mccarlosen/laravel-mpdf --no-interaction --ignore-platform-reqs 2>/dev/null || true \
     && composer dump-autoload --optimize
+
+# Remove development service providers from config files
+RUN cd /var/www/html \
+    && sed -i '/Barryvdh\\Debugbar\\ServiceProvider/d' config/app.php 2>/dev/null || true \
+    && sed -i '/Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider/d' config/app.php 2>/dev/null || true \
+    && sed -i '/LaravelMpdfServiceProvider/d' config/app.php 2>/dev/null || true
 
 # Security: Remove signature validation from Livewire file upload controllers
 RUN sed -i '/abort_unless(request()->hasValidSignature(), 401);/d' /var/www/html/vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php 2>/dev/null || true

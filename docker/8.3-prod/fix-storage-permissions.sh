@@ -73,6 +73,14 @@ fi
 
 # Clear Laravel caches to fix service provider issues
 print_status "Clearing Laravel caches..."
+
+# First, remove problematic service providers from config
+print_status "Removing development service providers from config..."
+sed -i '/Barryvdh\\Debugbar\\ServiceProvider/d' /var/www/html/config/app.php 2>/dev/null || true
+sed -i '/Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider/d' /var/www/html/config/app.php 2>/dev/null || true
+sed -i '/LaravelMpdfServiceProvider/d' /var/www/html/config/app.php 2>/dev/null || true
+
+# Clear caches
 su -s /bin/bash www-data -c "php artisan config:clear" 2>/dev/null || true
 su -s /bin/bash www-data -c "php artisan route:clear" 2>/dev/null || true
 su -s /bin/bash www-data -c "php artisan view:clear" 2>/dev/null || true
