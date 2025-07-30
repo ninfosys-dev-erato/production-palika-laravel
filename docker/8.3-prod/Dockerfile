@@ -162,7 +162,10 @@ RUN cd /var/www/html \
     && php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
-    && rm -f bootstrap/cache/*.php \
+    && php artisan cache:clear \
+    && php artisan clear-compiled \
+    && rm -rf bootstrap/cache/*.php \
+    && rm -rf storage/framework/cache/* \
     && /usr/local/bin/publish-vendor-assets \
     && php artisan config:cache \
     && php artisan route:cache \

@@ -37,11 +37,17 @@ sed -i '/Barryvdh\\Debugbar\\ServiceProvider/d' /var/www/html/config/app.php 2>/
 sed -i '/Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider/d' /var/www/html/config/app.php 2>/dev/null || true
 sed -i '/LaravelMpdfServiceProvider/d' /var/www/html/config/app.php 2>/dev/null || true
 
+# Clear package discovery cache and bootstrap cache
+echo "🧹 Clearing package discovery and bootstrap cache..."
+rm -rf /var/www/html/bootstrap/cache/*.php 2>/dev/null || true
+rm -rf /var/www/html/storage/framework/cache/* 2>/dev/null || true
+
 # Clear caches
 su -s /bin/bash www-data -c "php artisan config:clear" 2>/dev/null || true
 su -s /bin/bash www-data -c "php artisan route:clear" 2>/dev/null || true
 su -s /bin/bash www-data -c "php artisan view:clear" 2>/dev/null || true
 su -s /bin/bash www-data -c "php artisan cache:clear" 2>/dev/null || true
+su -s /bin/bash www-data -c "php artisan clear-compiled" 2>/dev/null || true
 
 # Rebuild caches
 echo "🔄 Rebuilding caches..."

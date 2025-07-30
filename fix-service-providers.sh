@@ -15,12 +15,18 @@ sed -i '/LaravelMpdfServiceProvider/d' config/app.php 2>/dev/null || true
 
 echo "✅ Removed problematic service providers"
 
+# Clear package discovery cache and bootstrap cache
+echo "🧹 Clearing package discovery and bootstrap cache..."
+rm -rf bootstrap/cache/*.php 2>/dev/null || true
+rm -rf storage/framework/cache/* 2>/dev/null || true
+
 # Clear all Laravel caches
 echo "🧹 Clearing Laravel caches..."
 su -s /bin/bash www-data -c "php artisan config:clear" 2>/dev/null && echo "✅ Config cache cleared" || echo "⚠️  Config clear failed"
 su -s /bin/bash www-data -c "php artisan route:clear" 2>/dev/null && echo "✅ Route cache cleared" || echo "⚠️  Route clear failed"
 su -s /bin/bash www-data -c "php artisan view:clear" 2>/dev/null && echo "✅ View cache cleared" || echo "⚠️  View clear failed"
 su -s /bin/bash www-data -c "php artisan cache:clear" 2>/dev/null && echo "✅ Application cache cleared" || echo "⚠️  Cache clear failed"
+su -s /bin/bash www-data -c "php artisan clear-compiled" 2>/dev/null && echo "✅ Compiled services cleared" || echo "⚠️  Clear compiled failed"
 
 # Rebuild caches
 echo "🔄 Rebuilding caches..."

@@ -134,11 +134,17 @@ EOF
     sed -i '/Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider/d' config/app.php 2>/dev/null || true
     sed -i '/LaravelMpdfServiceProvider/d' config/app.php 2>/dev/null || true
     
+    # Clear package discovery cache and bootstrap cache
+    print_status "Clearing package discovery and bootstrap cache..."
+    rm -rf bootstrap/cache/*.php 2>/dev/null || true
+    rm -rf storage/framework/cache/* 2>/dev/null || true
+    
     # Clear caches
     su -s /bin/bash www-data -c "php artisan config:clear" 2>/dev/null || true
     su -s /bin/bash www-data -c "php artisan route:clear" 2>/dev/null || true
     su -s /bin/bash www-data -c "php artisan view:clear" 2>/dev/null || true
     su -s /bin/bash www-data -c "php artisan cache:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan clear-compiled" 2>/dev/null || true
     
     # Rebuild caches
     print_status "Rebuilding Laravel caches..."
