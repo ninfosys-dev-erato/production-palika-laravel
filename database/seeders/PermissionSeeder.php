@@ -34,7 +34,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'group_create', 'guard' => 'web'],
             ['name' => 'group_delete', 'guard' => 'web'],
             ['name' => 'group_update', 'guard' => 'web'],
-            ['name' => 'letter_head access', 'guard' => 'web'],
+            ['name' => 'letter_head_manage', 'guard' => 'web'],
+            ['name' => 'letter_head_update', 'guard' => 'web'],
+            ['name' => 'letter_head_delete', 'guard' => 'web'],
+            ['name' => 'setting_groups create', 'guard' => 'web'],
+            ['name' => 'setting_groups edit', 'guard' => 'web'],
+            ['name' => 'setting_groups delete', 'guard' => 'web'],
             ['name' => 'setting access', 'guard' => 'web'],
             ['name' => 'setting_create', 'guard' => 'web'],
             ['name' => 'setting_delete', 'guard' => 'web'],
@@ -48,7 +53,7 @@ class PermissionSeeder extends Seeder
             // -------------------
             // BUSINESS REGISTRATION MODULE
             // -------------------
-            ['name' => 'business-registration_access', 'guard' => 'web'],
+            ['name' => 'business_registration access', 'guard' => 'web'],
             ['name' => 'business_registration create', 'guard' => 'web'],
             ['name' => 'business_registration delete', 'guard' => 'web'],
             ['name' => 'business_registration edit', 'guard' => 'web'],
@@ -56,6 +61,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'business_renewals create', 'guard' => 'web'],
             ['name' => 'business_renewals delete', 'guard' => 'web'],
             ['name' => 'business_renewals edit', 'guard' => 'web'],
+            ['name' => 'business_settings access', 'guard' => 'web'],
             ['name' => 'business_settings create', 'guard' => 'web'],
             ['name' => 'business_settings delete', 'guard' => 'web'],
             ['name' => 'business_settings edit', 'guard' => 'web'],
@@ -88,6 +94,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'digital_board create', 'guard' => 'web'],
             ['name' => 'digital_board delete', 'guard' => 'web'],
             ['name' => 'digital_board edit', 'guard' => 'web'],
+           
 
             // -------------------
             // DISTRICTS MODULE
@@ -113,6 +120,10 @@ class PermissionSeeder extends Seeder
             ['name' => 'map_applies access', 'guard' => 'web'],
             ['name' => 'map_applies delete', 'guard' => 'web'],
             ['name' => 'map_applies edit', 'guard' => 'web'],
+            ['name' => 'ebps_organizations access', 'guard' => 'web'],
+            ['name' => 'ebps_organizations edit', 'guard' => 'web'],
+            ['name' => 'ebps_organizations create', 'guard' => 'web'],
+            ['name' => 'ebps_organizations delete', 'guard' => 'web'],
 
             // -------------------
             // EMERGENCY CONTACTS MODULE
@@ -123,12 +134,23 @@ class PermissionSeeder extends Seeder
             ['name' => 'emergency_contact update', 'guard' => 'web'],
 
             // -------------------
+            // BRANCH MODULE
+            // -------------------
+            ['name' => 'branch access', 'guard' => 'web'],
+            ['name' => 'branch create', 'guard' => 'web'],
+            ['name' => 'branch delete', 'guard' => 'web'],
+            ['name' => 'branch update', 'guard' => 'web'],
+
+            // -------------------
             // EMPLOYEES MODULE
             // -------------------
             ['name' => 'employee access', 'guard' => 'web'],
             ['name' => 'employee create', 'guard' => 'web'],
             ['name' => 'employee delete', 'guard' => 'web'],
             ['name' => 'employee update', 'guard' => 'web'],
+            ['name' => 'designation access', 'guard' => 'web'],
+            ['name' => 'designation create', 'guard' => 'web'],
+            ['name' => 'designation edit', 'guard' => 'web'],
 
             // -------------------
             // FISCAL YEARS MODULE
@@ -179,6 +201,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'local_bodies delete', 'guard' => 'web'],
             ['name' => 'local_bodies edit', 'guard' => 'web'],
             ['name' => 'local_levels create', 'guard' => 'web'],
+            ['name' => 'local_levels view', 'guard' => 'web'],
 
             // -------------------
             // MEETINGS MODULE
@@ -247,7 +270,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'recommendation_settings update', 'guard' => 'web'],
 
             // -------------------
-            // REGISTRATION MODULE
+            // REGISTRATION MODULE (EJALAS)
             // -------------------
             ['name' => 'anusuchis create', 'guard' => 'web'],
             ['name' => 'case_records create', 'guard' => 'web'],
@@ -376,6 +399,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'jms_judicial_management print', 'guard' => 'web'],
 
             ['name' => 'jms_reconciliation_center access', 'guard' => 'web'],
+            ['name' => 'jms_reconciliation_center create', 'guard' => 'web'],
             ['name' => 'jms_report access', 'guard' => 'web'],
             // -------------------
             // TOK Token Management Module
@@ -399,13 +423,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'tsk_management delete', 'guard' => 'web'],
             ['name' => 'tsk_management print', 'guard' => 'web'],
             ['name' => 'tsk_management view', 'guard' => 'web'],
-
-
-
-
-
-
-
 
             // -------------------
             // YOJANA MODULE
@@ -432,6 +449,31 @@ class PermissionSeeder extends Seeder
             ['name' => 'plan_log_books create', 'guard' => 'web'],
             ['name' => 'plan_log_books edit', 'guard' => 'web'],
             ['name' => 'plan_log_books delete', 'guard' => 'web'],
+
+            // -------------------
+            // DARTA MODULE
+            // -------------------
+            ['name' => 'darta access', 'guard' => 'web'],
+            ['name' => 'darta update', 'guard' => 'web'],
+            ['name' => 'darta delete', 'guard' => 'web'],
+            ['name' => 'darta create', 'guard' => 'web'],
+
+            // -------------------
+            // CHALANI MODULE
+            // -------------------
+            ['name' => 'chalani create', 'guard' => 'web'],
+            ['name' => 'chalani access', 'guard' => 'web'],
+            ['name' => 'chalani update', 'guard' => 'web'],
+            ['name' => 'chalani delete', 'guard' => 'web'],
+
+            // -------------------
+            // GENERAL/OTHER MODULE
+            // -------------------
+            ['name' => 'human_resource access', 'guard' => 'web'],
+            ['name' => 'office_setting access', 'guard' => 'web'],
+            ['name' => 'letter_head access', 'guard' => 'web'],
+            ['name' => 'letter_head create', 'guard' => 'web'],
+           
 
         ];
         foreach ($permissions as $permission) {

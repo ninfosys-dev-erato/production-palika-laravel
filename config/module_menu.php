@@ -63,7 +63,7 @@ return [
         'icon' => 'bx bx-book text-purple',
         'logo' => 'DartaChalaniIcon.png',
         'label' => 'Darta /Chalani',
-        'perm' => 'darta_access',
+        'perm' => 'darta access',
     ],
     [
         'module' => 'business_registration',

@@ -16,7 +16,7 @@ class LetterHeadController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('permission:letter_head_access', only: ['index']),
-            new Middleware('permission:letter_head_create', only: ['create']),
+            new Middleware('permission:letter_head create', only: ['create']),
             new Middleware('permission:letter_head_update', only: ['edit'])
         ];
     }

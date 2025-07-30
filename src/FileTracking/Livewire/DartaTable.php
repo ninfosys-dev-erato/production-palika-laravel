@@ -286,20 +286,20 @@ class DartaTable extends DataTableComponent
                 ->sortable(),
 
         ];
-        // if (can('darta_update') || can('darta_delete')) {
+        // if (can('darta update') || can('darta delete')) {
             $actionsColumn = Column::make(__('filetracking::filetracking.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group " role="group">';
 
-                // if (can('darta_access')) {
+                // if (can('darta access')) {
                     $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
                 // }
-                if (can('darta_update')) {
+                if (can('darta update')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('darta_delete')) {
+                if (can('darta delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -323,7 +323,7 @@ class DartaTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('darta_update')) {
+        if (!can('darta update')) {
             SessionFlash::WARNING_FLASH(__('filetracking::filetracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -331,7 +331,7 @@ class DartaTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('darta_delete')) {
+        if (!can('darta delete')) {
             SessionFlash::WARNING_FLASH(__('filetracking::filetracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -341,7 +341,7 @@ class DartaTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('darta_delete')) {
+        if (!can('darta delete')) {
             SessionFlash::WARNING_FLASH(__('filetracking::filetracking.you_cannot_perform_this_action'));
             return false;
         }

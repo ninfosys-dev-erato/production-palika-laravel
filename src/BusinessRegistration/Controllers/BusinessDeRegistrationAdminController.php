@@ -21,7 +21,7 @@ class BusinessDeRegistrationAdminController extends Controller implements HasMid
         return [
             new Middleware('permission:business_registration access', only: ['index']),
             new Middleware('permission:business_registration create', only: ['create']),
-            new Middleware('permission:business_registration update', only: ['edit']),
+            new Middleware('permission:business_registration edit', only: ['edit']),
         ];
     }
 

@@ -52,7 +52,7 @@ class DesignationTable extends DataTableComponent
             Column::make(__('employees::employees.title'), "title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('employees::employees.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('designation_edit') || can('designation_delete')) {
+        if (can('designation_edit') || can('designation delete')) {
             $actionsColumn = Column::make(__('employees::employees.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
@@ -61,7 +61,7 @@ class DesignationTable extends DataTableComponent
                     $buttons .= $edit;
                 }
 
-                if (can('designation_delete')) {
+                if (can('designation delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -91,7 +91,7 @@ class DesignationTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('designation_delete')) {
+        if (!can('designation delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -102,7 +102,7 @@ class DesignationTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('designation_delete')) {
+        if (!can('designation delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

@@ -18,9 +18,9 @@ class BranchController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:branch_access', only: ['index']),
-            new Middleware('permission:branch_create', only: ['create']),
-            new Middleware('permission:branch_update', only: ['edit']),
+            new Middleware('permission:branch access', only: ['index']),
+            new Middleware('permission:branch create', only: ['create']),
+            new Middleware('permission:branch edit', only: ['edit']),
 
         ];
     }
@@ -45,7 +45,7 @@ class BranchController extends Controller implements HasMiddleware
     }
     public function delete($id)
     {
-        if (!can('branch_delete')) {
+        if (!can('branch delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

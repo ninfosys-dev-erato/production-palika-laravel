@@ -105,16 +105,16 @@ class DartaChalaniTable extends DataTableComponent
                 }),          
            
      ];
-        // if (can('darta_update') || can('darta_delete')) {
+        // if (can('darta update') || can('darta delete')) {
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                // if (can('darta_update')) {
+                // if (can('darta update')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 // }
 
-                // if (can('darta_delete')) {
+                // if (can('darta delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
 
@@ -134,7 +134,7 @@ class DartaChalaniTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('darta_update')){
+        if(!can('darta update')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -142,7 +142,7 @@ class DartaChalaniTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('darta_delete')){
+        if(!can('darta delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -151,7 +151,7 @@ class DartaChalaniTable extends DataTableComponent
         $this->successFlash("File Record Deleted Successfully");
     }
     public function deleteSelected(){
-        if(!can('darta_delete')){
+        if(!can('darta delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }
