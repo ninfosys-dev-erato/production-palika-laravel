@@ -102,6 +102,15 @@ EOF
     chmod -R 775 /var/www/html/bootstrap/cache 2>/dev/null || true
     chmod -R 755 /var/www/html/public 2>/dev/null || true
     
+    # Add root to www-data group for easier debugging access
+    print_status "Setting up debugging access..."
+    usermod -a -G www-data root 2>/dev/null || true
+    
+    # Make all storage subdirectories accessible for debugging while maintaining security
+    chmod -R 775 /var/www/html/storage/app 2>/dev/null || true
+    chmod -R 775 /var/www/html/storage/logs 2>/dev/null || true
+    chmod -R 775 /var/www/html/storage/framework 2>/dev/null || true
+    
     # Create storage symlink for Laravel
     print_status "Creating storage symlink..."
     rm -f /var/www/html/public/storage 2>/dev/null || true

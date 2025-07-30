@@ -70,7 +70,8 @@ RUN curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/
 # Security: Create non-root user and group (handle existing www-data)
 RUN groupmod -g $WWWGROUP www-data \
     && usermod -u $WWWUSER -g $WWWGROUP www-data \
-    && usermod -d /var/www/html www-data
+    && usermod -d /var/www/html www-data \
+    && usermod -a -G www-data root
 
 # Security: Create necessary directories with proper permissions
 RUN mkdir -p /var/www/html/storage/logs \
@@ -122,6 +123,7 @@ COPY docker/8.3-prod/emergency-asset-fix.sh /usr/local/bin/emergency-asset-fix
 COPY docker/8.3-prod/fix-storage-permissions.sh /usr/local/bin/fix-storage-permissions
 COPY docker/8.3-prod/fix-412-error.sh /usr/local/bin/fix-412-error
 COPY docker/8.3-prod/fix-private-storage.sh /usr/local/bin/fix-private-storage
+COPY docker/8.3-prod/debug-access.sh /usr/local/bin/debug-access
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
@@ -130,7 +132,8 @@ RUN chmod +x /usr/local/bin/start-container \
     && chmod +x /usr/local/bin/emergency-asset-fix \
     && chmod +x /usr/local/bin/fix-storage-permissions \
     && chmod +x /usr/local/bin/fix-412-error \
-    && chmod +x /usr/local/bin/fix-private-storage
+    && chmod +x /usr/local/bin/fix-private-storage \
+    && chmod +x /usr/local/bin/debug-access
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/

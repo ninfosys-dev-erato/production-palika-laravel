@@ -80,9 +80,11 @@ $SUDO chmod -R 775 "$BASE_DIR/storage"
 $SUDO chmod -R 775 "$BASE_DIR/bootstrap/cache"
 $SUDO chmod -R 755 "$BASE_DIR/logs"
 
-# Special permissions for customer-kyc directories
-print_status "Setting customer-kyc directory permissions..."
-$SUDO chmod -R 755 "$BASE_DIR/storage/app/private/customer-kyc"
+# Make all storage subdirectories accessible for debugging while maintaining security
+print_status "Setting storage subdirectory permissions..."
+$SUDO chmod -R 775 "$BASE_DIR/storage/app"
+$SUDO chmod -R 775 "$BASE_DIR/storage/logs"
+$SUDO chmod -R 775 "$BASE_DIR/storage/framework"
 
 # Create necessary files
 print_status "Creating log files..."
