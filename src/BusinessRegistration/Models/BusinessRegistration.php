@@ -273,4 +273,8 @@ class BusinessRegistration extends Model
     {
         return $this->hasMany(BusinessRequiredDoc::class, 'business_registration_id');
     }
+    public function renewals(): HasMany
+    {
+        return $this->hasMany(BusinessRenewal::class, 'business_registration_id');
+    }
 }

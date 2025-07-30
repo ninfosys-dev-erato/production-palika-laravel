@@ -200,9 +200,7 @@ class BusinessDeRegistrationForm extends Component
             'businessDistrict',
             'businessLocalBody'
         )
-            ->where('entity_name', $this->search)
             ->whereNull('deleted_at')
-
             ->where(function ($query) {
                 $query->where('entity_name', $this->search)
                     ->orWhere('registration_number', $this->search);

@@ -29,6 +29,7 @@ use Src\Employees\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use Src\Address\Models\District;
 use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+use Src\Settings\Models\FiscalYear;
 
 class BusinessRegistrationForm extends Component
 {
@@ -66,6 +67,7 @@ class BusinessRegistrationForm extends Component
 
     public $showRegistrationDetailsFields = false;
     public $is_previouslyRegistered = 0;
+    public $selectedFiscalYearText = '';
 
 
     public array $personalDetails = [
@@ -162,8 +164,9 @@ class BusinessRegistrationForm extends Component
             'businessRegistration.purpose' => ['nullable'],
             'businessRegistration.registration_category' => ['nullable'],
 
-            'businessRegistration.registration_date' => ['nullable'],
-            'businessRegistration.registration_number' => ['nullable'],
+            'businessRegistration.registration_date' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
+            'businessRegistration.registration_number' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
+
 
             // New fields for business registration
             'businessRegistration.working_capital' => ['nullable'],
@@ -221,6 +224,10 @@ class BusinessRegistrationForm extends Component
             // Registration Type
             'businessRegistration.registration_type_id.required' => __('businessregistration::businessregistration.the_registration_type_is_required'),
             'businessRegistration.registration_type_id.exists' => __('businessregistration::businessregistration.the_registration_type_must_be_valid'),
+
+            //Registration Date and Number
+            'businessRegistration.registration_date.required' => __('businessregistration::businessregistration.the_registration_date_is_required'),
+            'businessRegistration.registration_number.required' => __('businessregistration::businessregistration.the_registration_number_is_required'),
         ];
     }
 
@@ -276,6 +283,11 @@ class BusinessRegistrationForm extends Component
             if (!empty($businessRegistration['registration_number'])) {
 
                 $this->showRegistrationDetailsFields = true;
+
+                [$numberPart, $fiscalPart] = explode('/', $this->businessRegistration['registration_number'], 2);
+
+                $this->businessRegistration['registration_number'] = ltrim($numberPart, '0');
+                $this->selectedFiscalYearText = $fiscalPart;
             }
 
             if ($businessRegistration && !empty($businessRegistration->rentagreement)) {
@@ -830,6 +842,8 @@ class BusinessRegistrationForm extends Component
             'businessRegistration.fiscal_year' => ['required'],
             'businessRegistration.application_date' => ['required'],
             'businessRegistration.entity_name' => ['required'],
+            'businessRegistration.registration_date' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
+            'businessRegistration.registration_number' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
 
         ]);
     }
@@ -872,6 +886,11 @@ class BusinessRegistrationForm extends Component
         if ((int) $value === 1) {
             $this->dispatch('init-registration-date');
         }
+    }
+    public function fiscalYearChanged($value)
+    {
+        $fiscalYear = FiscalYear::find($value);
+        $this->selectedFiscalYearText = $fiscalYear ? $fiscalYear->year : '';
     }
 
 
@@ -1016,6 +1035,18 @@ class BusinessRegistrationForm extends Component
             $this->validate();
             $this->businessRegistration['data'] = $this->getFormattedData();
             $this->businessRegistration['application_date_en'] = $this->bsToAd($this->businessRegistration['application_date']);
+
+            if (!empty($this->businessRegistration['registration_number'])) {
+                // removes 0 from front
+                $serial = (int) $this->businessRegistration['registration_number'];
+                $this->businessRegistration['registration_number'] = str_pad($serial, 6, '0', STR_PAD_LEFT)
+                    . '/' . replaceNumbers($this->selectedFiscalYearText);
+            }
+            if (!empty($this->businessRegistration['registration_date'])) {
+                $this->businessRegistration['registration_date_en'] = $this->bsToAd($this->businessRegistration['registration_date']);
+            }
+
+
 
             $service = new BusinessRegistrationAdminService();
             $businessApplicantService = new BusinessRegistrationApplicantService();

@@ -240,17 +240,23 @@ class BusinessRegistrationAdminService
 
     public function generateBusinessRegistrationNumber($fiscalYearId)
     {
-        $fiscalYearName = FiscalYear::findorFail($fiscalYearId);
+        $fiscalYearName = FiscalYear::findOrFail($fiscalYearId);
         $fiscalYear = $this->convertNepaliToEnglish($fiscalYearName->year);
 
-        $lastCount = BusinessRegistration::where('fiscal_year', $fiscalYearId)
+        // Get the max registration number (only the numeric part before '/')
+        $maxNumber = BusinessRegistration::where('fiscal_year', $fiscalYearId)
             ->whereNotNull('registration_number')
-            ->count();
+            ->selectRaw("MAX(CAST(SUBSTRING_INDEX(registration_number, '/', 1) AS UNSIGNED)) as max_num")
+            ->value('max_num');
 
-        $newNumber = str_pad($lastCount + 1, 6, '0', STR_PAD_LEFT);
+        // If no records yet, start from 1
+        $newSerial = $maxNumber ? $maxNumber + 1 : 1;
+
+        $newNumber = str_pad($newSerial, 6, '0', STR_PAD_LEFT);
 
         return $newNumber . '/' . $fiscalYear;
     }
+
 
     public function getLetter(BusinessRegistration $businessRegistration, $request = 'web')
     {

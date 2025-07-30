@@ -486,7 +486,11 @@ return [
     "registration_date" => "Registration Date",
     "registration_number" => "Registration Number",
     "enter_registration_date" => "Enter registration date",
-    "enter_registration_number" => "Enter registration number"
+    "enter_registration_number" => "Enter registration number",
+    "the_registration_date_is_required" => "The registration date is required.",
+    "the_registration_number_is_required" => "The registration number is required.",
+    "do_you_want_to_enter_custom_registration_number?" => "Do you want to enter custom registration number?",
+    "search_by_company_name/registration_number" => "Search by company name/registration number",
 
 
 

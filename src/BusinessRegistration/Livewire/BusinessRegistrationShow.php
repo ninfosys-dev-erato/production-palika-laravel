@@ -135,10 +135,6 @@ class BusinessRegistrationShow extends Component
             if (!$registrationNumber) {
                 $registrationNumber = $service->generateBusinessRegistrationNumber($this->businessRegistration->fiscal_year);
             }
-            if ($registrationNumber && $registrationDateNe && !$registrationDateEn) {
-                $registrationDateEn = $this->bsToAd($registrationDateNe);
-            }
-
             // If both are missing, generate both
             if (!$registrationDateEn && !$registrationDateNe) {
                 $registrationDateEn = date('Y-m-d');

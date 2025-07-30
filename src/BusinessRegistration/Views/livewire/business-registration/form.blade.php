@@ -472,7 +472,7 @@
                                 @if ($action == Action::CREATE)
                                     <div class="col-md-12">
                                         <label class="form-label-peaceful d-block">
-                                            {{ __('businessregistration::businessregistration.is_business_previously_registered') }}
+                                            {{ __('businessregistration::businessregistration.do_you_want_to_enter_custom_registration_number?') }}
                                         </label>
                                         <div>
                                             <div class="form-check form-check-inline">

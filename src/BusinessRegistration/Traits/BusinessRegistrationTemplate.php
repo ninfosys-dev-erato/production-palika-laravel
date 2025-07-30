@@ -23,7 +23,7 @@ trait BusinessRegistrationTemplate
             $businessRegistration = $businessRegistration->businessRegistration;
         }
 
-        $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature');
+        $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature', 'renewals');
 
 
         $fileRecord = FileRecord::where('subject_id',  $businessRegistration->id)->whereNull('deleted_at')->first();
@@ -144,8 +144,7 @@ trait BusinessRegistrationTemplate
             '{{business.is_rented}}' => $businessRegistration->is_rented ?? ' ',
             '{{business.total_running_day}}' => $businessRegistration->total_running_day ?? ' ',
 
-
-
+            '{{business.renewal_table}}' => $this->generateRenewalTable($businessRegistration),
 
         ];
     }
@@ -293,5 +292,47 @@ trait BusinessRegistrationTemplate
             return $businessRegistration->applicant_street ?? ' ';
         }
         return $applicants->pluck('applicant_street')->filter()->implode(', ');
+    }
+    public function generateRenewalTable($businessRegistration)
+    {
+        $renewals = $businessRegistration->renewals;
+        $renewals->load('fiscalYear');
+        if ($renewals->isEmpty()) {
+            return ' ';
+        }
+        $tableRows = '';
+        foreach ($renewals as $renewal) {
+            $fiscalYear = $this->renewal->fiscalYear->year ?? '';
+            $renewalDate = $this->renewal->renew_date ?? '';
+            $billNo = $this->renewal->bill_no ?? '';
+            $paymentDate = $this->renewal->payment_receipt_date ?? '';
+
+            $tableRows .= "
+                <tr>
+                    <td style='padding: 10px; border: 2px solid black;'>{$fiscalYear}</td>
+                    <td style='padding: 10px; border: 2px solid black;'>{$renewalDate}</td>
+                    <td style='padding: 10px; border: 2px solid black;'>{$billNo}</td>
+                    <td style='padding: 10px; border: 2px solid black;'>{$paymentDate}</td>
+                    <td style='padding: 10px; border: 2px solid black;'></td>
+                </tr>
+            ";
+        }
+
+        return "
+            <table style='width: 100%; border-collapse: collapse;'>
+                <thead>
+                    <tr>
+                        <th style='padding: 10px; border: 2px solid black;'>आर्थिक वर्ष</th>
+                        <th style='padding: 10px; border: 2px solid black;'>नवीकरण मिति</th>
+                        <th style='padding: 10px; border: 2px solid black;'>बिल नं</th>
+                        <th style='padding: 10px; border: 2px solid black;'>तिर्ने मिति</th>
+                        <th style='padding: 10px; border: 2px solid black;'>कैफियत</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {$tableRows}
+                </tbody>
+            </table>
+        ";
     }
 }
