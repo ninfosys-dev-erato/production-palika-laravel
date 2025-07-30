@@ -178,6 +178,13 @@ EOF
         cd /var/www/html && /usr/local/bin/publish-vendor-assets
     fi
     
+    # Ensure storage routes are properly configured
+    print_status "Ensuring storage routes are configured..."
+    if ! grep -q "storage/customer-kyc" /var/www/html/routes/web.php; then
+        print_status "Storage routes missing, adding them..."
+        cd /var/www/html && /usr/local/bin/fix-storage-routes
+    fi
+    
     # Start services
     print_status "Starting services..."
     print_status "Laravel application container is ready!"
