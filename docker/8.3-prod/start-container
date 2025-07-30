@@ -96,8 +96,32 @@ EOF
     
     # Set proper permissions for all storage directories
     print_status "Setting storage permissions..."
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+    
+    # Handle permission issues more gracefully
+    print_status "Fixing storage directory permissions..."
+    
+    # First, ensure we can access the storage directory
+    if [ ! -r "/var/www/html/storage" ]; then
+        print_warning "Cannot read storage directory, attempting to fix permissions..."
+        chmod -R 755 /var/www/html/storage 2>/dev/null || true
+    fi
+    
+    # Set ownership with error handling
+    print_status "Setting ownership..."
+    find /var/www/html/storage -type d -exec chmod 755 {} \; 2>/dev/null || true
+    find /var/www/html/storage -type f -exec chmod 644 {} \; 2>/dev/null || true
+    
+    # Try to set ownership, but don't fail if we can't
+    chown -R www-data:www-data /var/www/html/storage 2>/dev/null || {
+        print_warning "Could not set ownership to www-data, trying alternative approach..."
+        # If we can't change ownership, at least make it writable
+        chmod -R 777 /var/www/html/storage 2>/dev/null || true
+    }
+    
+    chown -R www-data:www-data /var/www/html/bootstrap/cache 2>/dev/null || true
     chown -R www-data:www-data /var/www/html/public 2>/dev/null || true
+    
+    # Set permissions
     chmod -R 775 /var/www/html/storage 2>/dev/null || true
     chmod -R 775 /var/www/html/bootstrap/cache 2>/dev/null || true
     chmod -R 755 /var/www/html/public 2>/dev/null || true
@@ -176,6 +200,35 @@ EOF
     if [ ! -f "/var/www/html/public/rappasoft/laravel-livewire-tables/core.min.js" ]; then
         print_status "Vendor assets missing, publishing now..."
         cd /var/www/html && /usr/local/bin/publish-vendor-assets
+    fi
+    
+    # Ensure OAuth keys exist
+    print_status "Checking OAuth keys..."
+    if [ ! -f "/var/www/html/storage/app/oauth-private.key" ] || [ ! -f "/var/www/html/storage/app/oauth-public.key" ]; then
+        print_status "OAuth keys missing, generating them..."
+        cd /var/www/html
+        su -s /bin/bash www-data -c "php artisan passport:keys --force" 2>/dev/null || {
+            print_warning "Passport keys generation failed, trying manual generation..."
+            # Create keys directory if it doesn't exist
+            mkdir -p /var/www/html/storage/app
+            chown www-data:www-data /var/www/html/storage/app
+            
+            # Generate private key
+            openssl genrsa -out /var/www/html/storage/app/oauth-private.key 2048 2>/dev/null || true
+            chown www-data:www-data /var/www/html/storage/app/oauth-private.key
+            chmod 600 /var/www/html/storage/app/oauth-private.key
+            
+            # Generate public key
+            openssl rsa -in /var/www/html/storage/app/oauth-private.key -pubout -out /var/www/html/storage/app/oauth-public.key 2>/dev/null || true
+            chown www-data:www-data /var/www/html/storage/app/oauth-public.key
+            chmod 600 /var/www/html/storage/app/oauth-public.key
+            
+            print_status "OAuth keys generated manually"
+        }
+    else
+        print_status "OAuth keys found, setting permissions..."
+        chown www-data:www-data /var/www/html/storage/app/oauth-private.key /var/www/html/storage/app/oauth-public.key
+        chmod 600 /var/www/html/storage/app/oauth-private.key /var/www/html/storage/app/oauth-public.key
     fi
     
     # Ensure storage routes are properly configured

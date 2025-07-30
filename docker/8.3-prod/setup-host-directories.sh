@@ -73,6 +73,11 @@ $SUDO mkdir -p "$BASE_DIR/logs/supervisor"
 print_status "Setting ownership to 1000:1000 (www-data in container)..."
 $SUDO chown -R 1000:1000 "$BASE_DIR"
 
+# Ensure all subdirectories are accessible
+print_status "Ensuring all subdirectories are accessible..."
+$SUDO find "$BASE_DIR" -type d -exec chmod 755 {} \;
+$SUDO find "$BASE_DIR" -type f -exec chmod 644 {} \;
+
 # Set proper permissions
 print_status "Setting directory permissions..."
 $SUDO chmod -R 755 "$BASE_DIR"
