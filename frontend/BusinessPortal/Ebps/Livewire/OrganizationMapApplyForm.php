@@ -206,11 +206,14 @@ class OrganizationMapApplyForm extends Component
     }
 
     public function loadWards(): void
-    {
-        $localBody = getLocalBodies(localBodyId: $this->customerLandDetail?->local_body_id)?->first()
-            ?? getLocalBodies(key(getSettingWithKey('palika-local-body')))?->first();
-
-        $this->wards = $localBody ? getWards($localBody->id) : [];
+    {  
+        $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
+        
+        if ($localBody) {
+            $this->wards = getWards($localBody->wards);
+        } else {
+            $this->wards = [];
+        }
     }
 
 

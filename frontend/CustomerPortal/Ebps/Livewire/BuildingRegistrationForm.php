@@ -120,6 +120,8 @@ class BuildingRegistrationForm extends Component
             'mapApply.no_of_rooms' => ['required'],
             'mapApply.storey_no' => ['required'],
             'mapApply.year_of_house_built' => ['required'],
+            'mapApply.usage' => ['nullable'],
+            'mapApply.building_structure' => ['nullable'],
 
             'mapApply.mobile_no' => ['nullable'],
             'mapApply.province_id' => ['required'],
@@ -195,7 +197,7 @@ class BuildingRegistrationForm extends Component
     }
 
     public function render(){
-        return view("BusinessPortal.Ebps::livewire.building-registration-form");
+        return view("CustomerPortal.Ebps::livewire.building-registration-form");
     }
 
     public function isSameAsLandOwner()
@@ -310,7 +312,8 @@ class BuildingRegistrationForm extends Component
 
         if ($this->action === Action::UPDATE) {
             $this->customer_id = $this->mapApply->customer_id;
-            $this->landOwnerPhoto = $this->mapApply->signature;
+            
+             $this->landOwnerPhoto = $this->mapApply->signature;
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
             $this->loadFourBoundaries($this->customerLandDetail);

@@ -1,4 +1,4 @@
-<form>
+<div>
     <div class="card-body">
         <div class="row">
 
@@ -742,8 +742,8 @@
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary" wire:click="save">{{ __('ebps::ebps.save') }}</button>
+        <button class="btn btn-primary" wire:click="save">{{ __('ebps::ebps.save') }}</button>
         <a href="{{ route('admin.ebps.map_applies.index') }}" wire:loading.attr="disabled"
             class="btn btn-danger">{{ __('ebps::ebps.back') }}</a>
     </div>
-</form>
+</div>

@@ -177,13 +177,13 @@
                                             <div class="btn-group">
 
                                                 @if ($item['type'] === 'Organization')
-                                                    <a href="{{ route('admin.ebps.map_applies.show-organization-template', ['organizationId' => $item['organization_id'], 'mapApplyId' => $item['map_apply_id']]) }}"
+                                                    <a href="{{ route('admin.ebps.show-organization-template', ['organizationId' => $item['organization_id'], 'mapApplyId' => $item['map_apply_id']]) }}"
                                                         class="btn btn-sm btn-outline-primary" title="View Details"
                                                         target="_blank" rel="noopener noreferrer">
                                                         <i class="bx bx-show"></i>
                                                     </a>
                                                 @else
-                                                    <a href="{{ route('admin.ebps.map_applies.show-template', ['houseOwnerId' => $item['id']]) }}"
+                                                    <a href="{{ route('admin.ebps.show-template', ['houseOwnerId' => $item['id']]) }}"
                                                         class="btn btn-sm btn-outline-primary" title="View Details"
                                                         target="_blank" rel="noopener noreferrer">
                                                         <i class="bx bx-show"></i>

@@ -13,13 +13,29 @@
                 <div class='form-group'>
                     <label class="form-label" for='applied_date'>{{ __('Applied Date') }}</label>
                     <input wire:model='mapApply.applied_date' id="applied_date" name='applied_date' type='text'
-                        class='nepali-date form-control' placeholder='{{__('ebps::ebps.enter_applied_date')}}'>
+                        class='nepali-date form-control' placeholder='{{ __('ebps::ebps.enter_applied_date') }}'>
                     <div>
                         @error('mapApply.applied_date')
                             <small class='text-danger'>{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
+            </div>
+
+            <div class='col-md-6 mb-3'>
+                <div class='form-group'>
+                    <div class="form-group">
+                        <label class="form-label" for="organization">{{ __('Select Organization') }}</label>
+                        <select wire:model="mapApplyDetail.organization_id" class="form-control" id="organization">
+                            <option value="">{{ __('ebps::ebps.select_organization') }}</option>
+                            @foreach ($organizations as $organization)
+                                <option value="{{ $organization->id }}">{{ $organization->org_name_ne }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
             <div class="divider divider-primary text-start text-primary font-14">
@@ -32,7 +48,7 @@
                     <input wire:model="uploadedImage" name="uploadedImage" type="file"
                         class="form-control {{ $errors->has('uploadedImage') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('uploadedImage2') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
-                        accept="image/*">
+                        accept="image/*,.pdf">
                     <div>
                         @error('uploadedImage')
                             <small class='text-danger'>{{ $message }}</small>
@@ -41,11 +57,17 @@
                             ($uploadedImage && $uploadedImage instanceof \Livewire\TemporaryUploadedFile) ||
                                 $uploadedImage instanceof \Illuminate\Http\File ||
                                 $uploadedImage instanceof \Illuminate\Http\UploadedFile)
-                            <img src="{{ $uploadedImage->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
-                                class="img-thumbnail mt-2" style="height: 300px;">
+                            <a href="{{ $uploadedImage->temporaryUrl() }}" target="_blank"
+                                class="btn btn-outline-primary btn-sm">
+                                <i class="bx bx-file"></i>
+                                {{ __('yojana::yojana.view_uploaded_file') }}
+                            </a>
                         @elseif (!empty(trim($uploadedImage)))
-                            <img src="{{ customAsset(config('src.Ebps.ebps.path'), $uploadedImage) }}"
-                                alt="Existing Image 2" class="img-thumbnail mt-2" style="height: 300px;">
+                            <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $uploadedImage, 'local', 'tempUrl') }}"
+                                target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bx bx-file"></i>
+                                {{ __('yojana::yojana.view_uploaded_file') }}
+                            </a>
                         @endif
                     </div>
                 </div>
@@ -175,7 +197,8 @@
                                             <label for='title'>{{ __('ebps::ebps.title') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.title'
                                                 name='fourBoundaries.{{ $index }}.title' type='text'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_title') }}">
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_title') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.title')
@@ -212,7 +235,8 @@
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
                                                 name='fourBoundaries.{{ $index }}.distance' type='number'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_distance') }}">
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.distance')
@@ -226,7 +250,8 @@
                                             <label for='lot_no'>{{ __('ebps::ebps.lot_no') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.lot_no'
                                                 name='fourBoundaries.{{ $index }}.lot_no' type='text'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.lot_no')
@@ -253,7 +278,8 @@
 
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
-                    <label class="form-label" for='construction_type_id'>{{ __('ebps::ebps.construction_type') }}</label>
+                    <label class="form-label"
+                        for='construction_type_id'>{{ __('ebps::ebps.construction_type') }}</label>
                     <select wire:model='mapApply.construction_type_id' name='construction_type_id'
                         class='form-control p-2 border-2 rounded-md focus:ring-2 focus:ring-indigo-400'>
                         <option value="" hidden>{{ __('Select Construction Type') }}</option>
@@ -285,57 +311,59 @@
                 </div>
             </div>
 
-            <div class="divider divider-primary text-start text-primary font-14">
-                <div class="divider-text">{{ __('ebps::ebps.required_documents') }}</div>
-            </div>
+            @if ($action === App\Enums\Action::CREATE)
+                <div class="divider divider-primary text-start text-primary font-14">
+                    <div class="divider-text">{{ __('ebps::ebps.required_documents') }}</div>
+                </div>
 
-            @php
-                $reindexedFiles = array_values($uploadedFiles);
-
-            @endphp
-
-            @foreach ($mapDocuments as $index => $document)
                 @php
-                    $filePath = $reindexedFiles[$index] ?? null;
+                    $reindexedFiles = array_values($uploadedFiles);
+
                 @endphp
 
-                <div class="row">
-                    <div class='col-md-6 mb-3'>
-                        <div class='form-group'>
-                            <label class="form-label">{{ __('ebps::ebps.document_name') }}</label>
-                            <input type="text" class="form-control" value="{{ $document->title }}" readonly>
+                @foreach ($mapDocuments as $index => $document)
+                    @php
+                        $filePath = $reindexedFiles[$index] ?? null;
+                    @endphp
+
+                    <div class="row">
+                        <div class='col-md-6 mb-3'>
+                            <div class='form-group'>
+                                <label class="form-label">{{ __('ebps::ebps.document_name') }}</label>
+                                <input type="text" class="form-control" value="{{ $document->title }}" readonly>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class='col-md-6 mb-3'>
-                        <div class='form-group'>
-                            <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
-                            <input wire:model="uploadedFiles.{{ $index }}" type="file"
-                                class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
-                                accept="image/*">
-                            <div>
-                                @error("uploadedFiles.$index")
-                                    <small class='text-danger'>{{ $message }}</small>
-                                @enderror
+                        <div class='col-md-6 mb-3'>
+                            <div class='form-group'>
+                                <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
+                                <input wire:model="uploadedFiles.{{ $index }}" type="file"
+                                    class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
+                                    accept="image/*">
+                                <div>
+                                    @error("uploadedFiles.$index")
+                                        <small class='text-danger'>{{ $message }}</small>
+                                    @enderror
 
-                                @if (isset($reindexedFiles[$index]) &&
-                                        ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
-                                    <img src="{{ $reindexedFiles[$index]->temporaryUrl() }}"
-                                        alt="Uploaded Image Preview" class="img-thumbnail mt-2"
-                                        style="height: 300px;">
-                                @elseif (!empty($filePath))
-                                    {{-- Show existing file if no new file is uploaded --}}
-                                    <img src="{{ customAsset(config('src.Ebps.ebps.path'), $filePath) }}"
-                                        alt="Existing Document Preview" class="img-thumbnail mt-2"
-                                        style="height: 300px;">
-                                @endif
+                                    @if (isset($reindexedFiles[$index]) &&
+                                            ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
+                                                $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
+                                                $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
+                                        <img src="{{ $reindexedFiles[$index]->temporaryUrl() }}"
+                                            alt="Uploaded Image Preview" class="img-thumbnail mt-2"
+                                            style="height: 300px;">
+                                    @elseif (!empty($filePath))
+                                        {{-- Show existing file if no new file is uploaded --}}
+                                        <img src="{{ customAsset(config('src.Ebps.ebps.path'), $filePath) }}"
+                                            alt="Existing Document Preview" class="img-thumbnail mt-2"
+                                            style="height: 300px;">
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            @endif
 
             @if ($documents)
 

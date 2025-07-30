@@ -74,6 +74,7 @@ class CustomerMapApplyForm extends Component
     public $usageOptions;
     public $documents = [];
     public $options = [];
+    public $organizations;
 
     public function rules(): array
     {
@@ -164,6 +165,7 @@ class CustomerMapApplyForm extends Component
         $this->mapApplyDetail = new MapApplyDetail();
         $this->houseOwnerDetail = $houseOwnerDetail;
         $this->organizationDetail = $organizationDetail;
+        $this->organizations  = Organization::whereNull('deleted_at')->get();
         $this->mapApply = $mapApply->load('landDetail', 'customer');
         $this->action = $action;
         $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
@@ -278,6 +280,7 @@ class CustomerMapApplyForm extends Component
         $landDto = CustomerLandDetailDto::fromLiveWireModel($this->customerLandDetail);
         $mapApplyDetailDto = MapApplyDetailAdminDto::fromLiveWireModel($this->mapApplyDetail);
         $houseOwnerDto = HouseOwnerDetailDto::fromLiveWireModel($this->houseOwnerDetail);
+     
 
         $this->organizationDetail->organization_id = $this->mapApplyDetail->organization_id;
         $organization = Organization::where('id', $this->organizationDetail->organization_id)->first();
@@ -305,7 +308,7 @@ class CustomerMapApplyForm extends Component
                     }
 
                 $houseOwner = $ownerDetail->store( $houseOwnerDto);
-                $this->mapApply->house_owner_id = $houseOwner->id;
+                $dto->house_owner_id = $houseOwner->id;
                 $dto->land_detail_id = $landDetail->id;
                 $mapApply = $mapApplyService->store($dto);
 

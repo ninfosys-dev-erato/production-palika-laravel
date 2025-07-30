@@ -126,9 +126,9 @@
             <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
         </a>
 
-        <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
+        {{-- <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
             <i class="bx bx-printer"></i> Download PDF
-        </button>
+        </button> --}}
     </div>
 
     <div class="container mb-5 p-0">
@@ -373,10 +373,10 @@
                         <div class="data-row">
                             <div class="data-label">३.१० फोटो:</div>
                             <div class="data-value">
-                                <a href="{{ $mapApply->landOwner->photo }}" target="_blank"
-                                    class="btn btn-outline-primary btn-sm mt-2">
+                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $mapApply->landOwner->photo, 'local', 'tempUrl') }}"
+                                    target="_blank" class="btn btn-outline-primary btn-sm mt-2">
                                     <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
-                                </a>                                
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -440,10 +440,13 @@
                         <div class="data-row">
                             <div class="data-label">३.१० फोटो:</div>
                             <div class="data-value">
-                                <a href="{{ $mapApply->houseOwner->photo }}" target="_blank"
-                                    class="btn btn-outline-primary btn-sm mt-2">
+
+
+                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $mapApply->houseOwner->photo, 'local', 'tempUrl') }}"
+                                    target="_blank" class="btn btn-outline-primary btn-sm mt-2">
                                     <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
                                 </a>
+
 
                             </div>
                         </div>
@@ -518,6 +521,32 @@
                         </table>
                     </div>
                 </div>
+
+
+                <div class="section-subheader">
+                    <i class="fas fa-user me-2"></i> {{ __('संस्था/परामर्शदाताहरु') }}
+                </div>
+                <div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('परामर्शदाता') }}:</div>
+                        <div class="data-value">{{ $organization->org_name_ne ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('इमेल') }}:</div>
+                        <div class="data-value">{{ $organization->org_email ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('फोन नम्बर') }}:</div>
+                        <div class="data-value">{{ $organization->org_contact ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ठेगाना') }}:</div>
+                        <div class="data-value">
+                            {{ $organization->localBody->title . ', ' . $organization->district->title ?? 'N/A' }}
+                        </div>
+                    </div>
+                </div>
+
                 <div class="section-subheader mt-4">
                     <i class="fas fa-signature me-2"></i> {{ __('ebps::ebps.other_documents') }}
                 </div>
@@ -548,14 +577,14 @@
                     @empty
                         <div class="col-12 text-center text-muted fst-italic">
                             <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps._no_documents_uploaded') }}.
+                            {{ __('ebps::ebps.no_documents_uploaded') }}.
                         </div>
                     @endforelse
                 </div>
 
 
                 <!-- Certification Section -->
-                <div class="mt-5 pt-4 border-top">
+                <!-- <div class="mt-5 pt-4 border-top">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="border p-4 bg-light">
@@ -581,7 +610,7 @@
                             </div>
                         </div> --}}
                     </div>
-                </div>
+                </div> -->
             </div>
 
 

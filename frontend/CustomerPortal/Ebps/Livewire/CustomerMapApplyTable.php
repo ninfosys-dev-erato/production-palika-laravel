@@ -86,9 +86,9 @@ class CustomerMapApplyTable extends DataTableComponent
                 $buttons .= $edit;
                 $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="परामर्शदाता छान्नुहोस्"><i class="bx bx-trash"></i></button>&nbsp;';
                 $buttons .= $delete;
-                $organization = '<button type="button" class="btn btn-secondary btn-sm" wire:click="chooseOrganization(' . $row->id . ')"  data-bs-toggle="modal"
-                                data-bs-target="#indexModal"><i class="bx bx-building"></i></button>&nbsp;';
-                $buttons .= $organization;
+                // $organization = '<button type="button" class="btn btn-secondary btn-sm" wire:click="chooseOrganization(' . $row->id . ')"  data-bs-toggle="modal"
+                //                 data-bs-target="#indexModal"><i class="bx bx-building"></i></button>&nbsp;';
+                // $buttons .= $organization;
 
                 $moveForward = '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="अगाडि बढ्नुहोस्"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
                 $buttons .= $moveForward;

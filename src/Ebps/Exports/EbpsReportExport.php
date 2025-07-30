@@ -54,25 +54,25 @@ class EbpsReportExport implements FromCollection, WithHeadings, WithMapping, Sho
     public function map($row): array
     {
         $data = [
-            $row->submission_id,
-            $row->fiscalYear->year,
+            $row->submission_id ?? '-',
+            $row->fiscalYear?->year ?? '-',
         ];
 
         // if ($this->selectedApplicationType != \Src\Ebps\Enums\ApplicationTypeEnum::BUILDING_DOCUMENTATION->value) {
             $data[] = \Src\Ebps\Enums\PurposeOfConstructionEnum::tryFrom($row->usage)?->label() ?? '-';
-            $data[] = $row->constructionType->title;
+            $data[] = $row->constructionType?->title ?? '-';
         // }
 
         if ($this->selectedApplicationType === \Src\Ebps\Enums\ApplicationTypeEnum::OLD_APPLICATIONS->value) {
-            $data[] = $row->registration_no;
-            $data[] = $row->registration_date;
+            $data[] = $row->registration_no ?? '-';
+            $data[] = $row->registration_date ?? '-';
         }
 
-        $data[] = $row->full_name;
-        $data[] = $row->mobile_no;
-        $data[] = ($row->localBody?->title ?? '') . '-' . $row->ward_no;
-        $data[] = \Src\Ebps\Enums\ApplicationTypeEnum::from($row->application_type)->label();
-        $data[] = $row->applied_date;
+        $data[] = $row->full_name ?? '-';
+        $data[] = $row->mobile_no ?? '-';
+        $data[] = ($row->localBody?->title ?? '') . '-' . ($row->ward_no ?? '');
+        $data[] = \Src\Ebps\Enums\ApplicationTypeEnum::tryFrom($row->application_type)?->label() ?? '-';
+        $data[] = $row->applied_date ?? '-';
 
         return $data;
     }

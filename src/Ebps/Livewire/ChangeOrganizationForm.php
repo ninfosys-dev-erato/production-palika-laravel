@@ -98,7 +98,7 @@ class ChangeOrganizationForm extends Component
             $service->store($dto);
            
             $this->successFlash(__('ebps::ebps.application_updated_successfully'));
-            return redirect()->route('admin.ebps.map_applies.show-organization-template', ['organizationId' => $organization->id, 'mapApplyId' => $this->mapApply->id]);
+            return redirect()->route('admin.ebps.show-organization-template', ['organizationId' => $organization->id, 'mapApplyId' => $this->mapApply->id]);
            
         }  catch (\Exception $e) {
             logger($e);
