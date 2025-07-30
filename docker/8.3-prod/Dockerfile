@@ -121,6 +121,7 @@ COPY docker/8.3-prod/publish-vendor-assets.sh /usr/local/bin/publish-vendor-asse
 COPY docker/8.3-prod/emergency-asset-fix.sh /usr/local/bin/emergency-asset-fix
 COPY docker/8.3-prod/fix-storage-permissions.sh /usr/local/bin/fix-storage-permissions
 COPY docker/8.3-prod/fix-412-error.sh /usr/local/bin/fix-412-error
+COPY docker/8.3-prod/fix-private-storage.sh /usr/local/bin/fix-private-storage
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
@@ -128,7 +129,8 @@ RUN chmod +x /usr/local/bin/start-container \
     && chmod +x /usr/local/bin/publish-vendor-assets \
     && chmod +x /usr/local/bin/emergency-asset-fix \
     && chmod +x /usr/local/bin/fix-storage-permissions \
-    && chmod +x /usr/local/bin/fix-412-error
+    && chmod +x /usr/local/bin/fix-412-error \
+    && chmod +x /usr/local/bin/fix-private-storage
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/

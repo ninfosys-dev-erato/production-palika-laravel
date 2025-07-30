@@ -270,6 +270,25 @@ EOF
     fi
 }
 
+# Function to fix private storage access
+fix_private_storage() {
+    print_status "Fixing private storage file access..."
+    
+    # Run the dedicated private storage fix script
+    if [ -f "/usr/local/bin/fix-private-storage" ]; then
+        /usr/local/bin/fix-private-storage
+    else
+        print_warning "fix-private-storage script not found, applying fix manually..."
+        
+        # Set proper permissions on storage directories
+        chown -R www-data:www-data /var/www/html/storage
+        chmod -R 775 /var/www/html/storage
+        chmod -R 755 /var/www/html/storage/app/private
+        
+        print_status "✓ Storage permissions fixed"
+    fi
+}
+
 # Main function
 main() {
     case "${1:-check}" in
@@ -299,6 +318,9 @@ main() {
         "fix-412")
             fix_412_error
             ;;
+        "fix-private")
+            fix_private_storage
+            ;;
         "full")
             print_status "Running full emergency fix..."
             check_current_state
@@ -306,6 +328,7 @@ main() {
             create_assets_manually
             fix_storage_config
             fix_412_error
+            fix_private_storage
             restart_nginx
             test_nginx_access
             test_storage_access
@@ -320,7 +343,8 @@ main() {
             echo "  storage    - Check storage configuration only"
             echo "  storage-fix - Fix storage configuration and test access"
             echo "  fix-412    - Fix 412 error for customer-kyc signed URLs"
-            echo "  full       - Run complete emergency fix procedure (includes 412 fix)"
+            echo "  fix-private - Fix private storage file access permissions"
+            echo "  full       - Run complete emergency fix procedure (includes all fixes)"
             echo "  help       - Show this help message"
             ;;
         *)
