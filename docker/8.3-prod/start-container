@@ -97,24 +97,46 @@ EOF
     # Set proper permissions for all storage directories
     print_status "Setting storage permissions..."
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
+    chown -R www-data:www-data /var/www/html/public 2>/dev/null || true
     chmod -R 775 /var/www/html/storage 2>/dev/null || true
     chmod -R 775 /var/www/html/bootstrap/cache 2>/dev/null || true
+    chmod -R 755 /var/www/html/public 2>/dev/null || true
     
     # Create storage symlink for Laravel
     print_status "Creating storage symlink..."
     rm -f /var/www/html/public/storage 2>/dev/null || true
-    cd /var/www/html && php artisan storage:link --force 2>/dev/null || {
-        print_warning "Artisan command failed, creating symlink manually..."
-        ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
+    
+    # Change to www-data user for symlink creation to avoid permission issues
+    su -s /bin/bash www-data -c "cd /var/www/html && php artisan storage:link --force" 2>/dev/null || {
+        print_warning "Artisan command failed, creating symlink manually as www-data user..."
+        su -s /bin/bash www-data -c "ln -sf /var/www/html/storage/app/public /var/www/html/public/storage" 2>/dev/null || {
+            print_warning "www-data symlink failed, trying as root..."
+            ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
+            chown -h www-data:www-data /var/www/html/public/storage 2>/dev/null || true
+        }
     }
     
     # Verify storage symlink exists and is correct
     if [ -L "/var/www/html/public/storage" ]; then
-        print_status "Storage symlink created successfully"
+        print_status "✓ Storage symlink exists"
         print_status "Symlink points to: $(readlink /var/www/html/public/storage)"
     else
-        print_error "Failed to create storage symlink"
+        print_error "✗ Storage symlink failed to create"
     fi
+    
+    # Clear Laravel caches to avoid service provider issues
+    print_status "Clearing Laravel caches..."
+    cd /var/www/html
+    su -s /bin/bash www-data -c "php artisan config:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan route:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan view:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan cache:clear" 2>/dev/null || true
+    
+    # Rebuild caches
+    print_status "Rebuilding Laravel caches..."
+    su -s /bin/bash www-data -c "php artisan config:cache" 2>/dev/null || print_warning "Config cache failed"
+    su -s /bin/bash www-data -c "php artisan route:cache" 2>/dev/null || print_warning "Route cache failed"
+    su -s /bin/bash www-data -c "php artisan view:cache" 2>/dev/null || print_warning "View cache failed"
     
     # Set up log rotation cron job
     print_status "Setting up log rotation..."

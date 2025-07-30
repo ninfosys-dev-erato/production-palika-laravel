@@ -141,6 +141,11 @@ RUN rm -rf /var/www/html/docker \
 # Install Composer dependencies
 RUN cd /var/www/html && composer install --optimize-autoloader --no-dev --no-interaction
 
+# Remove development dependencies and debugbar references from production
+RUN cd /var/www/html \
+    && composer remove barryvdh/laravel-debugbar --no-interaction --ignore-platform-reqs 2>/dev/null || true \
+    && composer dump-autoload --optimize
+
 # Security: Remove signature validation from Livewire file upload controllers
 RUN sed -i '/abort_unless(request()->hasValidSignature(), 401);/d' /var/www/html/vendor/livewire/livewire/src/Features/SupportFileUploads/FileUploadController.php 2>/dev/null || true
 RUN sed -i '/abort_unless(request()->hasValidSignature(), 401);/d' /var/www/html/vendor/livewire/livewire/src/Features/SupportFileUploads/FilePreviewController.php 2>/dev/null || true
