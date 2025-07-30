@@ -14,28 +14,18 @@
                     </h5>
                     <div class="d-flex align-items-center gap-3">
                         <div class="form-check form-switch d-flex align-items-center gap-2 pe-3 border-end">
-                            <span class="text-muted fw-semibold">{{ __('ebps::ebps.edit') }}</span>
+                            {{-- <span class="text-muted fw-semibold">{{ __('Edit') }}</span> --}}
                             <input type="checkbox" class="form-check-input toggle-switch" id="previewToggle"
                                 {{ $preview ? 'checked' : '' }} wire:click="togglePreview">
-                            <span class="text-muted fw-semibold">{{ __('ebps::ebps.preview') }}</span>
+                            <span class="text-muted fw-semibold">{{ __('ebps::ebps.Preview') }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            @php
-                $isCompletelyEmpty = true;
-                foreach ($data as $group) {
-                    if (!empty(array_filter($group))) {
-                        $isCompletelyEmpty = false;
-                        break;
-                    }
-                }
-            @endphp
 
             <!-- Main Tabs Navigation -->
             <ul class="nav nav-tabs nav-tabs-modern" role="tablist">
-
-                @if (empty($isCompletelyEmpty))
+                @if (empty($data))
                     <li class="nav-item" role="presentation">
                         <button class="nav-link {{ $activeTab === 'form' ? 'active' : '' }} fw-semibold px-4 py-3" 
                             wire:click="switchTab('form')" type="button" role="tab">
@@ -43,6 +33,7 @@
                         </button>
                     </li>
                 @endif
+
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'preview' ? 'active' : '' }} fw-semibold px-4 py-3" 
                         wire:click="switchTab('preview')" type="button" role="tab">
@@ -53,7 +44,7 @@
 
             <div class="tab-content p-0">
                 <!-- Form Input Tab -->
-                @if (empty($isCompletelyEmpty))
+                @if (empty($data))
                     <div class="tab-pane fade {{ $activeTab === 'form' ? 'show active' : '' }}" id="form-content">
                         <div class="p-4">
                             @foreach ($letters as $formId => $letterContent)
@@ -125,71 +116,75 @@
                 <!-- Preview/Edit Tab -->
                 <div class="tab-pane fade {{ $activeTab === 'preview' ? 'show active' : '' }}" id="preview-content">
                     <div class="p-4">
-                        @foreach ($letters as $formId => $letterContent)
-                            @php
-                                $form = Src\Settings\Models\Form::where('id', $formId)->first();
-                                $formTitle = $form->title;
-                            @endphp
+                    @foreach ($letters as $formId => $letterContent)
+                        @php
+                            $form = Src\Settings\Models\Form::where('id', $formId)->first();
+                            $formTitle = $form->title;
+                        @endphp
 
-                            <div class="mb-4">
-                                <div class="section-title d-flex align-items-center mb-3">
-                                    <div class="section-line bg-primary"></div>
-                                    <h6 class="mb-0 text-primary fw-bold">{{ $formTitle }}</h6>
+                        <div class="mb-4">
+                            <div class="section-title d-flex align-items-center mb-3">
+                                <div class="section-line bg-primary"></div>
+                                <h6 class="mb-0 text-primary fw-bold">{{ $formTitle }}</h6>
+                            </div>
+
+                            <div class="card shadow-sm">
+                                <div
+                                    class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 fw-bold">
+                                        <i class="bx bx-edit me-2"></i>{{ __('ebps::ebps.document_content') }}
+                                    </h6>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary btn-sm" type="button"
+                                            wire:loading.attr="disabled" wire:click="save({{ $formId }})">
+                                            <i class="bx bx-save me-1"></i> {{ __('ebps::ebps.save') }}
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm" type="button"
+                                            wire:loading.attr="disabled" wire:click="resetLetter({{ $formId }})">
+                                            <i class="bx bx-reset me-1"></i> {{ __('ebps::ebps.reset') }}
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div class="card shadow-sm">
-                                    <div
-                                        class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0 fw-bold">
-                                            <i class="bx bx-edit me-2"></i>{{ __('ebps::ebps.document_content') }}
-                                        </h6>
-                                        <div class="btn-group">
-                                            <button class="btn btn-primary btn-sm" type="button"
-                                                wire:loading.attr="disabled" wire:click="save({{ $formId }})">
-                                                <i class="bx bx-save me-1"></i> {{ __('ebps::ebps.save') }}
-                                            </button>
-                                            <button class="btn btn-outline-secondary btn-sm" type="button"
-                                                wire:loading.attr="disabled"
-                                                wire:click="resetLetter({{ $formId }})">
-                                                <i class="bx bx-reset me-1"></i> {{ __('ebps::ebps.reset') }}
-                                            </button>
+                                <div class="card-body p-0">
+                                    <div class="editor-container {{ $preview ? 'd-none' : '' }}">
+                                        <div class="p-3 bg-light border-bottom d-flex align-items-center">
+                                            <span class="badge bg-primary me-2">
+                                                <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.edit_mode') }}
+                                            </span>
+                                            <small
+                                                class="text-muted">{{ __('ebps::ebps.make_changes_to_your_document_here') }}</small>
                                         </div>
+                                        <div class="p-4">
+                                            {{-- <x-form.ck-editor-input label=""
+                                                    id="map_letter_{{ $form->title }}"
+                                                    name="letters[{{ $formId }}]" :value="$letterContent" /> --}}
+                                            <x-form.ck-editor-input id="map_letter_{{ $formId }}"
+                                                name="letters[{{ $formId }}]" :value="$letters[$formId] ?? ''" />
+                                        </div>
+
+                                        />
                                     </div>
 
-                                    <div class="card-body p-0">
-                                        <div class="editor-container {{ $preview ? 'd-none' : '' }}">
-                                            <div class="p-3 bg-light border-bottom d-flex align-items-center">
-                                                <span class="badge bg-primary me-2">
-                                                    <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.edit_mode') }}
-                                                </span>
-                                                <small
-                                                    class="text-muted">{{ __('ebps::ebps.make_changes_to_your_document_here') }}</small>
-                                            </div>
-                                            <div class="p-4">
-                                                <x-form.ck-editor-input id="map_letter_{{ $formId }}"
-                                                    name="letters[{{ $formId }}]" :value="$letters[$formId] ?? ''" />
-                                            </div>
+                                    <div class="preview-container {{ !$preview ? 'd-none' : '' }}">
+                                        <div class="p-3 bg-light border-bottom d-flex align-items-center">
+                                            <span class="badge bg-success me-2">
+                                                <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.preview_mode') }}
+                                            </span>
+                                            <small
+                                                class="text-muted">{{ __('ebps::ebps.this_is_how_your_document_will_appear') }}</small>
                                         </div>
-
-                                        <div class="preview-container {{ !$preview ? 'd-none' : '' }}">
-                                            <div class="p-3 bg-light border-bottom d-flex align-items-center">
-                                                <span class="badge bg-success me-2">
-                                                    <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.preview_mode') }}
-                                                </span>
-                                                <small
-                                                    class="text-muted">{{ __('ebps::ebps.this_is_how_your_document_will_appear') }}</small>
-                                            </div>
-                                            <div class="p-4 preview-content">
-                                                {!! $letterContent !!}
-                                            </div>
+                                        <div class="p-4 preview-content">
+                                            {!! $letterContent !!}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <hr class="my-4">
-                        @endforeach
-                    </div>
+                        </div>
+                        <hr class="my-4">
+                    @endforeach
                 </div>
+                {{-- </div> --}}
             </div>
         </div>
     </div>

@@ -25,6 +25,7 @@ class OrganizationMapApplyStep extends Component
     public array $data = [];
     public bool $edit = false;
     public bool $generate = false;
+    public string $activeTab = 'preview';
 
     public function mount(MapStep $mapStep, MapApply $mapApply)
     {
@@ -41,47 +42,56 @@ class OrganizationMapApplyStep extends Component
             }
 
             $mapApplyStep = MapApplyStep::with('mapApplyStepTemplates')
-                ->where('map_step_id', $mapStep->id)
+                ->where('map_step_id', $this->mapStep->id)
+                ->where('map_apply_id', $this->mapApply->id)
                 ->first();
 
-            $mapApplyStepTemplate = $mapApplyStep 
+            $mapApplyStepTemplate = $mapApplyStep
                 ? $mapApplyStep->mapApplyStepTemplates->firstWhere('form_id', $form->id)
                 : null;
 
-            $this->letters[$form->id] = $mapApplyStepTemplate 
-                ? $mapApplyStepTemplate->template 
+            $this->letters[$form->id] = $mapApplyStepTemplate
+                ? $mapApplyStepTemplate->template
                 : $this->resolveMapStepTemplate($this->mapApply, $this->mapStep, $form);
         }
     }
 
+    
     public function setFields(int|string $formId): void
-    {
-        if (!is_numeric($formId)) {
-            $this->data[$formId] = [];
-            return;
-        }
-
-        $form = Form::find($formId);
-        if (!$form || empty($form->fields)) {
-            $this->data[$formId] = [];
-            return;
-        }
-
-        $this->data[$formId] = collect(json_decode($form->fields, true))->mapWithKeys(function ($field) {
-            if ($field['type'] === "table") {
-                $field['fields'] = [];
-                $row = [];
-                foreach ($field as $key => $values) {
-                    if (is_numeric($key)) {
-                        $row[$values['slug']] = $values;
-                        unset($field[$key]);
-                    }
-                }
-                $field['fields'][] = $row;
-            }
-            return [$field['slug'] => $field];
-        })->toArray();
+{
+    if (!is_numeric($formId)) {
+        $this->data[$formId] = [];
+        return;
     }
+
+    $form = Form::find($formId);
+    if (!$form || empty($form->fields)) {
+        $this->data[$formId] = [];
+        return;
+    }
+
+    $this->data[$formId] = collect(json_decode($form->fields, true))->mapWithKeys(function ($field) {
+        // Skip if 'type' is missing or empty
+        if (empty($field['type'])) {
+            return [];
+        }
+
+        // Handle table type fields
+        if ($field['type'] === "table") {
+            $field['fields'] = [];
+            $row = [];
+            foreach ($field as $key => $values) {
+                if (is_numeric($key)) {
+                    $row[$values['slug']] = $values;
+                    unset($field[$key]);
+                }
+            }
+            $field['fields'][] = $row;
+        }
+
+        return [$field['slug'] => $field];
+    })->toArray();
+}
 
 
     public function resetLetter($formId)
@@ -91,7 +101,7 @@ class OrganizationMapApplyStep extends Component
         if (isset($this->letters[$formId])) {
             $this->letters[$formId] = $this->resolveMapStepTemplate($this->mapApply, $this->mapStep, $form);
             $this->dispatch('update-editor-' . $formId, ['content' => $this->letters[$formId]]);
-            $this->successToast(__('Reset Successfully.'));
+            $this->successToast(__('ebps::ebps.reset_successfully.'));
         }
     }
 
@@ -99,10 +109,18 @@ class OrganizationMapApplyStep extends Component
     {
         $this->letters[(int)$formId] = $content;
     }
-
+    
     public function togglePreview()
     {
         $this->preview = !$this->preview;
+       
+        if ($this->preview) {
+            $this->activeTab = 'preview';
+        }
+    }
+    public function switchTab($tab)
+    {
+        $this->activeTab = $tab;
     }
 
     public function save($formId, $data = null)
@@ -111,19 +129,20 @@ class OrganizationMapApplyStep extends Component
             $dto = MapApplyStepAdminDto::fromLiveWireModel($formId, $this->letters[$formId], $this->mapApply, $this->mapStep);
             $service->saveOrUpdate($dto, $data);
     
-        $this->successToast(__('Saved Successfully.'));
+            $this->successToast(__('Saved Successfully.'));
+            return redirect()->route('organization.ebps.map_apply.step', ['id'=>$this->mapApply->id]);
     }
 
     public function render()
     {
-        return view("BusinessPortal.Ebps::livewire.print");
+        return view("Ebps::livewire.map-applies.map-applies-print");
     }
 
     public function saveAndGenerate($formId)
     {
         $data = $this->getFormattedData($formId);
         $form = Form::find($formId);
-        
+
         $mapApplyStepTemplate = MapApplyStepTemplate::where('form_id', $formId)->first();
 
         if ($mapApplyStepTemplate) {
@@ -131,12 +150,14 @@ class OrganizationMapApplyStep extends Component
             'data' => json_encode($data),
             'template' => $this->letters[$formId]
         ]);
-        $this->successToast(__('Saved Successfully.'));
+        $this->successToast(__('ebps::ebps.saved_successfully.'));
         }else{
             $this->save($formId, $data);
         }
 
         $this->letters[$formId] = $this->resolveMapStepTemplate($this->mapApply, $this->mapStep, $form);
+
+
     }
 
     private function getFormattedData($formId): array
@@ -145,19 +166,15 @@ class OrganizationMapApplyStep extends Component
         if (!isset($this->data[$formId])) {
             return [];
         }
-    
+
         foreach ($this->data[$formId] as $fieldSlug => $fieldValue) {
             // Extract field definition for the given fieldSlug
             $fieldDefinition = collect($this->data[$formId])->firstWhere('slug', $fieldSlug);
-    
             $processedData[$fieldSlug] = array_merge($fieldDefinition ?? [], [
                 'value' => $fieldValue['value'] ?? null,
                 'label' => $fieldDefinition['label'] ?? 'Default Label',
             ]);
         }
-    
         return $processedData;
     }
-    
-   
 }
