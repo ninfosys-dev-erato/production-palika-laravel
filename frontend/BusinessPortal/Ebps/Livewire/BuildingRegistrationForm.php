@@ -416,7 +416,7 @@ class BuildingRegistrationForm extends Component
             }
             if($this->landOwnerDetail['local_body_id'])
             {
-                $this->geLandOwnerWards();          
+                $this->getLandOwnerWards();          
             }
                    
         }else{

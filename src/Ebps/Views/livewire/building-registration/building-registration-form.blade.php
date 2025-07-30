@@ -867,6 +867,7 @@
                     <label for="applicant_type" class="form-label">{{ __('ebps::ebps.applicant_type') }}</label>
                     <span class="text-danger">*</span>
                     <select wire:model="mapApply.applicant_type" name="applicant_type"
+                        wire:change='updateApplicantForm'
                         class="form-control {{ $errors->has('mapApply.applicant_type') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('mapApply.applicant_type') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
                         <option value="" selected hidden>{{ __('ebps::ebps.select_applicant_type') }}</option>
@@ -888,7 +889,8 @@
                     <label class="form-label" for='full_name'>{{ __('ebps::ebps.full_name') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model.defer='mapApply.full_name' id="full_name" name='full_name' type='text'
-                        class='form-control' placeholder='निवेदकको नाम'>
+                        class='form-control' placeholder='निवेदकको नाम'
+                        @if (!$showNameAndNumber) readonly @endif>
                     <div>
                         @error('mapApply.full_name')
                             <small class='text-danger'>{{ $message }}</small>
@@ -902,7 +904,7 @@
                     <label class="form-label" for='mobile_no'>{{ __('ebps::ebps.phone_number') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.mobile_no' id="mobile_no" name='mobile_no' type='number'
-                        class='form-control' placeholder='फोन नं.'>
+                        class='form-control' placeholder='फोन नं.' @if (!$showNameAndNumber) readonly @endif>
                     <div>
                         @error('mapApply.mobile_no')
                             <small class='text-danger'>{{ $message }}</small>
