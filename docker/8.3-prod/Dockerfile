@@ -125,6 +125,7 @@ COPY docker/8.3-prod/fix-412-error.sh /usr/local/bin/fix-412-error
 COPY docker/8.3-prod/fix-private-storage.sh /usr/local/bin/fix-private-storage
 COPY docker/8.3-prod/debug-access.sh /usr/local/bin/debug-access
 COPY docker/8.3-prod/fix-storage-routes.sh /usr/local/bin/fix-storage-routes
+COPY docker/8.3-prod/test-storage-access.sh /usr/local/bin/test-storage-access
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
@@ -135,7 +136,8 @@ RUN chmod +x /usr/local/bin/start-container \
     && chmod +x /usr/local/bin/fix-412-error \
     && chmod +x /usr/local/bin/fix-private-storage \
     && chmod +x /usr/local/bin/debug-access \
-    && chmod +x /usr/local/bin/fix-storage-routes
+    && chmod +x /usr/local/bin/fix-storage-routes \
+    && chmod +x /usr/local/bin/test-storage-access
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/

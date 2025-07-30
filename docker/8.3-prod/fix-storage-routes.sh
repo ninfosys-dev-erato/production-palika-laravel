@@ -37,6 +37,7 @@ sed -i '/\/\/.*storage.*customer-kyc/,/^$/d' routes/web.php 2>/dev/null || true
 sed -i '/\/\/.*storage.*private/,/^$/d' routes/web.php 2>/dev/null || true
 sed -i '/Route::get.*storage.*customer-kyc/,/^$/d' routes/web.php 2>/dev/null || true
 sed -i '/Route::get.*storage.*private/,/^$/d' routes/web.php 2>/dev/null || true
+sed -i '/\/\/.*STORAGE.*FILE.*ACCESS/,/^$/d' routes/web.php 2>/dev/null || true
 
 # Step 2: Add comprehensive storage routes
 print_status "Step 2: Adding comprehensive storage routes..."
@@ -208,6 +209,12 @@ else
     print_error "❌ Customer-KYC route not working"
     print_debug "Checking Laravel logs..."
     tail -n 10 /var/www/html/storage/logs/laravel.log 2>/dev/null || echo "No Laravel logs found"
+    
+    # Additional debugging
+    print_debug "Testing direct Laravel route..."
+    if curl -s -o /dev/null -w "%{http_code}" "http://localhost/index.php?path=images/test.jpg" | grep -q "200"; then
+        print_warning "⚠️  Laravel is responding but route might be wrong"
+    fi
 fi
 
 # Test private route
@@ -246,13 +253,24 @@ else
     pkill -HUP nginx 2>/dev/null || print_warning "Could not restart nginx"
 fi
 
+# Step 10: Additional debugging information
+print_status "Step 10: Debugging information..."
+print_debug "Checking route list..."
+su -s /bin/bash www-data -c "php artisan route:list | grep storage" 2>/dev/null || print_warning "Could not list routes"
+
+print_debug "Checking nginx configuration..."
+nginx -t 2>/dev/null && print_status "✅ Nginx configuration is valid" || print_error "❌ Nginx configuration has errors"
+
+print_debug "Checking file permissions..."
+ls -la /var/www/html/storage/app/private/customer-kyc/ 2>/dev/null || print_warning "Customer-KYC directory not accessible"
+
 print_status ""
 print_status "🎉 Storage Routes Fix Completed!"
 print_status "================================"
 print_status ""
 print_status "Summary of changes:"
 print_status "✅ Added comprehensive Laravel routes for storage access"
-print_status "✅ Updated nginx configuration to handle private storage"
+print_status "✅ Updated nginx configuration to handle private storage (moved before static rules)"
 print_status "✅ Set proper permissions on storage directories"
 print_status "✅ Cleared and rebuilt Laravel caches"
 print_status "✅ Tested all storage access routes"
@@ -266,4 +284,5 @@ print_status "If you're still getting 404 errors:"
 print_status "1. Check Laravel logs: tail -f /var/www/html/storage/logs/laravel.log"
 print_status "2. Verify file exists: ls -la /var/www/html/storage/app/private/customer-kyc/"
 print_status "3. Test route directly: curl -v http://localhost/storage/customer-kyc/your-file.jpg"
-print_status "4. Check route cache: php artisan route:list | grep storage" 
+print_status "4. Check route cache: php artisan route:list | grep storage"
+print_status "5. Check nginx error logs: tail -f /tmp/nginx-error.log" 
