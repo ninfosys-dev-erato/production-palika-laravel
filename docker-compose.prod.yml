@@ -87,10 +87,13 @@ services:
       # Memcached Settings
       MEMCACHED_HOST: "${MEMCACHED_HOST:-127.0.0.1}"
     volumes:
-      # Bind mount to specific host paths for persistent storage
-      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/app:/var/www/html/storage/app"
-      # For publicly accessible uploaded files/images
-      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/app/public:/var/www/html/public/storage"
+      # Mount entire storage directory to maintain Laravel's structure
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage:/var/www/html/storage"
+      # Mount bootstrap cache for performance
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/bootstrap/cache:/var/www/html/bootstrap/cache"
+      # Mount logs directory for external access
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/logs/nginx:/tmp/nginx-logs"
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/logs/php-fpm:/tmp/php-fpm-logs"
     networks:
       - laravel-network
     extra_hosts:

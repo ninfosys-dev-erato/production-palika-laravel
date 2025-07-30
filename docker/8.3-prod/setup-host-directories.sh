@@ -55,9 +55,11 @@ check_permissions
 print_status "Creating base directory: $BASE_DIR"
 $SUDO mkdir -p "$BASE_DIR"
 
-# Create all required directories
+# Create all required directories including customer-kyc
 print_status "Creating directory structure..."
 $SUDO mkdir -p "$BASE_DIR/storage/app/public"
+$SUDO mkdir -p "$BASE_DIR/storage/app/private"
+$SUDO mkdir -p "$BASE_DIR/storage/app/private/customer-kyc/images"
 $SUDO mkdir -p "$BASE_DIR/storage/logs"
 $SUDO mkdir -p "$BASE_DIR/storage/framework/cache/data"
 $SUDO mkdir -p "$BASE_DIR/storage/framework/sessions"
@@ -77,6 +79,10 @@ $SUDO chmod -R 755 "$BASE_DIR"
 $SUDO chmod -R 775 "$BASE_DIR/storage"
 $SUDO chmod -R 775 "$BASE_DIR/bootstrap/cache"
 $SUDO chmod -R 755 "$BASE_DIR/logs"
+
+# Special permissions for customer-kyc directories
+print_status "Setting customer-kyc directory permissions..."
+$SUDO chmod -R 755 "$BASE_DIR/storage/app/private/customer-kyc"
 
 # Create necessary files
 print_status "Creating log files..."
@@ -99,6 +105,9 @@ print_status "Host directory setup completed successfully!"
 print_status "Base directory: $BASE_DIR"
 print_status "Directory structure:"
 print_status "  - storage/ (775 permissions)"
+print_status "    - app/public/ (for public files)"
+print_status "    - app/private/ (for private files)"
+print_status "    - app/private/customer-kyc/images/ (for customer KYC images)"
 print_status "  - bootstrap/cache/ (775 permissions)"
 print_status "  - logs/ (755 permissions)"
 print_status ""
