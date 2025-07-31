@@ -23,7 +23,7 @@ class GrievanceAssignHistoryResource extends JsonResource
             'old_status' => $this->old_status,
             'new_status' => $this->new_status,
             'documents' => $this->documents ? array_map(
-                fn($document) => ImageServiceFacade::getImage($documentPath, $document, 'local'),
+                fn($document) => ImageServiceFacade::getImage($documentPath, $document, getStorageDisk('private')),
                 $this->documents
             ) : null,
             'suggestions' => $this->suggestions,

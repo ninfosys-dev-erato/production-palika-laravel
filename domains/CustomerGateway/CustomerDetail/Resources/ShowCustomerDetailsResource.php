@@ -23,7 +23,7 @@ class ShowCustomerDetailsResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'mobile_no' => $this->mobile_no,
-            'avatar' => $this->avatar? ImageServiceFacade::getImage($avatarPath, $this->avatar, 'local') : null,
+            'avatar' => $this->avatar? ImageServiceFacade::getImage($avatarPath, $this->avatar, getStorageDisk('private')) : null,
             'gender' => $this->gender,
             'language_preference' => $this->language_preference,
             'notification_preference' => $this->notification_preference,

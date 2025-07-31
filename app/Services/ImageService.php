@@ -14,9 +14,10 @@ class ImageService
     public static function compressAndStoreImage(
         File|TemporaryUploadedFile|UploadedFile $image,
         string $path,
-        string $disk = 'public',
+        string $disk = null,
         $desiredFilename = null
     ) {
+        $disk = $disk ?: getStorageDisk('public');
         // Store the image temporarily
         $tempPath = $image->store($path);
         $imageInstance = Image::read(Storage::path($tempPath));
@@ -27,8 +28,10 @@ class ImageService
 
         return $finalFilename;  // Return the final filename
     }
-    public static function base64Save($file, $path, string $disk = 'public', $desiredFilename = null): ?string
+    public static function base64Save($file, $path, string $disk = null, $desiredFilename = null): ?string
     {
+        $disk = $disk ?: getStorageDisk('public');
+        
         if ($file !== null) {
             $file_parts = explode(";base64,", $file);
 
@@ -63,8 +66,9 @@ class ImageService
         return null;
     }
 
-    public static function getImage(string $path, string $file, $disk = 'public'): ?string
+    public static function getImage(string $path, string $file, $disk = null): ?string
     {
+        $disk = $disk ?: getStorageDisk('public');
         $fullPath = "{$path}/{$file}";
         if (!Storage::disk($disk)->exists($fullPath)) {
             return false;

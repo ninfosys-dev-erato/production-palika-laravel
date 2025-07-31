@@ -14,8 +14,9 @@ class FileService
         string $path,
         $filename,
         string|File|TemporaryUploadedFile|PDF $file,
-        string $disk = 'public'
+        string $disk = null
     ) {
+        $disk = $disk ?: getStorageDisk('public');
         if ($file instanceof TemporaryUploadedFile) {
             $file = new File($file->getRealPath());
         }
@@ -52,11 +53,12 @@ class FileService
         return $filename;
     }
 
-    public function getFile(
-        string $path,
+        public function getFile(
+string $path,
         string $filename,
-        string $disk = 'public'
+        string $disk = null
     ) {
+        $disk = $disk ?: getStorageDisk('public');
         // Ensure path ends with a slash
         $path = rtrim($path, '/') . '/';
 
@@ -73,9 +75,10 @@ class FileService
     public function getTemporaryUrl(
         string $path,
         string $filename,
-        string $disk = 'private',
+        string $disk = null,
         int $minutes = 5
     ) {
+        $disk = $disk ?: getStorageDisk('private');
 
         // Ensure path ends with a slash
         $path = rtrim($path, '/') . '/';
@@ -101,8 +104,9 @@ class FileService
     public function deleteFile(
         string $path,
         string $filename,
-        string $disk = 'public'
+        string $disk = null
     ) {
+        $disk = $disk ?: getStorageDisk('public');
         // Ensure path ends with a slash
         $path = rtrim($path, '/') . '/';
 

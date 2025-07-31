@@ -60,7 +60,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(DomainServiceProvider::class);
         $this->app->register(FrontendServiceProvider::class);
         $this->app->register(PassportCustomConfigProvider::class);
-        $this->app->register(NotificationServiceProvider::class);        
+        $this->app->register(NotificationServiceProvider::class);
+        $this->app->register(BackblazeServiceProvider::class);        
     }
 
     /**

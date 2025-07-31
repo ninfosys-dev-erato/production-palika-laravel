@@ -162,7 +162,7 @@ class RecommendationHandler extends Controller
             'bill' => ['required']
         ]);
     
-        $data['bill'] = ImageServiceFacade::base64Save($data['bill'], config('src.Recommendation.recommendation.bill'), 'local');
+        $data['bill'] = ImageServiceFacade::base64Save($data['bill'], config('src.Recommendation.recommendation.bill'), getStorageDisk('private'));
         $applyRecommendation->bill =  $data['bill'];
         $applyRecommendation->ltax_ebp_code = $data['ltax_ebp_code'] ?? str_pad(mt_rand(0, 99999), 5, '0', STR_PAD_LEFT);
 

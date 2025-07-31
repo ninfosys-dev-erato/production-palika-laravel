@@ -406,8 +406,8 @@ function resolveTemplate(ApplyRecommendation $applyRecommendation): string
             '{{customer.document_issued_date_nepali}}' => $applyRecommendation->customer->kyc->document_issued_date_nepali,
             '{{customer.document_issued_date_english}}' => $applyRecommendation->customer->kyc->document_issued_date_english,
             '{{customer.document_number}}' => $applyRecommendation->customer->kyc->document_number,
-            '{{customer.document_image1}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $applyRecommendation->customer->kyc->document_image1, 'local')),
-            '{{customer.document_image2}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $applyRecommendation->customer->kyc->document_image2, 'local')),
+            '{{customer.document_image1}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $applyRecommendation->customer->kyc->document_image1, getStorageDisk('private'))),
+            '{{customer.document_image2}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $applyRecommendation->customer->kyc->document_image2, getStorageDisk('private'))),
             '{{customer.expiry_date_nepali}}' => $applyRecommendation->customer->kyc->expiry_date_nepali,
             '{{customer.expiry_date_english}}' => $applyRecommendation->customer->kyc->expiry_date_english,
         ]);
@@ -596,7 +596,7 @@ function getFiles(array|string|null $files): string
     $files = is_array($files) ? $files : [$files];
 
     return collect($files)->reduce(function ($carry, $file) {
-        $file = FileFacade::getFile(config('src.Recommendation.recommendation.path'), $file, 'local');
+        $file = FileFacade::getFile(config('src.Recommendation.recommendation.path'), $file, getStorageDisk('private'));
         if ($file) {
             $image = base64_encode($file) ?? '';
             return $carry . "<img alt='File' width='50' src='data:image/jpeg;base64,{$image}'>";
@@ -713,7 +713,7 @@ function customAsset(string|null $file_path, string|null $file_name, string $dis
     ) {
         return false;
     }
-    return ImageServiceFacade::getImage($file_path, $file_name, $disk);
+    return ImageServiceFacade::getImage($file_path, $file_name, $disk ?: getStorageDisk());
 }
 
 function getWardsArray(): array
@@ -734,7 +734,7 @@ function customVideoAsset(string|null $file_path, string|null $file_name, string
     ) {
         return false;
     }
-    return VideoServiceFacade::getVideo($file_path, $file_name, $disk);
+    return VideoServiceFacade::getVideo($file_path, $file_name, $disk ?: getStorageDisk());
 }
 
 
@@ -1075,8 +1075,8 @@ function resolveMapStepTemplate(MapApply $mapApply, MapStep $mapStep, $form): st
         '{{customer.document_issued_date_nepali}}' => $mapApply->customer->kyc->document_issued_date_nepali,
         '{{customer.document_issued_date_english}}' => $mapApply->customer->kyc->document_issued_date_english,
         '{{customer.document_number}}' => $mapApply->customer->kyc->document_number,
-        '{{customer.document_image1}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $mapApply->customer->kyc->document_image1, 'local')),
-        '{{customer.document_image2}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $mapApply->customer->kyc->document_image2, 'local')),
+        '{{customer.document_image1}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $mapApply->customer->kyc->document_image1, getStorageDisk('private'))),
+        '{{customer.document_image2}}' => "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $mapApply->customer->kyc->document_image2, getStorageDisk('private'))),
         '{{customer.expiry_date_nepali}}' => $mapApply->customer->kyc->expiry_date_nepali,
         '{{customer.expiry_date_english}}' => $mapApply->customer->kyc->expiry_date_english,
 
@@ -1112,7 +1112,7 @@ function resolveMapStepTemplate(MapApply $mapApply, MapStep $mapStep, $form): st
             )->implode('') .
             '</tbody></table>',
         '{{mapApply.constructionType.title}}' => $mapApply->constructionType->title,
-        '{{mapApply.signature}}' => '<img src="data:image/jpeg;base64,' . base64_encode(ImageServiceFacade::getImage(config('src.Ebps.ebps.path'), $mapApply->signature, 'local')) . '" 
+        '{{mapApply.signature}}' => '<img src="data:image/jpeg;base64,' . base64_encode(ImageServiceFacade::getImage(config('src.Ebps.ebps.path'), $mapApply->signature, getStorageDisk('private'))) . '" 
                          alt="Signature" width="80">',
         '{{mapApply.customer.age}}' => $mapApply->customer->customerDetail->age ?? null,
         '{{customer.phone}}' => $mapApply->customer->phone,
@@ -1126,6 +1126,112 @@ function resolveMapStepTemplate(MapApply $mapApply, MapStep $mapStep, $form): st
     $data = array_map(fn($value) => is_array($value) ? json_encode($value) : (string) $value, $data);
 
     return \Illuminate\Support\Str::replace(array_keys($data), array_values($data), $form->template ?? '');
+}
+
+// Storage Helper Functions
+if (!function_exists('getStorageDisk')) {
+    /**
+     * Get the appropriate storage disk based on environment configuration
+     */
+    function getStorageDisk(?string $type = null): string
+    {
+        $defaultDisk = config('filesystems.default', 'local');
+        
+        if ($defaultDisk === 'backblaze') {
+            return 'backblaze';
+        }
+        
+        $useCloudStorage = env('USE_CLOUD_STORAGE', false);
+        
+        if ($useCloudStorage) {
+            if (config('filesystems.disks.backblaze.key')) {
+                return 'backblaze';
+            } elseif (config('filesystems.disks.s3.key')) {
+                return 's3';
+            }
+        }
+        
+        if ($type === 'public') {
+            return $useCloudStorage && config('filesystems.disks.backblaze.key') ? 'backblaze' : 'public';
+        }
+        
+        if ($type === 'private') {
+            return $useCloudStorage && config('filesystems.disks.backblaze.key') ? 'backblaze' : 'local';
+        }
+        
+        return $defaultDisk;
+    }
+}
+
+if (!function_exists('isCloudStorage')) {
+    /**
+     * Check if we're using cloud storage
+     */
+    function isCloudStorage(): bool
+    {
+        $disk = getStorageDisk();
+        return in_array($disk, ['s3', 'backblaze']);
+    }
+}
+
+if (!function_exists('getTenantPrefix')) {
+    /**
+     * Get the tenant prefix for file storage
+     */
+    function getTenantPrefix(): string
+    {
+        return env('APP_ABBREVIATION', 'default');
+    }
+}
+
+if (!function_exists('getTenantPrefixedPath')) {
+    /**
+     * Get path with tenant prefix for cloud storage
+     */
+    function getTenantPrefixedPath(string $path, ?string $disk = null): string
+    {
+        $disk = $disk ?: getStorageDisk();
+        
+        // Only add prefix for cloud storage since local storage doesn't need it
+        if (isCloudStorage() && in_array($disk, ['s3', 'backblaze'])) {
+            // The 'root' parameter in filesystems.php already handles the prefix
+            // so we don't need to manually prepend it here as Laravel handles it
+            return $path;
+        }
+        
+        return $path;
+    }
+}
+
+if (!function_exists('uploadToStorage')) {
+    /**
+     * Upload file to appropriate storage with proper disk selection and tenant prefix
+     */
+    function uploadToStorage($file, string $path, ?string $disk = null, array $options = [])
+    {
+        $disk = $disk ?: getStorageDisk();
+        $storage = Storage::disk($disk);
+        
+        try {
+            if (is_string($file)) {
+                // Base64 or file content
+                return $storage->put($path, $file, $options) ? $path : false;
+            } elseif ($file instanceof \Illuminate\Http\UploadedFile) {
+                // Uploaded file
+                return $file->store($path, $disk);
+            } else {
+                // Raw content
+                return $storage->put($path, $file, $options) ? $path : false;
+            }
+        } catch (\Exception $e) {
+            \Log::error('Storage upload failed: ' . $e->getMessage(), [
+                'path' => $path,
+                'disk' => $disk,
+                'error' => $e->getTraceAsString()
+            ]);
+            return false;
+        }
+    }
 }
 
 

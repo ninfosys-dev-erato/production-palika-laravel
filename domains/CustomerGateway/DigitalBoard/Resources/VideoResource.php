@@ -14,7 +14,7 @@ class VideoResource extends JsonResource
      */
     public function toArray($request)
     {
-        $disk = $this->is_private ? 'local' : 'public';
+        $disk = $this->is_private ? getStorageDisk('private') : getStorageDisk('public');
 
         return [
             'id' => $this->id,

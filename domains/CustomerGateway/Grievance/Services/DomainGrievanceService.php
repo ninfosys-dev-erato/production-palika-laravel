@@ -33,11 +33,10 @@ class DomainGrievanceService
             foreach ($grievanceDto->files as $file) {
                 if($grievanceDto->is_public === true)
                 {
-                    $image = ImageServiceFacade::base64Save($file, config('src.Grievance.grievance.path'), 'local');
+                    $image = ImageServiceFacade::base64Save($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
                 }
                 else{
-
-                    $image = ImageServiceFacade::base64Save($file, config('src.Grievance.grievance.path'));
+                    $image = ImageServiceFacade::base64Save($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
                 }
                 $fileNames[] = $image;
             }

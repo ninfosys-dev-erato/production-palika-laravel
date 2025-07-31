@@ -11,9 +11,10 @@ class VideoService
     public static function storeVideo(
         File|TemporaryUploadedFile $video,
         string $path,
-        string $disk = 'public',
+        string $disk = null,
         $desiredFilename = null
     ) {
+        $disk = $disk ?: getStorageDisk('public');
         $tempPath = $video->store($path);
         $finalFilename = $desiredFilename ?? basename($tempPath);
 
@@ -40,18 +41,20 @@ class VideoService
         }
     }
 
-    public static function getVideo(string $path, string $video_name, $disk = 'public'): ?string
+    public static function getVideo(string $path, string $video_name, $disk = null): ?string
     {
+        $disk = $disk ?: getStorageDisk('public');
         $fullPath = "{$path}/{$video_name}";
-        if ($disk === 'public') {
+        if ($disk === 'public' || $disk === getStorageDisk('public')) {
             return Storage::disk($disk)->url($fullPath);
         } else {
             return Storage::disk($disk)->temporaryUrl($fullPath, now()->addMinutes(3));
         }
     }
 
-    public static function deleteVideo(string $path, string $filename, string $disk = 'public'): bool
+    public static function deleteVideo(string $path, string $filename, string $disk = null): bool
     {
+        $disk = $disk ?: getStorageDisk('public');
         $fullPath = "{$path}/{$filename}";
         if (Storage::disk($disk)->exists($fullPath)) {
             return Storage::disk($disk)->delete($fullPath);

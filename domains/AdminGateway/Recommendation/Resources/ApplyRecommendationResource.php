@@ -26,7 +26,7 @@ class ApplyRecommendationResource extends JsonResource
                 : null,
             'rejected_at' => $this->rejected_at,
             'rejected_reason' => $this->rejected_reason,
-            'bill'=> $this->bill ? ImageServiceFacade::getImage(config('src.Recommendation.recommendation.bill'), $this->bill, 'local') : null,
+            'bill'=> $this->bill ? ImageServiceFacade::getImage(config('src.Recommendation.recommendation.bill'), $this->bill, getStorageDisk('private')) : null,
             'created_at' => $this->created_at ? $this->created_at->diffForHumans() : null,
             'created_at_date' => Carbon::parse($this->created_at)->toDateString()
         ];

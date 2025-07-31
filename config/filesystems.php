@@ -57,6 +57,21 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
+            'root' => env('APP_ABBREVIATION', 'default'),
+        ],
+
+        'backblaze' => [
+            'driver' => 's3',
+            'key' => env('BACKBLAZE_KEY_ID'),
+            'secret' => env('BACKBLAZE_APPLICATION_KEY'),
+            'region' => env('BACKBLAZE_REGION', 'us-west-002'),
+            'bucket' => env('BACKBLAZE_BUCKET'),
+            'url' => env('BACKBLAZE_URL'),
+            'endpoint' => env('BACKBLAZE_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'throw' => false,
+            'visibility' => 'public',
+            'root' => env('APP_ABBREVIATION', 'default'),
         ],
 
     ],
