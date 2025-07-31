@@ -297,15 +297,18 @@ trait BusinessRegistrationTemplate
     {
         $renewals = $businessRegistration->renewals;
         $renewals->load('fiscalYear');
+
         if ($renewals->isEmpty()) {
             return ' ';
         }
+
         $tableRows = '';
+
         foreach ($renewals as $renewal) {
-            $fiscalYear = $this->renewal->fiscalYear->year ?? '';
-            $renewalDate = $this->renewal->renew_date ?? '';
-            $billNo = $this->renewal->bill_no ?? '';
-            $paymentDate = $this->renewal->payment_receipt_date ?? '';
+            $fiscalYear = $renewal->fiscalYear->year ?? '';
+            $renewalDate = $renewal->renew_date ?? '';
+            $billNo = $renewal->bill_no ?? '';
+            $paymentDate = $renewal->payment_receipt_date ?? '';
 
             $tableRows .= "
                 <tr>

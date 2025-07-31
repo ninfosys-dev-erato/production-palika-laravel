@@ -221,23 +221,6 @@ class BusinessRegistrationAdminService
         return $businessRegistration;
     }
 
-    // public function generateBusinessRegistrationNumber()
-    // {
-    //     $fiscalYearKey = key(getSettingWithKey('fiscal-year'));
-    //     $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
-
-    //     $lastCount = BusinessRegistration::where('fiscal_year', $fiscalYearKey)
-    //         ->whereNotNull('registration_number')
-    //         ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
-    //         ->count();
-
-    //     $newNumber = str_pad($lastCount + 1, 6, '0', STR_PAD_LEFT);
-    //     $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
-
-
-    //     return $newRegistrationNumber;
-    // }
-
     public function generateBusinessRegistrationNumber($fiscalYearId)
     {
         $fiscalYearName = FiscalYear::findOrFail($fiscalYearId);

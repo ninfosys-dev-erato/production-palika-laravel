@@ -446,6 +446,352 @@ class BusinessRegistrationForm extends Component
     }
 
 
+    public function getApplicantDistricts($index): void
+    {
+        $province = $this->personalDetails[$index]['applicant_province'] ?? null;
+        $this->applicantDistricts[$index] = $province
+            ? getDistricts($province)->pluck('title', 'id')->toArray()
+            : [];
+        $this->applicantLocalBodies[$index] = [];
+        $this->applicantWards[$index] = [];
+    }
+
+    public function getApplicantLocalBodies($index): void
+    {
+        $district = $this->personalDetails[$index]['applicant_district'] ?? null;
+        $this->applicantLocalBodies[$index] = $district
+            ? getLocalBodies($district)->pluck('title', 'id')->toArray()
+            : [];
+        $this->applicantWards[$index] = [];
+    }
+
+    public function getApplicantWards($index): void
+    {
+        $localBodyId = $this->personalDetails[$index]['applicant_local_body'] ?? null;
+        $this->applicantWards[$index] = $localBodyId
+            ? getWards(optional(getLocalBodies(localBodyId: $localBodyId))->wards ?? [])
+            : [];
+    }
+
+
+
+    public function getBusinessDistricts(): void
+    {
+        $province = $this->businessRegistration['business_province'] ?? null;
+
+
+        $this->businessDistricts = $province
+            ? getDistricts($province)->pluck('title', 'id')->toArray()
+            : [];
+
+        $this->businessLocalBodies = [];
+        $this->businessWards = [];
+    }
+
+    public function getBusinessLocalBodies(): void
+    {
+        $district = $this->businessRegistration['business_district'] ?? null;
+
+        $this->businessLocalBodies = $district
+            ? getLocalBodies($district)->pluck('title', 'id')->toArray()
+            : [];
+
+        $this->businessWards = [];
+    }
+
+
+    public function getBusinessWards(): void
+    {
+        $localBodyId = $this->businessRegistration['business_local_body'] ?? null;
+
+        $this->businessWards = $localBodyId
+            ? getWards(optional(getLocalBodies(localBodyId: $localBodyId))->wards ?? [])
+            : [];
+    }
+
+
+    public function setActiveTab($tab)
+    {
+
+        $tabsOrder = ['personal', 'business', 'type'];
+
+        $currentIndex = array_search($this->activeTab, $tabsOrder);
+        $targetIndex = array_search($tab, $tabsOrder);
+
+        // Validate only when moving forward not the previous tab
+        if ($targetIndex > $currentIndex) {
+            if ($this->activeTab === 'personal') {
+                $this->validatePersonalTab();
+            } elseif ($this->activeTab === 'business') {
+                $this->validateBusinessTab();
+            } elseif ($this->activeTab === 'type') {
+                $this->validateTypeTab();
+            }
+        }
+
+        // Allow switching tab regardless if moving backward or validation passed
+        $this->activeTab = $tab;
+    }
+
+    protected function validatePersonalTab()
+    {
+        $this->validate([
+            'personalDetails.*.applicant_name' => ['required'],
+
+        ]);
+    }
+
+    protected function validateBusinessTab()
+    {
+        $this->validate([
+            'businessRegistration.fiscal_year' => ['required'],
+            'businessRegistration.application_date' => ['required'],
+            'businessRegistration.entity_name' => ['required'],
+            'businessRegistration.registration_date' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
+            'businessRegistration.registration_number' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
+
+        ]);
+    }
+
+    protected function validateTypeTab()
+    {
+        $this->validate([
+            'businessRegistration.registration_type_id' => ['required'],
+
+        ]);
+    }
+    public function rentStatusChanged($value)
+    {
+        $this->businessRegistration['is_rented'] = $value;
+
+        $this->showRentFields = (int) $value === 1;
+
+        // Reset rent fields when "No" is selected
+        if ((int) $value === 0) {
+            $this->businessRegistration['houseownername'] = '';
+            $this->businessRegistration['house_owner_phone'] = '';
+            $this->businessRegistration['monthly_rent'] = '';
+            $this->rentagreement = null;
+            $this->rentagreement_url = '';
+        }
+    }
+
+
+    public function previouslyRegisteredChanged($value)
+    {
+        $this->showRegistrationDetailsFields = (int) $value === 1;
+
+        // Reset registration fields when "No" is selected
+        if ((int) $value === 0) {
+            $this->businessRegistration['registration_date'] = '';
+            $this->businessRegistration['registration_number'] = '';
+        }
+
+        // Dispatch event to initialize date pickers when conditional fields are shown
+        if ((int) $value === 1) {
+            $this->dispatch('init-registration-date');
+        }
+    }
+    public function fiscalYearChanged($value)
+    {
+        $fiscalYear = FiscalYear::find($value);
+        $this->selectedFiscalYearText = $fiscalYear ? $fiscalYear->year : '';
+    }
+
+
+
+
+    public function updatedPersonalDetails($value, $name)
+    {
+
+        [$index, $field] = explode('.', $name);
+
+        if (in_array($field, ['citizenship_front', 'citizenship_rear'])) {
+
+            $file = $this->personalDetails[$index][$field] ?? null;
+
+
+            // $this->handleFileUpload($file, (int) $index, $field);
+            $this->handleFileUpload($file, $field, (int)$index, 'personal');
+        }
+    }
+
+    public function updatedBusinessRequiredDoc($value, $field)
+    {
+        if (isset($this->requiredBusinessDocuments[$field])) {
+
+
+            $this->handleFileUpload($value, $field, null, 'business');
+        }
+    }
+
+    public function updatedRentAgreement($value)
+    {
+        $this->handleFileUpload(
+            file: $value,
+            field: 'rentagreement',
+            target: 'businessRegistration'
+        );
+    }
+
+
+
+
+    private function handleFileUpload($file, $field, $index = null, $target = 'personal')
+    {
+        if (!$file) return;
+
+        if (is_string($file)) {
+
+            $filename = $file;
+        } else {
+
+            $filename = FileFacade::saveFile(
+                path: config('src.BusinessRegistration.businessRegistration.registration'),
+                file: $file,
+                disk: 'local',
+                filename: ''
+            );
+        }
+
+
+        // $filename = FileFacade::saveFile(
+        //     path: config('src.BusinessRegistration.businessRegistration.registration'),
+        //     file: $file,
+        //     disk: 'local',
+        //     filename: ''
+        // );
+
+
+        $url = FileFacade::getTemporaryUrl(
+            path: config('src.BusinessRegistration.businessRegistration.registration'),
+            filename: $filename,
+            disk: 'local'
+        );
+
+        if ($target === 'personal' && $index !== null) {
+            $this->personalDetails[$index][$field] = $filename;
+            $this->personalDetails[$index][$field . '_url'] = $url;
+        } elseif ($target === 'business') {
+            $this->businessRequiredDoc[$field] = $filename;
+            $this->businessRequiredDocUrl[$field . '_url'] = $url;
+        } elseif ($target === 'businessRegistration') {
+            $this->businessRegistration[$field] = $filename;
+            $this->{$field . '_url'} = $url;
+        }
+    }
+    public function save()
+    {
+        DB::beginTransaction();
+        try {
+            $this->validate();
+            $this->businessRegistration['data'] = $this->getFormattedData();
+            $this->businessRegistration['application_date_en'] = $this->bsToAd($this->businessRegistration['application_date']);
+
+            if (!empty($this->businessRegistration['registration_number'])) {
+                // removes 0 from front
+                $serial = (int) $this->businessRegistration['registration_number'];
+                $this->businessRegistration['registration_number'] = str_pad($serial, 6, '0', STR_PAD_LEFT)
+                    . '/' . replaceNumbers($this->selectedFiscalYearText);
+            }
+            if (!empty($this->businessRegistration['registration_date'])) {
+                $this->businessRegistration['registration_date_en'] = $this->bsToAd($this->businessRegistration['registration_date']);
+            }
+
+            $service = new BusinessRegistrationAdminService();
+            $businessApplicantService = new BusinessRegistrationApplicantService();
+            $businessRequiredDocService = new BusinessRequiredDocService();
+
+            switch ($this->action) {
+                case Action::CREATE:
+                    $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
+
+
+                    $success = $service->store($dto);
+
+
+                    if ($success instanceof BusinessRegistration) {
+                        $businessRegistrationId = $success->id;
+
+                        foreach ($this->personalDetails as $data) {
+                            $data['business_registration_id'] = $businessRegistrationId;
+                            $dto = BusinessRegistrationApplicantDto::fromArray($data);
+                            $businessApplicantService->store($dto);
+                        }
+
+                        foreach ($this->businessRequiredDoc as $field => $filename) {
+                            if (!empty($filename)) {
+                                $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
+                                $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
+                                $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
+                                    businessRegistrationId: $businessRegistrationId,
+                                    documentField: $field,
+                                    documentLabelEn: $documentLabelEn,
+                                    documentLabelNe: $documentLabelNe,
+                                    documentFilename: $filename
+                                );
+                                $businessRequiredDocService->store($dto);
+                            }
+                        }
+
+                        DB::commit();
+                        $this->successFlash(__('businessregistration::businessregistration.business_registration_applied_successfully'));
+                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                    } else {
+                        DB::rollBack();
+                        $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
+                        return;
+                    }
+
+                case Action::UPDATE:
+                    $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
+
+                    $success = $service->update($dto, $this->businessRegistration);
+
+                    if ($success instanceof BusinessRegistration) {
+                        $this->businessRegistration->applicants()->delete();
+                        foreach ($this->personalDetails as $data) {
+                            $data['business_registration_id'] = $this->businessRegistration->id;
+                            $dto = BusinessRegistrationApplicantDto::fromArray($data);
+                            $businessApplicantService->store($dto);
+                        }
+
+                        $this->businessRegistration->requiredBusinessDocs()->delete();
+                        foreach ($this->businessRequiredDoc as $field => $filename) {
+                            if (!empty($filename)) {
+                                $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
+                                $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
+                                $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
+                                    businessRegistrationId: $this->businessRegistration->id,
+                                    documentField: $field,
+                                    documentLabelEn: $documentLabelEn,
+                                    documentLabelNe: $documentLabelNe,
+                                    documentFilename: $filename
+                                );
+                                $businessRequiredDocService->store($dto);
+                            }
+                        }
+
+                        DB::commit();
+                        $this->successFlash(__('businessregistration::businessregistration.business_registration_application_updated_successfully'));
+                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                    } else {
+                        DB::rollBack();
+                        $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
+                        return;
+                    }
+
+                default:
+                    DB::rollBack();
+                    $this->errorFlash(__('Invalid action.'));
+                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+            }
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            logger($e->getMessage());
+            $this->errorFlash('Something went wrong while saving. ' . $e->getMessage());
+        }
+    }
 
     public function setFields(int|string $registrationTypeId)
     {
@@ -737,200 +1083,6 @@ class BusinessRegistrationForm extends Component
         };
     }
 
-
-
-
-
-    public function getApplicantDistricts($index): void
-    {
-        $province = $this->personalDetails[$index]['applicant_province'] ?? null;
-        $this->applicantDistricts[$index] = $province
-            ? getDistricts($province)->pluck('title', 'id')->toArray()
-            : [];
-        $this->applicantLocalBodies[$index] = [];
-        $this->applicantWards[$index] = [];
-    }
-
-    public function getApplicantLocalBodies($index): void
-    {
-        $district = $this->personalDetails[$index]['applicant_district'] ?? null;
-        $this->applicantLocalBodies[$index] = $district
-            ? getLocalBodies($district)->pluck('title', 'id')->toArray()
-            : [];
-        $this->applicantWards[$index] = [];
-    }
-
-    public function getApplicantWards($index): void
-    {
-        $localBodyId = $this->personalDetails[$index]['applicant_local_body'] ?? null;
-        $this->applicantWards[$index] = $localBodyId
-            ? getWards(optional(getLocalBodies(localBodyId: $localBodyId))->wards ?? [])
-            : [];
-    }
-
-
-
-    public function getBusinessDistricts(): void
-    {
-        $province = $this->businessRegistration['business_province'] ?? null;
-
-
-        $this->businessDistricts = $province
-            ? getDistricts($province)->pluck('title', 'id')->toArray()
-            : [];
-
-        $this->businessLocalBodies = [];
-        $this->businessWards = [];
-    }
-
-    public function getBusinessLocalBodies(): void
-    {
-        $district = $this->businessRegistration['business_district'] ?? null;
-
-        $this->businessLocalBodies = $district
-            ? getLocalBodies($district)->pluck('title', 'id')->toArray()
-            : [];
-
-        $this->businessWards = [];
-    }
-
-
-    public function getBusinessWards(): void
-    {
-        $localBodyId = $this->businessRegistration['business_local_body'] ?? null;
-
-        $this->businessWards = $localBodyId
-            ? getWards(optional(getLocalBodies(localBodyId: $localBodyId))->wards ?? [])
-            : [];
-    }
-
-
-    public function setActiveTab($tab)
-    {
-
-        $tabsOrder = ['personal', 'business', 'type'];
-
-        $currentIndex = array_search($this->activeTab, $tabsOrder);
-        $targetIndex = array_search($tab, $tabsOrder);
-
-        // Validate only when moving forward not the previous tab
-        if ($targetIndex > $currentIndex) {
-            if ($this->activeTab === 'personal') {
-                $this->validatePersonalTab();
-            } elseif ($this->activeTab === 'business') {
-                $this->validateBusinessTab();
-            } elseif ($this->activeTab === 'type') {
-                $this->validateTypeTab();
-            }
-        }
-
-        // Allow switching tab regardless if moving backward or validation passed
-        $this->activeTab = $tab;
-    }
-
-    protected function validatePersonalTab()
-    {
-        $this->validate([
-            'personalDetails.*.applicant_name' => ['required'],
-
-        ]);
-    }
-
-    protected function validateBusinessTab()
-    {
-        $this->validate([
-            'businessRegistration.fiscal_year' => ['required'],
-            'businessRegistration.application_date' => ['required'],
-            'businessRegistration.entity_name' => ['required'],
-            'businessRegistration.registration_date' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
-            'businessRegistration.registration_number' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
-
-        ]);
-    }
-
-    protected function validateTypeTab()
-    {
-        $this->validate([
-            'businessRegistration.registration_type_id' => ['required'],
-
-        ]);
-    }
-    public function rentStatusChanged($value)
-    {
-        $this->businessRegistration['is_rented'] = $value;
-
-        $this->showRentFields = (int) $value === 1;
-
-        // Reset rent fields when "No" is selected
-        if ((int) $value === 0) {
-            $this->businessRegistration['houseownername'] = '';
-            $this->businessRegistration['house_owner_phone'] = '';
-            $this->businessRegistration['monthly_rent'] = '';
-            $this->rentagreement = null;
-            $this->rentagreement_url = '';
-        }
-    }
-
-
-    public function previouslyRegisteredChanged($value)
-    {
-        $this->showRegistrationDetailsFields = (int) $value === 1;
-
-        // Reset registration fields when "No" is selected
-        if ((int) $value === 0) {
-            $this->businessRegistration['registration_date'] = '';
-            $this->businessRegistration['registration_number'] = '';
-        }
-
-        // Dispatch event to initialize date pickers when conditional fields are shown
-        if ((int) $value === 1) {
-            $this->dispatch('init-registration-date');
-        }
-    }
-    public function fiscalYearChanged($value)
-    {
-        $fiscalYear = FiscalYear::find($value);
-        $this->selectedFiscalYearText = $fiscalYear ? $fiscalYear->year : '';
-    }
-
-
-
-
-    public function updatedPersonalDetails($value, $name)
-    {
-
-        [$index, $field] = explode('.', $name);
-
-        if (in_array($field, ['citizenship_front', 'citizenship_rear'])) {
-
-            $file = $this->personalDetails[$index][$field] ?? null;
-
-
-            // $this->handleFileUpload($file, (int) $index, $field);
-            $this->handleFileUpload($file, $field, (int)$index, 'personal');
-        }
-    }
-
-    public function updatedBusinessRequiredDoc($value, $field)
-    {
-        if (isset($this->requiredBusinessDocuments[$field])) {
-
-
-            $this->handleFileUpload($value, $field, null, 'business');
-        }
-    }
-
-    public function updatedRentAgreement($value)
-    {
-        $this->handleFileUpload(
-            file: $value,
-            field: 'rentagreement',
-            target: 'businessRegistration'
-        );
-    }
-
-
-    // Add this method to handle file uploads for dynamic fields
     public function updatedData($value, $name)
     {
         $parts = explode('.', $name);
@@ -982,164 +1134,6 @@ class BusinessRegistrationForm extends Component
                     );
                 }
             }
-        }
-    }
-
-    private function handleFileUpload($file, $field, $index = null, $target = 'personal')
-    {
-        if (!$file) return;
-
-        if (is_string($file)) {
-
-            $filename = $file;
-        } else {
-
-            $filename = FileFacade::saveFile(
-                path: config('src.BusinessRegistration.businessRegistration.registration'),
-                file: $file,
-                disk: 'local',
-                filename: ''
-            );
-        }
-
-
-        // $filename = FileFacade::saveFile(
-        //     path: config('src.BusinessRegistration.businessRegistration.registration'),
-        //     file: $file,
-        //     disk: 'local',
-        //     filename: ''
-        // );
-
-
-        $url = FileFacade::getTemporaryUrl(
-            path: config('src.BusinessRegistration.businessRegistration.registration'),
-            filename: $filename,
-            disk: 'local'
-        );
-
-        if ($target === 'personal' && $index !== null) {
-            $this->personalDetails[$index][$field] = $filename;
-            $this->personalDetails[$index][$field . '_url'] = $url;
-        } elseif ($target === 'business') {
-            $this->businessRequiredDoc[$field] = $filename;
-            $this->businessRequiredDocUrl[$field . '_url'] = $url;
-        } elseif ($target === 'businessRegistration') {
-            $this->businessRegistration[$field] = $filename;
-            $this->{$field . '_url'} = $url;
-        }
-    }
-    public function save()
-    {
-        DB::beginTransaction();
-        try {
-            $this->validate();
-            $this->businessRegistration['data'] = $this->getFormattedData();
-            $this->businessRegistration['application_date_en'] = $this->bsToAd($this->businessRegistration['application_date']);
-
-            if (!empty($this->businessRegistration['registration_number'])) {
-                // removes 0 from front
-                $serial = (int) $this->businessRegistration['registration_number'];
-                $this->businessRegistration['registration_number'] = str_pad($serial, 6, '0', STR_PAD_LEFT)
-                    . '/' . replaceNumbers($this->selectedFiscalYearText);
-            }
-            if (!empty($this->businessRegistration['registration_date'])) {
-                $this->businessRegistration['registration_date_en'] = $this->bsToAd($this->businessRegistration['registration_date']);
-            }
-
-
-
-            $service = new BusinessRegistrationAdminService();
-            $businessApplicantService = new BusinessRegistrationApplicantService();
-            $businessRequiredDocService = new BusinessRequiredDocService();
-
-            switch ($this->action) {
-                case Action::CREATE:
-                    $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
-
-
-                    $success = $service->store($dto);
-
-
-                    if ($success instanceof BusinessRegistration) {
-                        $businessRegistrationId = $success->id;
-
-                        foreach ($this->personalDetails as $data) {
-                            $data['business_registration_id'] = $businessRegistrationId;
-                            $dto = BusinessRegistrationApplicantDto::fromArray($data);
-                            $businessApplicantService->store($dto);
-                        }
-
-                        foreach ($this->businessRequiredDoc as $field => $filename) {
-                            if (!empty($filename)) {
-                                $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
-                                $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
-                                $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
-                                    businessRegistrationId: $businessRegistrationId,
-                                    documentField: $field,
-                                    documentLabelEn: $documentLabelEn,
-                                    documentLabelNe: $documentLabelNe,
-                                    documentFilename: $filename
-                                );
-                                $businessRequiredDocService->store($dto);
-                            }
-                        }
-
-                        DB::commit();
-                        $this->successFlash(__('businessregistration::businessregistration.business_registration_applied_successfully'));
-                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
-                    } else {
-                        DB::rollBack();
-                        $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
-                        return;
-                    }
-
-                case Action::UPDATE:
-                    $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
-
-                    $success = $service->update($dto, $this->businessRegistration);
-
-                    if ($success instanceof BusinessRegistration) {
-                        $this->businessRegistration->applicants()->delete();
-                        foreach ($this->personalDetails as $data) {
-                            $data['business_registration_id'] = $this->businessRegistration->id;
-                            $dto = BusinessRegistrationApplicantDto::fromArray($data);
-                            $businessApplicantService->store($dto);
-                        }
-
-                        $this->businessRegistration->requiredBusinessDocs()->delete();
-                        foreach ($this->businessRequiredDoc as $field => $filename) {
-                            if (!empty($filename)) {
-                                $documentLabelEn = $this->requiredBusinessDocuments[$field]['en'] ?? $field;
-                                $documentLabelNe = $this->requiredBusinessDocuments[$field]['ne'] ?? $field;
-                                $dto = new \Src\BusinessRegistration\DTO\BusinessRequiredDocDto(
-                                    businessRegistrationId: $this->businessRegistration->id,
-                                    documentField: $field,
-                                    documentLabelEn: $documentLabelEn,
-                                    documentLabelNe: $documentLabelNe,
-                                    documentFilename: $filename
-                                );
-                                $businessRequiredDocService->store($dto);
-                            }
-                        }
-
-                        DB::commit();
-                        $this->successFlash(__('businessregistration::businessregistration.business_registration_application_updated_successfully'));
-                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
-                    } else {
-                        DB::rollBack();
-                        $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
-                        return;
-                    }
-
-                default:
-                    DB::rollBack();
-                    $this->errorFlash(__('Invalid action.'));
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
-            }
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            logger($e->getMessage());
-            $this->errorFlash('Something went wrong while saving. ' . $e->getMessage());
         }
     }
 }
