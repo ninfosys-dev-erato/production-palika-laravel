@@ -57,7 +57,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'business_registration create', 'guard' => 'web'],
             ['name' => 'business_registration delete', 'guard' => 'web'],
             ['name' => 'business_registration edit', 'guard' => 'web'],
-            ['name' => 'business_registration status', 'guard' => 'web'],
             ['name' => 'business_renewals access', 'guard' => 'web'],
             ['name' => 'business_renewals create', 'guard' => 'web'],
             ['name' => 'business_renewals delete', 'guard' => 'web'],
@@ -66,7 +65,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'business_settings create', 'guard' => 'web'],
             ['name' => 'business_settings delete', 'guard' => 'web'],
             ['name' => 'business_settings edit', 'guard' => 'web'],
-            
+
             // -------------------
             // COMMITTEES MODULE
             // -------------------
@@ -115,7 +114,6 @@ class PermissionSeeder extends Seeder
             // -------------------
             // EBPS MODULE
             // -------------------
-            ['name' => 'ebps access', 'guard' => 'web'],
             ['name' => 'ebps_settings create', 'guard' => 'web'],
             ['name' => 'ebps_settings delete', 'guard' => 'web'],
             ['name' => 'ebps_settings edit', 'guard' => 'web'],
@@ -173,7 +171,6 @@ class PermissionSeeder extends Seeder
             // -------------------
             // GRANT MANAGEMENT MODULE
             // -------------------
-            ['name' => 'gms_grant access', 'guard' => 'web'],
             ['name' => 'gms_settings access', 'guard' => 'web'],
             ['name' => 'gms_settings create', 'guard' => 'web'],
             ['name' => 'gms_settings edit', 'guard' => 'web'],
@@ -262,7 +259,6 @@ class PermissionSeeder extends Seeder
             // RECOMMENDATION MODULE
             // -------------------        
 
-            ['name' => 'recommendation access', 'guard' => 'web'],
             ['name' => 'recommendation_apply access', 'guard' => 'web'],
             ['name' => 'recommendation_apply create', 'guard' => 'web'],
             ['name' => 'recommendation_apply delete', 'guard' => 'web'],
@@ -273,6 +269,43 @@ class PermissionSeeder extends Seeder
             ['name' => 'recommendation_settings delete', 'guard' => 'web'],
             ['name' => 'recommendation_settings update', 'guard' => 'web'],
 
+            // -------------------
+            // REGISTRATION MODULE (EJALAS)
+            // -------------------
+            ['name' => 'anusuchis create', 'guard' => 'web'],
+            ['name' => 'case_records create', 'guard' => 'web'],
+            ['name' => 'complaint_registrations create', 'guard' => 'web'],
+            ['name' => 'dispute_areas create', 'guard' => 'web'],
+            ['name' => 'dispute_matters create', 'guard' => 'web'],
+            ['name' => 'dispute_matters delete', 'guard' => 'web'],
+            ['name' => 'dispute_matters edit', 'guard' => 'web'],
+            ['name' => 'dispute_registration_courts create', 'guard' => 'web'],
+            ['name' => 'fulfilled_conditions create', 'guard' => 'web'],
+            ['name' => 'fulfilled_conditions delete', 'guard' => 'web'],
+            ['name' => 'fulfilled_conditions edit', 'guard' => 'web'],
+            ['name' => 'hearing_schedules create', 'guard' => 'web'],
+            ['name' => 'judicial_committees create', 'guard' => 'web'],
+            ['name' => 'judicial_employees create', 'guard' => 'web'],
+            ['name' => 'levels create', 'guard' => 'web'],
+            ['name' => 'local_levels create', 'guard' => 'web'],
+            ['name' => 'party create', 'guard' => 'web'],
+            ['name' => 'parties create', 'guard' => 'web'],
+            ['name' => 'priotities create', 'guard' => 'web'],
+            ['name' => 'reconciliation_centers create', 'guard' => 'web'],
+            ['name' => 'registration_indicators create', 'guard' => 'web'],
+            ['name' => 'registration_indicators delete', 'guard' => 'web'],
+            ['name' => 'registration_indicators edit', 'guard' => 'web'],
+            ['name' => 'registration_type_access', 'guard' => 'web'],
+            ['name' => 'registration_type_create', 'guard' => 'web'],
+            ['name' => 'registration_type_delete', 'guard' => 'web'],
+            ['name' => 'registration_type_update', 'guard' => 'web'],
+            ['name' => 'settlement_detail create', 'guard' => 'web'],
+            ['name' => 'settlements create', 'guard' => 'web'],
+            ['name' => 'settlements delete', 'guard' => 'web'],
+            ['name' => 'settlements edit', 'guard' => 'web'],
+            ['name' => 'settlements print', 'guard' => 'web'],
+            ['name' => 'witnesses_representatives create', 'guard' => 'web'],
+            ['name' => 'written_response_registrations create', 'guard' => 'web'],
 
             // -------------------
             // ROLES MODULE
@@ -354,7 +387,6 @@ class PermissionSeeder extends Seeder
             // -------------------
             // JMS Ejalas Module
             // -------------------
-            ['name' => 'jms access', 'guard' => 'web'],
             ['name' => 'jms_settings create', 'guard' => 'web'],
             ['name' => 'jms_settings access', 'guard' => 'web'],
             ['name' => 'jms_settings edit', 'guard' => 'web'],
@@ -396,7 +428,6 @@ class PermissionSeeder extends Seeder
             // YOJANA MODULE
             // -------------------
             // Plan Permissions
-            ['name' => 'plan access', 'guard' => 'web'],
             ['name' => 'plan create', 'guard' => 'web'],
             ['name' => 'plan edit', 'guard' => 'web'],
             ['name' => 'plan delete', 'guard' => 'web'],

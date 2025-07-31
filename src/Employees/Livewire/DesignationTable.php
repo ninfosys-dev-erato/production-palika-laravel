@@ -52,11 +52,11 @@ class DesignationTable extends DataTableComponent
             Column::make(__('employees::employees.title'), "title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('employees::employees.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('designation_edit') || can('designation delete')) {
+        if (can('designation edit') || can('designation delete')) {
             $actionsColumn = Column::make(__('employees::employees.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('designation_edit')) {
+                if (can('designation edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
@@ -82,7 +82,7 @@ class DesignationTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('designation_edit')) {
+        if (!can('designation edit')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

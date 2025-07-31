@@ -52,7 +52,7 @@ class BranchTable extends DataTableComponent
             Column::make(__('employees::employees.title'), "title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('employees::employees.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('branch _dit') || can('branch delete')) {
+        if (can('branch edit') || can('branch delete')) {
             $actionsColumn = Column::make(__('employees::employees.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 

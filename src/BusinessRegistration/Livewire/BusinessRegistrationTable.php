@@ -212,7 +212,7 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('registration_delete delete')) {
+        if (!can('business_registration delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -224,7 +224,7 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('registration_delete delete')) {
+        if (!can('business_registration delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
