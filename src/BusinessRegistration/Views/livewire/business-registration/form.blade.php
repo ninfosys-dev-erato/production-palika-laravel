@@ -438,7 +438,7 @@
                                     </label>
                                     <select wire:model="businessRegistration.fiscal_year"
                                         class="form-control @error('businessRegistration.fiscal_year') is-invalid @enderror"
-                                        wire:change="fiscalYearChanged($event.target.value)" name="fiscal_year">
+                                        name="fiscal_year">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.fiscal_year') }}
                                         </option>
