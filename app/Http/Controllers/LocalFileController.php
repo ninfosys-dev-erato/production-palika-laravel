@@ -85,6 +85,7 @@ class LocalFileController extends Controller
         // Only allow certain directories
         $allowedPrefixes = [
             'livewire-tmp/',
+            'customer-kyc/',
             'customers/',
             'documents/',
             'uploads/',

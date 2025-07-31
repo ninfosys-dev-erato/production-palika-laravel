@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use function PHPUnit\Framework\isEmpty;
@@ -85,20 +86,59 @@ string $path,
 
         // Full file path
         $filePath = $path . $filename;
-        // Check if file exists
-        if (!Storage::disk($disk)->exists($filePath)) {
-            //            throw new \Exception("File not found: {$filePath}");
-            return false;
+
+        // HYBRID APPROACH: Try cloud storage first, then local fallback
+        
+        // 1. If we're configured for cloud storage, check if file exists there
+        if ($this->shouldUseCloudStorage($disk)) {
+            if (Storage::disk($disk)->exists($filePath)) {
+                try {
+                    // Check if it's a public cloud disk
+                    if ($disk == 'public' || config("filesystems.disks.{$disk}.visibility") === 'public') {
+                        return Storage::disk($disk)->url($filePath);
+                    }
+                    
+                    // Generate temporary signed URL for private cloud storage
+                    return Storage::disk($disk)->temporaryUrl($filePath, now()->addMinutes($minutes));
+                    
+                } catch (\Exception $e) {
+                    Log::warning("Failed to get cloud URL, falling back to local", [
+                        'file_path' => $filePath,
+                        'disk' => $disk,
+                        'error' => $e->getMessage()
+                    ]);
+                    // Fall through to local storage check
+                }
+            }
         }
 
-        if ($disk == 'public') {
-            return Storage::disk($disk)->url($filePath);
+        // 2. Fallback: Check if file exists in local storage
+        if (Storage::disk('local')->exists($filePath)) {
+            // Use our LocalFileController for serving local files
+            return \App\Http\Controllers\LocalFileController::getDownloadUrl($filePath);
         }
-        // Generate a temporary signed URL
-        return Storage::disk($disk)->temporaryUrl(
-            $filePath,
-            now()->addMinutes($minutes)
-        );
+
+        // 3. Last fallback: Check public disk if different from main disk
+        if ($disk !== 'public' && Storage::disk('public')->exists($filePath)) {
+            return Storage::disk('public')->url($filePath);
+        }
+
+        // File not found anywhere
+        Log::warning("File not found in any storage location", [
+            'file_path' => $filePath,
+            'checked_disks' => [$disk, 'local', 'public']
+        ]);
+        
+        return false;
+    }
+
+    /**
+     * Check if we should use cloud storage for the given disk
+     */
+    private function shouldUseCloudStorage(string $disk): bool
+    {
+        return !in_array($disk, ['local', 'public']) && 
+               config("filesystems.disks.{$disk}.key") !== null;
     }
 
     public function deleteFile(
