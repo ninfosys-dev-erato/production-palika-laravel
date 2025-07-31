@@ -50,7 +50,7 @@ class ApplyRecommendationUploadBill extends Component
             'bill' => 'required|file|mimes:pdf,jpg,png|max:2048'
         ]);
         try{
-            $path = ImageServiceFacade::compressAndStoreImage($this->bill, config('src.Recommendation.recommendation.bill'), 'local');
+            $path = ImageServiceFacade::compressAndStoreImage($this->bill, config('src.Recommendation.recommendation.bill'), getStorageDisk('public'));
             $this->applyRecommendation->bill = $path;
             $this->applyRecommendation->ltax_ebp_code = $this->ltax_ebp_code;
             $dto = ApplyRecommendationShowDto::fromModel($this->applyRecommendation);

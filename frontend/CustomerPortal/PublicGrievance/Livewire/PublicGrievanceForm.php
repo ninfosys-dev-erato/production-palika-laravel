@@ -131,10 +131,10 @@ class PublicGrievanceForm extends Component
 
             foreach ($this->uploadedImage as $file) {
                 if($this->is_public == true){
-                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'));
+                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
                 }
                 else{
-                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path', 'local'));
+                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
                 }
                 $storedDocuments[] = $path;
             }

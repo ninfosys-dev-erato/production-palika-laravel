@@ -99,7 +99,7 @@ class EmergencyContactForm extends Component
         DB::beginTransaction();
         try{
             if ($this->icon) {
-                $this->emergencyContact->icon = ImageServiceFacade::compressAndStoreImage($this->icon, config('src.EmergencyContacts.emergencyContact.icon_path'));
+                $this->emergencyContact->icon = ImageServiceFacade::compressAndStoreImage($this->icon, config('src.EmergencyContacts.emergencyContact.icon_path'), getStorageDisk('public'));
             }
             $dto = EmergencyContactAdminDto::fromLiveWireModel($this->emergencyContact);
             $service = new EmergencyContactAdminService();

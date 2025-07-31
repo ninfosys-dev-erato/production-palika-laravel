@@ -146,13 +146,14 @@ class GrievanceDetailChangeStatusForm extends Component
     private function storeFile($file): string
     {
         if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
-            return ImageServiceFacade::compressAndStoreImage($file,  config('src.Grievance.grievance.document_path'));
+            return ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.document_path'), getStorageDisk('public'));
         }
 
         return FileFacade::saveFile(
             path: config('src.Grievance.grievance.document_path'),
             filename: null,
-            file: $file
+            file: $file,
+            disk: getStorageDisk('private')
         );
     }
 }

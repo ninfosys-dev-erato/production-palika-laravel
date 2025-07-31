@@ -166,7 +166,7 @@ class RecommendationService
 
         foreach ($data as $key => $value) {
             if ($value['type'] === 'file' && isset($value['value'])) {
-                $fileUrls = array_map(fn($file) => ImageServiceFacade::getImage($this->path, $file, 'local'), $value['value']);
+                $fileUrls = array_map(fn($file) => ImageServiceFacade::getImage($this->path, $file, getStorageDisk('private')), $value['value']);
                 $data[$key]['value'] = $fileUrls;
             }
         }
@@ -182,7 +182,7 @@ class RecommendationService
             if ($item['type'] === 'file' && !empty($item['value'])) {
                 foreach ($item['value'] as $index => $file) {
                     if (ImageServiceFacade::isBase64($file)) {
-                        $savedFilePath = ImageServiceFacade::base64Save($file, $this->path, 'local');
+                        $savedFilePath = ImageServiceFacade::base64Save($file, $this->path, getStorageDisk('private'));
                         $item['value'][$index] = $savedFilePath;
                     }
 

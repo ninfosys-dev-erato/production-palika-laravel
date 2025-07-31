@@ -69,7 +69,7 @@ class ProgramForm extends Component
         $this->uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ||
         $this->uploadedImage instanceof \Illuminate\Http\UploadedFile)
         {
-            $path = ImageServiceFacade::compressAndStoreImage(image: $this->uploadedImage, path: config('src.DigitalBoard.program.photo_path'));
+            $path = ImageServiceFacade::compressAndStoreImage(image: $this->uploadedImage, path: config('src.DigitalBoard.program.photo_path'), disk: getStorageDisk('public'));
             $this->program->photo = $path;
         }
         

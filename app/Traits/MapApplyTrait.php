@@ -69,7 +69,7 @@ trait MapApplyTrait
         if($mapApply?->signature)
         {
             $data = array_merge($data, [
-                '{{mapApply.signature}}' => '<img src="data:image/jpeg;base64,' . base64_encode(\App\Facades\ImageServiceFacade::getImage(config('src.Ebps.ebps.path'), $mapApply?->signature, 'local')) . '" alt="Signature" width="80">',
+                '{{mapApply.signature}}' => '<img src="data:image/jpeg;base64,' . base64_encode(\App\Facades\ImageServiceFacade::getImage(config('src.Ebps.ebps.path'), $mapApply?->signature, getStorageDisk('private'))) . '" alt="Signature" width="80">',
                 '{{form.approver.signature}}' => $signatures,
             ]);
         }

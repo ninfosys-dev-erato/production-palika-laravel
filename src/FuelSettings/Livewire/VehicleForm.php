@@ -72,10 +72,10 @@ class VehicleForm extends Component
         $this->validate();
         try{
             if ($this->license_photo) {
-                $this->vehicle->license_photo = ImageServiceFacade::compressAndStoreImage($this->license_photo, config('src.FuelSettings.fuelSettings.license_path'));
+                $this->vehicle->license_photo = ImageServiceFacade::compressAndStoreImage($this->license_photo, config('src.FuelSettings.fuelSettings.license_path'), getStorageDisk('public'));
             }
             if ($this->signature) {
-                $this->vehicle->signature = ImageServiceFacade::compressAndStoreImage($this->signature, config('src.FuelSettings.fuelSettings.sign_path'));
+                $this->vehicle->signature = ImageServiceFacade::compressAndStoreImage($this->signature, config('src.FuelSettings.fuelSettings.sign_path'), getStorageDisk('public'));
             }
 
             $dto = VehicleAdminDto::fromLiveWireModel($this->vehicle);

@@ -81,7 +81,7 @@ class PopUpForm extends Component
             $this->uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ||
             $this->uploadedImage instanceof \Illuminate\Http\UploadedFile
         ) {
-            $path = ImageServiceFacade::compressAndStoreImage(image: $this->uploadedImage, path: config('src.DigitalBoard.popup.popup_path'));
+            $path = ImageServiceFacade::compressAndStoreImage(image: $this->uploadedImage, path: config('src.DigitalBoard.popup.popup_path'), disk: getStorageDisk('public'));
             $this->popUp->photo = $path;
         }
         $this->popUp->can_show_on_admin = $this->canShowOnAdmin;

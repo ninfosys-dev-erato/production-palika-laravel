@@ -173,7 +173,7 @@ class EmployeeForm extends Component
         $this->employee['is_department_head'] = $this->is_department_head;
 
         if ($this->uploadedImage) {
-            $this->employee->photo = ImageServiceFacade::compressAndStoreImage($this->uploadedImage, 'team');
+            $this->employee->photo = ImageServiceFacade::compressAndStoreImage($this->uploadedImage, 'team', getStorageDisk('public'));
         }
 
 

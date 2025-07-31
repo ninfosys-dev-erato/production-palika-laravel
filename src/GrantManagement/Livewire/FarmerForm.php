@@ -328,7 +328,7 @@ class FarmerForm extends Component
         $this->validate();
 
         if ($this->uploadedImage instanceof TemporaryUploadedFile) {
-            $this->farmer->photo = ImageServiceFacade::compressAndStoreImage($this->uploadedImage, config('src.GrantManagement.grant.photo'), 'local');
+            $this->farmer->photo = ImageServiceFacade::compressAndStoreImage($this->uploadedImage, config('src.GrantManagement.grant.photo'), getStorageDisk('public'));
         }
 
         if ($this->selectedFarmers) {
@@ -399,13 +399,14 @@ class FarmerForm extends Component
     {
         if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
             if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
-                return ImageServiceFacade::compressAndStoreImage($file, config('src.GrantManagement.grant.photo'));
+                return ImageServiceFacade::compressAndStoreImage($file, config('src.GrantManagement.grant.photo'), getStorageDisk('public'));
             }
 
             return FileFacade::saveFile(
                 path: config('src.DigitalBoard.notice.notice_path'),
                 filename: null,
-                file: $file
+                file: $file,
+                disk: getStorageDisk('private')
             );
         }
 
