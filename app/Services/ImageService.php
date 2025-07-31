@@ -15,7 +15,7 @@ class ImageService
     public static function compressAndStoreImage(
         File|TemporaryUploadedFile|UploadedFile $image,
         string $path,
-        string $disk = null,
+        ?string $disk = null,
         $desiredFilename = null
     ) {
         $disk = $disk ?: getStorageDisk('public');
@@ -124,7 +124,7 @@ class ImageService
         return $mimeToExtension[$mimeType] ?? 'jpg';
     }
 
-    public static function base64Save($file, $path, string $disk = null, $desiredFilename = null): ?string
+    public static function base64Save($file, $path, ?string $disk = null, $desiredFilename = null): ?string
     {
         $disk = $disk ?: getStorageDisk('public');
         
@@ -182,7 +182,7 @@ class ImageService
         }
     }
 
-    public static function getImage(string $path, string $file, $disk = null): ?string
+    public static function getImage(string $path, string $file, ?string $disk = null): ?string
     {
         $disk = $disk ?: getStorageDisk('public');
         $fullPath = "{$path}/{$file}";
