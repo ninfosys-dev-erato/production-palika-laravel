@@ -1234,6 +1234,68 @@ if (!function_exists('uploadToStorage')) {
     }
 }
 
+if (!function_exists('getStorageUrl')) {
+    /**
+     * Get storage URL with proper handling for different storage types
+     */
+    function getStorageUrl(string $key, string $disk = null, int $expiryMinutes = 60): ?string
+    {
+        try {
+            $disk = $disk ?: getStorageDisk();
+            $storage = Storage::disk($disk);
+
+            \Log::info('Getting storage URL', [
+                'key' => $key,
+                'disk' => $disk,
+                'tenant_prefix' => getTenantPrefix()
+            ]);
+
+            // Check if file exists
+            if (!$storage->exists($key)) {
+                Log::warning('File not found for URL generation', [
+                    'key' => $key, 
+                    'disk' => $disk,
+                    'tenant_prefix' => getTenantPrefix(),
+                    'expected_full_path' => getTenantPrefix() . '/' . $key
+                ]);
+                return null;
+            }
+
+            \Log::info('File found, generating URL', [
+                'key' => $key,
+                'disk' => $disk,
+                'visibility' => config("filesystems.disks.{$disk}.visibility")
+            ]);
+
+            // For public disks, use public URL
+            if ($disk === 'public' || config("filesystems.disks.{$disk}.visibility") === 'public') {
+                return $storage->url($key);
+            }
+
+            // For private cloud storage, use temporary URL
+            if (isCloudStorage() && in_array($disk, ['s3', 'backblaze'])) {
+                return $storage->temporaryUrl($key, now()->addMinutes($expiryMinutes));
+            }
+
+            // For local storage, use local file controller
+            if ($disk === 'local') {
+                return \App\Http\Controllers\LocalFileController::getDownloadUrl($key);
+            }
+
+            // Fallback to temporary URL
+            return $storage->temporaryUrl($key, now()->addMinutes($expiryMinutes));
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get storage URL', [
+                'key' => $key,
+                'disk' => $disk,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+}
+
 if (!function_exists('safeFilePreview')) {
     /**
      * Safely generate a file preview URL or return appropriate fallback

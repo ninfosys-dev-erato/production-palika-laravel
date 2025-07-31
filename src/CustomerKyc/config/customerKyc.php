@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'path' =>  'customer-kyc/images'
+    'path' =>  'customer-kyc/document'
 ];
