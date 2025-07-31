@@ -292,8 +292,21 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                                 @if ($uploadedImage1)
-                                    <img src="{{ $uploadedImage1->temporaryUrl() }}" alt="Uploaded Image Preview"
-                                        class="img-thumbnail mt-2" style="height: 300px;">
+                                    @php
+                                        $previewUrl = safeFilePreview($uploadedImage1);
+                                    @endphp
+                                    
+                                    @if ($previewUrl)
+                                        <img src="{{ $previewUrl }}" alt="Uploaded Image Preview"
+                                            class="img-thumbnail mt-2" style="height: 300px;">
+                                    @else
+                                        <div class="mt-2 p-3 bg-light border rounded">
+                                            <i class="{{ getFileTypeIcon($uploadedImage1) }}"></i>
+                                            <span class="ms-2">{{ $uploadedImage1->getFilename() }}</span>
+                                            <br>
+                                            <small class="text-muted">{{ __('This file type cannot be previewed') }}</small>
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                         </div>
@@ -310,9 +323,22 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                     @if ($uploadedImage2)
-                                        <img src="{{ $uploadedImage2->temporaryUrl() }}"
-                                            alt="Uploaded Image Preview" class="img-thumbnail mt-2"
-                                            style="height: 300px;">
+                                        @php
+                                            $previewUrl2 = safeFilePreview($uploadedImage2);
+                                        @endphp
+                                        
+                                        @if ($previewUrl2)
+                                            <img src="{{ $previewUrl2 }}"
+                                                alt="Uploaded Image Preview" class="img-thumbnail mt-2"
+                                                style="height: 300px;">
+                                        @else
+                                            <div class="mt-2 p-3 bg-light border rounded">
+                                                <i class="{{ getFileTypeIcon($uploadedImage2) }}"></i>
+                                                <span class="ms-2">{{ $uploadedImage2->getFilename() }}</span>
+                                                <br>
+                                                <small class="text-muted">{{ __('This file type cannot be previewed') }}</small>
+                                            </div>
+                                        @endif
                                     @endif
                                 </div>
                             </div>

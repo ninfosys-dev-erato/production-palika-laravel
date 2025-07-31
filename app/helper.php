@@ -1234,4 +1234,87 @@ if (!function_exists('uploadToStorage')) {
     }
 }
 
+if (!function_exists('safeFilePreview')) {
+    /**
+     * Safely generate a file preview URL or return appropriate fallback
+     */
+    function safeFilePreview($file, string $fallbackText = 'File Preview')
+    {
+        if (!$file) {
+            return null;
+        }
 
+        try {
+            // Check if the file has a temporaryUrl method (Livewire uploaded file)
+            if (method_exists($file, 'temporaryUrl')) {
+                $filename = $file->getFilename();
+                $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                
+                // Check if it's a previewable image
+                $previewableImages = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+                if (in_array($extension, $previewableImages)) {
+                    return $file->temporaryUrl();
+                }
+                
+                // For non-previewable files, return null to show fallback
+                return null;
+            }
+            
+            // If it's a regular file path or URL
+            if (is_string($file)) {
+                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                $previewableImages = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+                
+                if (in_array($extension, $previewableImages)) {
+                    return $file;
+                }
+            }
+            
+            return null;
+        } catch (\Exception $e) {
+            \Log::warning('File preview generation failed: ' . $e->getMessage(), [
+                'file' => $file,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+}
+
+if (!function_exists('getFileTypeIcon')) {
+    /**
+     * Get appropriate icon class for file type
+     */
+    function getFileTypeIcon($file): string
+    {
+        if (!$file) {
+            return 'fas fa-file';
+        }
+
+        try {
+            $filename = '';
+            
+            if (method_exists($file, 'getFilename')) {
+                $filename = $file->getFilename();
+            } elseif (is_string($file)) {
+                $filename = $file;
+            }
+            
+            $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            
+            return match($extension) {
+                'pdf' => 'fas fa-file-pdf text-danger',
+                'doc', 'docx' => 'fas fa-file-word text-primary',
+                'xls', 'xlsx' => 'fas fa-file-excel text-success',
+                'ppt', 'pptx' => 'fas fa-file-powerpoint text-warning',
+                'txt' => 'fas fa-file-alt text-secondary',
+                'zip', 'rar', '7z' => 'fas fa-file-archive text-warning',
+                'mp4', 'avi', 'mov', 'wmv' => 'fas fa-file-video text-info',
+                'mp3', 'wav', 'm4a' => 'fas fa-file-audio text-success',
+                default => 'fas fa-file text-muted'
+            };
+        } catch (\Exception $e) {
+            return 'fas fa-file text-muted';
+        }
+    }
+}
