@@ -61,7 +61,7 @@ return [
         ],
 
         'backblaze' => [
-            'driver' => 's3',
+            'driver' => 'backblaze',
             'key' => env('BACKBLAZE_ACCESS_KEY_ID'),
             'secret' => env('BACKBLAZE_SECRET_ACCESS_KEY'),
             'region' => env('BACKBLAZE_DEFAULT_REGION', 'eu-central-003'),

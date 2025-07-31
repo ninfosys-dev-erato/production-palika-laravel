@@ -2,52 +2,39 @@
 
 namespace App\Providers;
 
+use App\Services\BackblazeS3Adapter;
+use Aws\S3\S3Client;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
 use League\Flysystem\Filesystem;
-use Aws\S3\S3Client;
-use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 
 class BackblazeServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
-    public function register(): void
+    public function register()
     {
         //
     }
 
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
+    public function boot()
     {
         Storage::extend('backblaze', function ($app, $config) {
+            
             $client = new S3Client([
+                'version' => 'latest',
+                'region' => $config['region'],
+                'endpoint' => $config['endpoint'],
+                'use_path_style_endpoint' => $config['use_path_style_endpoint'],
                 'credentials' => [
                     'key' => $config['key'],
                     'secret' => $config['secret'],
                 ],
-                'region' => $config['region'],
-                'version' => 'latest',
-                'endpoint' => $config['endpoint'],
-                'use_path_style_endpoint' => $config['use_path_style_endpoint'] ?? true,
-                'http' => [
-                    'verify' => true,
-                ],
             ]);
 
-            $adapter = new AwsS3V3Adapter(
-                $client,
-                $config['bucket'],
-                $config['root'] ?? '',
-                null,
-                null,
-                $config
-            );
+            $adapter = new BackblazeS3Adapter($client, $config['bucket'], $config['root'] ?? '');
+            $filesystem = new Filesystem($adapter, $config);
 
-            return new Filesystem($adapter, $config);
+            return new FilesystemAdapter($filesystem, $adapter, $config);
         });
     }
 }
