@@ -276,6 +276,13 @@ class CustomerForm extends Component
 
     public function handleFileUpload($file)
     {
+        // Use the custom Livewire file service for better Backblaze compatibility
+        if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $path = \App\Services\LivewireFileService::handleTemporaryFile($file, getStorageDisk('private'));
+            return $path ? basename($path) : null;
+        }
+        
+        // Fallback to original method for non-Livewire files
         return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, getStorageDisk('private'));
     }
 

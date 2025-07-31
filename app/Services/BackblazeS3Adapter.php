@@ -67,17 +67,35 @@ class BackblazeS3Adapter extends AwsS3V3Adapter
 
     protected function cleanPath(string $path): string
     {
+        // Handle Livewire specific path issues
+        if (str_contains($path, 'livewire-tmp/livewire-tmp')) {
+            $path = str_replace('livewire-tmp/livewire-tmp', 'livewire-tmp', $path);
+        }
+        
         // Remove any duplicate path segments
         $pathParts = explode('/', trim($path, '/'));
         $cleanParts = [];
         
         foreach ($pathParts as $part) {
-            if (!empty($part) && !in_array($part, $cleanParts)) {
-                $cleanParts[] = $part;
+            if (!empty($part)) {
+                // Only add if it's not already the last part (prevents immediate duplicates)
+                if (empty($cleanParts) || end($cleanParts) !== $part) {
+                    $cleanParts[] = $part;
+                }
             }
         }
         
-        return implode('/', $cleanParts);
+        $cleanPath = implode('/', $cleanParts);
+        
+        // Log path cleaning for debugging
+        if ($path !== $cleanPath) {
+            \Log::info('Path cleaned', [
+                'original' => $path,
+                'cleaned' => $cleanPath
+            ]);
+        }
+        
+        return $cleanPath;
     }
 
     public function mimeType(string $path): \League\Flysystem\FileAttributes
@@ -113,6 +131,66 @@ class BackblazeS3Adapter extends AwsS3V3Adapter
             
             // Return current time as default
             return new \League\Flysystem\FileAttributes($path, null, null, time());
+        }
+    }
+
+    public function fileExists(string $path): bool
+    {
+        try {
+            $cleanPath = $this->cleanPath($path);
+            return parent::fileExists($cleanPath);
+        } catch (\Exception $e) {
+            \Log::warning('Backblaze fileExists failed: ' . $e->getMessage(), [
+                'path' => $path,
+                'cleanPath' => $cleanPath ?? 'not set',
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    public function read(string $path): string
+    {
+        try {
+            $cleanPath = $this->cleanPath($path);
+            return parent::read($cleanPath);
+        } catch (\Exception $e) {
+            \Log::warning('Backblaze read failed: ' . $e->getMessage(), [
+                'path' => $path,
+                'cleanPath' => $cleanPath ?? 'not set',
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+    public function readStream(string $path)
+    {
+        try {
+            $cleanPath = $this->cleanPath($path);
+            return parent::readStream($cleanPath);
+        } catch (\Exception $e) {
+            \Log::warning('Backblaze readStream failed: ' . $e->getMessage(), [
+                'path' => $path,
+                'cleanPath' => $cleanPath ?? 'not set',
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+    public function delete(string $path): void
+    {
+        try {
+            $cleanPath = $this->cleanPath($path);
+            parent::delete($cleanPath);
+        } catch (\Exception $e) {
+            \Log::warning('Backblaze delete failed: ' . $e->getMessage(), [
+                'path' => $path,
+                'cleanPath' => $cleanPath ?? 'not set',
+                'error' => $e->getMessage()
+            ]);
+            // Don't throw on delete failures for temporary files
         }
     }
 } 
