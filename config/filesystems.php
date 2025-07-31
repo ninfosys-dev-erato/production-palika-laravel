@@ -62,13 +62,13 @@ return [
 
         'backblaze' => [
             'driver' => 's3',
-            'key' => env('BACKBLAZE_KEY_ID'),
-            'secret' => env('BACKBLAZE_APPLICATION_KEY'),
-            'region' => env('BACKBLAZE_REGION', 'us-west-002'),
+            'key' => env('BACKBLAZE_ACCESS_KEY_ID'),
+            'secret' => env('BACKBLAZE_SECRET_ACCESS_KEY'),
+            'region' => env('BACKBLAZE_DEFAULT_REGION', 'eu-central-003'),
             'bucket' => env('BACKBLAZE_BUCKET'),
             'url' => env('BACKBLAZE_URL'),
             'endpoint' => env('BACKBLAZE_ENDPOINT'),
-            'use_path_style_endpoint' => true,
+            'use_path_style_endpoint' => env('BACKBLAZE_USE_PATH_STYLE_ENDPOINT', true),
             'throw' => false,
             'visibility' => 'public',
             'root' => env('APP_ABBREVIATION', 'default'),

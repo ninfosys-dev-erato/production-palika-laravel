@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7bc7da694c3bfbf2499b0cb63d00f400",
+    "content-hash": "f5e11835ac49523e82b72eb324072d64",
     "packages": [
         {
             "name": "anuzpandey/laravel-nepali-date",
