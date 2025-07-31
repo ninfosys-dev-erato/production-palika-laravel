@@ -89,7 +89,18 @@ string $path,
         
         // 1. If we're configured for cloud storage, check if file exists there
         if ($this->shouldUseCloudStorage($disk)) {
+            \Log::info("Checking cloud storage for file", [
+                'file_path' => $filePath,
+                'disk' => $disk,
+                'tenant_prefix' => getTenantPrefix()
+            ]);
+            
             if (Storage::disk($disk)->exists($filePath)) {
+                \Log::info("File found in cloud storage", [
+                    'file_path' => $filePath,
+                    'disk' => $disk
+                ]);
+                
                 try {
                     // Special handling for Backblaze storage
                     if ($disk === 'backblaze') {
@@ -146,6 +157,13 @@ string $path,
                     ]);
                     // Fall through to local storage check
                 }
+            } else {
+                \Log::warning("File not found in cloud storage", [
+                    'file_path' => $filePath,
+                    'disk' => $disk,
+                    'tenant_prefix' => getTenantPrefix(),
+                    'expected_full_path' => getTenantPrefix() . '/' . $filePath
+                ]);
             }
         }
 

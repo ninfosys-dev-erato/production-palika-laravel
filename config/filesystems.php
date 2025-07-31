@@ -70,7 +70,7 @@ return [
             'endpoint' => env('BACKBLAZE_ENDPOINT'),
             'use_path_style_endpoint' => env('BACKBLAZE_USE_PATH_STYLE_ENDPOINT', true),
             'throw' => false,
-            'visibility' => 'public',
+            'visibility' => 'private',
             'root' => env('APP_ABBREVIATION', 'default'),
         ],
 
