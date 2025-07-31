@@ -259,11 +259,18 @@
                                                         {{ $isDisabled ? 'बन्द' : $status }}
                                                     </span>
                                                 </div>
+                                               
+                                                @php
+
+                                                    $submitterEnum = Src\Ebps\Enums\FormSubmitterEnum::tryFrom(
+                                                        $mapStep->form_submitter,
+                                                    );
+                                                @endphp
 
                                                 <p class="card-text text-muted small mb-3">
                                                     <i class="bx bx-user me-1"></i>
                                                     {{ __('ebps::ebps.submitter') }}:
-                                                    {{ ucfirst($mapStep->form_submitter) }}
+                                                    {{ $submitterEnum ? $submitterEnum->label() : ucfirst($mapStep->form_submitter) }}
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">

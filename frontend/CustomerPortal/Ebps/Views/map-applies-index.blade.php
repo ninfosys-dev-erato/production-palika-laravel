@@ -17,7 +17,7 @@
 
                     <div>
                         <a href="{{ route('customer.ebps.apply.map-apply.create') }}" class="btn btn-info"><i
-                                class="fa fa-plus"></i>
+                                class="bx bx-plus"></i>
                             {{ __('ebps::ebps.add_map_apply') }}</a>
 
                     </div>

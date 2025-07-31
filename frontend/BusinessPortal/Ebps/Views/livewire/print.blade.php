@@ -17,7 +17,7 @@
                             {{-- <span class="text-muted fw-semibold">{{ __('Edit') }}</span> --}}
                             <input type="checkbox" class="form-check-input toggle-switch" id="previewToggle"
                                 {{ $preview ? 'checked' : '' }} wire:click="togglePreview">
-                            <span class="text-muted fw-semibold">{{ __('ebps::ebps.Preview') }}</span>
+                            <span class="text-muted fw-semibold">{{ __('ebps::ebps.preview') }}</span>
                         </div>
                     </div>
                 </div>

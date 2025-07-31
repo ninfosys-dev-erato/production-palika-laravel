@@ -98,27 +98,6 @@
         </div>
     </div>
 
-    {{-- @perm('business-registration_status_edit')
-        @if ($businessRegistration->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-primary" wire:click="$dispatch('showAmountModal')">
-                    <i class="bx bx-wallet-alt"></i> {{ __('Send For Payment') }}
-                </button>
-            </div>
-        @endif
-    @endperm --}}
-
-    {{-- @perm('business-registration_status_approve')
-        @if ($businessRegistration->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED->value)
-            <div class="d-flex justify-content-end mt-3">
-                <button type="button" class="btn btn-success" wire:click="$dispatch('showApproveModal')"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Approve') }}">
-                    <i class="bx bx-checkbox-checked"></i> {{ __('Approve') }}
-                </button>
-            </div>
-        @endif
-    @endperm --}}
-
     {{-- Send for payment modal --}}
     <div class="modal fade" id="sendForPaymentModal" tabindex="-1" role="dialog" wire:ignore.self>
         <div class="modal-dialog" role="document">

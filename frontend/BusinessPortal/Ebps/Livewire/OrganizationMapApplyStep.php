@@ -101,7 +101,7 @@ class OrganizationMapApplyStep extends Component
         if (isset($this->letters[$formId])) {
             $this->letters[$formId] = $this->resolveMapStepTemplate($this->mapApply, $this->mapStep, $form);
             $this->dispatch('update-editor-' . $formId, ['content' => $this->letters[$formId]]);
-            $this->successToast(__('ebps::ebps.reset_successfully.'));
+            $this->successToast(__('ebps::ebps.reset_successfully'));
         }
     }
 
@@ -150,7 +150,7 @@ class OrganizationMapApplyStep extends Component
             'data' => json_encode($data),
             'template' => $this->letters[$formId]
         ]);
-        $this->successToast(__('ebps::ebps.saved_successfully.'));
+        $this->successToast(__('ebps::ebps.saved_successfully'));
         }else{
             $this->save($formId, $data);
         }
