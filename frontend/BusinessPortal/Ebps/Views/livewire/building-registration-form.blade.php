@@ -171,7 +171,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='area_sqm'>{{ __('ebps::ebps.area_sqm') }}</label>
-                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='number'
+                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_area_sqm') }}">
                         <div>
                             @error('customerLandDetail.area_sqm')
@@ -183,7 +183,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='lot_no'>{{ __('ebps::ebps.lot_no') }}</label>
-                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='number'
+                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
                         <div>
                             @error('customerLandDetail.lot_no')
@@ -195,7 +195,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='seat_no'>{{ __('ebps::ebps.seat_no') }}</label>
-                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='number'
+                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_seat_no') }}">
                         <div>
                             @error('customerLandDetail.seat_no')
@@ -279,7 +279,7 @@
                                         <div class='form-group'>
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
-                                                name='fourBoundaries.{{ $index }}.distance' type='number'
+                                                name='fourBoundaries.{{ $index }}.distance' type='text'
                                                 class='form-control'
                                                 placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>

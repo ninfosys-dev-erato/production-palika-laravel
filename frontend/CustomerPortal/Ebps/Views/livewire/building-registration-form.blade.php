@@ -188,7 +188,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='area_sqm'>{{ __('Area Sqm') }}</label>
-                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='number'
+                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_area_sqm') }}">
                         <div>
                             @error('customerLandDetail.area_sqm')
@@ -200,7 +200,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='lot_no'>{{ __('Lot No') }}</label>
-                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='number'
+                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='text'
                             class='form-control' placeholder="{{ __('Enter Lot No') }}">
                         <div>
                             @error('customerLandDetail.lot_no')
@@ -212,7 +212,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='seat_no'>{{ __('Seat No') }}</label>
-                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='number'
+                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_seat_no') }}">
                         <div>
                             @error('customerLandDetail.seat_no')
@@ -241,7 +241,7 @@
 
             </div>
 
-             <div class=" d-flex justify-content-between mb-4">
+            <div class=" d-flex justify-content-between mb-4">
                 <label class="form-label" for="form-label">{{ __('ebps::ebps.four_boundaries') }}</label>
                 <button type="button" class="btn btn-info" wire:click='addFourBoundaries'>
                     + {{ __('ebps::ebps.add_four_boundaries') }}
@@ -295,7 +295,7 @@
                                         <div class='form-group'>
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
-                                                name='fourBoundaries.{{ $index }}.distance' type='number'
+                                                name='fourBoundaries.{{ $index }}.distance' type='text'
                                                 class='form-control'
                                                 placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>
@@ -544,7 +544,7 @@
                     </div>
                 </div>
 
-               <div class='col-md-12 mb-3'>
+                <div class='col-md-12 mb-3'>
                     <div class='form-group'>
                         <label class="form-label" for='signature'>{{ __('ebps::ebps.land_owner_photo') }}</label>
                         <span class="text-danger">*</span>
