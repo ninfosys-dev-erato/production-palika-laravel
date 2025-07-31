@@ -567,7 +567,7 @@ class BusinessRegistrationForm extends Component
                                                 $path = ImageServiceFacade::compressAndStoreImage(
                                                     $file,
                                                     config('src.BusinessRegistration.businessRegistration.registration'),
-                                                    'local'
+                                                    getStorageDisk('public')
                                                 );
                                                 $storedDocuments[] = $path;
                                             }
@@ -577,7 +577,7 @@ class BusinessRegistrationForm extends Component
                                             $path = ImageServiceFacade::compressAndStoreImage(
                                                 $document,
                                                 config('src.BusinessRegistration.businessRegistration.registration'),
-                                                'local'
+                                                getStorageDisk('public')
                                             );
                                             $storedDocuments[] = $path;
                                         }
@@ -625,13 +625,13 @@ class BusinessRegistrationForm extends Component
                         if (is_array($document)) {
                             foreach ($document as $file) {
                                 if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.BusinessRegistration.businessRegistration.registration'), 'local');
+                                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.BusinessRegistration.businessRegistration.registration'), getStorageDisk('public'));
                                     $storedDocuments[] = $path;
                                 }
                             }
                         } else {
                             if ($document instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                                $path = ImageServiceFacade::compressAndStoreImage($document, config('src.BusinessRegistration.businessRegistration.registration'), 'local');
+                                $path = ImageServiceFacade::compressAndStoreImage($document, config('src.BusinessRegistration.businessRegistration.registration'), getStorageDisk('public'));
                                 $storedDocuments[] = $path;
                             }
                         }
@@ -702,7 +702,7 @@ class BusinessRegistrationForm extends Component
                 $path = ImageServiceFacade::compressAndStoreImage(
                     $file,
                     config('src.BusinessRegistration.businessRegistration.registration'),
-                    'local'
+                    getStorageDisk('public')
                 );
                 $storedDocuments[] = $path;
             }

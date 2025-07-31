@@ -158,10 +158,9 @@ class GrievanceService
 
                     if (is_array($fileNames)) {
                         if($complaint->is_public == true){
-
                             $file->file_name = array_map(fn($name) => ImageServiceFacade::getImage($path, $name), $fileNames);
                         }else{
-                            $file->file_name = array_map(fn($name) => ImageServiceFacade::getImage($path, $name, 'local'), $fileNames);
+                            $file->file_name = array_map(fn($name) => ImageServiceFacade::getImage($path, $name, getStorageDisk('private')), $fileNames);
                         }
                     }
                 }

@@ -746,11 +746,15 @@ function customFileAsset(string|null $file_path, string|null $file_name, string 
     ) {
         return false;
     }
+    
+    // Always use Backblaze for file operations if configured
+    $preferredDisk = getStorageDisk($disk === 'public' ? 'public' : 'private');
+    
     if($type === 'tempUrl')
     {
-         return FileFacade::getTemporaryUrl($file_path, $file_name, $disk);
+         return FileFacade::getTemporaryUrl($file_path, $file_name, $preferredDisk, 60); // 1 hour expiration
     }
-    return FileFacade::getFile($file_path, $file_name, $disk);
+    return FileFacade::getFile($file_path, $file_name, $preferredDisk);
     
 }
 
@@ -1132,9 +1136,15 @@ function resolveMapStepTemplate(MapApply $mapApply, MapStep $mapStep, $form): st
 if (!function_exists('getStorageDisk')) {
     /**
      * Get the appropriate storage disk based on environment configuration
+     * Prioritizes Backblaze for all file operations
      */
     function getStorageDisk(?string $type = null): string
     {
+        // Always prioritize Backblaze if configured
+        if (config('filesystems.disks.backblaze.key')) {
+            return 'backblaze';
+        }
+        
         $defaultDisk = config('filesystems.default', 'local');
         
         if ($defaultDisk === 'backblaze') {
@@ -1152,11 +1162,11 @@ if (!function_exists('getStorageDisk')) {
         }
         
         if ($type === 'public') {
-            return $useCloudStorage && config('filesystems.disks.backblaze.key') ? 'backblaze' : 'public';
+            return config('filesystems.disks.backblaze.key') ? 'backblaze' : 'public';
         }
         
         if ($type === 'private') {
-            return $useCloudStorage && config('filesystems.disks.backblaze.key') ? 'backblaze' : 'local';
+            return config('filesystems.disks.backblaze.key') ? 'backblaze' : 'local';
         }
         
         return $defaultDisk;

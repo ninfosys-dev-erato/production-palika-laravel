@@ -613,7 +613,7 @@ class BuildingRegistrationForm extends Component
     private function processFiles($file)
     {
         return $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile
-            ? FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, 'local')
+            ? FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, getStorageDisk('private'))
             : $file;
     }
 

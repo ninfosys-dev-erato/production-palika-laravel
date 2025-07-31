@@ -216,7 +216,7 @@ class CustomerApplyRecommendationForm extends Component
                             }
                         }
                     } elseif ($document instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                        $path = FileFacade::saveFile(config('src.Recommendation.recommendation.path'), "", $document, disk: 'local');
+                        $path = FileFacade::saveFile(config('src.Recommendation.recommendation.path'), "", $document, disk: getStorageDisk('private'));
                         $storedDocuments[] = $path;
                     }
                 }

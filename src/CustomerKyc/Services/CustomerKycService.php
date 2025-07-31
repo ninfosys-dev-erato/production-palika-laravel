@@ -131,7 +131,7 @@ class CustomerKycService
         return ImageServiceFacade::base64Save(
             $base64Image, 
             $this->path , 
-            getStorageDisk('private')
+            getStorageDisk('private') // This will now prioritize Backblaze
         );
     }
 

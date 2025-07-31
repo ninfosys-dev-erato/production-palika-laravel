@@ -33,7 +33,7 @@ class AuthController extends Controller
     {
         $data = $request->validated();
         if ($request->hasFile('avatar')) {
-            $avatarName = ImageServiceFacade::compressAndStoreImage($request->file('avatar'), 'customer/avatar', 'local');
+            $avatarName = ImageServiceFacade::compressAndStoreImage($request->file('avatar'), 'customer/avatar', getStorageDisk('public'));
         } else {
             $avatarName = null;
         }

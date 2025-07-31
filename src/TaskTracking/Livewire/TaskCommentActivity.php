@@ -87,13 +87,14 @@ class TaskCommentActivity extends Component
     private function storeFile($file): string
     {
         if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
-            return ImageServiceFacade::compressAndStoreImage($file, config('src.TaskTracking.TaskTracking.path'));
+            return ImageServiceFacade::compressAndStoreImage($file, config('src.TaskTracking.TaskTracking.path'), getStorageDisk('public'));
         }
 
         return FileFacade::saveFile(
             path: config('src.TaskTracking.TaskTracking.path'),
             filename: null,
-            file: $file
+            file: $file,
+            disk: getStorageDisk('private')
         );
     }
 

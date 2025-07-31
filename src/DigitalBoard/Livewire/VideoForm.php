@@ -68,7 +68,7 @@ class VideoForm extends Component
             $this->isPrivate = $video->is_private;
             $this->selectedWards = $video->wards()?->pluck('ward')->toArray() ?? [];
 
-            $disk = $video->is_private ? 'local' : 'public';
+            $disk = $video->is_private ? getStorageDisk('private') : getStorageDisk('public');
             $this->videoFile = $video->file;
         }
     }
@@ -116,7 +116,7 @@ class VideoForm extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             if (isset($storedFileName)) {
-                $disk = $this->isPrivate ? 'local' : 'public';
+                $disk = $this->isPrivate ? getStorageDisk('private') : getStorageDisk('public');
                 VideoServiceFacade::deleteVideo(
                     config('src.DigitalBoard.video.video_path'),
                     $storedFileName,
@@ -131,15 +131,15 @@ class VideoForm extends Component
     private function storeVideoFile(): ?string
     {
         if ($this->videoFile) {
-            $disk = $this->isPrivate ? 'local' : 'public';
+            $disk = $this->isPrivate ? getStorageDisk('private') : getStorageDisk('public');
             return VideoServiceFacade::storeVideo(
                 $this->videoFile,
                 config('src.DigitalBoard.video.video_path'),
                 $disk
             );
         } elseif ($this->video->exists && $this->video->isDirty('is_private')) {
-            $oldDisk = $this->video->getOriginal('is_private') ? 'local' : 'public';
-            $newDisk = $this->isPrivate ? 'local' : 'public';
+            $oldDisk = $this->video->getOriginal('is_private') ? getStorageDisk('private') : getStorageDisk('public');
+            $newDisk = $this->isPrivate ? getStorageDisk('private') : getStorageDisk('public');
 
             VideoServiceFacade::transferBetweenDisks(
                 config('src.DigitalBoard.video.video_path'),

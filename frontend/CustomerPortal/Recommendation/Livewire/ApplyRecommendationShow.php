@@ -84,7 +84,7 @@ class ApplyRecommendationShow extends Component
         ]);
 
         try{
-            $path = ImageServiceFacade::compressAndStoreImage($this->bill, config('src.Recommendation.recommendation.path'), 'local');
+            $path = ImageServiceFacade::compressAndStoreImage($this->bill, config('src.Recommendation.recommendation.path'), getStorageDisk('public'));
             $this->applyRecommendation->bill = $path;
             $this->applyRecommendation->ltax_ebp_code = $this->ltax_ebp_code;
             $dto = ApplyRecommendationShowDto::fromModel($this->applyRecommendation);

@@ -318,7 +318,7 @@ class OrganizationMapApplyForm extends Component
         $save = FileFacade::saveFile(
             path:config('src.Ebps.ebps.path'),
             file:$this->documents[$index]['document'],
-            disk:"local",
+            disk:getStorageDisk('private'),
             filename:""
         );
         $this->documents[$index]['document'] = $save;
@@ -326,7 +326,7 @@ class OrganizationMapApplyForm extends Component
         $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
             path:config('src.Ebps.ebps.path'),
             filename:$save,
-            disk:'local'
+            disk:getStorageDisk('private')
         );
        
         $this->documents = array_values($this->documents);
@@ -516,14 +516,14 @@ class OrganizationMapApplyForm extends Component
     {
         if($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
         {
-           return FileFacade::saveFile( config('src.Ebps.ebps.path'), "", $file, 'local');
+           return FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, getStorageDisk('private'));
         }else{
             return $file;
         }
     }
     private function storeFile($file): string
     {
-        return ImageServiceFacade::compressAndStoreImage($file,  config('src.Ebps.ebps.path'));
+        return ImageServiceFacade::compressAndStoreImage($file, config('src.Ebps.ebps.path'), getStorageDisk('public'));
     }
 
 }

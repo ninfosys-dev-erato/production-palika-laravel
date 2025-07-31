@@ -238,7 +238,7 @@ class CustomerForm extends Component
 
     public function handleFileUpload($file)
     {
-        return ImageService::compressAndStoreImage($file, config('src.CustomerKyc.customerKyc.path'));
+        return ImageService::compressAndStoreImage($file, config('src.CustomerKyc.customerKyc.path'), getStorageDisk('private'));
     }
 
     #[On('search-user')]

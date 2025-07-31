@@ -30,7 +30,7 @@ class BusinessRenewalUploadBill extends Component
             'payment_receipt' => 'required|file|mimes:pdf,jpg,png|max:2048'
         ]);
         try {
-            $path = ImageServiceFacade::compressAndStoreImage($this->payment_receipt, config('src.BusinessRegistration.businessRegistration.bill'), 'local');
+            $path = ImageServiceFacade::compressAndStoreImage($this->payment_receipt, config('src.BusinessRegistration.businessRegistration.bill'), getStorageDisk('public'));
             $this->businessRenewal->payment_receipt = $path;
             $this->businessRenewal->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
             $service = new BusinessRenewalAdminService();

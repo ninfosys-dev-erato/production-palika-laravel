@@ -45,7 +45,7 @@ class ProfileForm extends Component
         $this->validate();
         try{
             if (!is_string($this->user['signature'])) {
-                $this->user->signature = ImageServiceFacade::compressAndStoreImage($this->user['signature'], config('src.Profile.profile.path'));
+                $this->user->signature = ImageServiceFacade::compressAndStoreImage($this->user['signature'], config('src.Profile.profile.path'), getStorageDisk('public'));
             }
             $dto = ProfileAdminDto::fromLiveWireModel($this->user);
             $service = new ProfileAdminService();

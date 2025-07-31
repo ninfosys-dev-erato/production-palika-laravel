@@ -135,4 +135,18 @@ class ChangeOrganizationForm extends Component
         return $file;
     }
 
+    private function storeFile($file): string
+    {
+        if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
+            return ImageServiceFacade::compressAndStoreImage($file, config('src.Ebps.ebps.path'), getStorageDisk('public'));
+        }
+
+        return FileFacade::saveFile(
+            path: config('src.Ebps.ebps.path'),
+            filename: null,
+            file: $file,
+            disk: getStorageDisk('private')
+        );
+    }
+
 }

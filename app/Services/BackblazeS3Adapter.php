@@ -7,9 +7,22 @@ use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 use League\Flysystem\Config;
 use League\Flysystem\UnableToWriteFile;
 use League\Flysystem\UnableToRetrieveMetadata;
+use Carbon\Carbon;
+use League\Flysystem\AwsS3V3\PortableVisibilityConverter;
 
 class BackblazeS3Adapter extends AwsS3V3Adapter
 {
+    protected S3Client $client;
+
+    public function __construct(S3Client $client, $bucket, $prefix = '', $visibility = null)
+    {
+        if ($visibility === null) {
+            $visibility = new PortableVisibilityConverter('public', 'private');
+        }
+        parent::__construct($client, $bucket, $prefix, $visibility);
+        $this->client = $client;
+    }
+
     public function write(string $path, string $contents, Config $config): void
     {
         $this->uploadWithMd5($path, $contents, $config);
@@ -30,10 +43,20 @@ class BackblazeS3Adapter extends AwsS3V3Adapter
             if (is_string($body)) {
                 $md5Hash = base64_encode(md5($body, true));
                 
-                // Create a new config with the Content-MD5 header but without ACL
+                // Create a new config with the Content-MD5 header
                 $configArray = $config->toArray();
-                unset($configArray['visibility']); // Remove visibility to avoid ACL issues
-                $newConfig = new Config(array_merge($configArray, ['ContentMD5' => $md5Hash]));
+                $configArray['ContentMD5'] = $md5Hash;
+                
+                // Handle visibility properly for public files
+                if (isset($configArray['visibility']) && $configArray['visibility'] === 'public') {
+                    // Keep the visibility setting for public files
+                    $configArray['ACL'] = 'public-read';
+                } else {
+                    // Remove visibility for private files to avoid ACL issues
+                    unset($configArray['visibility']);
+                }
+                
+                $newConfig = new Config($configArray);
                 
                 // Call parent's write method with the modified config
                 parent::write($cleanPath, $body, $newConfig);
@@ -43,6 +66,57 @@ class BackblazeS3Adapter extends AwsS3V3Adapter
             }
         } catch (\Exception $e) {
             throw UnableToWriteFile::atLocation($path, $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * Generate a public URL for the file
+     */
+    public function url(string $path): string
+    {
+        try {
+            $cleanPath = $this->cleanPath($path);
+            $bucket = $this->bucket;
+            $endpoint = $this->client->getEndpoint();
+            
+            // Construct the public URL
+            return $endpoint . '/' . $bucket . '/' . $cleanPath;
+        } catch (\Exception $e) {
+            \Log::warning('Backblaze url generation failed: ' . $e->getMessage(), [
+                'path' => $path,
+                'cleanPath' => $cleanPath ?? 'not set',
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Generate a temporary signed URL for the file
+     */
+    public function temporaryUrl(string $path, \DateTimeInterface $expiresAt, \League\Flysystem\Config $config): string
+    {
+        try {
+            $cleanPath = $this->cleanPath($path);
+            
+            // Create a command to generate a presigned URL
+            $command = $this->client->getCommand('GetObject', [
+                'Bucket' => $this->bucket,
+                'Key' => $cleanPath,
+            ]);
+            
+            // Generate the presigned URL
+            $request = $this->client->createPresignedRequest($command, $expiresAt);
+            
+            return (string) $request->getUri();
+        } catch (\Exception $e) {
+            \Log::warning('Backblaze temporaryUrl generation failed: ' . $e->getMessage(), [
+                'path' => $path,
+                'cleanPath' => $cleanPath ?? 'not set',
+                'expiration' => $expiresAt->format('c'),
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
         }
     }
 
@@ -192,5 +266,13 @@ class BackblazeS3Adapter extends AwsS3V3Adapter
             ]);
             // Don't throw on delete failures for temporary files
         }
+    }
+
+    /**
+     * Get the S3 client instance
+     */
+    public function getClient(): S3Client
+    {
+        return $this->client;
     }
 } 

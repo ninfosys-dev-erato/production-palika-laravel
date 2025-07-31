@@ -109,18 +109,15 @@ class NoticeForm extends Component
     }
     private function storeFile($file): string
     {
-        if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-            if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
-                return ImageServiceFacade::compressAndStoreImage($file, config('src.DigitalBoard.notice.notice_path'));
-            }
-    
-            return FileFacade::saveFile(
-                path: config('src.DigitalBoard.notice.notice_path'),
-                filename: null,
-                file: $file
-            );
+        if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
+            return ImageServiceFacade::compressAndStoreImage($file, config('src.DigitalBoard.notice.notice_path'), getStorageDisk('public'));
         }
-    
-        return '';
+
+        return FileFacade::saveFile(
+            path: config('src.DigitalBoard.notice.notice_path'),
+            filename: null,
+            file: $file,
+            disk: getStorageDisk('private')
+        );
     }
 }
