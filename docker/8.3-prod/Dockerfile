@@ -67,6 +67,11 @@ RUN apt-get install -y --no-install-recommends \
 # Install Composer globally
 RUN curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
+# Install Node.js and npm for Vite builds
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
+
 # Security: Create non-root user and group (handle existing www-data)
 RUN groupmod -g $WWWGROUP www-data \
     && usermod -u $WWWUSER -g $WWWGROUP www-data \
@@ -127,6 +132,8 @@ COPY docker/8.3-prod/debug-access.sh /usr/local/bin/debug-access
 COPY docker/8.3-prod/fix-storage-routes.sh /usr/local/bin/fix-storage-routes
 COPY docker/8.3-prod/test-storage-access.sh /usr/local/bin/test-storage-access
 COPY docker/8.3-prod/fix-oauth-keys.sh /usr/local/bin/fix-oauth-keys
+COPY docker/8.3-prod/setup-direct-upload.sh /usr/local/bin/setup-direct-upload
+COPY docker/8.3-prod/fix-vite-build.sh /usr/local/bin/fix-vite-build
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
@@ -139,7 +146,9 @@ RUN chmod +x /usr/local/bin/start-container \
     && chmod +x /usr/local/bin/debug-access \
     && chmod +x /usr/local/bin/fix-storage-routes \
     && chmod +x /usr/local/bin/test-storage-access \
-    && chmod +x /usr/local/bin/fix-oauth-keys
+    && chmod +x /usr/local/bin/fix-oauth-keys \
+    && chmod +x /usr/local/bin/setup-direct-upload \
+    && chmod +x /usr/local/bin/fix-vite-build
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/
@@ -169,11 +178,25 @@ RUN rm -rf /var/www/html/docker \
 # Install Composer dependencies
 RUN cd /var/www/html && composer install --optimize-autoloader --no-interaction
 
+# Install npm dependencies and build assets with Vite
+RUN cd /var/www/html \
+    && npm install \
+    && npm run build \
+    && npm cache clean --force
+
 # Remove development dependencies and debugbar references from production
 RUN cd /var/www/html \
     && composer remove barryvdh/laravel-debugbar --no-interaction --ignore-platform-reqs 2>/dev/null || true \
     && composer remove mccarlosen/laravel-mpdf --no-interaction --ignore-platform-reqs 2>/dev/null || true \
     && composer dump-autoload --optimize
+
+# Clean up Node.js and npm after build to reduce container size
+RUN apt-get remove -y nodejs npm \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -rf /var/www/html/node_modules \
+    && rm -f /var/www/html/package-lock.json
 
 # Remove development service providers from config files
 RUN cd /var/www/html \

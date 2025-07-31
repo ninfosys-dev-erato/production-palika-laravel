@@ -222,6 +222,14 @@ main() {
         "web-test")
             test_web_access
             ;;
+        "setup-upload")
+            print_status "Setting up direct upload system..."
+            /usr/local/bin/setup-direct-upload
+            ;;
+        "fix-vite")
+            print_status "Fixing Vite build issues..."
+            /usr/local/bin/fix-vite-build
+            ;;
         "full"|"full-debug")
             print_status "Running full debug setup..."
             fix_debug_permissions
@@ -243,6 +251,8 @@ main() {
             echo "  test           - Create test files and test web access"
             echo "  clean          - Clean up test files"
             echo "  web-test       - Test web access to storage files"
+            echo "  setup-upload   - Set up direct upload system for KYC forms"
+            echo "  fix-vite       - Fix Vite build issues and rebuild assets"
             echo "  full           - Run complete debugging setup (fix + test + info)"
             echo "  help           - Show this help message"
             echo ""

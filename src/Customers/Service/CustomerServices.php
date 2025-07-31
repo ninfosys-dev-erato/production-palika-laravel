@@ -12,7 +12,7 @@ class CustomerServices
             $image = ImageServiceFacade::base64Save(
                 file: $data->avatar, 
                 path: $path, 
-                disk: 'local');
+                disk: getStorageDisk('public'));
 
         return Customer::updateOrCreate(
                 ['id' => $customer->id],

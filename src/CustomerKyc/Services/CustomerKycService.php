@@ -131,7 +131,7 @@ class CustomerKycService
         return ImageServiceFacade::base64Save(
             $base64Image, 
             $this->path , 
-            'local'
+            getStorageDisk('private')
         );
     }
 

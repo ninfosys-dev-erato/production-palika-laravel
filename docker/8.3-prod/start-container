@@ -202,6 +202,15 @@ EOF
         cd /var/www/html && /usr/local/bin/publish-vendor-assets
     fi
     
+    # Ensure Vite-built assets are available (runtime check)
+    if [ ! -f "/var/www/html/public/build/manifest.json" ]; then
+        print_warning "Vite-built assets missing, attempting to fix..."
+        cd /var/www/html && /usr/local/bin/fix-vite-build
+    else
+        print_status "Vite-built assets found"
+        ls -la /var/www/html/public/build/assets/ 2>/dev/null || print_warning "Build assets directory not accessible"
+    fi
+    
     # Ensure OAuth keys exist
     print_status "Checking OAuth keys..."
     if [ ! -f "/var/www/html/storage/app/oauth-private.key" ] || [ ! -f "/var/www/html/storage/app/oauth-public.key" ]; then
@@ -236,6 +245,13 @@ EOF
     if ! grep -q "storage/customer-kyc" /var/www/html/routes/web.php; then
         print_status "Storage routes missing, adding them..."
         cd /var/www/html && /usr/local/bin/fix-storage-routes
+    fi
+    
+    # Ensure direct upload routes are properly configured
+    print_status "Ensuring direct upload routes are configured..."
+    if ! grep -q "upload/signed-url" /var/www/html/routes/api.php; then
+        print_status "Direct upload routes missing, adding them..."
+        cd /var/www/html && /usr/local/bin/emergency-asset-fix fix-upload
     fi
     
     # Start services

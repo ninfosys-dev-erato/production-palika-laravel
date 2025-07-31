@@ -4,16 +4,16 @@ namespace Frontend\CustomerPortal\CustomerKyc\Livewire;
 
 use App\Enums\Action;
 use App\Facades\ActivityLogFacade;
-use App\Facades\FileFacade;
-use App\Facades\ImageServiceFacade;
+
+
 use App\Rules\MobileNumberIdentifierRule;
-use App\Services\ImageService;
+
 use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Frontend\CustomerPortal\CustomerKyc\DTO\CustomerKycDto;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
-use Livewire\WithFileUploads;
+
 use Src\Address\Models\District;
 use Src\CustomerKyc\Services\CustomerKycService;
 use Src\Customers\DTO\CustomerAdminDto;
@@ -25,12 +25,12 @@ use Src\Customers\Models\CustomerKyc;
 
 class CustomerForm extends Component
 {
-    use SessionFlash, WithFileUploads, HelperDate;
+    use SessionFlash, HelperDate;
 
     public ?Customer $customer;
     public ?Action $action;
     public $provinces;
-    public array $files = [];
+
     public $isSameAsPermanent = false;
     public array $temporaryDistricts = [];
     public array $permanentDistricts = [];
@@ -40,13 +40,15 @@ class CustomerForm extends Component
     public array $permanentWards = [];
     public bool $isModalForm = false;
     public bool $isProvinceSelected = false;
-    public  $uploadedImage1;
-    public  $uploadedImage2;
+
+    public  $uploadedImage1_key;
+    public  $uploadedImage2_key;
+    public  $uploadedImage1_upload_data;
+    public  $uploadedImage2_upload_data;
     public array $districts = [];
     public bool $showDocumentBackInput = false;
     public ?CustomerKyc $kyc;
-    public $existingImage1;
-    public $existingImage2;
+
 
     public function rules(): array
     {
@@ -74,32 +76,21 @@ class CustomerForm extends Component
             'kyc.document_issued_date_nepali' => ['required', 'string'],
             'kyc.document_issued_at' => ['required'],
             'kyc.document_number' => ['required', 'string'],
-            'uploadedImage1' => ['required', 'max:10240'],
+            'uploadedImage1_key' => ['required', 'string'],
             'kyc.expiry_date_english' => ['nullable', 'date'],
         ];
-        $rules['uploadedImage1'] = $this->getImageValidationRules($this->uploadedImage1);
 
         if ($this->showDocumentBackInput) {
-            $rules['uploadedImage2'] = $this->getImageValidationRules($this->uploadedImage2);
+            $rules['uploadedImage2_key'] = ['required', 'string'];
         } else {
-            $rules['uploadedImage2'] = ['nullable', 'max:10240'];
+            $rules['uploadedImage2_key'] = ['nullable', 'string'];
         }
     
         return $rules;
     }
     
-    /**
-     * Get validation rules for uploaded images.
-     *
-     * @param mixed $image
-     * @return array
-     */
-    private function getImageValidationRules($image): array
-    {
-        return is_string($image)
-            ? ['required', 'max:10240']
-            : ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:10240']; 
-    }
+
+
 
     public function messages(): array
     {
@@ -217,8 +208,7 @@ class CustomerForm extends Component
             $this->temporaryLoadDistricts();
             $this->temporaryLoadLocalBodies();
             $this->temporaryLoadWards();
-            $this->uploadedImage1 = $this->kyc->document_image1;
-            $this->uploadedImage2 = $this->kyc->document_image2;
+
             $this->updateDocumentNumber();
         }
         $this->action = $action;
@@ -250,12 +240,12 @@ class CustomerForm extends Component
                 $this->kyc['document_type']->value === "national_id" ||
                 $this->kyc['document_type']->value === "citizenship"
             ) {            
-                $this->kyc->document_image1 = $this->handleFileIfValid($this->uploadedImage1);
-                $this->kyc->document_image2 = $this->uploadedImage2 ? $this->handleFileIfValid($this->uploadedImage2) : null;
+                $this->kyc->document_image1 = $this->uploadedImage1_key;
+                $this->kyc->document_image2 = $this->uploadedImage2_key ?? null;
             
             } else {
             
-                $this->kyc->document_image1 = $this->handleFileIfValid($this->uploadedImage1);
+                $this->kyc->document_image1 = $this->uploadedImage1_key;
                 $this->kyc->document_image2 = null;
             }    
         
@@ -274,20 +264,7 @@ class CustomerForm extends Component
         }
     }
 
-    private function handleFileIfValid($file)
-{
-    if ($file instanceof \Illuminate\Http\File || 
-        $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile || 
-        $file instanceof \Illuminate\Http\UploadedFile) {
-        return $this->handleFileUpload($file);
-    }
-    return $file;
-}
 
-    public function handleFileUpload($file)
-    {
-        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, 'local');
-    }
 
     private function initializeDates(string | null $nepaliDob, string | null $nepaliDocIssuedDate, string | null $engExpiryDate): void
     {

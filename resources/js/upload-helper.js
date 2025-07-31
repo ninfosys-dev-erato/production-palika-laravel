@@ -23,6 +23,8 @@ class DirectUploadHelper {
      */
     async getSignedUrl(fileInfo) {
         try {
+            console.log('Getting signed URL for:', fileInfo);
+            
             const response = await fetch(`${this.apiBaseUrl}/upload/signed-url`, {
                 method: 'POST',
                 headers: {
@@ -33,11 +35,17 @@ class DirectUploadHelper {
                 body: JSON.stringify(fileInfo)
             });
 
+            console.log('Signed URL response status:', response.status);
+
             if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Signed URL error response:', errorText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            return await response.json();
+            const result = await response.json();
+            console.log('Signed URL result:', result);
+            return result;
         } catch (error) {
             console.error('Failed to get signed URL:', error);
             throw error;
@@ -247,12 +255,9 @@ class DirectUploadHelper {
      * @returns {string} Auth token
      */
     getAuthToken() {
-        // Try to get token from meta tag first
-        const metaToken = document.querySelector('meta[name="api-token"]')?.getAttribute('content');
-        if (metaToken) return metaToken;
-
-        // Fallback to localStorage
-        return localStorage.getItem('auth_token') || '';
+        // For web sessions, we don't need a separate auth token
+        // The CSRF token and session cookie will handle authentication
+        return '';
     }
 }
 

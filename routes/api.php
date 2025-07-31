@@ -15,3 +15,11 @@ Route::middleware(['auth:sanctum'])->prefix('upload')->group(function () {
     Route::delete('file', [DirectUploadController::class, 'deleteFile']);
     Route::post('temporary-url', [DirectUploadController::class, 'getTemporaryUrl']);
 });
+
+// Customer upload routes (for web session authenticated customers)
+Route::middleware(['web', 'auth:customer'])->prefix('upload')->group(function () {
+    Route::post('signed-url', [DirectUploadController::class, 'getSignedUrl']);
+    Route::post('confirm', [DirectUploadController::class, 'confirmUpload']);
+    Route::delete('file', [DirectUploadController::class, 'deleteFile']);
+    Route::post('temporary-url', [DirectUploadController::class, 'getTemporaryUrl']);
+});

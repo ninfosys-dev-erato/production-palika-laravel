@@ -162,6 +162,33 @@ EOF
 
 print_status "✅ Storage routes added successfully"
 
+# Add direct upload API routes if they don't exist
+print_status "Step 2.5: Checking direct upload API routes..."
+if ! grep -q "upload/signed-url" /var/www/html/routes/api.php; then
+    print_status "Adding direct upload API routes..."
+    cat >> /var/www/html/routes/api.php << 'EOF'
+
+// Direct upload routes for cloud storage
+Route::middleware(['auth:sanctum'])->prefix('upload')->group(function () {
+    Route::post('signed-url', [DirectUploadController::class, 'getSignedUrl']);
+    Route::post('confirm', [DirectUploadController::class, 'confirmUpload']);
+    Route::delete('file', [DirectUploadController::class, 'deleteFile']);
+    Route::post('temporary-url', [DirectUploadController::class, 'getTemporaryUrl']);
+});
+
+// Customer upload routes (for web session authenticated customers)
+Route::middleware(['web', 'auth:customer'])->prefix('upload')->group(function () {
+    Route::post('signed-url', [DirectUploadController::class, 'getSignedUrl']);
+    Route::post('confirm', [DirectUploadController::class, 'confirmUpload']);
+    Route::delete('file', [DirectUploadController::class, 'deleteFile']);
+    Route::post('temporary-url', [DirectUploadController::class, 'getTemporaryUrl']);
+});
+EOF
+    print_status "✅ Direct upload API routes added"
+else
+    print_status "✅ Direct upload API routes already exist"
+fi
+
 # Step 3: Set proper permissions
 print_status "Step 3: Setting storage permissions..."
 chown -R www-data:www-data /var/www/html/storage

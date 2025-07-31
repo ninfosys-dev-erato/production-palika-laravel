@@ -289,6 +289,87 @@ fix_private_storage() {
     fi
 }
 
+# Function to fix direct upload routes
+fix_direct_upload_routes() {
+    print_status "Fixing direct upload API routes..."
+    
+    # Check if DirectUploadController exists
+    if [ ! -f "/var/www/html/app/Http/Controllers/DirectUploadController.php" ]; then
+        print_warning "DirectUploadController not found, creating it..."
+        
+        # Create the controller directory if it doesn't exist
+        mkdir -p /var/www/html/app/Http/Controllers
+        
+        # Create a basic DirectUploadController
+        cat > /var/www/html/app/Http/Controllers/DirectUploadController.php << 'EOF'
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+class DirectUploadController extends Controller
+{
+    public function getSignedUrl(Request $request): JsonResponse
+    {
+        // Basic implementation - should be replaced with actual implementation
+        return response()->json(['error' => 'Direct upload not configured'], 501);
+    }
+
+    public function confirmUpload(Request $request): JsonResponse
+    {
+        return response()->json(['error' => 'Direct upload not configured'], 501);
+    }
+
+    public function deleteFile(Request $request): JsonResponse
+    {
+        return response()->json(['error' => 'Direct upload not configured'], 501);
+    }
+
+    public function getTemporaryUrl(Request $request): JsonResponse
+    {
+        return response()->json(['error' => 'Direct upload not configured'], 501);
+    }
+}
+EOF
+        print_status "✓ Created basic DirectUploadController"
+    fi
+    
+    # Add API routes if they don't exist
+    if ! grep -q "upload/signed-url" /var/www/html/routes/api.php; then
+        print_status "Adding direct upload API routes..."
+        cat >> /var/www/html/routes/api.php << 'EOF'
+
+// Direct upload routes for cloud storage
+Route::middleware(['auth:sanctum'])->prefix('upload')->group(function () {
+    Route::post('signed-url', [DirectUploadController::class, 'getSignedUrl']);
+    Route::post('confirm', [DirectUploadController::class, 'confirmUpload']);
+    Route::delete('file', [DirectUploadController::class, 'deleteFile']);
+    Route::post('temporary-url', [DirectUploadController::class, 'getTemporaryUrl']);
+});
+
+// Customer upload routes (for web session authenticated customers)
+Route::middleware(['web', 'auth:customer'])->prefix('upload')->group(function () {
+    Route::post('signed-url', [DirectUploadController::class, 'getSignedUrl']);
+    Route::post('confirm', [DirectUploadController::class, 'confirmUpload']);
+    Route::delete('file', [DirectUploadController::class, 'deleteFile']);
+    Route::post('temporary-url', [DirectUploadController::class, 'getTemporaryUrl']);
+});
+EOF
+        print_status "✓ Added direct upload API routes"
+    fi
+    
+    # Clear route cache
+    cd /var/www/html
+    php artisan route:clear 2>/dev/null || true
+    php artisan route:cache 2>/dev/null || true
+    
+    print_status "✓ Direct upload routes configured"
+}
+
 # Main function
 main() {
     case "${1:-check}" in
@@ -321,6 +402,13 @@ main() {
         "fix-private")
             fix_private_storage
             ;;
+        "fix-upload")
+            fix_direct_upload_routes
+            ;;
+        "fix-vite")
+            print_status "Fixing Vite build issues..."
+            /usr/local/bin/fix-vite-build
+            ;;
         "full")
             print_status "Running full emergency fix..."
             check_current_state
@@ -329,6 +417,8 @@ main() {
             fix_storage_config
             fix_412_error
             fix_private_storage
+            fix_direct_upload_routes
+            /usr/local/bin/fix-vite-build
             restart_nginx
             test_nginx_access
             test_storage_access
@@ -344,6 +434,8 @@ main() {
             echo "  storage-fix - Fix storage configuration and test access"
             echo "  fix-412    - Fix 412 error for customer-kyc signed URLs"
             echo "  fix-private - Fix private storage file access permissions"
+            echo "  fix-upload - Fix direct upload API routes and controller"
+            echo "  fix-vite   - Fix Vite build issues and rebuild assets"
             echo "  full       - Run complete emergency fix procedure (includes all fixes)"
             echo "  help       - Show this help message"
             ;;

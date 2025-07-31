@@ -51,7 +51,7 @@
                         <div class="col-md-4 d-flex align-items-stretch">
                             <div class="card-body border shadow-lg bg-white flex-fill" style="border-radius: 10px;">
                                 @if ($customer->avatar)
-                                    <img src="{{ customAsset(config('src.Customers.customer.avatar_path'), $customer->avatar, 'local') }}"
+                                    <img src="{{ customAsset(config('src.Customers.customer.avatar_path'), $customer->avatar, getStorageDisk('public')) }}"
                                         alt="{{ $customer->name }}" class="mx-auto d-block rounded-circle"
                                         style="width: 100px; height: 100px;">
                                 @elseif($customer->name)
@@ -178,7 +178,7 @@
                                                     $fileUrl = customFileAsset(
                                                         config('src.CustomerKyc.customerKyc.path'),
                                                         $customer->kyc->document_image1,
-                                                        'local',
+                                                        getStorageDisk('private'),
                                                         'tempUrl',
                                                     );
                                                 @endphp
@@ -202,7 +202,7 @@
                                                     $fileUrl = customFileAsset(
                                                         config('src.CustomerKyc.customerKyc.path'),
                                                         $customer->kyc->document_image2,
-                                                        'local',
+                                                        getStorageDisk('private'),
                                                         'tempUrl',
                                                     );
                                                 @endphp
