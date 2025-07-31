@@ -140,7 +140,7 @@ class CashGrantForm extends Component
             $save = FileFacade::saveFile(
                 path: config('src.GrantManagement.grant.file'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
 
@@ -150,7 +150,7 @@ class CashGrantForm extends Component
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.GrantManagement.grant.file'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         } else {
             // If no file is provided (edit mode), load the existing file URL
@@ -158,7 +158,7 @@ class CashGrantForm extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.GrantManagement.grant.file'),
                     filename: $this->cashGrant->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }

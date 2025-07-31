@@ -811,7 +811,7 @@ class BusinessRegistrationForm extends Component
         $save = FileFacade::saveFile(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             file: $file,
-            disk: "local",
+            disk: getStorageDisk('private'),
             filename: ""
         );
 
@@ -822,7 +822,7 @@ class BusinessRegistrationForm extends Component
         $this->personalDetails[$index][$field . '_url'] = FileFacade::getTemporaryUrl(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             filename: $save,
-            disk: 'local'
+            disk: getStorageDisk('private')
         );
     }
 
@@ -899,7 +899,7 @@ class BusinessRegistrationForm extends Component
             $filename = FileFacade::saveFile(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
                 file: $file,
-                disk: 'local',
+                disk: getStorageDisk('private'),
                 filename: ''
             );
 
@@ -908,7 +908,7 @@ class BusinessRegistrationForm extends Component
             $this->businessRequiredDocUrl[$field . '_url'] = FileFacade::getTemporaryUrl(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
                 filename: $filename,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         } catch (\Exception $e) {
             $this->errorFlash('Failed to upload document: ' . $e->getMessage());

@@ -155,7 +155,7 @@ class DocumentUploadForm extends Component
             $save = FileFacade::saveFile(
                 path: config('src.Yojana.yojana.evaluation'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
             ProjectDocument::updateOrCreate(
@@ -173,7 +173,7 @@ class DocumentUploadForm extends Component
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.Yojana.yojana.evaluation'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
             $this->successToast(__('yojana::yojana.data_saved_successfully'));
         } else {
@@ -182,7 +182,7 @@ class DocumentUploadForm extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.Yojana.yojana.evaluation'),
                     filename: $this->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }

@@ -87,14 +87,14 @@ class ConsumerCommitteeForm extends Component
             $save = FileFacade::saveFile(
                 path: config('src.Yojana.yojana.consumer-committee'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
 
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.Yojana.yojana.consumer-committee'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
 
             if ($save) {
@@ -108,7 +108,7 @@ class ConsumerCommitteeForm extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.Yojana.yojana.consumer-committee'),
                     filename: $this->consumerCommittee->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }

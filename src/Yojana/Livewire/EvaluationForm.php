@@ -285,7 +285,7 @@ class EvaluationForm extends Component
             $save = FileFacade::saveFile(
                 path: config('src.Yojana.yojana.evaluation'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
 
@@ -293,7 +293,7 @@ class EvaluationForm extends Component
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.Yojana.yojana.evaluation'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         } else {
             // If no file is provided (edit mode), load the existing file URL
@@ -301,7 +301,7 @@ class EvaluationForm extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.Yojana.yojana.evaluation'),
                     filename: $this->evaluation->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }

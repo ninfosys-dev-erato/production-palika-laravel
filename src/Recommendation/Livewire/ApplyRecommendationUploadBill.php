@@ -55,7 +55,7 @@ class ApplyRecommendationUploadBill extends Component
 
             $path= null;
             if($this->bill){
-                $path = FileFacade::saveFile( config('src.Recommendation.recommendation.bill'),'', $this->bill, 'local');
+                $path = FileFacade::saveFile( config('src.Recommendation.recommendation.bill'),'', $this->bill, getStorageDisk('private'));
             }
 
             $this->applyRecommendation->bill = $path ?? null;

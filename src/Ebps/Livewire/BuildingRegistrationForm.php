@@ -416,7 +416,7 @@ class BuildingRegistrationForm extends Component
         $save = FileFacade::saveFile(
             path:config('src.Ebps.ebps.path'),
             file:$this->documents[$index]['document'],
-            disk:"local",
+            disk:getStorageDisk('private'),
             filename:""
         );
         $this->documents[$index]['document'] = $save;
@@ -424,7 +424,7 @@ class BuildingRegistrationForm extends Component
         $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
             path:config('src.Ebps.ebps.path'),
             filename:$save,
-            disk:'local'
+            disk:getStorageDisk('private')
         );
        
         $this->documents = array_values($this->documents);

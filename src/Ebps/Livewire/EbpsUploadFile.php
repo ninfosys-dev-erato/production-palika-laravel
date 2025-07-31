@@ -90,7 +90,7 @@ class EbpsUploadFile extends Component
     {
         if($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
         {
-           return FileFacade::saveFile( config('src.Ebps.ebps.path'), "", $file, 'local');
+           return FileFacade::saveFile( config('src.Ebps.ebps.path'), "", $file, getStorageDisk('private'));
         }else{
             return $file;
         }

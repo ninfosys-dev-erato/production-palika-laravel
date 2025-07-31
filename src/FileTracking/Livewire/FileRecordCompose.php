@@ -146,7 +146,7 @@ class FileRecordCompose extends Component
                 //     'local'
                 // );
 
-                $path = FileFacade::saveFile( config('src.FileTracking.fileTracking.file'). '', $file, 'local');
+                $path = FileFacade::saveFile( config('src.FileTracking.fileTracking.file'). '', $file, getStorageDisk('private'));
                 $storedDocuments[] = $path;
             }
         }

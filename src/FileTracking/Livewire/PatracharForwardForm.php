@@ -62,7 +62,7 @@ class PatracharForwardForm extends Component
                 path: config('src.FileTracking.fileTracking.file'),
                 filename:$fileName,
                 file:$this->fileRecordLog->file,
-                disk:"local",
+                disk: getStorageDisk('private'),
             );
         }
         $this->fileRecordLog->file = $fileName;

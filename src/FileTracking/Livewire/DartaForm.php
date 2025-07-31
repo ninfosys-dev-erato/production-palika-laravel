@@ -184,7 +184,7 @@ class DartaForm extends Component
             $storedDocuments = [];
             if ($this->uploadedFiles) {
                 foreach ($this->uploadedFiles as $file) {
-                    $path = FileFacade::saveFile(config('src.FileTracking.fileTracking.file'), '', $file, 'local');
+                    $path = FileFacade::saveFile(config('src.FileTracking.fileTracking.file'), '', $file, getStorageDisk('private'));
                     $storedDocuments[] = $path;
                 }
                 $this->fileRecord->file = json_encode(value: $storedDocuments);

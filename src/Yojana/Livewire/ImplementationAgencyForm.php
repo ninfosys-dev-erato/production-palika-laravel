@@ -242,7 +242,7 @@ class ImplementationAgencyForm extends Component
             $save = FileFacade::saveFile(
                 path: config('src.Yojana.yojana.implementation_agency'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
 
@@ -250,7 +250,7 @@ class ImplementationAgencyForm extends Component
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.Yojana.yojana.implementation_agency'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         } else {
             // If no file is provided (edit mode), load the existing file URL
@@ -258,7 +258,7 @@ class ImplementationAgencyForm extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.Yojana.yojana.implementation_agency'),
                     filename: $this->implementationAgency->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }

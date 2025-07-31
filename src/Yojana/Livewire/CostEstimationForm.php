@@ -356,7 +356,7 @@ class CostEstimationForm extends Component
             $save = FileFacade::saveFile(
                 path: config('src.Yojana.yojana.cost-estimation'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
 
@@ -366,7 +366,7 @@ class CostEstimationForm extends Component
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.Yojana.yojana.cost-estimation'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
 
             if ($save) {
@@ -380,7 +380,7 @@ class CostEstimationForm extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.Yojana.yojana.cost-estimation'),
                     filename: $this->costEstimation->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }
@@ -558,7 +558,7 @@ class CostEstimationForm extends Component
             content: $html,
             file_path: config('src.Yojana.yojana.cost-estimation'),
             file_name: "token_{$user->email}" . date('YmdHis'),
-            disk: "local",
+                            disk: getStorageDisk('private'),
         );
         $this->dispatch('open-pdf-in-new-tab', url: $url);
     }

@@ -80,7 +80,7 @@ class BusinessRenewalRequestedDocuments extends Component{
                 sourceFilename: $this->documents[$index]['document'],
                 destinationPath: config('src.BusinessRegistration.businessRegistration.registration_document'),
                 destinationFilename: null,
-                destinationDisk: 'local',
+                destinationDisk: getStorageDisk('private'),
                 sourceDisk: 'public',
             );
             unset($this->documents[$index]['id']);
@@ -90,7 +90,7 @@ class BusinessRenewalRequestedDocuments extends Component{
         $save = FileFacade::saveFile(
             path:config('src.BusinessRegistration.businessRegistration.registration_document'),
             file:$this->documents[$index]['document'],
-            disk:"local",
+                            disk: getStorageDisk('private'),
             filename:""
         );
         $this->documents[$index]['document'] = $save;
@@ -98,7 +98,7 @@ class BusinessRenewalRequestedDocuments extends Component{
         $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
             path:config('src.BusinessRegistration.businessRegistration.registration_document'),
             filename:$save,
-            disk:'local'
+                            disk: getStorageDisk('private')
         );
         // ✅ Force Livewire to recognize the change
         $this->documents = array_values($this->documents);

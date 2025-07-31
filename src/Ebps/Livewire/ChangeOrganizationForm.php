@@ -129,7 +129,7 @@ class ChangeOrganizationForm extends Component
     {
         if($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
         {
-           return ImageServiceFacade::compressAndStoreImage($file,  config('src.Ebps.ebps.path'));
+           return ImageServiceFacade::compressAndStoreImage($file,  config('src.Ebps.ebps.path'), getStorageDisk('private'));
         }
 
         return $file;

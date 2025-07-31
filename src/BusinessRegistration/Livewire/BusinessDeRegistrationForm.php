@@ -272,7 +272,7 @@ class BusinessDeRegistrationForm extends Component
                     'url' => FileFacade::getTemporaryUrl(
                         path: config('src.BusinessRegistration.businessRegistration.registration'),
                         filename: $doc->document_filename,
-                        disk: 'local'
+                        disk: getStorageDisk('private')
                     ),
                 ];
             })->toArray();
@@ -677,7 +677,7 @@ class BusinessDeRegistrationForm extends Component
         $save = FileFacade::saveFile(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             file: $file,
-            disk: "local",
+                            disk: getStorageDisk('private'),
             filename: ""
         );
 
@@ -688,7 +688,7 @@ class BusinessDeRegistrationForm extends Component
         $this->personalDetails[$index][$field . '_url'] = FileFacade::getTemporaryUrl(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             filename: $save,
-            disk: 'local'
+                            disk: getStorageDisk('private')
         );
     }
 
@@ -765,7 +765,7 @@ class BusinessDeRegistrationForm extends Component
             $filename = FileFacade::saveFile(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
                 file: $file,
-                disk: 'local',
+                disk: getStorageDisk('private'),
                 filename: ''
             );
 
@@ -774,7 +774,7 @@ class BusinessDeRegistrationForm extends Component
             $this->businessRequiredDocUrl[$field . '_url'] = FileFacade::getTemporaryUrl(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
                 filename: $filename,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         } catch (\Exception $e) {
             $this->errorFlash('Failed to upload document: ' . $e->getMessage());
