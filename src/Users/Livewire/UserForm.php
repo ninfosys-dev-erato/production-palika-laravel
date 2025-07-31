@@ -44,7 +44,7 @@ class UserForm extends Component
         $rules = [
             'user.name' => ['required'],
             'user.email' => ["required", "email"],
-            'user.mobile_no' => ['nullable', 'string', 'max:10', new MobileNumberIdentifierRule(), 'unique:users,mobile_no'],
+            'user.mobile_no' => ['nullable', 'string', 'max:10', 'unique:users,mobile_no'],
             'selected_wards' => ['nullable', 'array'],
         ];
 
@@ -58,7 +58,7 @@ class UserForm extends Component
                 Rule::unique('users', 'email')->ignore($this->user->id),
             ];
             // Remove unique check for mobile_no when updating:
-            $rules['user.mobile_no'] = ['nullable', 'string', 'max:10', new MobileNumberIdentifierRule()];
+            $rules['user.mobile_no'] = ['nullable', 'string', 'max:10'];
         }
 
         return $rules;

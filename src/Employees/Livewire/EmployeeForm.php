@@ -58,7 +58,7 @@ class EmployeeForm extends Component
                 'email',
                 Rule::unique('mst_employees', 'email')->where(fn($query) => $query->whereNull('deleted_at'))
             ],
-            'employee.phone' => ['required', new MobileNumberIdentifierRule(), Rule::unique('mst_employees', 'phone')
+            'employee.phone' => ['required', Rule::unique('mst_employees', 'phone')
                 ->ignore($this->employee->id)
                 ->whereNull('deleted_at'),],
             'employee.type' => ['nullable', new Enum(TypeEnum::class)],
