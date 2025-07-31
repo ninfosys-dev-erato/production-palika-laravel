@@ -11,7 +11,7 @@ use Src\Settings\Controllers\FormController;
 
 Route::group(['prefix' => 'admin/recommendations', 'as' => 'admin.recommendations.', 'middleware' => ['web', 'auth','check_module:recommendation']], function () {
 
-    Route::get('/', [RecommendationDashboardController::class, 'index'])->name('dashboard')->middleware('permission:recommendation_settings access');
+    Route::get('/', [RecommendationDashboardController::class, 'index'])->name('dashboard')->middleware('permission:recommendation access');
     Route::get('/recommendation-category/', [RecommendationCategoryController::class, 'index'])->name('recommendation-category.index')->middleware('permission:recommendation_settings access');
     Route::get('/recommendation-category/create', [RecommendationCategoryController::class, 'create'])->name('recommendation-category.create')->middleware('permission:recommendation_settings create');
     Route::get('/recommendation-category/edit/{id}', [RecommendationCategoryController::class, 'edit'])->name('recommendation-category.edit')->middleware('permission:recommendation_settings update');
