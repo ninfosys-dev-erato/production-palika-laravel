@@ -172,7 +172,7 @@
                                                     $fileUrl = customFileAsset(
                                                         config('src.CustomerKyc.customerKyc.path'),
                                                         $customer->kyc->document_image1,
-                                                        'local',
+                                                        getStorageDisk('private'),
                                                         'tempUrl',
                                                     );
                                                 @endphp
@@ -194,7 +194,7 @@
                                                     $fileUrl = customFileAsset(
                                                         config('src.CustomerKyc.customerKyc.path'),
                                                         $customer->kyc->document_image2,
-                                                        'local',
+                                                        getStorageDisk('private'),
                                                         'tempUrl',
                                                     );
                                                 @endphp

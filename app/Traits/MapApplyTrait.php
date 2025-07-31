@@ -107,8 +107,8 @@ trait MapApplyTrait
             '{{customer.document_issued_date_nepali}}' => $kyc?->document_issued_date_nepali ?? self::EMPTY_LINES,
             '{{customer.document_issued_date_english}}' => $kyc?->document_issued_date_english ?? self::EMPTY_LINES,
             '{{customer.document_number}}' => $kyc?->document_number ?? self::EMPTY_LINES,
-            '{{customer.document_image1}}' => $kyc?->document_image1 ? "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $kyc?->document_image1, 'local')) : self::EMPTY_LINES,
-            '{{customer.document_image2}}' => $kyc?->document_image2 ? "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $kyc?->document_image2, 'local')) : self::EMPTY_LINES,
+            '{{customer.document_image1}}' => $kyc?->document_image1 ? "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $kyc?->document_image1, getStorageDisk('private'))) : self::EMPTY_LINES,
+            '{{customer.document_image2}}' => $kyc?->document_image2 ? "data:image/jpeg;base64," . base64_encode(ImageServiceFacade::getImage(config('src.CustomerKyc.customerKyc.path'), $kyc?->document_image2, getStorageDisk('private'))) : self::EMPTY_LINES,
             '{{customer.expiry_date_nepali}}' => $kyc?->expiry_date_nepali ?? self::EMPTY_LINES,
             '{{customer.expiry_date_english}}' => $kyc?->expiry_date_english ?? self::EMPTY_LINES,
         ];

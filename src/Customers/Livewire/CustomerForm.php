@@ -290,8 +290,8 @@ class CustomerForm extends Component
             return $path ? basename($path) : null;
         }
         
-        // Fallback to original method for non-Livewire files - also use local storage
-        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, 'local');
+        // Fallback to original method for non-Livewire files - use proper storage disk
+        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, getStorageDisk('private'));
     }
 
     #[On('search-user')]
