@@ -91,6 +91,45 @@ string $path,
         if ($this->shouldUseCloudStorage($disk)) {
             if (Storage::disk($disk)->exists($filePath)) {
                 try {
+                    // Special handling for Backblaze storage
+                    if ($disk === 'backblaze') {
+                        $config = config('filesystems.disks.backblaze');
+                        if ($config['visibility'] === 'public') {
+                            // Try to construct public URL for Backblaze
+                            $publicUrl = $config['url'] . '/' . $config['root'] . '/' . $filePath;
+                            
+                            // Test if the public URL is accessible
+                            $headers = @get_headers($publicUrl);
+                            if ($headers && strpos($headers[0], '200') !== false) {
+                                return $publicUrl;
+                            } else {
+                                // If public URL is not accessible, fall back to temporary URL
+                                Log::info("Public URL not accessible, using temporary URL", [
+                                    'file_path' => $filePath,
+                                    'public_url' => $publicUrl
+                                ]);
+                            }
+                        }
+                        
+                        // Generate temporary signed URL for Backblaze (works for both public and private files)
+                        try {
+                            $s3Client = Storage::disk($disk)->getAdapter()->getClient();
+                            $command = $s3Client->getCommand('GetObject', [
+                                'Bucket' => $config['bucket'],
+                                'Key' => $config['root'] . '/' . $filePath,
+                            ]);
+                            
+                            $request = $s3Client->createPresignedRequest($command, now()->addMinutes($minutes));
+                            return (string) $request->getUri();
+                        } catch (\Exception $e) {
+                            Log::warning("Failed to generate Backblaze temporary URL", [
+                                'file_path' => $filePath,
+                                'error' => $e->getMessage()
+                            ]);
+                            return false;
+                        }
+                    }
+                    
                     // Check if it's a public cloud disk
                     if ($disk == 'public' || config("filesystems.disks.{$disk}.visibility") === 'public') {
                         return Storage::disk($disk)->url($filePath);
