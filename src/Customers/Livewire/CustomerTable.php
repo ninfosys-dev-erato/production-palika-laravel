@@ -10,12 +10,12 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+
 use Src\Customers\Models\Customer;
 
 class CustomerTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Customer::class;
     public array $bulkActions = [
