@@ -276,14 +276,22 @@ class CustomerForm extends Component
 
     public function handleFileUpload($file)
     {
-        // Use the custom Livewire file service for better Backblaze compatibility
+        // Use the new local-first upload strategy
         if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-            $path = \App\Services\LivewireFileService::handleTemporaryFile($file, getStorageDisk('private'));
+            // Store locally first, then queue transfer to cloud storage
+            $path = \App\Services\LivewireFileService::handleTemporaryFile(
+                file: $file,
+                targetPath: config('src.CustomerKyc.customerKyc.path'),
+                transferToCloud: true,
+                modelClass: \Src\Customers\Models\Customer::class,
+                modelId: $this->customer->id ?? null,
+                modelField: null // Will be set after customer is saved
+            );
             return $path ? basename($path) : null;
         }
         
-        // Fallback to original method for non-Livewire files
-        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, getStorageDisk('private'));
+        // Fallback to original method for non-Livewire files - also use local storage
+        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, 'local');
     }
 
     #[On('search-user')]

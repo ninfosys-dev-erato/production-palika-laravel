@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\LocalFileController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\UploadController;
 use Frontend\CustomerPortal\DigitalBoard\Controllers\DigitalBoardController;
@@ -27,6 +28,10 @@ Route::prefix('customer')->name('customer.')->middleware('customer')->group(func
     Route::any('/logout', [AuthController::class, 'customerLogout'])->name('logout');
 });
 Route::post('/upload', [UploadController::class, 'store'])->name('ckeditor.upload');
+
+// Local file serving route (for temporary files before cloud transfer)
+Route::get('/local-file', [LocalFileController::class, 'serve'])->name('local-file.serve');
+
 require __DIR__ . '/admin.php';
 
 Route::post('/change-language', [DigitalBoardController::class, 'changeLanguage'])->name('change-language');
