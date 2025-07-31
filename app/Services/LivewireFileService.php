@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\TransferFileToCloudJob;
+use App\Services\FileNamingService;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -34,10 +35,9 @@ class LivewireFileService
             
             // Get the original filename
             $originalName = $file->getFilename();
-            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
             
-            // Generate a unique filename
-            $filename = uniqid() . '_' . time() . '.' . $extension;
+            // Generate consistent filename using the same scheme as FileService
+            $filename = FileNamingService::generateFilename($originalName);
             
             // Create path - use targetPath if provided, otherwise use livewire-tmp
             $path = $targetPath ? rtrim($targetPath, '/') . '/' . $filename : 'livewire-tmp/' . $filename;

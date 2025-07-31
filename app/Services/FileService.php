@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\FileNamingService;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Log;
@@ -22,28 +23,25 @@ class FileService
             $file = new File($file->getRealPath());
         }
 
-        if (empty($filename)) {
-            $filename = random_int(0, 1000000000);
-        }
-
         // Determine file type and content
         if ($file instanceof \Barryvdh\DomPDF\PDF) {
             $extension = 'pdf';
             $fileContent = $file->output(); // Get raw PDF content
+            $originalName = 'document.pdf';
         } elseif ($file instanceof File) {
             $extension = $file->getExtension() ?: 'doc';
             $fileContent = file_get_contents($file->getRealPath());
+            $originalName = $file->getFilename();
         } elseif (is_string($file)) {
             $extension = 'pdf';
             $fileContent = $file;
+            $originalName = 'document.pdf';
         } else {
             throw new \Exception('Unsupported file type');
         }
-        // Check if the filename is empty or does not have an extension
-        if (empty($filename) || pathinfo($filename, PATHINFO_EXTENSION) === '') {
-            // Append timestamp and extension
-            $filename .= now()->format('dMyHis') . '.' . $extension;
-        }
+
+        // Use consistent filename generation
+        $filename = FileNamingService::generateFilename($originalName, $filename);
 
         // Ensure path ends with a slash
         $path = rtrim($path, '/') . '/';
