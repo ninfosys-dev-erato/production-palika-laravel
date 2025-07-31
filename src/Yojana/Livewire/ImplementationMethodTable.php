@@ -21,6 +21,7 @@ class ImplementationMethodTable extends DataTableComponent
     protected $model = ImplementationMethod::class;
 
     public $plans;
+    public $query;
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
@@ -48,7 +49,7 @@ class ImplementationMethodTable extends DataTableComponent
             ->where('deleted_at', null)
             ->where('deleted_by', null)
             ->orderBy('created_at', 'DESC'); // Select some things
-
+        $this->query = $query->get();
         $this->plans = $query->get()[0]->plans;
         return $query;
     }
@@ -68,36 +69,36 @@ class ImplementationMethodTable extends DataTableComponent
                 ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('yojana::yojana.total_plans'))
                 ->label(function ($row) {
-                    $totalPlans = $this->plans->where('implementationMethod.model',$row->model->value);
-                    return replaceNumbersWithLocale(count($totalPlans), true);
+                     $totalPlans = $row->plans?->count() ?? 0;
+                    return replaceNumbersWithLocale($totalPlans, true);
                 })->html()
                 ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('yojana::yojana.operating_plans'))
                 ->label(function ($row) {
-                    $operatingPlans = $this->plans
-                        ->where('implementationMethod.model',$row->model->value)
+                    $operatingPlans = $row->plans
+//                        ->where('implementationMethod.model',$row->model->value)
                         ->where('status','!=' ,PlanStatus::Completed);
                     return replaceNumbersWithLocale(count($operatingPlans), true);
                 })->html()
                 ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('yojana::yojana.completed_plans'))
                 ->label(function ($row) {
-                    $completedPlans = $this->plans
-                        ->where('implementationMethod.model',$row->model->value)
+                    $completedPlans = $row->plans
+//                        ->where('implementationMethod.model',$row->model->value)
                         ->where('status','=' ,PlanStatus::Completed);
                     return replaceNumbersWithLocale(count($completedPlans), true);
                 })->html()
         ];
-        if (can('implementation_methods edit') || can('implementation_methods delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
-                if (can('implementation_methods edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('implementation_methods delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -113,7 +114,7 @@ class ImplementationMethodTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('implementation_methods edit')) {
+        if (!can('plan_basic_settings edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -122,7 +123,7 @@ class ImplementationMethodTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('implementation_methods delete')) {
+        if (!can('plan_basic_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -132,7 +133,7 @@ class ImplementationMethodTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('implementation_methods delete')) {
+        if (!can('plan_basic_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

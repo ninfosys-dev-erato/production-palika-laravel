@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.plan_areas') }}</h5>
                     </div>
                     <div>
-                        @perm('plan_areas create')
+                        @perm('plan_basic_settings create')
                             <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                                 data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('yojana::yojana.add_plan_area') }}

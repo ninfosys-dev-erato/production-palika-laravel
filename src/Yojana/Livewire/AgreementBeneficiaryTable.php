@@ -59,15 +59,15 @@ Column::make(__('yojana::yojana.total_count'), "total_count") ->sortable()->sear
 Column::make(__('yojana::yojana.men_count'), "men_count") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('yojana::yojana.women_count'), "women_count") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('agreement_beneficiaries edit') || can('agreement_beneficiaries delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('agreement_beneficiaries edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('agreement_beneficiaries delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -84,7 +84,7 @@ Column::make(__('yojana::yojana.women_count'), "women_count") ->sortable()->sear
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('agreement_beneficiaries edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -92,7 +92,7 @@ Column::make(__('yojana::yojana.women_count'), "women_count") ->sortable()->sear
     }
     public function delete($id)
     {
-        if(!can('agreement_beneficiaries delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -101,7 +101,7 @@ Column::make(__('yojana::yojana.women_count'), "women_count") ->sortable()->sear
         $this->successFlash(__('yojana::yojana.agreement_beneficiary_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('agreement_beneficiaries delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

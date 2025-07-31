@@ -12,7 +12,7 @@ Route::group(['prefix' => 'admin/ejalas/settlements', 'as' => 'admin.ejalas.sett
     // Route::get('/reconciliation/index', [SettlementAdminController::class, 'reconciliationIndex'])->name('reconciliationIndex');
 });
 Route::group(['prefix' => 'admin/ejalas/settlements', 'as' => 'admin.ejalas.report.settlements.', 'middleware' => ['web', 'auth', 'check_module:ejalash']], function () {
-    Route::get('/report', [SettlementAdminController::class, 'report'])->name('report');
+    Route::get('/settlement/report', [SettlementAdminController::class, 'report'])->name('report');
 });
 Route::group(['prefix' => 'admin/settlements', 'as' => 'admin.ejalas.reconciliation.settlements.', 'middleware' => ['web', 'auth', 'check_module:ejalash']], function () {
     Route::get('/reconciliation/index', [SettlementAdminController::class, 'reconciliationIndex'])->name('reconciliationIndex');

@@ -250,16 +250,16 @@ class ChalaniTable extends DataTableComponent
                         ?? SenderMediumEnum::THROUGH_PERSONAL->nepaliLabel();
                 }),
         ];
-        if (can('chalani_update') || can('chalani_delete')) {
+        if (can('chalani update') || can('chalani delete')) {
             $actionsColumn = Column::make(__('filetracking::filetracking.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
-                if (can('chalani_update')) {
+                if (can('chalani update')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('chalani_delete')) {
+                if (can('chalani delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -275,7 +275,7 @@ class ChalaniTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('chalani_update')) {
+        if (!can('chalani update')) {
             SessionFlash::WARNING_FLASH(__('filetracking::filetracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -283,7 +283,7 @@ class ChalaniTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('chalani_delete')) {
+        if (!can('chalani delete')) {
             SessionFlash::WARNING_FLASH(__('filetracking::filetracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -293,7 +293,7 @@ class ChalaniTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('chalani_delete')) {
+        if (!can('chalani delete')) {
             SessionFlash::WARNING_FLASH(__('filetracking::filetracking.you_cannot_perform_this_action'));
             return false;
         }

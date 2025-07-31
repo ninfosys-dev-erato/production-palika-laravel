@@ -44,7 +44,8 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label" for='mediator_address'>{{ __('ejalas::ejalas.mediator_address') }}</label>
+                    <label class="form-label"
+                        for='mediator_address'>{{ __('ejalas::ejalas.mediator_address') }}</label>
                     <input wire:model='mediator.mediator_address' name='mediator_address' type='text'
                         class='form-control' placeholder="{{ __('ejalas::ejalas.enter_mediator_address') }}">
                     <div>
@@ -75,8 +76,8 @@
             <div class='col-md-6'>
                 <div class='form-group'>
                     <label class="form-label" for='training_detail'>{{ __('ejalas::ejalas.training_detail') }}</label>
-                    <input wire:model='mediator.training_detail' name='training_detail' type='text' class='form-control'
-                        placeholder="{{ __('ejalas::ejalas.enter_training_detail') }}">
+                    <input wire:model='mediator.training_detail' name='training_detail' type='text'
+                        class='form-control' placeholder="{{ __('ejalas::ejalas.enter_training_detail') }}">
                     <div>
                         @error('mediator.training_detail')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -86,7 +87,8 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label" for='mediator_phone_no'>{{ __('ejalas::ejalas.mediator_phone_no') }}</label>
+                    <label class="form-label"
+                        for='mediator_phone_no'>{{ __('ejalas::ejalas.mediator_phone_no') }}</label>
                     <input wire:model='mediator.mediator_phone_no' name='mediator_phone_no' type='text'
                         class='form-control' placeholder="{{ __('ejalas::ejalas.enter_mediator_phone_no') }}">
                     <div>
@@ -99,8 +101,8 @@
             <div class='col-md-6'>
                 <div class='form-group'>
                     <label class="form-label" for='mediator_email'>{{ __('ejalas::ejalas.mediator_email') }}</label>
-                    <input wire:model='mediator.mediator_email' name='mediator_email' type='text' class='form-control'
-                        placeholder="{{ __('ejalas::ejalas.enter_mediator_email') }}">
+                    <input wire:model='mediator.mediator_email' name='mediator_email' type='text'
+                        class='form-control' placeholder="{{ __('ejalas::ejalas.enter_mediator_email') }}">
                     <div>
                         @error('mediator.mediator_email')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -110,9 +112,10 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label" for='municipal_approval_date'>{{ __('ejalas::ejalas.municipal_approval_date') }}</label>
+                    <label class="form-label"
+                        for='municipal_approval_date'>{{ __('ejalas::ejalas.municipal_approval_date') }}</label>
                     <input id="municipal_approval_date" wire:model='mediator.municipal_approval_date'
-                        name='municipal_approval_date' type='date' class='form-control'
+                        name='municipal_approval_date' type='text' class='form-control'
                         placeholder="{{ __('ejalas::ejalas.enter_municipal_approval_date') }}">
                     <div>
                         @error('mediator.municipal_approval_date')
@@ -124,30 +127,31 @@
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
+        <button type="submit" class="btn btn-primary"
+            wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
         <a href="{{ route('admin.ejalas.mediators.index') }}" wire:loading.attr="disabled"
             class="btn btn-danger">{{ __('ejalas::ejalas.back') }}</a>
     </div>
 </form>
 
 @script
-<script>
-    const nepaliDob = $('#municipal_approval_date');
+    <script>
+        const nepaliDob = $('#municipal_approval_date');
 
-    nepaliDob.nepaliDatePicker({
-        dateFormat: '%y-%m-%d',
-        closeOnDateSelect: true,
-    });
+        nepaliDob.nepaliDatePicker({
+            dateFormat: '%y-%m-%d',
+            closeOnDateSelect: true,
+        });
 
 
 
-    nepaliDob.on('dateSelect', function (e) {
-        let selectedDob = $(this).val();
-        @this.set('mediator.municipal_approval_date', selectedDob);
-    })
+        nepaliDob.on('dateSelect', function(e) {
+            let selectedDob = $(this).val();
+            @this.set('mediator.municipal_approval_date', selectedDob);
+        })
 
-    $wire.on('customer-created', () => {
-        window.location.reload();
-    });
-</script>
+        // $wire.on('customer-created', () => {
+        //     window.location.reload();
+        // });
+    </script>
 @endscript

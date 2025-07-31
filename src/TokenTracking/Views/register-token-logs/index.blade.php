@@ -16,7 +16,7 @@
                             {{ __('tokentracking::tokentracking.register_token_log_list') }}</h5>
                     </div>
                     <div>
-                        @perm('register_token_logs create')
+                        @perm('tok_token action')
                             <a href="{{ route('admin.register_token_logs.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('tokentracking::tokentracking.add_register_token_log') }}</a>

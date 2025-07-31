@@ -16,19 +16,21 @@ class LocalLevelAdminController extends Controller
         //$this->middleware('permission:local_levels create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::local-level.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::local-level.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $localLevel = LocalLevel::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::local-level.form')->with(compact('action','localLevel'));
+        return view('Ejalas::local-level.form')->with(compact('action', 'localLevel'));
     }
-
 }

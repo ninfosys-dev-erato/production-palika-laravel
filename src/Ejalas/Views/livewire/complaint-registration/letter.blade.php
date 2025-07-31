@@ -4,7 +4,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary mt-2 me-2" onclick="printDiv()">Print</button>"
+                    @perm('jms_judicial_management print')
+                        <button class="btn btn-primary mt-2 me-2" onclick="printDiv()">Print</button>
+                    @endperm
                 </div>
                 {{-- letter starts from here --}}
                 <div id="printContent">

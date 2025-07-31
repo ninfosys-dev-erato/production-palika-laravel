@@ -15,9 +15,9 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.party_list') }}</h5>
                     </div>
                     <div>
-                        @perm('parties create')
+                        @perm('jms_settings create')
                             <!-- <a href="{{ route('admin.ejalas.parties.create') }}" class="btn btn-info"><i
-                                                                                            class="bx bx-plus"><        /i> {{ __('ejalas::ejalas.add_party') }}</a> -->
+                                                                                                class="bx bx-plus"><        /i> {{ __('ejalas::ejalas.add_party') }}</a> -->
 
                             <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_party') }}

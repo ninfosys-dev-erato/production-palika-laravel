@@ -24,6 +24,7 @@ class CaseRecordReport extends Component
     use SessionFlash, HelperDate;
     public $startDate;
     public $endDate;
+    public $caseRecords = [];
 
     protected $rules = [
         'startDate' => 'required',
@@ -43,8 +44,32 @@ class CaseRecordReport extends Component
         $startDate = $this->bsToAd($this->startDate);
         $endDate = $this->bsToAd($this->endDate);
 
-        $this->dispatch('getSearchDate', $startDate, $endDate);
+        $this->caseRecords = CaseRecord::with(['complaintRegistration', 'judicialMember', 'judicialEmployee'])
+            ->whereNull('deleted_at')
+            ->whereBetween('decision_date', [$startDate, $endDate])
+            ->latest()
+            ->get();
+
+        foreach ($this->caseRecords as $caseRecord) {
+            $caseRecord->decision_date_bs = replaceNumbers(
+                $this->adToBs(Carbon::parse($caseRecord->decision_date)->format('Y-m-d')),
+                true
+            );
+        }
     }
+
+    public function clear()
+    {
+        $this->reset(['startDate', 'endDate', 'caseRecords']);
+    }
+
+    public function export()
+    {
+        // Export functionality can be implemented here
+        $this->searchReport();
+        // Add export logic
+    }
+
     public function downloadPdf()
     {
         // $this->validate();

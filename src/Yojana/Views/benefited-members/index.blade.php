@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.benefited_member_list') }}</h5>
                     </div>
                     <div>
-                        @perm('benefited_members create')
+                        @perm('plan create')
                             <a data-bs-toggle="modal" data-bs-target="#indexModal" class="btn btn-info"
                                 onclick="resetForm()"><i class="bx bx-plus"></i>
                                 {{ __('yojana::yojana.add_benefited_member') }}</a>

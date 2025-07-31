@@ -16,7 +16,7 @@ class ProjectInchargeAdminDto
 public static function fromLiveWireModel(ProjectIncharge $projectIncharge):ProjectInchargeAdminDto{
     return new self(
         employee_id: $projectIncharge->employee_id,
-        remarks: $projectIncharge->remarks,
+        remarks: $projectIncharge->remarks ?? '',
         plan_id: $projectIncharge->plan_id,
         is_active: $projectIncharge->is_active ?? false
     );

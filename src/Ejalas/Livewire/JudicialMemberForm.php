@@ -17,7 +17,7 @@ class JudicialMemberForm extends Component
     use SessionFlash;
 
     public ?JudicialMember $judicialMember;
-    public ?Action $action;
+    public ?Action $action = Action::CREATE;
     public $judicalMemberPositions;
     public $electedPositions;
 
@@ -48,6 +48,7 @@ class JudicialMemberForm extends Component
     {
         $this->validate();
         try {
+
             $dto = JudicialMemberAdminDto::fromLiveWireModel($this->judicialMember);
             $service = new JudicialMemberAdminService();
             switch ($this->action) {

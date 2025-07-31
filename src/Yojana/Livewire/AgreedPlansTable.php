@@ -204,22 +204,22 @@ class AgreedPlansTable extends DataTableComponent
             //Column::make(__('yojana::yojana.fiscal_year'), "fiscalYear.year") ->sortable()->searchable()->collapseOnTablet(),
             //Column::make(__('yojana::yojana.amount'), "amount") ->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('plans edit') || can('plans delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
 
-                if (can('plans show')) {
+                if (can('plan show')) {
                     $show = '<button class="btn btn-secondary btn-sm" wire:click="show(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $show;
                 }
                 $buttons.='<button class="btn btn-info btn-sm" title="Extend Date" wire:click="extendDate(' . $row->id . ')" ><i class="bx bx-printer"></i></button>&nbsp;';
                 if (!$this->report) { //show this button only if it is not from the report
-                    if (can('plans edit')) {
+                    if (can('plan edit')) {
                         $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                         $buttons .= $edit;
                     }
-                    if (can('plans delete')) {
+                    if (can('plan delete')) {
                         $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                         $buttons .= $delete;
                     }
@@ -236,7 +236,7 @@ class AgreedPlansTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('plans edit')) {
+        if (!can('plan edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -244,7 +244,7 @@ class AgreedPlansTable extends DataTableComponent
     }
     public function show($id)
     {
-        if (!can('plans show')) {
+        if (!can('plan show')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -252,7 +252,7 @@ class AgreedPlansTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('plans delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -262,7 +262,7 @@ class AgreedPlansTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('plans delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

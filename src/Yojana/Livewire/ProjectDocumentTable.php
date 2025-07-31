@@ -54,16 +54,16 @@ class ProjectDocumentTable extends DataTableComponent
 Column::make("Document Name", "document_name") ->sortable()->searchable()->collapseOnTablet(),
 Column::make("Data", "data") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('project_documents edit') || can('project_documents delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('project_documents edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="fa fa-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('project_documents delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="fa fa-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -80,7 +80,7 @@ Column::make("Data", "data") ->sortable()->searchable()->collapseOnTablet(),
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('project_documents edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -88,7 +88,7 @@ Column::make("Data", "data") ->sortable()->searchable()->collapseOnTablet(),
     }
     public function delete($id)
     {
-        if(!can('project_documents delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -97,7 +97,7 @@ Column::make("Data", "data") ->sortable()->searchable()->collapseOnTablet(),
         $this->successFlash("Project Document Deleted Successfully");
     }
     public function deleteSelected(){
-        if(!can('project_documents delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

@@ -9,8 +9,6 @@
     @endphp
     <div class="row mb-3">
 
-
-
         {{-- 1. Show all non-file fields first --}}
         <div class="card mb-4">
             <div class="card-header text-white d-flex justify-content-between align-items-center">
@@ -20,33 +18,35 @@
                 </h4>
 
                 <div class="d-flex gap-2">
-                    @if ($businessRegistration->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::REJECTED->value)
-                        <button type="button" class="btn btn-danger" wire:click="$dispatch('showRejectModal')"
-                            data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="{{ __('businessregistration::businessregistration.reject') }}"
-                            data-bs-target="#rejectModal">
-                            <i class="bx bx-message-x"></i>
-                            {{ __('businessregistration::businessregistration.reject') }}
-                        </button>
-                    @endif
-                    @if ($businessRegistration->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
-                        <button class="btn btn-primary" wire:click="$dispatch('showAmountModal')"
-                            data-bs-toggle="tooltip"
-                            title="{{ __('businessregistration::businessregistration.send_for_payment') }}">
-                            <i class="bx bx-wallet-alt me-1"></i>
-                            {{ __('businessregistration::businessregistration.send_for_payment') }}
-                        </button>
-                    @endif
-                    @if (
-                        $businessRegistration->application_status ===
-                            Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED->value)
-                        <button class="btn btn-success" wire:click="$dispatch('showApproveModal')"
-                            data-bs-toggle="tooltip"
-                            title="{{ __('businessregistration::businessregistration.approve') }}">
-                            <i class="bx bx-checkbox-checked me-1"></i>
-                            {{ __('businessregistration::businessregistration.approve') }}
-                        </button>
-                    @endif
+                    @perm('business_registration status')
+                        @if ($businessRegistration->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::REJECTED->value)
+                            <button type="button" class="btn btn-danger" wire:click="$dispatch('showRejectModal')"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="{{ __('businessregistration::businessregistration.reject') }}"
+                                data-bs-target="#rejectModal">
+                                <i class="bx bx-message-x"></i>
+                                {{ __('businessregistration::businessregistration.reject') }}
+                            </button>
+                        @endif
+                        @if ($businessRegistration->application_status === Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
+                            <button class="btn btn-primary" wire:click="$dispatch('showAmountModal')"
+                                data-bs-toggle="tooltip"
+                                title="{{ __('businessregistration::businessregistration.send_for_payment') }}">
+                                <i class="bx bx-wallet-alt me-1"></i>
+                                {{ __('businessregistration::businessregistration.send_for_payment') }}
+                            </button>
+                        @endif
+                        @if (
+                            $businessRegistration->application_status ===
+                                Src\BusinessRegistration\Enums\ApplicationStatusEnum::BILL_UPLOADED->value)
+                            <button class="btn btn-success" wire:click="$dispatch('showApproveModal')"
+                                data-bs-toggle="tooltip"
+                                title="{{ __('businessregistration::businessregistration.approve') }}">
+                                <i class="bx bx-checkbox-checked me-1"></i>
+                                {{ __('businessregistration::businessregistration.approve') }}
+                            </button>
+                        @endif
+                    @endperm
                 </div>
             </div>
             <div class="card-body">

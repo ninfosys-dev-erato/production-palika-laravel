@@ -87,7 +87,8 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label" for='join_date'>{{ __('ejalas::ejalas.ejalashemployeerestorationdate') }}</label>
+                    <label class="form-label"
+                        for='join_date'>{{ __('ejalas::ejalas.ejalashemployeerestorationdate') }}</label>
                     <input wire:model='judicialEmployee.join_date' name='join_date' type='date' class='form-control'
                         placeholder="{{ __('ejalas::ejalas.enter_join_date') }}">
                     <div>
@@ -100,7 +101,7 @@
             <div class='col-md-6'>
                 <div class='form-group'>
                     <label class="form-label" for='phone_no'>{{ __('ejalas::ejalas.phone_no') }}</label>
-                    <input wire:model='judicialEmployee.phone_no' name='phone_no' type='number' class='form-control'
+                    <input wire:model='judicialEmployee.phone_no' name='phone_no' type='text' class='form-control'
                         placeholder="{{ __('ejalas::ejalas.enter_phone_no') }}">
                     <div>
                         @error('judicialEmployee.phone_no')
@@ -124,7 +125,8 @@
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
+        <button type="submit" class="btn btn-primary"
+            wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
         <a href="{{ route('admin.ejalas.judicial_employees.index') }}" wire:loading.attr="disabled"
             class="btn btn-danger">{{ __('ejalas::ejalas.back') }}</a>
     </div>

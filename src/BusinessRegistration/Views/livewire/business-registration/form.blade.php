@@ -3,6 +3,7 @@
 @endpush
 @php
     use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+    use App\Enums\Action;
 @endphp
 <form wire:submit.prevent="save" enctype="multipart/form-data">
     @csrf
@@ -346,7 +347,7 @@
                                                 {{ __('businessregistration::businessregistration.select_ward') }}
                                             </option>
                                             @foreach ($applicantWards[$index] ?? [] as $id => $title)
-                                                <option value="{{ $id }}">
+                                                <option value="{{ $title }}">
                                                     {{ replaceNumbers($title, true) }}
                                                 </option>
                                             @endforeach
@@ -437,7 +438,7 @@
                                     </label>
                                     <select wire:model="businessRegistration.fiscal_year"
                                         class="form-control @error('businessRegistration.fiscal_year') is-invalid @enderror"
-                                        name="fiscal_year">
+                                        wire:change="fiscalYearChanged($event.target.value)" name="fiscal_year">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.fiscal_year') }}
                                         </option>
@@ -466,6 +467,83 @@
                                             {{ $errors->first('businessRegistration.application_date') }}</div>
                                     @enderror
                                 </div>
+
+
+                                @if ($action == Action::CREATE)
+                                    <div class="col-md-12">
+                                        <label class="form-label-peaceful d-block">
+                                            {{ __('businessregistration::businessregistration.is_business_previously_registered') }}
+                                        </label>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                    id="is_previously_registered_yes" name="is_previouslyRegistered"
+                                                    wire:model="is_previouslyRegistered" value="1"
+                                                    wire:change="previouslyRegisteredChanged($event.target.value)">
+                                                <label class="form-check-label"
+                                                    for="is_previously_registered_yes">{{ __('businessregistration::businessregistration.yes') }}</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                    id="is_previously_registered_no" name="is_previouslyRegistered"
+                                                    wire:model="is_previouslyRegistered" value="0"
+                                                    wire:change="previouslyRegisteredChanged($event.target.value)">
+                                                <label class="form-check-label"
+                                                    for="is_previously_registered_no">{{ __('businessregistration::businessregistration.no') }}</label>
+                                            </div>
+                                        </div>
+                                        @error('businessRegistration.is_previouslyRegistered')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endif
+                                @if ($showRegistrationDetailsFields)
+                                    <!-- Registration Date -->
+                                    <div class="col-md-6">
+                                        <label for="registration_date" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_date') }}
+                                        </label>
+                                        <input wire:model="businessRegistration.registration_date"
+                                            name="registration_date" type="text" class="form-control nepali-date"
+                                            id="registration_date"
+                                            placeholder="{{ __('businessregistration::businessregistration.enter_registration_date') }}">
+                                        @error('businessRegistration.registration_date')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+
+                                    <!-- Registration Number -->
+                                    {{-- <div class="col-md-6">
+                                        <label for="registration_number" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_number') }}
+
+                                        </label>
+                                        <input wire:model="businessRegistration.registration_number"
+                                            name="registration_number" type="text" class="form-control"
+                                            id="registration_number"
+                                            placeholder="{{ __('businessregistration::businessregistration.enter_registration_number') }}">
+                                        @error('businessRegistration.registration_number')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div> --}}
+
+                                    <div class="col-md-6">
+                                        <label for="registration_number" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_number') }}
+                                        </label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input wire:model="businessRegistration.registration_number"
+                                                name="registration_number" type="number" class="form-control w-50"
+                                                id="registration_number" min="1">
+
+                                        </div>
+                                        @error('businessRegistration.registration_number')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endif
+
 
                                 <!-- Entity Name -->
                                 <div class="col-12">
@@ -606,7 +684,7 @@
                                             {{ __('businessregistration::businessregistration.select_ward') }}
                                         </option>
                                         @foreach ($businessWards as $id => $title)
-                                            <option value="{{ $id }}"> {{ replaceNumbers($title, true) }}
+                                            <option value="{{ $title }}"> {{ replaceNumbers($title, true) }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -1163,8 +1241,10 @@
             </div>
         </div>
     </div>
-
 </form>
+
+
+
 
 @script
     <script>
@@ -1180,5 +1260,68 @@
                 @this.set('businessRegistration.department_id', $(this).val());
             })
         })
+
+        // Initialize Nepali date pickers for conditional fields
+        document.addEventListener('livewire:initialized', () => {
+            // Function to initialize date pickers
+            function initDatePickers() {
+                document.querySelectorAll('.nepali-date').forEach(function(input) {
+                    if (!input.classList.contains('ndp-initialized')) {
+                        input.nepaliDatePicker({
+                            language: "ne",
+                            ndpYear: true,
+                            ndpMonth: true,
+                            unicodeDate: true,
+                            onChange: function() {
+                                input.dispatchEvent(new Event('input', {
+                                    bubbles: true
+                                }));
+                            }
+                        });
+                        input.classList.add('ndp-initialized');
+                    }
+                });
+            }
+
+            // Listen for custom event from Livewire
+            Livewire.on('init-date-pickers', () => {
+                setTimeout(() => {
+                    initDatePickers();
+                }, 100);
+            });
+
+            // Listen for registration date specific event
+            Livewire.on('init-registration-date', () => {
+                setTimeout(() => {
+                    initDatePickers();
+                    console.log('hi');
+                }, 100);
+            });
+
+            // Initialize on tab changes
+            Livewire.on('tab-changed', () => {
+                setTimeout(() => {
+                    initDatePickers();
+                }, 100);
+            });
+
+            // Initialize when conditional fields are shown
+            Livewire.hook('message.processed', (message, component) => {
+                setTimeout(() => {
+                    initDatePickers();
+                }, 100);
+            });
+
+            // Initialize after DOM mutations (for conditional rendering)
+            Livewire.hook('element.updated', (el, component) => {
+                // Check if the updated element or its children contain nepali-date inputs
+                const nepaliInputs = el.querySelectorAll('.nepali-date');
+                if (nepaliInputs.length > 0) {
+                    setTimeout(() => {
+                        initDatePickers();
+                    }, 100);
+                }
+            });
+        });
     </script>
 @endscript

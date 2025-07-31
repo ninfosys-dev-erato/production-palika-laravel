@@ -16,19 +16,21 @@ class LevelAdminController extends Controller
         //$this->middleware('permission:levels create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::level.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::level.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $level = Level::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::level.form')->with(compact('action','level'));
+        return view('Ejalas::level.form')->with(compact('action', 'level'));
     }
-
 }

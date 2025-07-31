@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.budget_transfer_list') }}</h5>
                     </div>
                     <div>
-                        @perm('budget_transfer create')
+                        @perm('plan create')
                             <a href="{{ route('admin.budget_transfer.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.budget_transfer') }}</a>
 

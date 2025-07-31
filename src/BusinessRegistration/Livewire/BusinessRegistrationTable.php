@@ -157,7 +157,7 @@ class BusinessRegistrationTable extends DataTableComponent
         if (can('business_registration edit') || can('business_registration delete')) {
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('business-registration_access')) {
+                if (can('business_registration access')) {
                     $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
                 }

@@ -16,7 +16,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('filetracking::filetracking.chalani') }}
                     </h5>
-                    @perm('chalani_create')
+                    @perm('chalani create')
                         <div>
                             <a href="{{ route('admin.chalani.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('filetracking::filetracking.add_chalani') }}</a>

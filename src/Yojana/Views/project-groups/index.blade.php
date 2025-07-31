@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.project_group_list') }}</h5>
                     </div>
                     <div>
-                        @perm('project_groups create')
+                        @perm('plan create')
                             <a data-bs-toggle="modal" data-bs-target="#indexModal" class="btn btn-info"
                                 onclick="resetForm()"><i class="bx bx-plus"></i>
                                 {{ __('yojana::yojana.add_project_group') }}</a>

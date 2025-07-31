@@ -34,7 +34,7 @@
                     </a>
                 @endperm
 
-                @perm('downloads_access')
+                @perm('downloads access')
                     <a href="{{ route('admin.downloads.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-download text-info"></i>
                         {{ __('Downloads') }}
@@ -49,7 +49,7 @@
                 @endperm
 
 
-                @perm('office_setting_access')
+                @perm('office_setting access')
                     <a href="{{ route('admin.setting.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-table text-primary"></i>
                         {{ __('General Setting') }}

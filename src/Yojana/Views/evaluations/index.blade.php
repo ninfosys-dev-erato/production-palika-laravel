@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.evaluation_list') }}</h5>
                     </div>
                     <div>
-                        @perm('evaluations create')
+                        @perm('plan create')
                             <a href="{{ route('admin.evaluations.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_evaluation') }}</a>
                         @endperm

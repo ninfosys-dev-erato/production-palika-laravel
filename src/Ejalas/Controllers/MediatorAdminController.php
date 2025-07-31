@@ -16,19 +16,21 @@ class MediatorAdminController extends Controller
         //$this->middleware('permission:mediators create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::mediator.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::mediator.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $mediator = Mediator::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::mediator.form')->with(compact('action','mediator'));
+        return view('Ejalas::mediator.form')->with(compact('action', 'mediator'));
     }
-
 }

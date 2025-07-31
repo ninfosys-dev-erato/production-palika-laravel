@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.implementation_level_list') }}</h5>
                     </div>
                     <div>
-                        @perm('implementation_levels create')
+                        @perm('plan_basic_settings create')
                             <button data-bs-target="#indexModal" data-bs-toggle="modal" onclick="resetForm()"
                                 class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('yojana::yojana.add_implementation_level') }}</button>

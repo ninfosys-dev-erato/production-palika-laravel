@@ -19,7 +19,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.judicial_member_list') }}</h5>
                     </div>
                     <div>
-                        @perm('judicial_members create')
+                        @perm('jms_settings create')
                             <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_judicial_members') }}
                             </button>

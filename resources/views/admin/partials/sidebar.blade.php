@@ -106,7 +106,7 @@
             <span class="menu-header-text">{{ __('Register Files') }}</span>
         </li>
 
-        @perm('darta_access')
+        @perm('darta access')
             <li
                 class="menu-item {{ Route::is('admin.register_files.index', 'admin.register_files.show', 'admin.register_files.edit') ? 'active' : '' }}">
                 <a href="{{ route('admin.register_files.index') }}" class="menu-link">
@@ -127,7 +127,7 @@
             <span class="menu-header-text">{{ __('Chalani') }}</span>
         </li>
 
-        @perm('darta_access')
+        @perm('darta access')
             <li
                 class="menu-item {{ Route::is('admin.chalani.index', 'admin.chalani.show', 'admin.chalani.edit') ? 'active' : '' }}">
                 <a href="{{ route('admin.chalani.index') }}" class="menu-link">
@@ -293,7 +293,7 @@
                         </a>
                     </li>
 
-                    @perm('office_setting_access')
+                    @perm('office_setting access')
                         <li
                             class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.setting.index') ? 'active' : '' }}">
                             <a href="{{ route('admin.setting.index') }}" class="menu-link">
@@ -313,7 +313,7 @@
             @include('Settings::menu.sidebar')
         @endperm
 
-        @perm('human_resource_access')
+        @perm('human_resource access')
             @include('Employees::menu.sidebar')
         @endperm
 

@@ -77,10 +77,10 @@ class WorkOrderTable extends DataTableComponent
             Column::make(__('yojana::yojana.subject'), "subject")->sortable()->searchable()->collapseOnTablet(),
             // Column::make(__('yojana::yojana.letter_body'), "letter_body")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('work_orders edit') || can('work_orders delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
-                if (can('work_orders print')) {
+                if (can('plan print')) {
                     $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
@@ -96,7 +96,7 @@ class WorkOrderTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('work_orders edit')) {
+        if (!can('plan edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -105,7 +105,7 @@ class WorkOrderTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('work_orders delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -115,7 +115,7 @@ class WorkOrderTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('work_orders delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

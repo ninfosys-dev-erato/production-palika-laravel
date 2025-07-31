@@ -17,10 +17,10 @@
                             {{ __('grantmanagement::grantmanagement.cooperative_type_list') }}</h5>
                     </div>
                     <div>
-                        @perm('cooperative_types create')
+                        @perm('gms_settings create')
                             <!-- <a href="{{ route('admin.cooperative_types.create') }}" class="btn btn-info"><i
-                                                            class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_cooperative_type') }}</a>
-                                                 -->
+                                                                class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_cooperative_type') }}</a>
+                                                     -->
 
                             <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                                 data-bs-target="#indexModal">

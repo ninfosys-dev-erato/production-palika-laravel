@@ -27,7 +27,10 @@ class JudicialCommitteeForm extends Component
             'judicialCommittee.title' => ['required'],
             'judicialCommittee.subtitle' => ['required'],
             'judicialCommittee.formation_date' => ['required'],
-            'judicialCommittee.phone_no' => ['required', 'numeric', 'digits:10', Rule::unique('jms_judicial_committees', 'phone_no'), new MobileNumberIdentifierRule()],
+            'judicialCommittee.phone_no' => [
+                'required',
+                Rule::unique('jms_judicial_committees', 'phone_no')->ignore($this->judicialCommittee['id']),
+            ],
             'judicialCommittee.email' => ['required'],
         ];
     }

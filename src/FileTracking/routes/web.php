@@ -38,22 +38,22 @@ Route::group(['prefix' => 'admin/patrachar', 'as' => 'admin.patrachar.', 'middle
 
 Route::group(['prefix' => 'admin/darta-chalani/', 'as' => 'admin.register_files.', 'middleware' => ['web', 'auth', 'check_module:register']], function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::get('/darta/', [DartaAdminController::class, 'index'])->name('index')->middleware('permission:darta_access');
-    Route::get('/darta/create', [DartaAdminController::class, 'create'])->name('create')->middleware('permission:darta_create');
-    Route::get('/darta/edit/{id}', [DartaAdminController::class, 'edit'])->name('edit')->middleware('permission:darta_update');
+    Route::get('/darta/', [DartaAdminController::class, 'index'])->name('index')->middleware('permission:darta access');
+    Route::get('/darta/create', [DartaAdminController::class, 'create'])->name('create')->middleware('permission:darta create');
+    Route::get('/darta/edit/{id}', [DartaAdminController::class, 'edit'])->name('edit')->middleware('permission:darta update');
     Route::get('/darta/show/{id}', [DartaAdminController::class, 'show'])->name('show');
-    Route::get('/darta/report', [DartaAdminController::class, 'report'])->name('report')->middleware('permission:darta_access');
-    Route::get('/darta/export', [DartaAdminController::class, 'export'])->name('export')->middleware('permission:darta_access');
-    Route::get('/darta/download-pdf', [DartaAdminController::class, 'downloadPdf'])->name('download-pdf')->middleware('permission:darta_access');
+    Route::get('/darta/report', [DartaAdminController::class, 'report'])->name('report')->middleware('permission:darta access');
+    Route::get('/darta/export', [DartaAdminController::class, 'export'])->name('export')->middleware('permission:darta access');
+    Route::get('/darta/download-pdf', [DartaAdminController::class, 'downloadPdf'])->name('download-pdf')->middleware('permission:darta access');
 
 });
 Route::group(['prefix' => 'admin/darta-chalani/', 'as' => 'admin.chalani.', 'middleware' => ['web', 'auth', 'check_module:register']], function () {
-    Route::get('/chalani/', [ChalaniAdminController::class, 'index'])->name('index')->middleware('permission:chalani_access');
-    Route::get('/chalani/create', [ChalaniAdminController::class, 'create'])->name('create')->middleware('permission:chalani_create');
-    Route::get('/chalani/edit/{id}', [ChalaniAdminController::class, 'edit'])->name('edit')->middleware('permission:chalani_update');
-    Route::get('/chalani/report', [ChalaniAdminController::class, 'report'])->name('report')->middleware('permission:chalani_access');
-    Route::get('/chalani/export', [ChalaniAdminController::class, 'export'])->name('export')->middleware('permission:chalani_access');
-    Route::get('/chalani/download-pdf', [ChalaniAdminController::class, 'downloadPdf'])->name('download-pdf')->middleware('permission:chalani_access');
+    Route::get('/chalani/', [ChalaniAdminController::class, 'index'])->name('index')->middleware('permission:chalani access');
+    Route::get('/chalani/create', [ChalaniAdminController::class, 'create'])->name('create')->middleware('permission:chalani create');
+    Route::get('/chalani/edit/{id}', [ChalaniAdminController::class, 'edit'])->name('edit')->middleware('permission:chalani update');
+    Route::get('/chalani/report', [ChalaniAdminController::class, 'report'])->name('report')->middleware('permission:chalani access');
+    Route::get('/chalani/export', [ChalaniAdminController::class, 'export'])->name('export')->middleware('permission:chalani access');
+    Route::get('/chalani/download-pdf', [ChalaniAdminController::class, 'downloadPdf'])->name('download-pdf')->middleware('permission:chalani access');
 });
 
 Route::group(['prefix' => 'admin/file-record-notifiees', 'as' => 'admin.file_record_notifiees.', 'middleware' => ['web', 'auth']], function () {

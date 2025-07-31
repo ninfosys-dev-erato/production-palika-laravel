@@ -72,7 +72,7 @@ class PaymentsTable extends Component
 
     public function delete($id)
     {
-        if(!can('payments delete')){
+        if(!can('plan delete')){
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -83,7 +83,7 @@ class PaymentsTable extends Component
 
     public function edit($id)
     {
-        if(!can('payments edit')){
+        if(!can('plan edit')){
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

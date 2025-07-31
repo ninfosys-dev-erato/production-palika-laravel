@@ -14,12 +14,12 @@ use Src\Settings\Controllers\SettingController;
 //    });
 
 Route::group(['middleware' => ['auth', 'web'], 'prefix' => 'admin/settings', 'as' => 'admin.setting.'], function () {
-    Route::get('/', [SettingController::class, 'index'])->name('index')->middleware('permission:office_setting_access');
-    Route::get('/edit', [SettingController::class, 'editSetting'])->name('editsetting')->middleware('permission:office_setting_access');
+    Route::get('/', [SettingController::class, 'index'])->name('index')->middleware('permission:office_setting access');
+    Route::get('/edit', [SettingController::class, 'editSetting'])->name('editsetting')->middleware('permission:office_setting access');
 
 
     Route::get('/letter-head', [LetterHeadController::class, 'index'])->name('letter-head.index')->middleware('permission:letter_head_access');
-    Route::get('/letter-head/create', [LetterHeadController::class, 'create'])->name('letter-head.create')->middleware('permission:letter_head_create');
+    Route::get('/letter-head/create', [LetterHeadController::class, 'create'])->name('letter-head.create')->middleware('permission:letter_head create');
     Route::get('/letter-head/edit/{id}', [LetterHeadController::class, 'edit'])->name('letter-head.edit')->middleware('permission:letter_head_update');
 
     Route::get('/form', [FormController::class, 'index'])->name('form.index')->middleware('permission:form access');

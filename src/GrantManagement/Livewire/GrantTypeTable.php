@@ -56,16 +56,16 @@ class GrantTypeTable extends DataTableComponent
             Column::make(__('grantmanagement::grantmanagement.title'), "title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('grant_types edit') || can('grant_types delete')) {
+        if (can('gms_settings edit') || can('gms_settings delete')) {
             $actionsColumn = Column::make(__('grantmanagement::grantmanagement.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('grant_types edit')) {
+                if (can('gms_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('grant_types delete')) {
+                if (can('gms_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -77,14 +77,11 @@ class GrantTypeTable extends DataTableComponent
         }
 
         return $columns;
-
     }
-    public function refresh()
-    {
-    }
+    public function refresh() {}
     public function edit($id)
     {
-        if (!can('grant_types edit')) {
+        if (!can('gms_settings edit')) {
             SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
             return false;
         }
@@ -93,7 +90,7 @@ class GrantTypeTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('grant_types delete')) {
+        if (!can('gms_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -103,7 +100,7 @@ class GrantTypeTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('grant_types delete')) {
+        if (!can('gms_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

@@ -11,7 +11,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    @perm('plan_templates create')
+                    @perm('plan_basic_settings create')
                         <a href="{{ route('admin.plan_templates.create') }}" class="btn btn-info"><i class="fa fa-plus"></i>
                             Add PlanTemplate</a>
                     @endperm
