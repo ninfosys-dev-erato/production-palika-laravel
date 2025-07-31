@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Committees\Exports\CommitteesExport;
 use Src\Committees\Models\Committee;
 use Src\Committees\Service\CommitteeAdminService;
 
 class CommitteeTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Committee::class;
 

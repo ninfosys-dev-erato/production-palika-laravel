@@ -6,14 +6,13 @@ use App\Traits\SessionFlash;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\AdminSettings\Models\AdminSetting;
 use Src\AdminSettings\Service\AdminSettingService;
 use Src\AdminSettings\Models\User;
 
 class SettingTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = AdminSetting::class;
 

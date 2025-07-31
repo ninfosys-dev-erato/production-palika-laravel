@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Enums\ImplementationMethods;
 use Src\Yojana\Enums\PlanStatus;
 use Src\Yojana\Exports\ImplementationMethodsExport;
@@ -17,7 +16,7 @@ use Src\Yojana\Service\ImplementationMethodAdminService;
 
 class ImplementationMethodTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = ImplementationMethod::class;
 
     public $plans;

@@ -17,11 +17,10 @@ use Src\TaskTracking\Models\Task;
 use Src\TaskTracking\Models\TaskType;
 use Src\TaskTracking\Service\ActivityAdminService;
 use Src\TaskTracking\Service\TaskAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class TaskTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Task::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

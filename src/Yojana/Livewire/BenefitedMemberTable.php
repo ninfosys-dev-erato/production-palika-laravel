@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\BenefitedMembersExport;
 use Src\Yojana\Models\BenefitedMember;
 use Src\Yojana\Service\BenefitedMemberAdminService;
@@ -16,7 +15,7 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class BenefitedMemberTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = BenefitedMember::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

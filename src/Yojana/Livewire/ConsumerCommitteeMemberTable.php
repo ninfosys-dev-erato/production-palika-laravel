@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ConsumerCommitteeMembersExport;
 use Src\Yojana\Models\ConsumerCommittee;
 use Src\Yojana\Models\ConsumerCommitteeMember;
@@ -17,7 +16,7 @@ use Src\Yojana\Service\ConsumerCommitteeMemberAdminService;
 
 class ConsumerCommitteeMemberTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = ConsumerCommitteeMember::class;
     public $consumerCommittee;
     public $isCommitteeSpecific = false;

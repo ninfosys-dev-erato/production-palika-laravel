@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\GrantManagement\Exports\GrantManagementExport;
 use Src\GrantManagement\Models\CooperativeType;
 use Src\GrantManagement\Service\CooperativeTypeAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class CooperativeTypeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = CooperativeType::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

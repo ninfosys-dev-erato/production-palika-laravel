@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\NormTypesExport;
 use Src\Yojana\Models\NormType;
 use Src\Yojana\Service\NormTypeAdminService;
 
 class NormTypeTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = NormType::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

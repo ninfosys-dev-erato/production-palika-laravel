@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\Evaluation;
 use Src\Yojana\Service\EvaluationAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class EvaluationTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Evaluation::class;
     public $plan;
     public $planId = null;

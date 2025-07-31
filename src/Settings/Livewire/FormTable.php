@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Settings\Models\Form;
 use Src\Settings\Service\FormAdminService;
 
 class FormTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Form::class;
 

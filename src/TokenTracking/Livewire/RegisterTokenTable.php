@@ -16,11 +16,10 @@ use Src\TokenTracking\Enums\TokenStatusEnum;
 use Src\TokenTracking\Exports\TokenTrackingExport;
 use Src\TokenTracking\Models\RegisterToken;
 use Src\TokenTracking\Service\RegisterTokenAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class RegisterTokenTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = RegisterToken::class;
 
     public array $bulkActions = [

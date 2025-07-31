@@ -6,13 +6,12 @@ use App\Traits\SessionFlash;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Recommendation\Models\RecommendationCategory;
 use Src\Recommendation\Services\RecommendationCategoryAdminService;
 
 class RecommendationCategoryTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = RecommendationCategory::class;
     public array $bulkActions = [

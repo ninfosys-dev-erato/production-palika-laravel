@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Meetings\Exports\InvitedMembersExport;
 use Src\Meetings\Models\InvitedMember;
 use Src\Meetings\Service\InvitedMemberAdminService;
 
 class InvitedMemberTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     public ?int $meetingId;
     protected $model = InvitedMember::class;

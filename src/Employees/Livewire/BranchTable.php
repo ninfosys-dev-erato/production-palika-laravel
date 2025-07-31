@@ -6,13 +6,12 @@ use App\Traits\SessionFlash;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Employees\Models\Branch;
 use Src\Employees\Service\BranchAdminService;
 
 class BranchTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Branch::class;
     public array $bulkActions = [

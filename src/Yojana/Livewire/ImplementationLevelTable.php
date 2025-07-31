@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ImplementationLevelsExport;
 use Src\Yojana\Models\ImplementationLevel;
 use Src\Yojana\Service\ImplementationLevelAdminService;
 
 class ImplementationLevelTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = ImplementationLevel::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

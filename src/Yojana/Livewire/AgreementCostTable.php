@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\AgreementCost;
 use Src\Yojana\Service\AgreementCostDetailsAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class AgreementCostTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = AgreementCost::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

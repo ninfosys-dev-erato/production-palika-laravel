@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ConsumerCommitteeOfficialsExport;
 use Src\Yojana\Models\ConsumerCommitteeOfficial;
 use Src\Yojana\Service\ConsumerCommitteeOfficialAdminService;
 
 class ConsumerCommitteeOfficialTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = ConsumerCommitteeOfficial::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

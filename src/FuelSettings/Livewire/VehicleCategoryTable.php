@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\FuelSettings\Models\VehicleCategory;
 use Src\FuelSettings\Exports\VehicleCategoriesExport;
 use Src\FuelSettings\Service\VehicleCategoryAdminService;
 
 class VehicleCategoryTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = VehicleCategory::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

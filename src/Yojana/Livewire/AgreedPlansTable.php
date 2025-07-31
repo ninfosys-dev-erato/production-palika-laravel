@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Enums\LetterTypes;
 use Src\Yojana\Exports\PlansExport;
 use Src\Yojana\Models\Plan;
@@ -17,7 +16,7 @@ use Src\Yojana\Service\WorkOrderAdminService;
 
 class AgreedPlansTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Plan::class;
     public $area_id;
     public $budgetHead_id;

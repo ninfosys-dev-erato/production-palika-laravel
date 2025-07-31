@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Wards\Exports\WardsExport;
 use Src\Wards\Models\Ward;
 use Src\Wards\Service\WardAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class WardTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = Ward::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

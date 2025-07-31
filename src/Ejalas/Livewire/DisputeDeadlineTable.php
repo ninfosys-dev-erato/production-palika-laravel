@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\DisputeDeadlinesExport;
 use Src\Ejalas\Models\DisputeDeadline;
 use Src\Ejalas\Service\DisputeDeadlineAdminService;
 
 class DisputeDeadlineTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable, HelperDate;
+    use SessionFlash, HelperDate;
     protected $model = DisputeDeadline::class;
     public $report = false;
     public $startDate = null;

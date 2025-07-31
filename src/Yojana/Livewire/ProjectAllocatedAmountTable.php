@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ProjectAllocatedAmountsExport;
 use Src\Yojana\Models\ProjectAllocatedAmount;
 use Src\Yojana\Service\ProjectAllocatedAmountAdminService;
 
 class ProjectAllocatedAmountTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = ProjectAllocatedAmount::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

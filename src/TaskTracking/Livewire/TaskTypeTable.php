@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\TaskTracking\Exports\TaskTypesExport;
 use Src\TaskTracking\Models\TaskType;
 use Src\TaskTracking\Service\TaskTypeAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class TaskTypeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = TaskType::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

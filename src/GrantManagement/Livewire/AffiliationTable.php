@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\GrantManagement\Exports\GrantManagementExport;
 use Src\GrantManagement\Models\Affiliation;
 use Src\GrantManagement\Service\AffiliationAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class AffiliationTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = Affiliation::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

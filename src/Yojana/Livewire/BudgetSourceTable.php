@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\BudgetSourcesExport;
 use Src\Yojana\Models\BudgetSource;
 use Src\Yojana\Models\PlanLevel;
@@ -16,7 +15,7 @@ use Src\Yojana\Service\BudgetSourceAdminService;
 
 class BudgetSourceTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = BudgetSource::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

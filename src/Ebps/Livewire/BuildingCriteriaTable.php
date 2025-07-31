@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\BuildingCriteriasExport;
 use Src\Ebps\Models\BuildingCriteria;
 use Src\Ebps\Service\BuildingCriteriaAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class BuildingCriteriaTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = BuildingCriteria::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

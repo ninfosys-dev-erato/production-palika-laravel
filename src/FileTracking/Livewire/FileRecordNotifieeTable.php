@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\FileTracking\Exports\FileRecordNotifieesExport;
 use Src\FileTracking\Models\FileRecordNotifiee;
 use Src\FileTracking\Service\FileRecordNotifieeAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class FileRecordNotifieeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = FileRecordNotifiee::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

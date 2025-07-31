@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Enums\LetterTypes;
 use Src\Yojana\Exports\AdvancePaymentsExport;
 use Src\Yojana\Models\AdvancePayment;
@@ -20,7 +19,7 @@ use Src\Yojana\Service\WorkOrderAdminService;
 
 class PaymentTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Payment::class;
     public $plan;
     public array $bulkActions = [

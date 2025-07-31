@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\TaskTracking\Exports\EmployeeMarkingsExport;
 use Src\TaskTracking\Models\EmployeeMarking;
 use Src\TaskTracking\Service\EmployeeMarkingAdminService;
 
 class EmployeeMarkingTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = EmployeeMarking::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

@@ -9,14 +9,13 @@ use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\TestListsExport;
 use Src\Yojana\Models\TestList;
 use Src\Yojana\Service\TestListAdminService;
 
 class TestListTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = TestList::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

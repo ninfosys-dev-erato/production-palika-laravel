@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ProjectGrantDetailsExport;
 use Src\Yojana\Models\ProjectGrantDetail;
 use Src\Yojana\Service\ProjectGrantDetailAdminService;
 
 class ProjectGrantDetailTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = ProjectGrantDetail::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

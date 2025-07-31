@@ -7,7 +7,6 @@ use App\Traits\SessionFlash;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Maatwebsite\Excel\Facades\Excel;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\BusinessRegistration\Exports\RegistrationTypeExport;
 use Src\BusinessRegistration\Models\RegistrationType;
 use Src\BusinessRegistration\Service\RegistrationTypeAdminService;
@@ -15,7 +14,7 @@ use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 
 class RegistrationTypeTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = RegistrationType::class;
 

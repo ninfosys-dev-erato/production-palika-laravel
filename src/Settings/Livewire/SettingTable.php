@@ -15,11 +15,10 @@ use Src\Settings\Exports\SettingsExport;
 use Src\Settings\Models\MstSetting;
 use Src\Settings\Models\Setting;
 use Src\Settings\Service\MstSettingAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class SettingTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = MstSetting::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

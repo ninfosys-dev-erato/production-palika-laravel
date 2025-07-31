@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\PlanAreasExport;
 use Src\Yojana\Models\PlanArea;
 use Src\Yojana\Service\PlanAreaAdminService;
 
 class PlanAreaTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = PlanArea::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

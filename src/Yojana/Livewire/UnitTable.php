@@ -9,14 +9,13 @@ use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\UnitsExport;
 use Src\Yojana\Models\Unit;
 use Src\Yojana\Service\UnitAdminService;
 
 class UnitTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Unit::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

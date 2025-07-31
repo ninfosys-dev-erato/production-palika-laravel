@@ -9,14 +9,13 @@ use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Meetings\Exports\AgendasExport;
 use Src\Meetings\Models\Agenda;
 use Src\Meetings\Service\AgendaAdminService;
 
 class AgendaTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     public int $meetingId;
     protected $model = Agenda::class;

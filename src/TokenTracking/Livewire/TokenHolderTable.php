@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\TokenTracking\Exports\TokenHoldersExport;
 use Src\TokenTracking\Models\TokenHolder;
 use Src\TokenTracking\Service\TokenHolderAdminService;
 
 class TokenHolderTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = TokenHolder::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

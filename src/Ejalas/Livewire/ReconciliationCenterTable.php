@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\ReconciliationCentersExport;
 use Src\Ejalas\Models\ReconciliationCenter;
 use Src\Ejalas\Service\ReconciliationCenterAdminService;
 
 class ReconciliationCenterTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = ReconciliationCenter::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\EquipmentAdditionalCostsExport;
 use Src\Yojana\Models\EquipmentAdditionalCost;
 use Src\Yojana\Service\EquipmentAdditionalCostAdminService;
 
 class EquipmentAdditionalCostTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = EquipmentAdditionalCost::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

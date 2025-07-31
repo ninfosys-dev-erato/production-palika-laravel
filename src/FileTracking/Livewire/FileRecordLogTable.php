@@ -11,11 +11,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\FileTracking\Exports\FileRecordLogsExport;
 use Src\FileTracking\Models\FileRecordLog;
 use Src\FileTracking\Service\FileRecordLogAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class FileRecordLogTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = FileRecordLog::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

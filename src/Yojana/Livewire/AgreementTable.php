@@ -16,11 +16,10 @@ use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\Agreement;
 use Src\Yojana\Models\Plan;
 use Src\Yojana\Service\AgreementAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class AgreementTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable, LivewireAlert;
+    use SessionFlash, LivewireAlert;
     protected $model = Agreement::class;
     public $plan;
     public array $bulkActions = [

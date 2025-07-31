@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\TargetEntriesExport;
 use Src\Yojana\Models\Plan;
 use Src\Yojana\Models\TargetEntry;
@@ -16,7 +15,7 @@ use Src\Yojana\Service\TargetEntryAdminService;
 use Illuminate\Contracts\View\View;
 class TargetEntryTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = TargetEntry::class;
     public $plan;
     public array $bulkActions = [

@@ -10,14 +10,13 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Maatwebsite\Excel\Facades\Excel;
 
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\DigitalBoard\Exports\ProgramsExport;
 use Src\DigitalBoard\Models\Program;
 use Src\DigitalBoard\Service\ProgramAdminService;
 
 class ProgramTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Program::class;
 

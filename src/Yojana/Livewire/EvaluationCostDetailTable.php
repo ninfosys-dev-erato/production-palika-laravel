@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\EvaluationCostDetail;
 use Src\Yojana\Service\EvaluationCostDetailAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class EvaluationCostDetailTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = EvaluationCostDetail::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

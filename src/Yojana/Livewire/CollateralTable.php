@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\Collateral;
 use Src\Yojana\Service\CollateralAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class CollateralTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = Collateral::class;
     public $plan;
 

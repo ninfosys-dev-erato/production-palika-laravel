@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Districts\Exports\DistrictsExport;
 use Src\Districts\Models\District;
 use Src\Districts\Service\DistrictAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class DistrictTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = District::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

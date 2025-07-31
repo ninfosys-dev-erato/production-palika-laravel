@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Settings\Exports\SettingGroupsExport;
 use Src\Settings\Models\SettingGroup;
 use Src\Settings\Service\SettingGroupAdminService;
 
 class SettingGroupTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = SettingGroup::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

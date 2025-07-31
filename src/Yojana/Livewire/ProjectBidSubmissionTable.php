@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ProjectBidSubmissionsExport;
 use Src\Yojana\Models\ProjectBidSubmission;
 use Src\Yojana\Service\ProjectBidSubmissionAdminService;
 
 class ProjectBidSubmissionTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = ProjectBidSubmission::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

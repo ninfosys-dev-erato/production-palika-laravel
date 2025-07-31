@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\LocalBodies\Exports\LocalBodiesExport;
 use Src\LocalBodies\Models\LocalBody;
 use Src\LocalBodies\Service\LocalBodyAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class LocalBodyTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = LocalBody::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

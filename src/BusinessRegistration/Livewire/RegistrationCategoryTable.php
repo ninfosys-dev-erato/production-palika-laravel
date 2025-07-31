@@ -7,14 +7,13 @@ use App\Traits\SessionFlash;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Maatwebsite\Excel\Facades\Excel;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\BusinessRegistration\Exports\RegistrationCategoryExport;
 use Src\BusinessRegistration\Models\RegistrationCategory;
 use Src\BusinessRegistration\Service\RegistrationCategoryAdminService;
 
 class RegistrationCategoryTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = RegistrationCategory::class;
 

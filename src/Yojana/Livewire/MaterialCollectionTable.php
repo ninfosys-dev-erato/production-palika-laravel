@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\MaterialCollectionsExport;
 use Src\Yojana\Models\MaterialCollection;
 use Src\Yojana\Service\MaterialCollectionAdminService;
 
 class MaterialCollectionTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = MaterialCollection::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

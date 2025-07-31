@@ -11,11 +11,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Committees\Exports\CommitteeTypesExport;
 use Src\Committees\Models\CommitteeType;
 use Src\Committees\Service\CommitteeTypeAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class CommitteeTypeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = CommitteeType::class;
     public function configure(): void
     {

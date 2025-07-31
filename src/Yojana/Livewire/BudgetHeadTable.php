@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\BudgetHeadsExport;
 use Src\Yojana\Models\BudgetHead;
 use Src\Yojana\Service\BudgetHeadAdminService;
 
 class BudgetHeadTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = BudgetHead::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

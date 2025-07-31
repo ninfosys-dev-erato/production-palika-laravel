@@ -11,12 +11,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\FiscalYears\Exports\FiscalYearsExport;
 use Src\FiscalYears\Models\FiscalYear;
 use Src\FiscalYears\Service\FiscalYearAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class FiscalYearTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = FiscalYear::class;
     public array $bulkActions = [

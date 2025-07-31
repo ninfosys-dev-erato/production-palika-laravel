@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\CrewRatesExport;
 use Src\Yojana\Models\CrewRate;
 use Src\Yojana\Service\CrewRateAdminService;
 
 class CrewRateTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = CrewRate::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

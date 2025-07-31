@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\CargoHandlingsExport;
 use Src\Yojana\Models\CargoHandling;
 use Src\Yojana\Service\CargoHandlingAdminService;
 
 class CargoHandlingTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = CargoHandling::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

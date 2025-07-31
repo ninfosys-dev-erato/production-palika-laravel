@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\BuildingConstructionTypesExport;
 use Src\Ebps\Models\BuildingConstructionType;
 use Src\Ebps\Service\BuildingConstructionTypeAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class BuildingConstructionTypeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = BuildingConstructionType::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

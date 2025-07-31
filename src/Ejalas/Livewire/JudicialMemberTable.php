@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\JudicialMembersExport;
 use Src\Ejalas\Models\JudicialMember;
 use Src\Ejalas\Service\JudicialMemberAdminService;
@@ -16,7 +15,7 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class JudicialMemberTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = JudicialMember::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

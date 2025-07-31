@@ -16,11 +16,10 @@ use Src\Ebps\Enums\FormSubmitterEnum;
 use Src\Ebps\Exports\MapStepsExport;
 use Src\Ebps\Models\MapStep;
 use Src\Ebps\Service\MapStepAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class MapStepTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = MapStep::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

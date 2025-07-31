@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\LandUseAreasExport;
 use Src\Ebps\Models\LandUseArea;
 use Src\Ebps\Service\LandUseAreaAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class LandUseAreaTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = LandUseArea::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

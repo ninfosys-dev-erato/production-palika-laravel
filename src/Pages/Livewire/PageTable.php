@@ -11,11 +11,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Pages\Exports\PagesExport;
 use Src\Pages\Models\Page;
 use Src\Pages\Service\PageAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class PageTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Page::class;
     public array $bulkActions = [

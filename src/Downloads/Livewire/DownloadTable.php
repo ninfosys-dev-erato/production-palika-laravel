@@ -11,11 +11,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Downloads\Exports\DownloadsExport;
 use Src\Downloads\Models\Download;
 use Src\Downloads\Service\DownloadAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class DownloadTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = Download::class;
     public array $bulkActions = [
 

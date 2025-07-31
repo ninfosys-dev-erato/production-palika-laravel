@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\EquipmentExport;
 use Src\Yojana\Models\Equipment;
 use Src\Yojana\Service\EquipmentAdminService;
 
 class EquipmentTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Equipment::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

@@ -15,11 +15,10 @@ use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\Plan;
 use Src\Yojana\Models\PlanExtensionRecord;
 use Src\Yojana\Service\PlanExtensionRecordAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class PlanExtensionRecordTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = PlanExtensionRecord::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

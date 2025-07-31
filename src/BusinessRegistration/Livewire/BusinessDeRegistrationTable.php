@@ -9,7 +9,6 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 use Src\BusinessRegistration\Models\BusinessDeRegistration;
@@ -20,7 +19,7 @@ use Src\BusinessRegistration\Service\BusinessRegistrationAdminService;
 
 class BusinessDeRegistrationTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = BusinessRegistration::class;
 

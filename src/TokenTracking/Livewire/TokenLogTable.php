@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\TokenTracking\Exports\TokenLogsExport;
 use Src\TokenTracking\Models\TokenLog;
 use Src\TokenTracking\Service\TokenLogAdminService;
 
 class TokenLogTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = TokenLog::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

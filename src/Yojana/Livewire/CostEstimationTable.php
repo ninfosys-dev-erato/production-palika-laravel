@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\PlansExport;
 use Src\Yojana\Models\CostEstimation;
 use Src\Yojana\Service\PlanAdminService;
 
 class CostEstimationTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = CostEstimation::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

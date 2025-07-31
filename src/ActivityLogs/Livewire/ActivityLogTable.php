@@ -10,11 +10,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\ActivityLogs\Exports\ActivityLogsExport;
 use Src\ActivityLogs\Models\ActivityLog;
 use Src\ActivityLogs\Service\ActivityLogAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class ActivityLogTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = ActivityLog::class;
 

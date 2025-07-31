@@ -6,13 +6,12 @@ use App\Traits\SessionFlash;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Employees\Models\Designation;
 use Src\Employees\Service\DesignationAdminService;
 
 class DesignationTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Designation::class;
     public array $bulkActions = [

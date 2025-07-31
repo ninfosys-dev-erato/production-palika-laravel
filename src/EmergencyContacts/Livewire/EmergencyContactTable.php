@@ -12,11 +12,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\EmergencyContacts\Exports\EmergencyContactsExport;
 use Src\EmergencyContacts\Models\EmergencyContact;
 use Src\EmergencyContacts\Service\EmergencyContactAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class EmergencyContactTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = EmergencyContact::class;
     public array $bulkActions = [
 

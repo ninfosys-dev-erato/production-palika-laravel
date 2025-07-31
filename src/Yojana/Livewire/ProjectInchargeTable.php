@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Yojana\Exports\ProjectInchargeExport;
 use Src\Yojana\Models\ProjectIncharge;
 use Src\Yojana\Service\ProjectInchargeAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class ProjectInchargeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = ProjectIncharge::class;
     public $plan;
     public array $bulkActions = [

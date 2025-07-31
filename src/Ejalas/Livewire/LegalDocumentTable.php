@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\LegalDocumentsExport;
 use Src\Ejalas\Models\LegalDocument;
 use Src\Ejalas\Service\LegalDocumentAdminService;
 
 class LegalDocumentTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = LegalDocument::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

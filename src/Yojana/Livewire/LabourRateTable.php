@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\LabourRatesExport;
 use Src\Yojana\Models\LabourRate;
 use Src\Yojana\Service\LabourRateAdminService;
 
 class LabourRateTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = LabourRate::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

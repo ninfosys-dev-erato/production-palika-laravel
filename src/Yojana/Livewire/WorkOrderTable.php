@@ -9,14 +9,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\WorkOrdersExport;
 use Src\Yojana\Models\WorkOrder;
 use Src\Yojana\Service\WorkOrderAdminService;
 
 class WorkOrderTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable, HelperDate;
+    use SessionFlash, HelperDate;
     protected $model = WorkOrder::class;
     public $planId;
     public array $bulkActions = [

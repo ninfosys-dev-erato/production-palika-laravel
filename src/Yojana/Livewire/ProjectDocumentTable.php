@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ProjectDocumentsExport;
 use Src\Yojana\Models\ProjectDocument;
 use Src\Yojana\Service\ProjectDocumentAdminService;
 
 class ProjectDocumentTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = ProjectDocument::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\TokenTracking\Models\RegisterToken;
 
 class TokenTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
    
     public array $bulkActions = [
         'exportSelected' => 'Export',

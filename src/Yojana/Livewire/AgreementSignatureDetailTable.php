@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\AgreementSignatureDetail;
 use Src\Yojana\Service\AgreementSignatureDetailAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class AgreementSignatureDetailTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = AgreementSignatureDetail::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

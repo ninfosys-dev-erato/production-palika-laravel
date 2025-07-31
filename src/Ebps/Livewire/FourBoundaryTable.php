@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\FourBoundariesExport;
 use Src\Ebps\Models\FourBoundary;
 use Src\Ebps\Service\FourBoundaryAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class FourBoundaryTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = FourBoundary::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

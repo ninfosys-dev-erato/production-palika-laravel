@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\MapPassGroupsExport;
 use Src\Ebps\Models\MapPassGroup;
 use Src\Ebps\Service\MapPassGroupAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class MapPassGroupTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = MapPassGroup::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

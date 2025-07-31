@@ -14,11 +14,10 @@ use Src\Ebps\Exports\MapAppliesExport;
 use Src\Ebps\Models\MapApply;
 use Src\Ebps\Models\MapApplyDetail;
 use Src\Ebps\Service\MapApplyAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class BuildingRegistrationTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = MapApply::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

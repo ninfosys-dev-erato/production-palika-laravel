@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\SettlementsExport;
 use Src\Ejalas\Models\Settlement;
 use Src\Ejalas\Service\SettlementAdminService;
@@ -16,7 +15,7 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class SettlementTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable, HelperDate;
+    use SessionFlash, HelperDate;
     protected $model = Settlement::class;
     protected $listeners = ['getSearchDate' => 'getSearchDate'];
     public $report = false;

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Enums\LetterTypes;
 use Src\Yojana\Exports\ImplementationAgenciesExport;
 use Src\Yojana\Models\ImplementationAgency;
@@ -18,7 +17,7 @@ use Src\Yojana\Service\WorkOrderAdminService;
 
 class ImplementationAgencyTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = ImplementationAgency::class;
     public $planId;
     public $plan;

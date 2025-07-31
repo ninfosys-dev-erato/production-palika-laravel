@@ -7,14 +7,13 @@ use App\Traits\SessionFlash;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Maatwebsite\Excel\Facades\Excel;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\BusinessRegistration\Exports\BusinessRenewalsExport;
 use Src\BusinessRegistration\Models\BusinessRenewal;
 use Src\BusinessRegistration\Service\BusinessRenewalAdminService;
 
 class BusinessRenewalTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = BusinessRenewal::class;
 

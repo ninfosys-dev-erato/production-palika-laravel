@@ -12,7 +12,6 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 use Rappasoft\LaravelLivewireTables\Views\Filters\DateRangeFilter;
 use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 use Maatwebsite\Excel\Facades\Excel;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\DigitalBoard\Exports\NoticesExport;
 use Src\DigitalBoard\Models\Notice;
 use Src\DigitalBoard\Service\NoticeAdminService;
@@ -20,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 
 class NoticeTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = Notice::class;
 

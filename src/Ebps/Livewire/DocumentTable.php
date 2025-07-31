@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\DocumentsExport;
 use Src\Ebps\Models\Document;
 use Src\Ebps\Service\DocumentAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class DocumentTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = Document::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

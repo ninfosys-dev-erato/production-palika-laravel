@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ConfigurationsExport;
 use Src\Yojana\Models\Configuration;
 use Src\Yojana\Service\ConfigurationAdminService;
 
 class ConfigurationTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Configuration::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

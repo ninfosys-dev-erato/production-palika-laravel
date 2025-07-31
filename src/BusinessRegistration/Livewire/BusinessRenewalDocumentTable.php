@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\BusinessRegistration\Exports\BusinessRenewalDocumentsExport;
 use Src\BusinessRegistration\Models\BusinessRenewalDocument;
 use Src\BusinessRegistration\Service\BusinessRenewalDocumentAdminService;
 
 class BusinessRenewalDocumentTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = BusinessRenewalDocument::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

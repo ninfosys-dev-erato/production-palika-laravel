@@ -11,11 +11,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\CustomerLandDetailsExport;
 use Src\Ebps\Models\CustomerLandDetail;
 use Src\Ebps\Service\CustomerLandDetailService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class CustomerLandDetailTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = CustomerLandDetai::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

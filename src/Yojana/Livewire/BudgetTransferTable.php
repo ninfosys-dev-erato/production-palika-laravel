@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\DTO\BudgetTransferDetailAdminDto;
 use Src\Yojana\Exports\BudgetSourcesExport;
 use Src\Yojana\Exports\BudgetTransferExport;
@@ -24,7 +23,7 @@ use App\Traits\HelperDate;
 class BudgetTransferTable extends DataTableComponent
 {
 
-    use SessionFlash, IsSearchable, HelperDate;
+    use SessionFlash, HelperDate;
     protected $model = BudgetTransfer::class;
     public $plan;
     public array $bulkActions = [

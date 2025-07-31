@@ -18,13 +18,12 @@ use Src\Employees\Models\Branch;
 use Src\FileTracking\Exports\FileRecordsExport;
 use Src\FileTracking\Models\FileRecord;
 use Src\FileTracking\Service\FileRecordAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\FileTracking\Enums\SenderMediumEnum;
 use Src\Settings\Models\FiscalYear;
 
 class ChalaniTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable, HelperDate;
+    use SessionFlash, HelperDate;
     protected $model = FileRecord::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

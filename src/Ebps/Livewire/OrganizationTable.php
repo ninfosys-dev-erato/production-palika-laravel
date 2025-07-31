@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\OrganizationsExport;
 use Src\Ebps\Models\Organization;
 use Src\Ebps\Service\OrganizationAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class OrganizationTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = Organization::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

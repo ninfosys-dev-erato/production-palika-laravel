@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\ConsumerCommitteeTransactionsExport;
 use Src\Yojana\Models\ConsumerCommitteeTransaction;
 use Src\Yojana\Service\ConsumerCommitteeTransactionAdminService;
 
 class ConsumerCommitteeTransactionTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = ConsumerCommitteeTransaction::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

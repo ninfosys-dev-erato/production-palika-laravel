@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Exports\MeasurementUnitsExport;
 use Src\Yojana\Models\MeasurementUnit;
 use Src\Yojana\Models\Type;
@@ -16,7 +15,7 @@ use Src\Yojana\Service\MeasurementUnitAdminService;
 
 class MeasurementUnitTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = MeasurementUnit::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

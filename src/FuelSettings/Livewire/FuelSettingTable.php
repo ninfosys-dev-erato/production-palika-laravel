@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\FuelSettings\Exports\FuelSettingsExport;
 use Src\FuelSettings\Models\FuelSetting;
 use Src\FuelSettings\Service\FuelSettingAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class FuelSettingTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = FuelSetting::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

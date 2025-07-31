@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Yojana\Enums\LetterTypes;
 use Src\Yojana\Exports\ConsumerCommitteesExport;
 use Src\Yojana\Models\ConsumerCommittee;
@@ -21,7 +20,7 @@ use Src\Yojana\Service\WorkOrderAdminService;
 
 class ConsumerCommitteeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable,YojanaTemplate;
+    use SessionFlash,YojanaTemplate;
 
     protected $model = ConsumerCommittee::class;
     public array $bulkActions = [

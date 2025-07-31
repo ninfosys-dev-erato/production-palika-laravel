@@ -14,11 +14,10 @@ use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 use Src\FileTracking\Exports\FileRecordsExport;
 use Src\FileTracking\Models\FileRecord;
 use Src\FileTracking\Service\FileRecordAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class DartaChalaniTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable, HelperDate;
+    use SessionFlash, HelperDate;
     protected $model = FileRecord::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

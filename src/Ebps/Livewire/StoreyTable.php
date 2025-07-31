@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\StoreysExport;
 use Src\Ebps\Models\Storey;
 use Src\Ebps\Service\StoreyAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class StoreyTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = Storey::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

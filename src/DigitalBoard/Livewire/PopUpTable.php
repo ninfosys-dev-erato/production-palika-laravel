@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\DigitalBoard\Exports\PopUpsExport;
 use Src\DigitalBoard\Models\PopUp;
 use Src\DigitalBoard\Service\PopUpAdminService;
 
 class PopUpTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = PopUp::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

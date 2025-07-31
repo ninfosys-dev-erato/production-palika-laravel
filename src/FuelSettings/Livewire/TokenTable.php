@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\FuelSettings\Models\Token;
 use Src\FuelSettings\Service\TokenAdminService;
 use Src\Tokens\Exports\TokensExport;
@@ -16,7 +15,7 @@ use Src\Tokens\Exports\TokensExport;
 
 class TokenTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Token::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',
