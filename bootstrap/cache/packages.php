@@ -8,13 +8,13 @@
   ),
   'barryvdh/laravel-debugbar' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
+    ),
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
     ),
   ),
   'blade-ui-kit/blade-heroicons' => 
@@ -44,13 +44,13 @@
   ),
   'intervention/image-laravel' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Intervention\\Image\\Laravel\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'Image' => 'Intervention\\Image\\Laravel\\Facades\\Image',
+    ),
+    'providers' => 
+    array (
+      0 => 'Intervention\\Image\\Laravel\\ServiceProvider',
     ),
   ),
   'jantinnerezo/livewire-alert' => 
@@ -94,35 +94,35 @@
   ),
   'laravolt/avatar' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Laravolt\\Avatar\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'Avatar' => 'Laravolt\\Avatar\\Facade',
     ),
+    'providers' => 
+    array (
+      0 => 'Laravolt\\Avatar\\ServiceProvider',
+    ),
   ),
   'livewire/livewire' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Livewire\\LivewireServiceProvider',
-    ),
     'aliases' => 
     array (
       'Livewire' => 'Livewire\\Livewire',
     ),
+    'providers' => 
+    array (
+      0 => 'Livewire\\LivewireServiceProvider',
+    ),
   ),
   'maatwebsite/excel' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    ),
     'aliases' => 
     array (
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -148,13 +148,13 @@
   ),
   'rakutentech/laravel-request-docs' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Rakutentech\\LaravelRequestDocs\\LaravelRequestDocsServiceProvider',
-    ),
     'aliases' => 
     array (
       'LaravelRequestDocs' => 'Rakutentech\\LaravelRequestDocs\\LaravelRequestDocsFacade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Rakutentech\\LaravelRequestDocs\\LaravelRequestDocsServiceProvider',
     ),
   ),
   'rappasoft/laravel-livewire-tables' => 
