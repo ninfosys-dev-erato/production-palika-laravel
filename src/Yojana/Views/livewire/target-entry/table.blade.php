@@ -148,7 +148,7 @@
                 @endif
             </x-livewire-tables::table>
 
-            <x-livewire-tables::pagination />
+            <x-livewire-tables::pagination :currentRows="$this->getRows" />
 
             @includeIf($customView)
         </x-livewire-tables::wrapper>
