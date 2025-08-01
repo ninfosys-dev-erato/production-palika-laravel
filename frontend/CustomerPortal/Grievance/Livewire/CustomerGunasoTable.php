@@ -38,12 +38,11 @@ class CustomerGunasoTable extends DataTableComponent
     public function builder(): Builder
     {
         return GrievanceDetail::query()
+            ->with(['files', 'grievanceType', 'customer'])
             ->where('is_anonymous', false)
             ->where('is_public', true)
             ->where('is_visible_to_public', true)
-
             ->orderBy('gri_grievance_details.created_at', 'desc');
-
     }
 
     public function filters(): array

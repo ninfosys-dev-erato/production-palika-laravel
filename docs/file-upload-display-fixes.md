@@ -105,6 +105,18 @@ $file->file_name = $processedFileNames;
 - Used `customFileAsset` with `tempUrl` for non-image files
 - Improved file type handling logic
 
+### 6. **Fixed Missing Relationship Loading**
+
+**Files Updated:**
+- `src/Grievance/Controllers/GrievanceDetailController.php` - Added `files` relationship to show method
+- `frontend/CustomerPortal/Grievance/Controllers/CustomerGrievanceController.php` - Added `files` relationship to show method
+- `src/Grievance/Livewire/GrievanceDetailTable.php` - Added `files` relationship to builder method
+- `frontend/CustomerPortal/Grievance/Livewire/CustomerGunasoTable.php` - Added `files` relationship to builder method
+
+**Key Changes:**
+- Added missing `files` relationship loading in controllers and Livewire components
+- Ensures files are properly loaded and available for display
+
 ## File Type Handling Standards
 
 ### Supported Image Types
@@ -168,6 +180,12 @@ $file->file_name = $processedFileNames;
 
 ### TaskTracking Module
 7. `src/TaskTracking/Views/task-show.blade.php` - Fixed task attachment display
+
+### Missing Relationship Loading
+8. `src/Grievance/Controllers/GrievanceDetailController.php` - Added files relationship loading
+9. `frontend/CustomerPortal/Grievance/Controllers/CustomerGrievanceController.php` - Added files relationship loading
+10. `src/Grievance/Livewire/GrievanceDetailTable.php` - Added files relationship loading
+11. `frontend/CustomerPortal/Grievance/Livewire/CustomerGunasoTable.php` - Added files relationship loading
 
 ## Impact Assessment
 

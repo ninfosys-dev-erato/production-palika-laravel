@@ -51,7 +51,8 @@ class CustomerGrievanceController extends Controller
             'customer',
             'grievanceType.departments',
             'branch',
-            'branches'
+            'branches',
+            'files'
             ])
             ->findOrFail($id);
         $branchTitles = $grievanceDetail->branches->pluck('title');

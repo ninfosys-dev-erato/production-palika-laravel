@@ -37,7 +37,7 @@ class GrievanceDetailTable extends DataTableComponent
     public function builder(): Builder
     {
         $query = GrievanceDetail::query()
-            ->with(['roles', 'grievanceType.branches'])
+            ->with(['roles', 'grievanceType.branches', 'files'])
             ->whereNull(['grievance_detail_id', 'gri_grievance_details.deleted_at']);
 
 

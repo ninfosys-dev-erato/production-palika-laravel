@@ -41,7 +41,8 @@ class GrievanceDetailController extends Controller implements HasMiddleware
             'customer',
             'grievanceType.departments',
             'branch',
-            'branches'
+            'branches',
+            'files'
             ])
             ->findOrFail($id);
             $branchTitle = $grievanceDetail->branches->pluck('title');
