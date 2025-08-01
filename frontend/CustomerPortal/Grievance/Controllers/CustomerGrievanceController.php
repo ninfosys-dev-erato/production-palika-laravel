@@ -55,6 +55,11 @@ class CustomerGrievanceController extends Controller
             'files'
             ])
             ->findOrFail($id);
+            
+        // Process file paths using the service
+        $grievanceService = new \Src\Grievance\Service\GrievanceService();
+        $grievanceService->attachImagePaths(collect([$grievanceDetail]), config('src.Grievance.grievance.path'));
+        
         $branchTitles = $grievanceDetail->branches->pluck('title');
 
         $users = User::pluck('name', 'id')->toArray();

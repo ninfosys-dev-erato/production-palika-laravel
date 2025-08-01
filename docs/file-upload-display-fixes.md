@@ -117,6 +117,18 @@ $file->file_name = $processedFileNames;
 - Added missing `files` relationship loading in controllers and Livewire components
 - Ensures files are properly loaded and available for display
 
+### 7. **Fixed File Processing in Controllers**
+
+**Files Updated:**
+- `src/Grievance/Controllers/GrievanceDetailController.php` - Added file processing using GrievanceService
+- `frontend/CustomerPortal/Grievance/Controllers/CustomerGrievanceController.php` - Added file processing using GrievanceService
+- `src/Grievance/Views/grievanceDetail-show.blade.php` - Simplified file URL generation
+
+**Key Changes:**
+- Controllers now use `GrievanceService::attachImagePaths()` to process file URLs
+- File URLs are properly generated for both images and other file types
+- Simplified view logic since file processing is handled by the service
+
 ## File Type Handling Standards
 
 ### Supported Image Types
@@ -186,6 +198,11 @@ $file->file_name = $processedFileNames;
 9. `frontend/CustomerPortal/Grievance/Controllers/CustomerGrievanceController.php` - Added files relationship loading
 10. `src/Grievance/Livewire/GrievanceDetailTable.php` - Added files relationship loading
 11. `frontend/CustomerPortal/Grievance/Livewire/CustomerGunasoTable.php` - Added files relationship loading
+
+### File Processing Fixes
+12. `src/Grievance/Controllers/GrievanceDetailController.php` - Added file processing using GrievanceService
+13. `frontend/CustomerPortal/Grievance/Controllers/CustomerGrievanceController.php` - Added file processing using GrievanceService
+14. `src/Grievance/Views/grievanceDetail-show.blade.php` - Simplified file URL generation
 
 ## Impact Assessment
 

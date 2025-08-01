@@ -45,13 +45,18 @@ class GrievanceDetailController extends Controller implements HasMiddleware
             'files'
             ])
             ->findOrFail($id);
-            $branchTitle = $grievanceDetail->branches->pluck('title');
-            $departmentTitles = $grievanceDetail->grievanceType?->departments->pluck('title')->toArray();
-            $branchTitles = collect($branchTitle)
-                ->merge($departmentTitles)
-                ->unique()
-                ->sort()
-                ->values();
+            
+        // Process file paths using the service
+        $grievanceService = new \Src\Grievance\Service\GrievanceService();
+        $grievanceService->attachImagePaths(collect([$grievanceDetail]), config('src.Grievance.grievance.path'));
+        
+        $branchTitle = $grievanceDetail->branches->pluck('title');
+        $departmentTitles = $grievanceDetail->grievanceType?->departments->pluck('title')->toArray();
+        $branchTitles = collect($branchTitle)
+            ->merge($departmentTitles)
+            ->unique()
+            ->sort()
+            ->values();
 
         $users = User::pluck('name', 'id')->toArray();
         return view('Grievance::grievanceDetail-show', compact('grievanceDetail', 'users', 'branchTitles'));

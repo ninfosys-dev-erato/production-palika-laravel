@@ -214,26 +214,10 @@
                                                                                     $fileName,
                                                                                     PATHINFO_EXTENSION,
                                                                                 );
-                                                                                $disk = $grievanceDetail->is_public
-                                                                                    ? 'public'
-                                                                                    : 'private';
-                                                                                
                                                                                 $isImage = in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
                                                                                 
-                                                                                if ($isImage) {
-                                                                                    $fileUrl = customAsset(
-                                                                                        config('src.Grievance.grievance.path'),
-                                                                                        $fileName,
-                                                                                        $disk,
-                                                                                    );
-                                                                                } else {
-                                                                                    $fileUrl = customFileAsset(
-                                                                                        config('src.Grievance.grievance.path'),
-                                                                                        $fileName,
-                                                                                        $disk,
-                                                                                        'tempUrl'
-                                                                                    );
-                                                                                }
+                                                                                // The service has already processed the file URLs
+                                                                                $fileUrl = $fileName;
                                                                             @endphp
 
                                                                             <div style="display: flex; gap: 5px;">
@@ -282,26 +266,10 @@
                                                                                 $file->file_name,
                                                                                 PATHINFO_EXTENSION,
                                                                             );
-                                                                            $disk = $grievanceDetail->is_public
-                                                                                ? 'public'
-                                                                                : 'private';
-                                                                            
                                                                             $isImage = in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
                                                                             
-                                                                            if ($isImage) {
-                                                                                $fileUrl = customAsset(
-                                                                                    config('src.Grievance.grievance.path'),
-                                                                                    $file->file_name,
-                                                                                    $disk,
-                                                                                );
-                                                                            } else {
-                                                                                $fileUrl = customFileAsset(
-                                                                                    config('src.Grievance.grievance.path'),
-                                                                                    $file->file_name,
-                                                                                    $disk,
-                                                                                    'tempUrl'
-                                                                                );
-                                                                            }
+                                                                            // The service has already processed the file URLs
+                                                                            $fileUrl = $file->file_name;
                                                                         @endphp
 
                                                                         @if ($isImage)
