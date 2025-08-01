@@ -212,5 +212,16 @@ return [
     'business_reg_no' => 'business reg no',
     'letter_head_with_campaign_logo' => 'Letter head with campaign logo',
     'business_nature' => 'Business nature',
-
+    'recommendation_template' => 'Recommendation Template',
+    'business_template' => 'Business Template',
+    'recommendation' => 'Recommendation',
+    'business' => 'Business',
+    'select_template_type' => 'Select Template Type',
+    'template_type' => 'Template Type',
+    'delete' => 'Delete',
+    'no_letter_head_samples_found' => 'No letter head samples found',
+    'create_first_letter_head_sample' => 'Create your first letter head sample to get started.',
+    'the_template_type_field_is_required' => 'The template type field is required.',
+    'the_template_type_must_be_a_string' => 'The template type must be a string.',
+    'the_template_type_must_be_a_valid_selection' => 'The template type must be a valid selection.',
 ];

@@ -12,21 +12,21 @@
     </nav>
     <div class="row g-6">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between">
                     {{ __('settings::settings.letter_head_sample_list') }}
-                    @perm('letter_head_sample create')
-                        <div>
+                    <div class="d-flex gap-2">
+                        @perm('letter_head_sample create')
                             <a href="{{ route('admin.letter-head-sample.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('settings::settings.add_letter_head_sample') }}</a>
-                        </div>
-                    @endperm
+                        @endperm
+                    </div>
+                </div>
 
-                </div>
-                <div class="card-body">
-                    <livewire:settings.letter_head_sample_table theme="bootstrap-4" />
-                </div>
             </div>
+            <livewire:settings.letter_head_sample_display />
         </div>
     </div>
+
+
 </x-layout.app>

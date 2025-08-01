@@ -18,7 +18,7 @@ class LetterHeadSampleAdminDto
         return new self(
             name: $letterHeadSample->name,
             content: $letterHeadSample->content,
-            slug: $letterHeadSample->slug,
+            slug: $letterHeadSample->slug->value,
             style: $letterHeadSample->style
         );
     }

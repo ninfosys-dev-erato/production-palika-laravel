@@ -12,11 +12,18 @@
             @enderror
         </div>
         <div class='col-md-12 mb-3'>
-            <label for="name" class="form-label">{{ __('settings::settings.slug') }}</label>
-            <input type="text" id="name" name="slug"
+            <label for="slug" class="form-label">{{ __('settings::settings.slug') }}</label>
+            <select id="slug" name="slug"
                 class="form-control {{ $errors->has('letterHeadSample.slug') ? 'is-invalid' : '' }}"
                 style="{{ $errors->has('letterHeadSample.slug') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
-                wire:model.defer="letterHeadSample.slug" placeholder="{{ __('settings::settings.enter_name') }}">
+                wire:model.defer="letterHeadSample.slug">
+                <option value="">{{ __('settings::settings.select_template_type') }}</option>
+                @foreach ($templateTypes as $value => $label)
+                    <option value="{{ $value }}">
+                        {{ __($label) }}
+                    </option>
+                @endforeach
+            </select>
             @error('letterHeadSample.slug')
                 <div class="text-danger mt-1">{{ $message }}</div>
             @enderror

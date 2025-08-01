@@ -273,7 +273,7 @@
                 <span class="menu-header-text">{{ __('General Settings') }}</span>
             </li>
             <li
-                class="menu-item  {{ \Illuminate\Support\Facades\Route::is('admin.setting.*', 'admin.wards.index') ? 'open' : '' }}">
+                class="menu-item  {{ \Illuminate\Support\Facades\Route::is('admin.setting.*', 'admin.wards.index', 'admin.letter-head-sample.*') ? 'open' : '' }}">
                 <a href="#" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-dock-top"></i>
                     <div data-i18n="Account Settings">{{ __('System Settings') }}</div>
@@ -313,7 +313,7 @@
                         class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.letter-head-sample.*') ? 'active' : '' }}">
                         <a href="{{ route('admin.letter-head-sample.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-video"></i>
-                            <div data-i18n="Videos">{{ __('LetterHead Sample') }}</div>
+                            <div data-i18n="Videos">{{ __('Letter Head') }}</div>
                         </a>
                     </li>
                 </ul>

@@ -53,7 +53,9 @@ class LetterHeadSampleTable extends DataTableComponent
     {
         $columns = [
             Column::make(__('settings::settings.name'), "name")->html()->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('settings::settings.slug'), "slug")->html()->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('settings::settings.slug'), "slug")->label(function ($row, Column $column) {
+                return $row->slug->label();
+            })->html()->sortable()->searchable()->collapseOnTablet(),
         ];
 
         if (can('letter_head_sample_update') || can('letter_head_sample_delete')) {

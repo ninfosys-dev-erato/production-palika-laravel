@@ -8,6 +8,8 @@ use Livewire\Component;
 use Src\Settings\DTO\LetterHeadSampleAdminDto;
 use Src\Settings\Models\LetterHeadSample;
 use Src\Settings\Service\LetterHeadSampleAdminService;
+use Src\Settings\Enums\TemplateEnum;
+use Illuminate\Validation\Rule;
 
 class LetterHeadSampleForm extends Component
 {
@@ -15,13 +17,17 @@ class LetterHeadSampleForm extends Component
 
     public ?LetterHeadSample $letterHeadSample;
     public ?Action $action;
-
+    public $templateTypes;
     public function rules(): array
     {
         return [
             'letterHeadSample.name' => ['required', 'string', 'max:255'],
             'letterHeadSample.content' => ['required', 'string'],
-            'letterHeadSample.slug' => ['required', 'string', 'max:255'],
+            'letterHeadSample.slug' => [
+                'required',
+
+                Rule::unique('mst_letter_head_samples', 'slug')->ignore($this->letterHeadSample->id),
+            ],
             'letterHeadSample.style' => ['nullable', 'string'],
         ];
     }
@@ -34,9 +40,9 @@ class LetterHeadSampleForm extends Component
             'letterHeadSample.name.max' => __('settings::settings.the_name_may_not_be_greater_than_255_characters'),
             'letterHeadSample.content.required' => __('settings::settings.the_content_field_is_required'),
             'letterHeadSample.content.string' => __('settings::settings.the_content_must_be_a_string'),
-            'letterHeadSample.slug.required' => __('settings::settings.the_slug_field_is_required'),
-            'letterHeadSample.slug.string' => __('settings::settings.the_slug_must_be_a_string'),
-            'letterHeadSample.slug.max' => __('settings::settings.the_slug_may_not_be_greater_than_255_characters'),
+            'letterHeadSample.slug.required' => __('settings::settings.the_template_type_field_is_required'),
+            'letterHeadSample.slug.string' => __('settings::settings.the_template_type_must_be_a_string'),
+            'letterHeadSample.slug.in' => __('settings::settings.the_template_type_must_be_a_valid_selection'),
             'letterHeadSample.style.string' => __('settings::settings.the_style_must_be_a_string'),
         ];
     }
@@ -49,6 +55,7 @@ class LetterHeadSampleForm extends Component
     public function mount(LetterHeadSample $letterHeadSample, Action $action): void
     {
         $this->letterHeadSample = $letterHeadSample;
+        $this->templateTypes = TemplateEnum::getForWeb();
         $this->action = $action;
     }
 

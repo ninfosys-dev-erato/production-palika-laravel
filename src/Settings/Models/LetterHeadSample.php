@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Settings\Enums\TemplateEnum;
 
 class LetterHeadSample extends Model
 {
@@ -22,16 +23,18 @@ class LetterHeadSample extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'deleted_at',
     ];
 
     protected $casts = [
         'name' => 'string',
-        'slug' => 'string',
+        'slug' => TemplateEnum::class,
         'content' => 'string',
         'style' => 'string',
         'created_by' => 'integer',
         'updated_by' => 'integer',
         'deleted_by' => 'integer',
+        'deleted_at' => 'datetime',
     ];
 
 
