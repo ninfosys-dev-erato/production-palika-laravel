@@ -55,7 +55,6 @@ class MapApplyAdminController extends Controller
         $organization = $mapApplyDetail?->organization;
 
         return view('Ebps::map-applies.map-applies-show')->with(compact('mapApply', 'documents', 'organization'));
-
     }
 
     function moveForward(int $id)
@@ -107,28 +106,27 @@ class MapApplyAdminController extends Controller
         return view('Ebps::map-applies.map-applies-print', compact('mapStep', 'mapApply'));
     }
 
-public function print($id)
-{
-    try {
-        $mapApply = MapApply::with([
-            'fiscalYear',
-            'landDetail.fourBoundaries',
-            'landDetail.localBody',
-            'constructionType'
-        ])->find($id);
+    public function print($id)
+    {
+        try {
+            $mapApply = MapApply::with([
+                'fiscalYear',
+                'landDetail.fourBoundaries',
+                'landDetail.localBody',
+                'constructionType'
+            ])->find($id);
 
-        // dd($mapApply); // <-- Dump and exit
+            // dd($mapApply); // <-- Dump and exit
 
-        $pdf = PDF::loadView('ebps.map_apply', compact('mapApply'));
-        return $pdf->download('application-form.pdf');
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
+            $pdf = PDF::loadView('ebps.map_apply', compact('mapApply'));
+            return $pdf->download('application-form.pdf');
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-}
 
     public function previewMapStep(MapApplyStep $mapApplyStep)
     {
         return view('Ebps::map-applies.map-applies-preview', compact('mapApplyStep'));
     }
-
 }

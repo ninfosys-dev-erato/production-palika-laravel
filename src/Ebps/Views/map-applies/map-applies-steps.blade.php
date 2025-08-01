@@ -158,7 +158,7 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status != 'accepted' && $canApply)
+                                                    @if ($status != 'accepted')
                                                         <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}

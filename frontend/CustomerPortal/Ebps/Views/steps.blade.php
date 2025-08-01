@@ -136,7 +136,7 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status != 'accepted' && $canApply && $mapStep->form_submitter === 'house_owner')
+                                                    @if ($status != 'accepted' && $mapStep->form_submitter === 'house_owner')
                                                         <a href="{{ route('customer.ebps.apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}

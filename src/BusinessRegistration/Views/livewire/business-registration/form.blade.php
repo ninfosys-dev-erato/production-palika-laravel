@@ -513,21 +513,6 @@
                                     </div>
 
 
-                                    <!-- Registration Number -->
-                                    {{-- <div class="col-md-6">
-                                        <label for="registration_number" class="form-label-peaceful">
-                                            {{ __('businessregistration::businessregistration.registration_number') }}
-
-                                        </label>
-                                        <input wire:model="businessRegistration.registration_number"
-                                            name="registration_number" type="text" class="form-control"
-                                            id="registration_number"
-                                            placeholder="{{ __('businessregistration::businessregistration.enter_registration_number') }}">
-                                        @error('businessRegistration.registration_number')
-                                            <div class="invalid-message">{{ $message }}</div>
-                                        @enderror
-                                    </div> --}}
-
                                     <div class="col-md-6">
                                         <label for="registration_number" class="form-label-peaceful">
                                             {{ __('businessregistration::businessregistration.registration_number') }}

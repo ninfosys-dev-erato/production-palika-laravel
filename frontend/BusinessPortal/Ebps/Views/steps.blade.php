@@ -135,7 +135,7 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status != 'accepted' && $canApply && $mapStep->form_submitter !== 'municipality')
+                                                    @if ($status != 'accepted' && $mapStep->form_submitter !== 'municipality')
                                                         <a href="{{ route('organization.ebps.map_apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
@@ -259,7 +259,7 @@
                                                         {{ $isDisabled ? 'बन्द' : $status }}
                                                     </span>
                                                 </div>
-                                               
+
                                                 @php
 
                                                     $submitterEnum = Src\Ebps\Enums\FormSubmitterEnum::tryFrom(

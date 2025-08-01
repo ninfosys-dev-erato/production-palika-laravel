@@ -67,7 +67,7 @@ class MapApplyForm extends Component
     public $ownerships;
     public $fourBoundaries = [];
     public bool $is_boundary = false;
-    public $issuedDistricts= [];
+    public $issuedDistricts = [];
     public $houseOwnerProvinces = [];
     public $houseOwnerDistricts = [];
     public $houseOwnerLocalBodies = [];
@@ -132,17 +132,17 @@ class MapApplyForm extends Component
         return $rules;
     }
 
-    public function render(){
+    public function render()
+    {
         return view("Ebps::livewire.map-applies.map-applies-form");
     }
 
-     #[On('search-user')]
+    #[On('search-user')]
     public function restructureData(array $result)
-    {       
-        if($result['type'] === 'Customer')
-        {
+    {
+        if ($result['type'] === 'Customer') {
             $customer = Customer::with('kyc')->where('id', $result['id'])->first();
-            
+
             $this->houseOwnerDetail->owner_name = $customer->name;
             $this->houseOwnerDetail->mobile_no = $customer->mobile_no;
             $this->houseOwnerDetail->father_name = $customer->kyc->father_name;
@@ -157,20 +157,18 @@ class MapApplyForm extends Component
             $this->houseOwnerDetail->tole = $customer->kyc->permanent_tole;
             $this->getHouseOwnerDistricts();
             $this->getHouseOwnerLocalBodies();
-            $this->getHouseOwnerWards();          
+            $this->getHouseOwnerWards();
+        } else {
 
-        }else{
-           
             $this->houseOwnerDetail->owner_name = $result['name'];
             $this->houseOwnerDetail->mobile_no = $result['mobile_no'];
         }
-
     }
 
     public function getHouseOwnerDistricts(): void
     {
         $this->houseOwnerDistricts = getDistricts($this->houseOwnerDetail['province_id'])->pluck('title', 'id')->toArray();
-     
+
         $this->houseOwnerLocalBodies = [];
         $this->houseOwnerWards = [];
     }
@@ -186,11 +184,11 @@ class MapApplyForm extends Component
         $houseOwnerLocalBody = LocalBody::find($this->houseOwnerDetail['local_body_id']);
         $this->houseOwnerWards = $houseOwnerLocalBody ? getWards($houseOwnerLocalBody->wards) : [];
     }
-   
+
     public function loadWards(): void
-    {  
+    {
         $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
-        
+
         if ($localBody) {
             $this->wards = getWards($localBody->wards);
         } else {
@@ -198,7 +196,7 @@ class MapApplyForm extends Component
         }
     }
 
-   
+
     public function addFourBoundaries()
     {
         $this->fourBoundaries[] = [
@@ -214,8 +212,7 @@ class MapApplyForm extends Component
         unset($this->fourBoundaries[$index]);
         $this->fourBoundaries = array_values($this->fourBoundaries);
 
-        if($index == 0)
-        {
+        if ($index == 0) {
             $this->is_boundary = !$this->is_boundary;
         }
     }
@@ -225,7 +222,7 @@ class MapApplyForm extends Component
         $this->landDetails = CustomerLandDetail::where('customer_id', $this->customer_id)->get() ?? [];
     }
 
-    public function mount(MapApply $mapApply,Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail,  MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
+    public function mount(MapApply $mapApply, Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail,  MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
     {
         $this->customerLandDetail = $customerLandDetail;
         $this->usageOptions = PurposeOfConstructionEnum::cases();
@@ -242,7 +239,7 @@ class MapApplyForm extends Component
 
         $this->organizations  = Organization::whereNull('deleted_at')->get();
         $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
-       
+
         // $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
         $this->ownerships = LandOwernshipEnum::cases();
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
@@ -250,7 +247,7 @@ class MapApplyForm extends Component
         $this->organizationDetail = $organizationDetail;
 
         $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::MAP_APPLIES)->get();
-        $this->options=DocumentStatusEnum::getForWeb();
+        $this->options = DocumentStatusEnum::getForWeb();
         $this->documents = [];
 
         if ($this->action === Action::UPDATE) {
@@ -258,37 +255,38 @@ class MapApplyForm extends Component
             $this->uploadedImage = $this->mapApply->signature;
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
 
-            
+
             $this->houseOwnerDetail = HouseOwnerDetail::where('id', $this->mapApply->house_owner_id)->first();
             $this->houseOwnerPhoto = $this->houseOwnerDetail->photo;
             $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->whereNotNull('map_document_id')->get();
             $this->documents = DocumentFile::where(
-                'map_apply_id', $this->mapApply->id)->whereNull('map_document_id')->get()->map(function ($document) {
+                'map_apply_id',
+                $this->mapApply->id
+            )->whereNull('map_document_id')->get()->map(function ($document) {
                 return array_merge($document->toArray(), [
                     'url' => $document->url,
                 ]);
             })
-            ->toArray();
+                ->toArray();
             $this->mapApplyDetail = MapApplyDetail::where('map_apply_id', $this->mapApply->id)->first() ?? new MapApplyDetail();
 
-                $this->getHouseOwnerDistricts();
-                $this->getHouseOwnerLocalBodies();
-                $this->getHouseOwnerWards();
-               
-    
+            $this->getHouseOwnerDistricts();
+            $this->getHouseOwnerLocalBodies();
+            $this->getHouseOwnerWards();
 
-        foreach ($storedDocuments as $index => $document) {
-            $this->uploadedFiles[$index] = $document->file;
-            $this->mapDocuments[$index] = ['title' => $document->title];
-        }
+
+
+            foreach ($storedDocuments as $index => $document) {
+                $this->uploadedFiles[$index] = $document->file;
+                $this->mapDocuments[$index] = ['title' => $document->title];
+            }
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
-             $this->loadWards();
+            $this->loadWards();
             $this->loadFourBoundaries($this->customerLandDetail);
         }
-
     }
 
-     public function updated($propertyName,$value)
+    public function updated($propertyName, $value)
     {
         // Check if the property being updated is a file input
         if (preg_match('/^documents\.\d+\.document$/', $propertyName)) {
@@ -301,39 +299,40 @@ class MapApplyForm extends Component
     public function fileUpload($index)
     {
         $save = FileFacade::saveFile(
-            path:config('src.Ebps.ebps.path'),
-            file:$this->documents[$index]['document'],
-            disk:"local",
-            filename:""
+            path: config('src.Ebps.ebps.path'),
+            file: $this->documents[$index]['document'],
+            disk: "local",
+            filename: ""
         );
         $this->documents[$index]['document'] = $save;
         $this->documents[$index]['document_status'] = DocumentStatusEnum::UPLOADED;
         $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
-            path:config('src.Ebps.ebps.path'),
-            filename:$save,
-            disk:'local'
+            path: config('src.Ebps.ebps.path'),
+            filename: $save,
+            disk: 'local'
         );
-       
+
         $this->documents = array_values($this->documents);
     }
 
 
-      public function addDocument(): void
+    public function addDocument(): void
     {
-        $this->documents[]=[
-            'document_name'=>null,
-            'document_status'=>null,
-            'document'=>null,
+        $this->documents[] = [
+            'document_name' => null,
+            'document_status' => null,
+            'document' => null,
         ];
         $this->successToast(__('ebps::ebps.businessregistrationbusinessregistrationdocument_added_successfully'));
     }
 
-    public function removeDocument(int $index): void{
+    public function removeDocument(int $index): void
+    {
         unset($this->documents[$index]);
         $this->successToast(__('ebps::ebps.businessregistrationbusinessregistrationdocument_successfully_removed'));
     }
 
-     public function loadFourBoundaries($customerLandDetail)
+    public function loadFourBoundaries($customerLandDetail)
     {
         $fourBoundaries = FourBoundary::where('land_detail_id', $customerLandDetail->id)->get();
         $this->fourBoundaries = [];
@@ -360,7 +359,7 @@ class MapApplyForm extends Component
         $houseOwnerDto = HouseOwnerDetailDto::fromLiveWireModel($this->houseOwnerDetail);
         // dd($houseOwnerDto);
         $mapApplyDetailDto = MapApplyDetailAdminDto::fromLiveWireModel($this->mapApplyDetail);
-       
+
         $this->organizationDetail->organization_id = $this->mapApplyDetail->organization_id;
         $organization = Organization::where('id', $this->organizationDetail->organization_id)->first();
         $this->organizationDetail->name = $organization->org_name_ne;
@@ -377,59 +376,58 @@ class MapApplyForm extends Component
         $organizationDetailService = new OrganizationDetailService();
 
         DB::beginTransaction();
-        try{
-        switch ($this->action){
-            case Action::CREATE:
-                $landDetail = $landService->store($landDto);
-               
+        try {
+            switch ($this->action) {
+                case Action::CREATE:
+                    $landDetail = $landService->store($landDto);
+
                     foreach ($this->fourBoundaries as $fourBoundary) {
                         $fourBoundary['land_detail_id'] = $landDetail->id;
                         $boundaryDto = FourBoundaryAdminDto::fromArray($fourBoundary);
                         $fourBoundaryService->store($boundaryDto);
                     }
 
-                $houseOwner = $ownerDetail->store( $houseOwnerDto);
-                $dto->house_owner_id = $houseOwner->id;
-                $dto->land_detail_id = $landDetail->id;
-                $mapApply = $mapApplyService->store($dto);
-                $mapApplyDetailDto->map_apply_id = $mapApply->id;
-                $mapApplyDetailService->store($mapApplyDetailDto);
-                $organizationDetailDto->map_apply_id = $mapApply->id;
-                $organizationDetailService->store($organizationDetailDto);
-                      
-                $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
-                DB::commit();
-                $this->successFlash(__('ebps::ebps.map_apply_created_successfully'));
-                dd('eta ayo ra');
-                return redirect()->route('admin.ebps.map_applies.index');
+                    $houseOwner = $ownerDetail->store($houseOwnerDto);
+                    $dto->house_owner_id = $houseOwner->id;
+                    $dto->land_detail_id = $landDetail->id;
+                    $mapApply = $mapApplyService->store($dto);
+                    $mapApplyDetailDto->map_apply_id = $mapApply->id;
+                    $mapApplyDetailService->store($mapApplyDetailDto);
+                    $organizationDetailDto->map_apply_id = $mapApply->id;
+                    $organizationDetailService->store($organizationDetailDto);
 
-            case Action::UPDATE:
-                $landService->update($this->customerLandDetail,$landDto);
+                    $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
+                    DB::commit();
+                    $this->successFlash(__('ebps::ebps.map_apply_created_successfully'));
+
+                    return redirect()->route('admin.ebps.map_applies.index');
+
+                case Action::UPDATE:
+                    $landService->update($this->customerLandDetail, $landDto);
                     FourBoundary::where('land_detail_id', $this->customerLandDetail->id)->delete();
                     foreach ($this->fourBoundaries as $fourBoundary) {
                         $fourBoundary['land_detail_id'] = $this->customerLandDetail->id;
                         $boundaryDto = FourBoundaryAdminDto::fromArray($fourBoundary);
                         $fourBoundaryService->store($boundaryDto);
                     }
-                $houseOwner = $ownerDetail->update($this->mapApply->houseOwner, $houseOwnerDto);
-                $mapApply = $mapApplyService->update($this->mapApply,$dto);
-                $mapApplyDetailService->update($this->mapApplyDetail, $mapApplyDetailDto);
-                $organizationDetailService->update($this->organizationDetail, $organizationDetailDto);
-                $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
-                DB::commit();
-                $this->successFlash(__('ebps::ebps.map_apply_updated_successfully'));
-                return redirect()->route('admin.ebps.map_applies.index');
-                break;
-            default:
-                return redirect()->route('admin.ebps.map_applies.index');
-                break;
-        }
-        }  catch (\Exception $e) {
+                    $houseOwner = $ownerDetail->update($this->mapApply->houseOwner, $houseOwnerDto);
+                    $mapApply = $mapApplyService->update($this->mapApply, $dto);
+                    $mapApplyDetailService->update($this->mapApplyDetail, $mapApplyDetailDto);
+                    $organizationDetailService->update($this->organizationDetail, $organizationDetailDto);
+                    $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
+                    DB::commit();
+                    $this->successFlash(__('ebps::ebps.map_apply_updated_successfully'));
+                    return redirect()->route('admin.ebps.map_applies.index');
+                    break;
+                default:
+                    return redirect()->route('admin.ebps.map_applies.index');
+                    break;
+            }
+        } catch (\Exception $e) {
             logger($e);
             DB::rollBack();
             $this->errorFlash(__('ebps::ebps.an_error_occurred_during_operation_please_try_again_later'));
         }
-
     }
 
     private function prepareMapApplyData(): void
@@ -446,9 +444,9 @@ class MapApplyForm extends Component
         $this->mapApply->ward_no = $this->houseOwnerDetail->ward_no;
         $this->houseOwnerDetail->ownership_type = OwnershipTypeEnum::HOUSE_OWNER->value;
         $this->houseOwnerDetail->photo = $this->processFiles($this->houseOwnerPhoto);
-        $this->mapApply->signature=  $this->uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ?
+        $this->mapApply->signature =  $this->uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ?
             $this->processFiles($this->uploadedImage)
-                :
+            :
             $this->uploadedImage;
 
         $this->mapApply->fiscal_year_id = FiscalYear::where('year', $this->mapApply->fiscal_year_id)
@@ -470,10 +468,10 @@ class MapApplyForm extends Component
             }
         }
 
-        foreach($documents as $index => $document) {
+        foreach ($documents as $index => $document) {
             if ($document['file']) {
                 $storedPath = $this->processFiles($document['file']);
-            }else{
+            } else {
                 $storedPath = null;
             }
             DocumentFile::create([
@@ -487,10 +485,9 @@ class MapApplyForm extends Component
 
     private function processFiles($file)
     {
-        if($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-        {
-           return FileFacade::saveFile( config('src.Ebps.ebps.path'), "", $file, 'local');
-        }else{
+        if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            return FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, 'local');
+        } else {
             return $file;
         }
     }
@@ -530,6 +527,4 @@ class MapApplyForm extends Component
             'uploadedFiles.*.max' => __('ebps::ebps.each_uploaded_file_must_not_exceed_1mb'),
         ];
     }
-
-
 }
