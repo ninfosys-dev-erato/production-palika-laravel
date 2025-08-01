@@ -32,7 +32,8 @@ $privateSettings = \Src\Settings\Models\SettingGroup::select(
     <li class="menu-item" style="">
         <a href="#" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-checkbox-square"></i>
-            <div data-i18n="{{ __('settings::settings.public_settings') }}">{{ __('settings::settings.public_settings') }} </div>
+            <div data-i18n="{{ __('settings::settings.public_settings') }}">
+                {{ __('settings::settings.public_settings') }} </div>
         </a>
         <ul class="menu-sub">
             @foreach ($publicSettings as $key => $settings)
@@ -50,7 +51,8 @@ $privateSettings = \Src\Settings\Models\SettingGroup::select(
     <li class="menu-item" style="">
         <a href="#" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-checkbox-square"></i>
-            <div data-i18n="{{ __('settings::settings.private_settings') }}">{{ __('settings::settings.private_settings') }} </div>
+            <div data-i18n="{{ __('settings::settings.private_settings') }}">
+                {{ __('settings::settings.private_settings') }} </div>
         </a>
         <ul class="menu-sub">
             @foreach ($privateSettings as $key => $settings)

@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Src\Settings\Controllers\AppSettingController;
 use Src\Settings\Controllers\FormController;
 use Src\Settings\Controllers\LetterHeadController;
+use Src\Settings\Controllers\LetterHeadSampleController;
 use Src\Settings\Controllers\SettingController;
+use Src\Settings\Models\LetterHead;
 
 //Route::middleware(['auth:web'])
 //    ->prefix('admin')
@@ -29,4 +31,10 @@ Route::group(['middleware' => ['auth', 'web'], 'prefix' => 'admin/settings', 'as
     Route::get('/form/template/{id}', [FormController::class, 'template'])->name('form.template')->middleware('permission:form edit');
 
     Route::get('/app-setting', [AppSettingController::class, 'index'])->name('app-setting.index')->middleware('permission:app_setting_access');
+});
+
+Route::group(['middleware' => ['auth', 'web'], 'prefix' => 'admin/settings', 'as' => 'admin.letter-head-sample.'], function () {
+    Route::get('/letter-head-sample', [LetterHeadSampleController::class, 'index'])->name('index');
+    Route::get('/letter-head-sample/create', [LetterHeadSampleController::class, 'create'])->name('create');
+    Route::get('/letter-head-sample/edit/{id}', [LetterHeadSampleController::class, 'edit'])->name('edit');
 });

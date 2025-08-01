@@ -266,7 +266,8 @@
             'admin.setting_groups.*',
             'admin.users.*',
             'admin.roles.*',
-            'admin.permissions.*'))
+            'admin.permissions.*',
+            'admin.letter-head-sample.*'))
         @perm('general_setting access')
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">{{ __('General Settings') }}</span>
@@ -306,6 +307,13 @@
                         <a href="{{ route('admin.wards.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-building-house"></i>
                             <div data-i18n="Form">{{ __('Wards') }}</div>
+                        </a>
+                    </li>
+                    <li
+                        class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.letter-head-sample.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.letter-head-sample.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-video"></i>
+                            <div data-i18n="Videos">{{ __('LetterHead Sample') }}</div>
                         </a>
                     </li>
                 </ul>
