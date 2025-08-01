@@ -515,5 +515,6 @@ return [
     "the_registration_date_is_required" => "दर्ता मिति आवश्यक छ।",
     "the_registration_number_is_required" => "दर्ता नम्बर आवश्यक छ।",
     "do_you_want_to_enter_custom_registration_number?" => "के तपाई आफै दर्ता नम्बर लेख्न चाहनु हुन्छ ?",
-    "search_by_company_name/registration_number" => "कम्पनीको नाम/दर्ता नम्बर द्वारा खोज्नुहोस्"
+    "search_by_company_name/registration_number" => "कम्पनीको नाम/दर्ता नम्बर द्वारा खोज्नुहोस्",
+    "registration_number_already_exists" => "दर्ता नम्बर पहिले छ।",
 ];

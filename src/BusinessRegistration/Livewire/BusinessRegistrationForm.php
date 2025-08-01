@@ -165,7 +165,31 @@ class BusinessRegistrationForm extends Component
             'businessRegistration.registration_category' => ['nullable'],
 
             'businessRegistration.registration_date' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
-            'businessRegistration.registration_number' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
+            // 'businessRegistration.registration_number' => $this->is_previouslyRegistered ? ['required'] : ['nullable'],
+
+            'businessRegistration.registration_number' => [
+                $this->is_previouslyRegistered ? 'required' : 'nullable',
+                'numeric',
+                function ($attribute, $value, $fail) {
+                    if ($this->is_previouslyRegistered && $value) {
+                        $serial = (int) $value;
+                        $padded = str_pad($serial, 6, '0', STR_PAD_LEFT);
+                        $fiscalYear = $this->selectedFiscalYearText;
+                        $fullNumber = $padded . '/' . replaceNumbers($fiscalYear);
+
+                        $exists = BusinessRegistration::where('registration_number', $fullNumber)
+                            ->when($this->businessRegistration?->id, function ($query) {
+                                $query->where('id', '!=', $this->businessRegistration->id);
+                            })
+                            ->whereNull('deleted_at')
+                            ->exists();
+
+                        if ($exists) {
+                            $fail(__('businessregistration::businessregistration.registration_number_already_exists'));
+                        }
+                    }
+                },
+            ],
 
 
             // New fields for business registration
@@ -247,8 +271,6 @@ class BusinessRegistrationForm extends Component
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
         $this->provinces = getProvinces()->pluck('title', 'id')->toArray();
 
-        // $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('status', true)->pluck('title', 'id')->toArray();
-
         $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('action', $businessRegistrationType)->where('status', true)->pluck('title', 'id');
 
 
@@ -270,95 +292,7 @@ class BusinessRegistrationForm extends Component
         }
         if ($this->action == Action::UPDATE && $businessRegistration) {
 
-            if (! $businessRegistration->relationLoaded('applicants')) {
-                $businessRegistration->load('applicants');
-            }
-            if (! $businessRegistration->relationLoaded('requiredBusinessDocs')) {
-                $businessRegistration->load('requiredBusinessDocs');
-            }
-
-            if ($businessRegistration['registration_category'] == RegistrationCategoryEnum::BUSINESS->value) {
-                $this->showRentFields = true;
-            }
-            if (!empty($businessRegistration['registration_number'])) {
-
-                $this->showRegistrationDetailsFields = true;
-
-                [$numberPart, $fiscalPart] = explode('/', $this->businessRegistration['registration_number'], 2);
-
-                $this->businessRegistration['registration_number'] = ltrim($numberPart, '0');
-                $this->selectedFiscalYearText = $fiscalPart;
-            }
-
-            if ($businessRegistration && !empty($businessRegistration->rentagreement)) {
-                $this->businessRegistration['rentagreement'] = $businessRegistration->rentagreement;
-
-                $this->handleFileUpload(
-                    file: $businessRegistration->rentagreement,
-                    field: 'rentagreement',
-                    target: 'businessRegistration'
-                );
-            }
-            $this->personalDetails = $businessRegistration->applicants
-                ->map(function ($applicant) {
-                    $citizenshipFront = $applicant->citizenship_front;
-                    $citizenshipRear = $applicant->citizenship_rear;
-                    return [
-                        'applicant_name' => $applicant->applicant_name,
-                        'gender' => $applicant->gender,
-                        'father_name' => $applicant->father_name,
-                        'grandfather_name' => $applicant->grandfather_name,
-                        'phone' => $applicant->phone,
-                        'email' => $applicant->email,
-                        'citizenship_number' => $applicant->citizenship_number,
-                        'citizenship_issued_date' => $applicant->citizenship_issued_date,
-                        'citizenship_issued_district' => $applicant->citizenship_issued_district,
-                        'applicant_province' => $applicant->applicant_province,
-                        'applicant_district' => $applicant->applicant_district,
-                        'applicant_local_body' => $applicant->applicant_local_body,
-                        'applicant_ward' => $applicant->applicant_ward,
-                        'applicant_tole' => $applicant->applicant_tole,
-                        'applicant_street' => $applicant->applicant_street,
-                        'position' => $applicant->position,
-                        'citizenship_front' => $citizenshipFront,
-                        'citizenship_rear' => $citizenshipRear,
-                        'citizenship_front_url' => $citizenshipFront
-                            ? FileFacade::getTemporaryUrl(
-                                config('src.BusinessRegistration.businessRegistration.registration'),
-                                $citizenshipFront,
-                                'local'
-                            ) : '',
-                        'citizenship_rear_url' => $citizenshipRear
-                            ? FileFacade::getTemporaryUrl(
-                                config('src.BusinessRegistration.businessRegistration.registration'),
-                                $citizenshipRear,
-                                'local'
-                            ) : '',
-                    ];
-                })
-                ->toArray();
-
-            foreach (array_keys($this->personalDetails) as $index) {
-                $this->getApplicantDistricts($index);
-                $this->getApplicantLocalBodies($index);
-                $this->getApplicantWards($index);
-            }
-            $this->getBusinessDistricts();
-            $this->getBusinessLocalBodies();
-            $this->getBusinessWards();
-            $this->data = $businessRegistration->data ?? [];
-
-            // Load existing required business documents
-            if ($businessRegistration->relationLoaded('requiredBusinessDocs')) {
-                foreach ($businessRegistration->requiredBusinessDocs as $doc) {
-                    $this->businessRequiredDoc[$doc->document_field] = $doc->document_filename;
-                    $this->businessRequiredDocUrl[$doc->document_field . '_url'] = FileFacade::getTemporaryUrl(
-                        config('src.BusinessRegistration.businessRegistration.registration'),
-                        $doc->document_filename,
-                        'local'
-                    );
-                }
-            }
+            $this->loadBusinessRegistrationData($this->businessRegistration);
         }
 
         if ($registration && $registration->id) {
@@ -373,6 +307,91 @@ class BusinessRegistrationForm extends Component
             $this->setFields($this->businessRegistration['registration_type_id']);
         }
     }
+
+    protected function loadBusinessRegistrationData($businessRegistration)
+    {
+        $businessRegistration->loadMissing(['applicants', 'requiredBusinessDocs']);
+
+        if ($businessRegistration['registration_category'] == RegistrationCategoryEnum::BUSINESS->value) {
+            $this->showRentFields = true;
+        }
+
+        if (!empty($businessRegistration['registration_number'])) {
+            $this->showRegistrationDetailsFields = true;
+            [$numberPart, $fiscalPart] = explode('/', $businessRegistration['registration_number'], 2);
+            $this->businessRegistration['registration_number'] = ltrim($numberPart, '0');
+            $this->selectedFiscalYearText = $fiscalPart;
+        }
+
+        if (!empty($businessRegistration->rentagreement)) {
+            $this->businessRegistration['rentagreement'] = $businessRegistration->rentagreement;
+            $this->handleFileUpload(
+                file: $businessRegistration->rentagreement,
+                field: 'rentagreement',
+                target: 'businessRegistration'
+            );
+        }
+
+        $this->personalDetails = $businessRegistration->applicants
+            ->map(function ($applicant) {
+                $citizenshipFront = $applicant->citizenship_front;
+                $citizenshipRear = $applicant->citizenship_rear;
+                return [
+                    'applicant_name' => $applicant->applicant_name,
+                    'gender' => $applicant->gender,
+                    'father_name' => $applicant->father_name,
+                    'grandfather_name' => $applicant->grandfather_name,
+                    'phone' => $applicant->phone,
+                    'email' => $applicant->email,
+                    'citizenship_number' => $applicant->citizenship_number,
+                    'citizenship_issued_date' => $applicant->citizenship_issued_date,
+                    'citizenship_issued_district' => $applicant->citizenship_issued_district,
+                    'applicant_province' => $applicant->applicant_province,
+                    'applicant_district' => $applicant->applicant_district,
+                    'applicant_local_body' => $applicant->applicant_local_body,
+                    'applicant_ward' => $applicant->applicant_ward,
+                    'applicant_tole' => $applicant->applicant_tole,
+                    'applicant_street' => $applicant->applicant_street,
+                    'position' => $applicant->position,
+                    'citizenship_front' => $citizenshipFront,
+                    'citizenship_rear' => $citizenshipRear,
+                    'citizenship_front_url' => $citizenshipFront
+                        ? FileFacade::getTemporaryUrl(
+                            config('src.BusinessRegistration.businessRegistration.registration'),
+                            $citizenshipFront,
+                            'local'
+                        ) : '',
+                    'citizenship_rear_url' => $citizenshipRear
+                        ? FileFacade::getTemporaryUrl(
+                            config('src.BusinessRegistration.businessRegistration.registration'),
+                            $citizenshipRear,
+                            'local'
+                        ) : '',
+                ];
+            })
+            ->toArray();
+
+        foreach (array_keys($this->personalDetails) as $index) {
+            $this->getApplicantDistricts($index);
+            $this->getApplicantLocalBodies($index);
+            $this->getApplicantWards($index);
+        }
+
+        $this->getBusinessDistricts();
+        $this->getBusinessLocalBodies();
+        $this->getBusinessWards();
+        $this->data = $businessRegistration->data ?? [];
+
+        foreach ($businessRegistration->requiredBusinessDocs ?? [] as $doc) {
+            $this->businessRequiredDoc[$doc->document_field] = $doc->document_filename;
+            $this->businessRequiredDocUrl[$doc->document_field . '_url'] = FileFacade::getTemporaryUrl(
+                config('src.BusinessRegistration.businessRegistration.registration'),
+                $doc->document_filename,
+                'local'
+            );
+        }
+    }
+
 
     public function preSetBusinessAddress()
     {

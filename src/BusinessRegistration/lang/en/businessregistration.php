@@ -491,6 +491,7 @@ return [
     "the_registration_number_is_required" => "The registration number is required.",
     "do_you_want_to_enter_custom_registration_number?" => "Do you want to enter custom registration number?",
     "search_by_company_name/registration_number" => "Search by company name/registration number",
+    "registration_number_already_exists" => "Registration number already exists.",
 
 
 
