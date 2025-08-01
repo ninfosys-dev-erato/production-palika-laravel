@@ -53,10 +53,10 @@ class ApplyRecommendationTable extends DataTableComponent
 
         $userWardIds = is_array($userWardIds) ? $userWardIds : [$userWardIds];
 
-        if (empty(array_filter($userWardIds))) {
-            $query->where('rec_apply_recommendations.created_by', $user->id);
-            return $query;
-        }
+        // if (empty(array_filter($userWardIds))) {
+        //     $query->where('rec_apply_recommendations.created_by', $user->id);
+        //     return $query;
+        // }
 
         $query->where(function ($subQuery) use ($userDepartmentIds, $userWardIds, $userRoleIds) {
             $subQuery->where(function ($q) use ($userWardIds, $userDepartmentIds) {

@@ -217,7 +217,7 @@ class ApplyRecommendationForm extends Component
         $this->applyRecommendation->fiscal_year_id = $this->fiscal_year_id;
         $this->applyRecommendation->recommendation_id = $this->recommendation_id;
         $this->applyRecommendation->signee_id = $this->selectedSignee ? $this->selectedSignee->id : null;
-        $this->applyRecommendation->signee_type = $this->selectedSignee ?  get_class($this->selectedSignee) : get_class(auth()->user());
+        $this->applyRecommendation->signee_type = $this->selectedSignee ?  get_class($this->selectedSignee) : null;
 
         $customer = $this->applyRecommendation->customer;
         $dto = ApplyRecommendationAdminDto::fromLiveWireModel($this->applyRecommendation);

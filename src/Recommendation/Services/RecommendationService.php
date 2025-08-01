@@ -53,8 +53,7 @@ class RecommendationService
                 'signee_type' => $data->signee_type ?? null,
                 'recommendation_medium' => $data->recommendation_medium ?? null,
                 'fiscal_year_id' => $data->fiscal_year_id ?? null,
-                'created_at_en' => $data->created_at_en ?? null,
-                'created_by' => $data->created_by ?? null
+                'created_at_en' => $data->created_at_en ?? null
             ]);
 
             foreach ($documents as &$document) {
