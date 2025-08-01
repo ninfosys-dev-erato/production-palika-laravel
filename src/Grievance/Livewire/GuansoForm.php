@@ -152,11 +152,23 @@ class GuansoForm extends Component
             $storedDocuments = [];
 
             foreach ($this->uploadedImage as $file) {
-                if($this->is_public == true){
-                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
-                }
-                else{
-                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                $fileExtension = strtolower($file->getClientOriginalExtension());
+                $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                
+                if ($isImage) {
+                    // Use ImageServiceFacade for images
+                    if ($this->is_public == true) {
+                        $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
+                    } else {
+                        $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                    }
+                } else {
+                    // Use FileFacade for other file types (PDF, DOC, etc.)
+                    if ($this->is_public == true) {
+                        $path = uploadToStorage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
+                    } else {
+                        $path = uploadToStorage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                    }
                 }
 
                 $storedDocuments[] = $path;

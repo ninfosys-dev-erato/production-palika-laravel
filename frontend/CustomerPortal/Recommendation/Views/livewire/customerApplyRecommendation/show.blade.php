@@ -22,11 +22,21 @@
                                     @php
                                         $extension = strtolower(pathinfo($fileValue, PATHINFO_EXTENSION));
                                         $isImage = in_array($extension, $imageExtensions);
-                                        $fileUrl = customAsset(
-                                            config('src.Recommendation.recommendation.path'),
-                                            $fileValue,
-                                            'local',
-                                        );
+                                        
+                                        if ($isImage) {
+                                            $fileUrl = customAsset(
+                                                config('src.Recommendation.recommendation.path'),
+                                                $fileValue,
+                                                'local',
+                                            );
+                                        } else {
+                                            $fileUrl = customFileAsset(
+                                                config('src.Recommendation.recommendation.path'),
+                                                $fileValue,
+                                                'local',
+                                                'tempUrl'
+                                            );
+                                        }
                                     @endphp
 
                                     @if ($isImage)
@@ -57,7 +67,6 @@
                                                             class="img-fluid rounded">
                                                     </div>
                                                     <div class="modal-footer">
-
                                                         <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal">{{ __('Close') }}</button>
                                                     </div>

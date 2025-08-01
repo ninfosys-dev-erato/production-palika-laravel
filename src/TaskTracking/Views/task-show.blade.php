@@ -90,21 +90,28 @@
                                     @if ($files && is_array($files))
                                         @foreach ($files as $file)
                                             @php
-                                                $fileUrl = customAsset(
-                                                    config('src.TaskTracking.TaskTracking.path'),
-                                                    $file,
-                                                );
-                                                $pdfUrl = customFileAsset(
-                                                    config('src.TaskTracking.TaskTracking.path'),
-                                                    $file,
-                                                );
                                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                                 $fileName = pathinfo($file, PATHINFO_FILENAME);
+                                                $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                                                
+                                                if ($isImage) {
+                                                    $fileUrl = customAsset(
+                                                        config('src.TaskTracking.TaskTracking.path'),
+                                                        $file,
+                                                    );
+                                                } else {
+                                                    $fileUrl = customFileAsset(
+                                                        config('src.TaskTracking.TaskTracking.path'),
+                                                        $file,
+                                                        'local',
+                                                        'tempUrl'
+                                                    );
+                                                }
                                             @endphp
 
                                             <li class="document-item d-flex align-items-center mb-2 p-2 border rounded"
                                                 style="background-color: #f8f9fa;">
-                                                @if (in_array($extension, ['png', 'jpeg', 'jpg']))
+                                                @if ($isImage)
                                                     <i class="bi bi-image text-primary me-2"></i>
                                                     <a href="{{ $fileUrl }}" target="_blank">
                                                         <p class="text mb-0">{{ 'IMAGE' }} ({{ $extension }})
@@ -112,7 +119,7 @@
                                                     </a>
                                                 @elseif ($extension === 'pdf')
                                                     <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
-                                                    <a href="{{ $pdfUrl }}" target="_blank">
+                                                    <a href="{{ $fileUrl }}" target="_blank">
                                                         <p class="text mb-0">{{ 'PDF' }} ({{ $extension }})
                                                         </p>
                                                     </a>

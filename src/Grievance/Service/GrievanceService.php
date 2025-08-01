@@ -4,6 +4,7 @@ namespace Src\Grievance\Service;
 
 use App\Facades\FileTrackingFacade;
 use App\Facades\ImageServiceFacade;
+use App\Facades\FileFacade;
 use App\Models\User;
 use Domains\CustomerGateway\Grievance\DTO\GrievanceDto;
 use Domains\CustomerGateway\Grievance\Resources\GrievanceTypeResource;
@@ -157,11 +158,28 @@ class GrievanceService
                     $fileNames = is_array($file->file_name) ? $file->file_name : json_decode($file->file_name, true);
 
                     if (is_array($fileNames)) {
-                        if($complaint->is_public == true){
-                            $file->file_name = array_map(fn($name) => ImageServiceFacade::getImage($path, $name), $fileNames);
-                        }else{
-                            $file->file_name = array_map(fn($name) => ImageServiceFacade::getImage($path, $name, getStorageDisk('private')), $fileNames);
+                        $processedFileNames = [];
+                        foreach ($fileNames as $fileName) {
+                            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                            $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                            
+                            if ($isImage) {
+                                // Use ImageServiceFacade for images
+                                if ($complaint->is_public == true) {
+                                    $processedFileNames[] = ImageServiceFacade::getImage($path, $fileName, getStorageDisk('public'));
+                                } else {
+                                    $processedFileNames[] = ImageServiceFacade::getImage($path, $fileName, getStorageDisk('private'));
+                                }
+                            } else {
+                                // Use FileFacade for other file types (PDF, DOC, etc.)
+                                if ($complaint->is_public == true) {
+                                    $processedFileNames[] = FileFacade::getFile($path, $fileName, getStorageDisk('public'));
+                                } else {
+                                    $processedFileNames[] = FileFacade::getFile($path, $fileName, getStorageDisk('private'));
+                                }
+                            }
                         }
+                        $file->file_name = $processedFileNames;
                     }
                 }
             }

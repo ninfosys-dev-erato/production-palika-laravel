@@ -29,11 +29,21 @@
                                     @php
                                         $extension = strtolower(pathinfo($fileValue, PATHINFO_EXTENSION));
                                         $isImage = in_array($extension, $imageExtensions);
-                                        $fileUrl = customAsset(
-                                            config('src.Recommendation.recommendation.path'),
-                                            $fileValue,
-                                            'local',
-                                        );
+                                        
+                                        if ($isImage) {
+                                            $fileUrl = customAsset(
+                                                config('src.Recommendation.recommendation.path'),
+                                                $fileValue,
+                                                'local',
+                                            );
+                                        } else {
+                                            $fileUrl = customFileAsset(
+                                                config('src.Recommendation.recommendation.path'),
+                                                $fileValue,
+                                                'local',
+                                                'tempUrl'
+                                            );
+                                        }
                                     @endphp
 
                                     @if ($isImage)
@@ -88,11 +98,21 @@
                                 @php
                                     $extension = strtolower(pathinfo($field['value'], PATHINFO_EXTENSION));
                                     $isImage = in_array($extension, $imageExtensions);
-                                    $fileUrl = customAsset(
-                                        config('src.Recommendation.recommendation.path'),
-                                        $field['value'],
-                                        'local',
-                                    );
+                                    
+                                    if ($isImage) {
+                                        $fileUrl = customAsset(
+                                            config('src.Recommendation.recommendation.path'),
+                                            $field['value'],
+                                            'local',
+                                        );
+                                    } else {
+                                        $fileUrl = customFileAsset(
+                                            config('src.Recommendation.recommendation.path'),
+                                            $field['value'],
+                                            'local',
+                                            'tempUrl'
+                                        );
+                                    }
                                 @endphp
 
                                 @if ($isImage)
