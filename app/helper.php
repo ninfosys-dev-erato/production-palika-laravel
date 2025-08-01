@@ -1293,7 +1293,22 @@ if (!function_exists('getStorageUrl')) {
             }
 
             // Fallback to temporary URL
-            return $storage->temporaryUrl($key, now()->addMinutes($expiryMinutes));
+            try {
+                return $storage->temporaryUrl($key, now()->addMinutes($expiryMinutes));
+            } catch (\RuntimeException $e) {
+                // If temporary URLs are not supported, try to get a regular URL
+                $driver = $storage->getDriver();
+                
+                if (method_exists($driver, 'url')) {
+                    return $driver->url($key);
+                } else {
+                    Log::warning("Storage driver for disk '{$disk}' does not support URLs or temporary URLs", [
+                        'key' => $key,
+                        'error' => $e->getMessage()
+                    ]);
+                    return null;
+                }
+            }
 
         } catch (\Exception $e) {
             Log::error('Failed to get storage URL', [

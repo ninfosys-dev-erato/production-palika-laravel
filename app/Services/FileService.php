@@ -147,7 +147,22 @@ string $path,
                     }
                     
                     // Generate temporary signed URL for private cloud storage
-                    return Storage::disk($disk)->temporaryUrl($filePath, now()->addMinutes($minutes));
+                    try {
+                        return Storage::disk($disk)->temporaryUrl($filePath, now()->addMinutes($minutes));
+                    } catch (\RuntimeException $e) {
+                        // If temporary URLs are not supported, try to get a regular URL
+                        $driver = Storage::disk($disk)->getDriver();
+                        
+                        if (method_exists($driver, 'url')) {
+                            return $driver->url($filePath);
+                        } else {
+                            Log::warning("Storage driver for disk '{$disk}' does not support URLs or temporary URLs", [
+                                'file_path' => $filePath,
+                                'error' => $e->getMessage()
+                            ]);
+                            return false;
+                        }
+                    }
                     
                 } catch (\Exception $e) {
                     Log::warning("Failed to get cloud URL, falling back to local", [

@@ -192,7 +192,23 @@ class ImageService
         if ($disk === 'public') {
             return Storage::disk($disk)->url($fullPath);
         } else {
-            return Storage::disk($disk)->temporaryUrl($fullPath, now()->addMinutes(3));
+            // Check if the driver supports temporary URLs
+            try {
+                return Storage::disk($disk)->temporaryUrl($fullPath, now()->addMinutes(3));
+            } catch (\RuntimeException $e) {
+                // If temporary URLs are not supported, try to get a regular URL
+                // or use a different approach based on the driver
+                $driver = Storage::disk($disk)->getDriver();
+                
+                if (method_exists($driver, 'url')) {
+                    return $driver->url($fullPath);
+                } else {
+                    // For drivers that don't support URLs, we might need to stream the file
+                    // or use a different approach
+                    \Log::warning("Storage driver for disk '{$disk}' does not support URLs or temporary URLs");
+                    return false;
+                }
+            }
         }
     }
 

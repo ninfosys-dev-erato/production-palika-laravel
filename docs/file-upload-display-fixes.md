@@ -129,6 +129,19 @@ $file->file_name = $processedFileNames;
 - File URLs are properly generated for both images and other file types
 - Simplified view logic since file processing is handled by the service
 
+### 8. **Fixed Storage Driver Compatibility**
+
+**Files Updated:**
+- `app/Services/ImageService.php` - Added error handling for storage drivers that don't support temporary URLs
+- `app/Services/FileService.php` - Added error handling for storage drivers that don't support temporary URLs
+- `app/helper.php` - Added error handling for storage drivers that don't support temporary URLs
+
+**Key Changes:**
+- Added try-catch blocks around `temporaryUrl()` calls
+- Fallback to regular `url()` method when temporary URLs are not supported
+- Proper error logging for unsupported storage drivers
+- Prevents "This driver does not support creating temporary URLs" errors
+
 ## File Type Handling Standards
 
 ### Supported Image Types
@@ -203,6 +216,11 @@ $file->file_name = $processedFileNames;
 12. `src/Grievance/Controllers/GrievanceDetailController.php` - Added file processing using GrievanceService
 13. `frontend/CustomerPortal/Grievance/Controllers/CustomerGrievanceController.php` - Added file processing using GrievanceService
 14. `src/Grievance/Views/grievanceDetail-show.blade.php` - Simplified file URL generation
+
+### Storage Driver Compatibility
+15. `app/Services/ImageService.php` - Added error handling for unsupported temporary URLs
+16. `app/Services/FileService.php` - Added error handling for unsupported temporary URLs
+17. `app/helper.php` - Added error handling for unsupported temporary URLs
 
 ## Impact Assessment
 
