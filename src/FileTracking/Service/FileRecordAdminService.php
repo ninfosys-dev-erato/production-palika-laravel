@@ -48,7 +48,7 @@ class FileRecordAdminService
                     'body' => $fileRecordAdminDto->body,
                     'file' => $fileRecordAdminDto->file,
                     'farsyaut_type' => $fileRecordAdminDto->farsyaut_type ?? null,
-                    'farsyaut_id' => $fileRecordAdminDto->farsyaut_id ?? null,
+                    'farsyaut_id' => is_numeric($fileRecordAdminDto->farsyaut_id) ? (int)$fileRecordAdminDto->farsyaut_id : null,
                     'fiscal_year' => $fileRecordAdminDto->fiscal_year ?? key(getSettingWithKey('fiscal-year')),
                     'created_by' => Auth::id(),
                     'branch_id' => $departmentValue ? $departmentValue : null,
@@ -204,34 +204,6 @@ class FileRecordAdminService
         return $record->reg_no;
     }
 
-    public function update(FileRecord $fileRecord, FileRecordAdminDto $fileRecordAdminDto)
-    {
-        return tap($fileRecord)->update([
-            'reg_no' => $fileRecordAdminDto->reg_no,
-            'subject_type' => $fileRecordAdminDto->subject_type,
-            'subject_id' => $fileRecordAdminDto->subject_id,
-            'updated_at' => date('Y-m-d H:i:s'),
-            'updated_by' => Auth::user()->id,
-            'ward' => $fileRecordAdminDto->ward,
-            'local_body_id' => $fileRecordAdminDto->local_body_id,
-            'departments' => $fileRecordAdminDto->departments,
-            'title' => $fileRecordAdminDto->title,
-            'applicant_name' => $fileRecordAdminDto->applicant_name,
-            'applicant_mobile_no' => $fileRecordAdminDto->applicant_mobile_no,
-            'created_at' => now(),
-            'created_by' => Auth::user()->id,
-            'document_level' => $fileRecordAdminDto->document_level,
-            'recipient_name' => $fileRecordAdminDto->recipient_name,
-            'recipient_position' => $fileRecordAdminDto->recipient_position,
-            'recipient_department' => $fileRecordAdminDto->recipient_department,
-            'signee_name' => $fileRecordAdminDto->signee_name,
-            'signee_position' => $fileRecordAdminDto->signee_position,
-            'signee_department' => $fileRecordAdminDto->signee_department,
-            'sender_medium' => $fileRecordAdminDto->sender_medium,
-            'registration_date' => $fileRecordAdminDto->registration_date ?? null,
-            'received_date' => $fileRecordAdminDto->received_date ?? null
-        ]);
-    }
     public function delete(FileRecord $fileRecord)
     {
         return tap($fileRecord)->update([

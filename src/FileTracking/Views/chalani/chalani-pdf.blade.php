@@ -149,7 +149,7 @@
                     <td>{{ $report->nepali_created_at }}</td>
                     <td>{{ $report->applicant_name ?? 'N/A' }}</td>
                     <td>{{ $report->applicant_mobile_no ?? 'N/A' }}</td>
-                    <td>{{ $report->recipient_name ?? 'N/A' }}</td>
+                    <td>{{ $report->receipent_name ?? 'N/A' }}</td>
                     <td>{{ $report->receipent_position ?? 'N/A' }}</td>
                     <td>{{ $report->signee_name ?? 'N/A' }}</td>
                     <td>{{ $report->signee_position ?? 'N/A' }}</td>

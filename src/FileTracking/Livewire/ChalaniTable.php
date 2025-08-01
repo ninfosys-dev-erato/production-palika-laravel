@@ -77,7 +77,8 @@ class ChalaniTable extends DataTableComponent
             ->whereNull('tbl_file_records.deleted_by')
             ->where('tbl_file_records.is_chalani', true)
             ->whereNotNull('tbl_file_records.reg_no')
-            ->orderByDesc('tbl_file_records.created_at');
+            ->orderByDesc('tbl_file_records.registration_date')
+            ->orderByDesc('tbl_file_records.reg_no');
 
         $user = auth()->user()->fresh();
         $departmentId = GlobalFacade::department();
