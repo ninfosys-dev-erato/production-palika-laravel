@@ -3,8 +3,12 @@
 namespace App\Traits;
 
 use App\Facades\FileFacade;
+use App\Facades\GlobalFacade;
 use Illuminate\Database\Eloquent\Model;
+use Src\Settings\Models\LetterHeadSample;
 use Src\Wards\Models\Ward;
+use Illuminate\Support\Str;
+use Src\Settings\Enums\TemplateEnum;
 
 trait HelperTemplate
 {
@@ -83,7 +87,87 @@ trait HelperTemplate
     HTML;
     }
 
+    function getRecommendationLetterHead(string $regNo, string $fiscalYear, bool $is_darta = true): string
+    {
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Recommendation)->whereNull('deleted_at')->first();
+        if (!$letterHeadSample) {
+            return '';
+        }
+        $label = $is_darta ? 'दर्ता नं.' : 'चलानी नं.';
+        $ward_no = GlobalFacade::ward();
+        $office_name = null;
+        if ($ward_no) {
+            $office_name = Ward::where('id', $ward_no)->value('ward_name_ne');
+        }
+        $office_name = $office_name ?: getSetting('office-name') ?: self::EMPTY_LINES;
 
+        $additionalData = [
+            '{{rec.reg_no}}' => $regNo,
+            '{{rec.fiscal_year}}' => $fiscalYear,
+            '{{rec.label}}' => $label,
+            '{{rec.date}}' => getFormattedBsDate(),
+            '{{rec.office_name}}' => $office_name,
+        ];
+        $globalData = $this->getGlobalData(null);
+        $replacements = array_merge(
+            $additionalData,
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
+
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
+    function getBusinessLetterHeaderFromSample(): string
+    {
+        // Fetch the letter head sample by slug
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Business)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$letterHeadSample) {
+            return '';
+        }
+
+
+        $district = getSetting('palika-district') ?: self::EMPTY_LINES;
+        $province = getSetting('palika-province') ?: self::EMPTY_LINES;
+        $address = trim("{$district}, {$province}, नेपाल", ', ');
+
+
+        $globalData = $this->getGlobalData(null);
+
+
+        $replacements = array_merge(
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+
+        // Add style if available
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
+
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
+    private function sanitizeReplacements(array $replacements): array
+    {
+        return array_map(function ($value) {
+            if (is_null($value) || $value === '') {
+                return ' ';
+            }
+            return $value;
+        }, $replacements);
+    }
     //     function getLetterFooter(
     //         string $document_date = '',
     //         string $copy_no = '1',

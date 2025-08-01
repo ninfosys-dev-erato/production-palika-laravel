@@ -30,8 +30,9 @@ trait BusinessRegistrationTemplate
         $regNo = $fileRecord && $fileRecord->reg_no ? replaceNumbers($fileRecord->reg_no, true) : ' ';
         $this->reg_no = $regNo;
         $globalData = $this->getGlobalData($businessRegistration->approvedBy?->name, $businessRegistration->ward_no, $businessRegistration->id);
-        $letterHeadwithCampaign = $this->getLetterHeader($businessRegistration->ward_no, getFormattedBsDate(), $regNo, true, $businessRegistration?->fiscalYear?->year ?? getSetting('fiscal-year'));
-        $letterHead = $this->getLetterHeaderForBusiness(null, getFormattedBsDate(), $regNo, true, $businessRegistration?->fiscalYear?->year ?? getSetting('fiscal-year'));
+
+
+        $letterHead = $this->getBusinessLetterHeaderFromSample();
         // $letterFoot = $this->getLetterFooter(getFormattedBsDate());
         $businessRegistrationData = $this->resolveBusinessDate($businessRegistration);
 
@@ -39,7 +40,7 @@ trait BusinessRegistrationTemplate
         $customerData = $this->getCustomerData($businessRegistration);
 
         $replacements = array_merge(
-            ['{{global.letter-head}}' => $letterHead, '{{global.letter-head-with-campaign-logo}}' => $letterHeadwithCampaign],
+            ['{{global.letter-head}}' => $letterHead],
 
             $globalData,
             $formData,
