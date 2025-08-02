@@ -14,6 +14,13 @@ class DepartmentSwitcher extends Component
     public function mount()
     {
         $this->ward = GlobalFacade::ward();
+
+        if (!session()->has('department')) {
+            $defaultDepartment = auth()->user()->departments()->first();
+            if ($defaultDepartment) {
+                session(['department' => $defaultDepartment->id]);
+            }
+        }
     }
 
     public function changeDepartment(int $ward)
