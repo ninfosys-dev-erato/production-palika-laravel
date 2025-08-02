@@ -98,17 +98,26 @@ su -s /bin/bash www-data -c "composer dump-autoload --optimize --classmap-author
 
 print_status "✓ Composer autoloader optimized"
 
-# Step 5: Optimize file permissions for performance
-print_status "Step 5: Optimizing file permissions..."
+# Step 5: Optimize file permissions for performance with LIBERAL settings
+print_status "Step 5: Optimizing file permissions with LIBERAL settings..."
 
-# Set aggressive permissions for better performance
+# Set LIBERAL permissions for better performance and to fix upload issues
 chown -R www-data:www-data /var/www/html
 find /var/www/html -type f -exec chmod 644 {} \;
 find /var/www/html -type d -exec chmod 755 {} \;
-chmod -R 775 /var/www/html/storage
-chmod -R 775 /var/www/html/bootstrap/cache
 
-print_status "✓ File permissions optimized"
+# LIBERAL: Set 777 for storage and cache directories to fix upload issues
+chmod -R 777 /var/www/html/storage
+chmod -R 777 /var/www/html/bootstrap/cache
+
+# LIBERAL: Ensure specific storage directories are fully accessible
+chmod -R 777 /var/www/html/storage/app
+chmod -R 777 /var/www/html/storage/logs
+chmod -R 777 /var/www/html/storage/framework
+chmod -R 777 /var/www/html/storage/app/public
+chmod -R 777 /var/www/html/storage/app/private
+
+print_status "✓ LIBERAL file permissions optimized (777 for storage)"
 
 # Step 6: Optimize database connections (if applicable)
 print_status "Step 6: Optimizing database connections..."

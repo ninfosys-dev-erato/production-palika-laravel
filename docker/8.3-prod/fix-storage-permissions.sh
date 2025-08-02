@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Fix Storage Permissions Script
-# Run this inside your container to fix storage permission issues
+# LIBERAL Fix Storage Permissions Script
+# Run this inside your container to fix storage permission issues with very permissive settings
 
 # Colors for output
 RED='\033[0;31m'
@@ -21,7 +21,7 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-print_status "Fixing Laravel storage permissions..."
+print_status "LIBERAL Fixing Laravel storage permissions (777/666)..."
 
 # Ensure all storage directories exist
 print_status "Creating storage directories..."
@@ -33,14 +33,24 @@ mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
 mkdir -p /var/www/html/bootstrap/cache
 
-# Fix ownership and permissions
-print_status "Setting proper ownership and permissions..."
+# LIBERAL: Fix ownership and permissions with maximum permissiveness
+print_status "Setting LIBERAL ownership and permissions (777/666)..."
 chown -R www-data:www-data /var/www/html/storage
 chown -R www-data:www-data /var/www/html/bootstrap/cache
 chown -R www-data:www-data /var/www/html/public
-chmod -R 775 /var/www/html/storage
-chmod -R 775 /var/www/html/bootstrap/cache
+
+# LIBERAL: Set 777 for all directories and 666 for all files
+chmod -R 777 /var/www/html/storage
+chmod -R 777 /var/www/html/bootstrap/cache
 chmod -R 755 /var/www/html/public
+
+# LIBERAL: Ensure specific directories are fully accessible
+print_status "Setting LIBERAL permissions for specific directories..."
+chmod -R 777 /var/www/html/storage/app
+chmod -R 777 /var/www/html/storage/logs
+chmod -R 777 /var/www/html/storage/framework
+chmod -R 777 /var/www/html/storage/app/public
+chmod -R 777 /var/www/html/storage/app/private
 
 # Remove and recreate storage symlink
 print_status "Fixing storage symlink..."
@@ -102,7 +112,7 @@ su -s /bin/bash www-data -c "php artisan view:cache" 2>/dev/null || print_warnin
 print_status "Testing storage access..."
 echo "test" > /var/www/html/storage/app/public/test.txt
 chown www-data:www-data /var/www/html/storage/app/public/test.txt
-chmod 644 /var/www/html/storage/app/public/test.txt
+chmod 666 /var/www/html/storage/app/public/test.txt
 
 if [ -f "/var/www/html/public/storage/test.txt" ]; then
     print_status "✓ Storage symlink is working - test file accessible"
@@ -112,12 +122,23 @@ fi
 
 rm -f /var/www/html/storage/app/public/test.txt
 
-print_status "Storage permissions fix completed!"
+# Final permission verification
+print_status "Final LIBERAL permission verification..."
+print_status "Storage directory permissions: $(ls -ld /var/www/html/storage)"
+print_status "Storage/app permissions: $(ls -ld /var/www/html/storage/app)"
+print_status "Storage/app/public permissions: $(ls -ld /var/www/html/storage/app/public)"
+print_status "Storage/app/private permissions: $(ls -ld /var/www/html/storage/app/private)"
+print_status "Bootstrap cache permissions: $(ls -ld /var/www/html/bootstrap/cache)"
+
+print_status "LIBERAL Storage permissions fix completed!"
 print_status ""
 print_status "Summary:"
-print_status "- Storage directory: /var/www/html/storage (775 permissions, www-data:www-data)"
+print_status "- Storage directory: /var/www/html/storage (777 permissions, www-data:www-data)"
 print_status "- Public directory: /var/www/html/public (755 permissions, www-data:www-data)"
 print_status "- Public symlink: /var/www/html/public/storage -> /var/www/html/storage/app/public"
-print_status "- Bootstrap cache: /var/www/html/bootstrap/cache (775 permissions, www-data:www-data)"
+print_status "- Bootstrap cache: /var/www/html/bootstrap/cache (777 permissions, www-data:www-data)"
 print_status "- Laravel caches cleared and rebuilt"
-print_status "- Service provider issues should be resolved" 
+print_status "- Service provider issues should be resolved"
+print_status ""
+print_warning "⚠️  LIBERAL permissions applied (777/666) - Monitor for security!"
+print_warning "These very permissive settings should fix all upload issues." 

@@ -203,26 +203,26 @@ RUN cd /var/www/html \
     && php artisan route:cache \
     && php artisan view:cache || true
 
-# Security: Set proper ownership after all operations
+# LIBERAL PERMISSIONS - Set very permissive permissions to fix upload issues
 RUN chown -R www-data:www-data /var/www/html \
     && chown -R www-data:www-data /var/lib/nginx \
     && chown -R www-data:www-data /run/php \
     && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache \
+    && chmod -R 777 /var/www/html/storage \
+    && chmod -R 777 /var/www/html/bootstrap/cache \
     && chmod -R 755 /var/lib/nginx
 
 # Create nginx sites-enabled symlink
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Ensure Laravel storage structure is complete
+# Ensure Laravel storage structure is complete with LIBERAL permissions
 RUN mkdir -p /var/www/html/storage/app/public \
     && mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/cache/data \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/views \
     && chown -R www-data:www-data /var/www/html/storage \
-    && chmod -R 775 /var/www/html/storage
+    && chmod -R 777 /var/www/html/storage
 
 
 

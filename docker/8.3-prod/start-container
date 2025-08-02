@@ -84,8 +84,8 @@ EOF
         print_warning "Database variables not set, skipping connectivity check"
     fi
     
-    # Ensure Laravel storage directories exist and have proper permissions
-    print_status "Setting up Laravel storage directories..."
+    # LIBERAL STORAGE PERMISSIONS SETUP - FIX FOR 500 ERRORS
+    print_status "Setting up Laravel storage directories with LIBERAL permissions..."
     mkdir -p /var/www/html/storage/logs 2>/dev/null || true
     mkdir -p /var/www/html/storage/app/public 2>/dev/null || true
     mkdir -p /var/www/html/storage/app/private 2>/dev/null || true
@@ -94,46 +94,34 @@ EOF
     mkdir -p /var/www/html/storage/framework/views 2>/dev/null || true
     mkdir -p /var/www/html/bootstrap/cache 2>/dev/null || true
     
-    # Set proper permissions for all storage directories
-    print_status "Setting storage permissions..."
+    # LIBERAL PERMISSIONS - Make everything writable to fix upload issues
+    print_status "Applying LIBERAL storage permissions to fix 500 errors..."
     
-    # Handle permission issues more gracefully
-    print_status "Fixing storage directory permissions..."
-    
-    # First, ensure we can access the storage directory
-    if [ ! -r "/var/www/html/storage" ]; then
-        print_warning "Cannot read storage directory, attempting to fix permissions..."
-        chmod -R 755 /var/www/html/storage 2>/dev/null || true
-    fi
-    
-    # Set ownership with error handling
-    print_status "Setting ownership..."
-    find /var/www/html/storage -type d -exec chmod 755 {} \; 2>/dev/null || true
-    find /var/www/html/storage -type f -exec chmod 644 {} \; 2>/dev/null || true
-    
-    # Try to set ownership, but don't fail if we can't
-    chown -R www-data:www-data /var/www/html/storage 2>/dev/null || {
-        print_warning "Could not set ownership to www-data, trying alternative approach..."
-        # If we can't change ownership, at least make it writable
-        chmod -R 777 /var/www/html/storage 2>/dev/null || true
-    }
-    
+    # Set ownership to www-data first
+    chown -R www-data:www-data /var/www/html/storage 2>/dev/null || true
     chown -R www-data:www-data /var/www/html/bootstrap/cache 2>/dev/null || true
     chown -R www-data:www-data /var/www/html/public 2>/dev/null || true
     
-    # Set permissions
-    chmod -R 775 /var/www/html/storage 2>/dev/null || true
-    chmod -R 775 /var/www/html/bootstrap/cache 2>/dev/null || true
-    chmod -R 755 /var/www/html/public 2>/dev/null || true
+    # LIBERAL: Make all storage directories fully writable (777 for directories)
+    print_status "Setting LIBERAL directory permissions (777) for storage..."
+    find /var/www/html/storage -type d -exec chmod 777 {} \; 2>/dev/null || true
+    find /var/www/html/bootstrap/cache -type d -exec chmod 777 {} \; 2>/dev/null || true
+    
+    # LIBERAL: Make all storage files writable (666 for files)
+    print_status "Setting LIBERAL file permissions (666) for storage..."
+    find /var/www/html/storage -type f -exec chmod 666 {} \; 2>/dev/null || true
+    find /var/www/html/bootstrap/cache -type f -exec chmod 666 {} \; 2>/dev/null || true
+    
+    # LIBERAL: Ensure specific directories are fully accessible
+    chmod -R 777 /var/www/html/storage/app 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/logs 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/framework 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/app/public 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/app/private 2>/dev/null || true
     
     # Add root to www-data group for easier debugging access
     print_status "Setting up debugging access..."
     usermod -a -G www-data root 2>/dev/null || true
-    
-    # Make all storage subdirectories accessible for debugging while maintaining security
-    chmod -R 775 /var/www/html/storage/app 2>/dev/null || true
-    chmod -R 775 /var/www/html/storage/logs 2>/dev/null || true
-    chmod -R 775 /var/www/html/storage/framework 2>/dev/null || true
     
     # Create storage symlink for Laravel
     print_status "Creating storage symlink..."
@@ -238,9 +226,16 @@ EOF
         cd /var/www/html && /usr/local/bin/fix-storage-routes
     fi
     
+    # Final permission check and fix
+    print_status "Final permission verification..."
+    print_status "Storage directory permissions: $(ls -ld /var/www/html/storage)"
+    print_status "Storage/app permissions: $(ls -ld /var/www/html/storage/app)"
+    print_status "Storage/app/public permissions: $(ls -ld /var/www/html/storage/app/public)"
+    print_status "Storage/app/private permissions: $(ls -ld /var/www/html/storage/app/private)"
+    
     # Start services
     print_status "Starting services..."
-    print_status "Laravel application container is ready!"
+    print_status "Laravel application container is ready with LIBERAL permissions!"
     
     # Start supervisor to manage nginx, php-fpm, cron and log rotation
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
