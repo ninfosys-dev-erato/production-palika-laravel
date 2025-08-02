@@ -127,6 +127,8 @@ COPY docker/8.3-prod/debug-access.sh /usr/local/bin/debug-access
 COPY docker/8.3-prod/fix-storage-routes.sh /usr/local/bin/fix-storage-routes
 COPY docker/8.3-prod/test-storage-access.sh /usr/local/bin/test-storage-access
 COPY docker/8.3-prod/fix-oauth-keys.sh /usr/local/bin/fix-oauth-keys
+COPY docker/8.3-prod/aggressive-performance-optimize.sh /usr/local/bin/aggressive-performance-optimize
+COPY docker/8.3-prod/performance-test.sh /usr/local/bin/performance-test
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
@@ -139,7 +141,9 @@ RUN chmod +x /usr/local/bin/start-container \
     && chmod +x /usr/local/bin/debug-access \
     && chmod +x /usr/local/bin/fix-storage-routes \
     && chmod +x /usr/local/bin/test-storage-access \
-    && chmod +x /usr/local/bin/fix-oauth-keys
+    && chmod +x /usr/local/bin/fix-oauth-keys \
+    && chmod +x /usr/local/bin/aggressive-performance-optimize \
+    && chmod +x /usr/local/bin/performance-test
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/
