@@ -12,8 +12,8 @@ class RegisterTokenAdminController extends Controller
     public function __construct()
     {
         //$this->middleware('permission:register_tokens view')->only('index');
-        //$this->middleware('permission:register_tokens edit')->only('edit');
-        //$this->middleware('permission:register_tokens create')->only('create');
+        //$this->middleware('permission:register_fms_tokens edit')->only('edit');
+        //$this->middleware('permission:register_fms_tokens create')->only('create');
     }
 
     function index(Request $request)
