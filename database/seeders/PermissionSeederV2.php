@@ -189,18 +189,18 @@ class PermissionSeederV2 extends Seeder
             // -------------------
             // FUEL SETTINGS MODULE
             // -------------------
-            ['name' => 'vehicles create', 'guard' => 'web'],
-            ['name' => 'vehicles edit', 'guard' => 'web'],
-            ['name' => 'vehicles delete', 'guard' => 'web'],
+            ['name' => 'fms_vehicles create', 'guard' => 'web'],
+            ['name' => 'fms_vehicles edit', 'guard' => 'web'],
+            ['name' => 'fms_vehicles delete', 'guard' => 'web'],
             ['name' => 'fuel_settings create', 'guard' => 'web'],
             ['name' => 'fuel_settings edit', 'guard' => 'web'],
             ['name' => 'fuel_settings delete', 'guard' => 'web'],
-            ['name' => 'vehicle_categories create', 'guard' => 'web'],
-            ['name' => 'vehicle_categories edit', 'guard' => 'web'],
-            ['name' => 'vehicle_categories delete', 'guard' => 'web'],
-            ['name' => 'tokens create', 'guard' => 'web'],
-            ['name' => 'tokens edit', 'guard' => 'web'],
-            ['name' => 'tokens delete', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories create', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories edit', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories delete', 'guard' => 'web'],
+            ['name' => 'fms_tokens create', 'guard' => 'web'],
+            ['name' => 'fms_tokens edit', 'guard' => 'web'],
+            ['name' => 'fms_tokens delete', 'guard' => 'web'],
 
             // -------------------
             // GRIEVANCE MODULE
@@ -211,7 +211,7 @@ class PermissionSeederV2 extends Seeder
             ['name' => 'grievance_setting create', 'guard' => 'web'],
             ['name' => 'grievance_setting delete', 'guard' => 'web'],
             ['name' => 'grievance_setting edit', 'guard' => 'web'],
-            ['name' => 'grievance_setting_update', 'guard' => 'web'],
+            ['name' => 'grievance_setting edit', 'guard' => 'web'],
 
             // -------------------
             // LOCAL BODIES MODULE
@@ -332,7 +332,7 @@ class PermissionSeederV2 extends Seeder
             ['name' => 'roles create', 'guard' => 'web'],
             ['name' => 'roles delete', 'guard' => 'web'],
             ['name' => 'roles manage', 'guard' => 'web'],
-            ['name' => 'roles_update', 'guard' => 'web'],
+            ['name' => 'roles update', 'guard' => 'web'],
             // ['name' => 'roles edit', 'guard' => 'web'],  // Not used in Roles module code
 
             // -------------------
@@ -375,9 +375,9 @@ class PermissionSeederV2 extends Seeder
             ['name' => 'register_token_logs delete', 'guard' => 'web'],
             ['name' => 'register_token_logs edit', 'guard' => 'web'],
             ['name' => 'register_tokens access', 'guard' => 'web'],
-            ['name' => 'register_tokens create', 'guard' => 'web'],
-            ['name' => 'register_tokens delete', 'guard' => 'web'],
-            ['name' => 'register_tokens edit', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens create', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens delete', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens edit', 'guard' => 'web'],
             ['name' => 'register_tokens exitTime', 'guard' => 'web'],
             ['name' => 'token_holders create', 'guard' => 'web'],
             ['name' => 'token_holders delete', 'guard' => 'web'],

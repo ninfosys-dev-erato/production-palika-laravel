@@ -14,7 +14,7 @@
     </div>
 
     <div class="d-flex mt-3 gap-2">
-        @perm('grievance_setting_update')
+        @perm('grievance_setting edit')
             <button type="submit" class="btn btn-primary"
                 wire:loading.attr="disabled">{{ __('grievance::grievance.save') }}</button>
         @endperm
