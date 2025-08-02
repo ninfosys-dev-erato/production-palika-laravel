@@ -26,7 +26,9 @@ class LetterHeadSampleForm extends Component
             'letterHeadSample.slug' => [
                 'required',
 
-                Rule::unique('mst_letter_head_samples', 'slug')->ignore($this->letterHeadSample->id),
+                Rule::unique('mst_letter_head_samples', 'slug')
+                    ->ignore($this->letterHeadSample->id)
+                    ->whereNull('deleted_at'),
             ],
             'letterHeadSample.style' => ['nullable', 'string'],
         ];
@@ -56,6 +58,7 @@ class LetterHeadSampleForm extends Component
     {
         $this->letterHeadSample = $letterHeadSample;
         $this->templateTypes = TemplateEnum::getForWeb();
+
         $this->action = $action;
     }
 

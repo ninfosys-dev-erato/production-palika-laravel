@@ -96,10 +96,19 @@ trait HelperTemplate
         $label = $is_darta ? 'दर्ता नं.' : 'चलानी नं.';
         $ward_no = GlobalFacade::ward();
         $office_name = null;
+        $office_name_en = null;
+        $ward_name = null;
+        $ward_name_en = null;
+        $ward_location = null;
         if ($ward_no) {
             $office_name = Ward::where('id', $ward_no)->value('ward_name_ne');
+            $office_name_en = Ward::where('id', $ward_no)->value('ward_name_en');
+            $ward_name = Ward::where('id', $ward_no)->value('address_ne');
+            $ward_name_en = Ward::where('id', $ward_no)->value('address_en');
+            $ward_location = Ward::where('id', $ward_no)->value('plus_code_location');
         }
         $office_name = $office_name ?: getSetting('office-name') ?: self::EMPTY_LINES;
+        $office_name_en = $office_name_en ?: getSetting('office-name-en') ?: self::EMPTY_LINES;
 
         $additionalData = [
             '{{rec.reg_no}}' => $regNo,
@@ -107,6 +116,10 @@ trait HelperTemplate
             '{{rec.label}}' => $label,
             '{{rec.date}}' => getFormattedBsDate(),
             '{{rec.office_name}}' => $office_name,
+            '{{rec.office_name_en}}' => $office_name_en,
+            '{{rec.ward_name}}' => $ward_name,
+            '{{rec.ward_name_en}}' => $ward_name_en,
+            '{{rec.ward_location}}' => $ward_location,
         ];
         $globalData = $this->getGlobalData(null);
         $replacements = array_merge(
@@ -153,6 +166,39 @@ trait HelperTemplate
         // Add style if available
         $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
 
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
+    function getFooter(): string
+    {
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Footer)->whereNull('deleted_at')->first();
+        if (!$letterHeadSample) {
+            return '';
+        }
+
+        $ward_no = GlobalFacade::ward();
+
+        $ward = $ward_no ? Ward::find($ward_no) : null;
+
+        $additionalData = [
+            '{{rec.ward_email}}' => $ward?->email ?? '',
+            '{{rec.ward_chairperson_no}}' => $ward?->ward_chairperson_no ?? '',
+            '{{rec.ward_secretary_no}}' => $ward?->ward_secretary_no ?? '',
+            '{{rec.ward_social}}' => $ward?->ward_social ?? '',
+        ];
+
+        $globalData = $this->getGlobalData(null);
+
+        $replacements = array_merge(
+            $additionalData,
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
         return <<<HTML
         {$style}
         {$content}
@@ -292,7 +338,9 @@ trait HelperTemplate
         $acceptorName = $signee ?? self::EMPTY_LINES;
         return [
             '{{global.province}}' => getSetting('palika-province') ?? self::EMPTY_LINES,
+            '{{global.province_en}}' => getSetting('palika-province-eng') ?? self::EMPTY_LINES,
             '{{global.district}}' => getSetting('palika-district') ?? self::EMPTY_LINES,
+            '{{global.district_en}}' => getSetting('district-english') ?? self::EMPTY_LINES,
             '{{global.local-body}}' => getSetting('palika-local-body') ?? self::EMPTY_LINES,
             '{{global.ward}}' => getSetting('palika-ward') ?? self::EMPTY_LINES,
             '{{global.today_date_ad}}' => today()->toDateString() ?? self::EMPTY_LINES,
@@ -301,6 +349,7 @@ trait HelperTemplate
             '{{global.acceptor_name}}' => $acceptorName,
             '{{global.signee_name}}' => '',
             '{{global.palika_name}}' => getSetting('palika-name') ?? self::EMPTY_LINES,
+            '{{global.palika_name_en}}' => getSetting('palika-name-english') ?: self::EMPTY_LINES,
             '{{global.office_name}}' => getSetting('office-name') ?? self::EMPTY_LINES,
             '{{global.fiscal_year}}' => getSetting('fiscal-year') ?? self::EMPTY_LINES,
             '{{global.palika_address}}' => getSetting('palika-address') ?? self::EMPTY_LINES,
