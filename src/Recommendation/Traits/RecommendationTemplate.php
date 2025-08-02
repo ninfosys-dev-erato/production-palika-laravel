@@ -53,7 +53,7 @@ trait RecommendationTemplate
 
         $letterHead = $this->getRecommendationLetterHead($regNo, $applyRecommendation?->fiscalYear?->year, true);
 
-        $letterFoot = '';
+        $letterFoot = $this->getFooter();
 
         $formData = $this->getResolvedFormData(
             is_array($applyRecommendation->data)
@@ -127,7 +127,7 @@ trait RecommendationTemplate
             $globalData,
             $formData,
             $customerData,
-            // ['{{global.letter-foot}}' => $letterFoot]
+            ['{{global.letter-foot}}' => $letterFoot]
         );
 
         $replacements = $this->sanitizeReplacements($replacements);

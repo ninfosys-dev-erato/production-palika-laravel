@@ -58,6 +58,7 @@ class LetterHeadSampleForm extends Component
     {
         $this->letterHeadSample = $letterHeadSample;
         $this->templateTypes = TemplateEnum::getForWeb();
+
         $this->action = $action;
     }
 

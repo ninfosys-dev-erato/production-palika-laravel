@@ -204,4 +204,5 @@ return [
     'the_template_type_field_is_required' => 'टेम्प्लेट प्रकार फिल्ड आवश्यक छ।',
     'the_template_type_must_be_a_string' => 'टेम्प्लेट प्रकार स्ट्रिङ हुनुपर्छ।',
     'the_template_type_must_be_a_valid_selection' => 'टेम्प्लेट प्रकार मान्य चयन हुनुपर्छ।',
+    'footer' => 'फुटर',
 ];

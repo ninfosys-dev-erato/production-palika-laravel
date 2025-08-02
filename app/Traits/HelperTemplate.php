@@ -172,6 +172,39 @@ trait HelperTemplate
         HTML;
     }
 
+    function getFooter(): string
+    {
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Footer)->whereNull('deleted_at')->first();
+        if (!$letterHeadSample) {
+            return '';
+        }
+
+        $ward_no = GlobalFacade::ward();
+
+        $ward = $ward_no ? Ward::find($ward_no) : null;
+
+        $additionalData = [
+            '{{rec.ward_email}}' => $ward?->email ?? '',
+            '{{rec.ward_chairperson_no}}' => $ward?->ward_chairperson_no ?? '',
+            '{{rec.ward_secretary_no}}' => $ward?->ward_secretary_no ?? '',
+            '{{rec.ward_social}}' => $ward?->ward_social ?? '',
+        ];
+
+        $globalData = $this->getGlobalData(null);
+
+        $replacements = array_merge(
+            $additionalData,
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
     private function sanitizeReplacements(array $replacements): array
     {
         return array_map(function ($value) {
