@@ -8,7 +8,19 @@ $departments = Cache::remember('user_departments_' . auth()->id(), Carbon::now()
 });
 
 $selectedDepartmentId = session()->get('department');
-$selectedDepartmentTitle = optional($departments->firstWhere('id', $selectedDepartmentId))->title ?? 'N/A';
+$selectedDepartmentTitle = 'N/A';
+
+// If no department is selected in session, try to get the first available department
+if (!$selectedDepartmentId && $departments->count() > 0) {
+    $selectedDepartmentId = $departments->first()->id;
+    session(['department' => $selectedDepartmentId]);
+}
+
+// Get the selected department title
+if ($selectedDepartmentId) {
+    $selectedDepartment = $departments->firstWhere('id', $selectedDepartmentId);
+    $selectedDepartmentTitle = $selectedDepartment ? $selectedDepartment->title : 'N/A';
+}
 
 ?>
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
