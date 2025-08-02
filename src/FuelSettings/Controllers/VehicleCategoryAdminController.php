@@ -12,8 +12,8 @@ class VehicleCategoryAdminController extends Controller
     public function __construct()
     {
         //$this->middleware('permission:vehicle_categories view')->only('index');
-        //$this->middleware('permission:vehicle_categories edit')->only('edit');
-        //$this->middleware('permission:vehicle_categories create')->only('create');
+        //$this->middleware('permission:fms_vehicle_categories edit')->only('edit');
+        //$this->middleware('permission:fms_vehicle_categories create')->only('create');
     }
 
     function index(Request $request)

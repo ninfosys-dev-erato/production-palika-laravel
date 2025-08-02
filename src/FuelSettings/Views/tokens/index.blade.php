@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('Token Request') }}
                     </h5>
-                    @perm('tokens create')
+                    @perm('fms_tokens create')
                         <a href="{{ route('admin.tokens.create') }}" class="btn btn-info"><i class="bx bx-plus"></i> Add
                             Token</a>
                     @endperm

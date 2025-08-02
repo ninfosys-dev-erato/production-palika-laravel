@@ -12,8 +12,8 @@ class TokenAdminController extends Controller
     public function __construct()
     {
         //$this->middleware('permission:tokens view')->only('index');
-        //$this->middleware('permission:tokens edit')->only('edit');
-        //$this->middleware('permission:tokens create')->only('create');
+        //$this->middleware('permission:fms_tokens edit')->only('edit');
+        //$this->middleware('permission:fms_tokens create')->only('create');
     }
 
     function index(Request $request)

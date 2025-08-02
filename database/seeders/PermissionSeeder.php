@@ -34,12 +34,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'group_create', 'guard' => 'web'],
             ['name' => 'group_delete', 'guard' => 'web'],
             ['name' => 'group_update', 'guard' => 'web'],
-            ['name' => 'letter_head_manage', 'guard' => 'web'],
-            ['name' => 'letter_head_update', 'guard' => 'web'],
-            ['name' => 'letter_head_delete', 'guard' => 'web'],
-            ['name' => 'setting_groups create', 'guard' => 'web'],
-            ['name' => 'setting_groups edit', 'guard' => 'web'],
-            ['name' => 'setting_groups delete', 'guard' => 'web'],
             ['name' => 'setting access', 'guard' => 'web'],
             ['name' => 'setting_create', 'guard' => 'web'],
             ['name' => 'setting_delete', 'guard' => 'web'],
@@ -94,7 +88,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'digital_board create', 'guard' => 'web'],
             ['name' => 'digital_board delete', 'guard' => 'web'],
             ['name' => 'digital_board edit', 'guard' => 'web'],
-           
 
             // -------------------
             // DISTRICTS MODULE
@@ -114,15 +107,15 @@ class PermissionSeeder extends Seeder
             // -------------------
             // EBPS MODULE
             // -------------------
+            ['name' => 'ebps access', 'guard' => 'web'],
             ['name' => 'ebps_settings create', 'guard' => 'web'],
             ['name' => 'ebps_settings delete', 'guard' => 'web'],
             ['name' => 'ebps_settings edit', 'guard' => 'web'],
-            ['name' => 'map_applies access', 'guard' => 'web'],
-            ['name' => 'map_applies delete', 'guard' => 'web'],
-            ['name' => 'map_applies edit', 'guard' => 'web'],
+            ['name' => 'ebps_map_applies access', 'guard' => 'web'],
+            ['name' => 'ebps_map_applies edit', 'guard' => 'web'],
+            ['name' => 'ebps_map_applies delete', 'guard' => 'web'],
             ['name' => 'ebps_organizations access', 'guard' => 'web'],
             ['name' => 'ebps_organizations edit', 'guard' => 'web'],
-            ['name' => 'ebps_organizations create', 'guard' => 'web'],
             ['name' => 'ebps_organizations delete', 'guard' => 'web'],
 
             // -------------------
@@ -138,8 +131,8 @@ class PermissionSeeder extends Seeder
             // -------------------
             ['name' => 'branch access', 'guard' => 'web'],
             ['name' => 'branch create', 'guard' => 'web'],
+            ['name' => 'branch edit', 'guard' => 'web'],
             ['name' => 'branch delete', 'guard' => 'web'],
-            ['name' => 'branch update', 'guard' => 'web'],
 
             // -------------------
             // EMPLOYEES MODULE
@@ -151,6 +144,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'designation access', 'guard' => 'web'],
             ['name' => 'designation create', 'guard' => 'web'],
             ['name' => 'designation edit', 'guard' => 'web'],
+            ['name' => 'designation delete', 'guard' => 'web'],
 
             // -------------------
             // FISCAL YEARS MODULE
@@ -184,6 +178,21 @@ class PermissionSeeder extends Seeder
             ['name' => 'gms_activity delete', 'guard' => 'web'],
             ['name' => 'gms_activity view', 'guard' => 'web'],
 
+            // -------------------
+            // FUEL SETTINGS MODULE
+            // -------------------
+            ['name' => 'fms_vehicles create', 'guard' => 'web'],
+            ['name' => 'fms_vehicles edit', 'guard' => 'web'],
+            ['name' => 'fms_vehicles delete', 'guard' => 'web'],
+            ['name' => 'fuel_settings create', 'guard' => 'web'],
+            ['name' => 'fuel_settings edit', 'guard' => 'web'],
+            ['name' => 'fuel_settings delete', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories create', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories edit', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories delete', 'guard' => 'web'],
+            ['name' => 'fms_tokens create', 'guard' => 'web'],
+            ['name' => 'fms_tokens edit', 'guard' => 'web'],
+            ['name' => 'fms_tokens delete', 'guard' => 'web'],
 
             // -------------------
             // GRIEVANCE MODULE
@@ -194,14 +203,16 @@ class PermissionSeeder extends Seeder
             ['name' => 'grievance_setting create', 'guard' => 'web'],
             ['name' => 'grievance_setting delete', 'guard' => 'web'],
             ['name' => 'grievance_setting edit', 'guard' => 'web'],
+            ['name' => 'grievance_setting edit', 'guard' => 'web'],
 
             // -------------------
             // LOCAL BODIES MODULE
             // -------------------
+            ['name' => 'local_bodies create', 'guard' => 'web'],
             ['name' => 'local_bodies delete', 'guard' => 'web'],
             ['name' => 'local_bodies edit', 'guard' => 'web'],
-            ['name' => 'local_levels create', 'guard' => 'web'],
-            ['name' => 'local_levels view', 'guard' => 'web'],
+            // ['name' => 'local_levels create', 'guard' => 'web'],
+            // ['name' => 'local_levels view', 'guard' => 'web'],
 
             // -------------------
             // MEETINGS MODULE
@@ -253,12 +264,12 @@ class PermissionSeeder extends Seeder
             // -------------------
             // PROVINCES MODULE
             // -------------------
-            // (No explicit permissions found)
+            ['name' => 'provinces create', 'guard' => 'web'],
 
             // -------------------
             // RECOMMENDATION MODULE
             // -------------------        
-
+            ['name' => 'recommendation access', 'guard' => 'web'],
             ['name' => 'recommendation_apply access', 'guard' => 'web'],
             ['name' => 'recommendation_apply create', 'guard' => 'web'],
             ['name' => 'recommendation_apply delete', 'guard' => 'web'],
@@ -270,51 +281,14 @@ class PermissionSeeder extends Seeder
             ['name' => 'recommendation_settings update', 'guard' => 'web'],
 
             // -------------------
-            // REGISTRATION MODULE (EJALAS)
-            // -------------------
-            ['name' => 'anusuchis create', 'guard' => 'web'],
-            ['name' => 'case_records create', 'guard' => 'web'],
-            ['name' => 'complaint_registrations create', 'guard' => 'web'],
-            ['name' => 'dispute_areas create', 'guard' => 'web'],
-            ['name' => 'dispute_matters create', 'guard' => 'web'],
-            ['name' => 'dispute_matters delete', 'guard' => 'web'],
-            ['name' => 'dispute_matters edit', 'guard' => 'web'],
-            ['name' => 'dispute_registration_courts create', 'guard' => 'web'],
-            ['name' => 'fulfilled_conditions create', 'guard' => 'web'],
-            ['name' => 'fulfilled_conditions delete', 'guard' => 'web'],
-            ['name' => 'fulfilled_conditions edit', 'guard' => 'web'],
-            ['name' => 'hearing_schedules create', 'guard' => 'web'],
-            ['name' => 'judicial_committees create', 'guard' => 'web'],
-            ['name' => 'judicial_employees create', 'guard' => 'web'],
-            ['name' => 'levels create', 'guard' => 'web'],
-            ['name' => 'local_levels create', 'guard' => 'web'],
-            ['name' => 'party create', 'guard' => 'web'],
-            ['name' => 'parties create', 'guard' => 'web'],
-            ['name' => 'priotities create', 'guard' => 'web'],
-            ['name' => 'reconciliation_centers create', 'guard' => 'web'],
-            ['name' => 'registration_indicators create', 'guard' => 'web'],
-            ['name' => 'registration_indicators delete', 'guard' => 'web'],
-            ['name' => 'registration_indicators edit', 'guard' => 'web'],
-            ['name' => 'registration_type_access', 'guard' => 'web'],
-            ['name' => 'registration_type_create', 'guard' => 'web'],
-            ['name' => 'registration_type_delete', 'guard' => 'web'],
-            ['name' => 'registration_type_update', 'guard' => 'web'],
-            ['name' => 'settlement_detail create', 'guard' => 'web'],
-            ['name' => 'settlements create', 'guard' => 'web'],
-            ['name' => 'settlements delete', 'guard' => 'web'],
-            ['name' => 'settlements edit', 'guard' => 'web'],
-            ['name' => 'settlements print', 'guard' => 'web'],
-            ['name' => 'witnesses_representatives create', 'guard' => 'web'],
-            ['name' => 'written_response_registrations create', 'guard' => 'web'],
-
-            // -------------------
             // ROLES MODULE
             // -------------------
             ['name' => 'roles access', 'guard' => 'web'],
             ['name' => 'roles create', 'guard' => 'web'],
             ['name' => 'roles delete', 'guard' => 'web'],
             ['name' => 'roles manage', 'guard' => 'web'],
-            ['name' => 'roles edit', 'guard' => 'web'],
+            ['name' => 'roles update', 'guard' => 'web'],
+          
 
             // -------------------
             // SETTINGS MODULE
@@ -356,9 +330,9 @@ class PermissionSeeder extends Seeder
             ['name' => 'register_token_logs delete', 'guard' => 'web'],
             ['name' => 'register_token_logs edit', 'guard' => 'web'],
             ['name' => 'register_tokens access', 'guard' => 'web'],
-            ['name' => 'register_tokens create', 'guard' => 'web'],
-            ['name' => 'register_tokens delete', 'guard' => 'web'],
-            ['name' => 'register_tokens edit', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens create', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens delete', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens edit', 'guard' => 'web'],
             ['name' => 'register_tokens exitTime', 'guard' => 'web'],
             ['name' => 'token_holders create', 'guard' => 'web'],
             ['name' => 'token_holders delete', 'guard' => 'web'],
@@ -379,7 +353,7 @@ class PermissionSeeder extends Seeder
             // -------------------
             // WARDS MODULE
             // -------------------
-            ['name' => 'wards access', 'guard' => 'web'],
+            // ['name' => 'wards access', 'guard' => 'web'],  // Not used in Wards module code
             ['name' => 'wards create', 'guard' => 'web'],
             ['name' => 'wards delete', 'guard' => 'web'],
             ['name' => 'wards edit', 'guard' => 'web'],
@@ -401,6 +375,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'jms_reconciliation_center access', 'guard' => 'web'],
             ['name' => 'jms_reconciliation_center create', 'guard' => 'web'],
             ['name' => 'jms_report access', 'guard' => 'web'],
+
             // -------------------
             // TOK Token Management Module
             // -------------------
@@ -467,15 +442,56 @@ class PermissionSeeder extends Seeder
             ['name' => 'chalani delete', 'guard' => 'web'],
 
             // -------------------
+            // FILE TRACKING MODULE
+            // -------------------
+            ['name' => 'file_records create', 'guard' => 'web'],
+            ['name' => 'file_records edit', 'guard' => 'web'],
+            ['name' => 'file_records delete', 'guard' => 'web'],
+            ['name' => 'file_records view', 'guard' => 'web'],
+            ['name' => 'file_record_logs create', 'guard' => 'web'],
+            ['name' => 'file_record_logs edit', 'guard' => 'web'],
+            ['name' => 'file_record_logs delete', 'guard' => 'web'],
+            ['name' => 'file_record_notifiees create', 'guard' => 'web'],
+            ['name' => 'file_record_notifiees edit', 'guard' => 'web'],
+            ['name' => 'file_record_notifiees delete', 'guard' => 'web'],
+
+            // -------------------
             // GENERAL/OTHER MODULE
             // -------------------
             ['name' => 'human_resource access', 'guard' => 'web'],
             ['name' => 'office_setting access', 'guard' => 'web'],
             ['name' => 'letter_head access', 'guard' => 'web'],
             ['name' => 'letter_head create', 'guard' => 'web'],
-           
 
+            // -------------------
+            // SETTINGS MODULE
+            // -------------------
+            // Settings Permissions
+            ['name' => 'settings edit', 'guard' => 'web'],
+            ['name' => 'settings delete', 'guard' => 'web'],
+            ['name' => 'settings create', 'guard' => 'web'],
+
+            // Setting Groups Permissions
+            ['name' => 'setting_groups edit', 'guard' => 'web'],
+            ['name' => 'setting_groups delete', 'guard' => 'web'],
+            ['name' => 'setting_groups create', 'guard' => 'web'],
+
+            // Letter Head Additional Permissions
+            ['name' => 'letter_head_manage', 'guard' => 'web'],
+            ['name' => 'letter_head_update', 'guard' => 'web'],
+            ['name' => 'letter_head_delete', 'guard' => 'web'],
+            ['name' => 'letter_head_access', 'guard' => 'web'],
+
+            // Form Permissions
+            ['name' => 'form edit', 'guard' => 'web'],
+            ['name' => 'form delete', 'guard' => 'web'],
+            ['name' => 'form create', 'guard' => 'web'],
+            ['name' => 'form access', 'guard' => 'web'],
+
+            // App Setting Permissions
+            ['name' => 'app_setting_access', 'guard' => 'web'],
         ];
+
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(
                 ['name' => $permission['name']], // Find by name

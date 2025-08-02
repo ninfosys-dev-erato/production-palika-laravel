@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('Vehicle Categories') }}
                     </h5>
-                    @perm('vehicle_categories create')
+                    @perm('fms_vehicle_categories create')
                         <div>
                             <button href="{{ route('admin.vehicle_categories.create') }}" data-bs-toggle="modal"
                                 data-bs-target="#indexModal" class="btn btn-info"><i class="bx bx-plus"></i>
