@@ -11,10 +11,10 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    @perm('map_apply_details create')
+                   
                         <a href="{{ route('admin.map_apply_details.create') }}" class="btn btn-info"><i
                                 class="bx bx-plus"></i> {{ __('ebps::ebps.add_mapapplydetail') }}</a>
-                    @endperm
+
                 </div>
                 <div class="card-body">
                     <livewire:ebps.map_apply_detail_table theme="bootstrap-4" />

@@ -27,6 +27,8 @@ class HearingScheduleReport extends Component
     public $endDate;
     public $reconciliationCenters;
     public $selectedReconciliationCenter;
+    public $hearingSchedules = [];
+
     protected $rules = [
         'startDate' => 'required',
         'endDate' => 'required',
@@ -49,8 +51,45 @@ class HearingScheduleReport extends Component
         $startDate = $this->bsToAd($this->startDate);
         $endDate = $this->bsToAd($this->endDate);
 
-        $this->dispatch('getSearchDate', $startDate, $endDate, $this->selectedReconciliationCenter);
+        $this->hearingSchedules = HearingSchedule::with(['complaintRegistration', 'fiscalYear', 'reconciliationCenter', 'complaintRegistration.parties', 'complaintRegistration.disputeMatter', 'complaintRegistration.disputeMatter.disputeArea'])
+            ->whereNull('deleted_at')
+            ->whereBetween('hearing_date', [$startDate, $endDate])
+            ->when($this->selectedReconciliationCenter, function ($query) {
+                $query->where('reconciliation_center_id', $this->selectedReconciliationCenter);
+            })
+            ->latest()
+            ->get();
+
+        foreach ($this->hearingSchedules as $schedule) {
+            $schedule->hearing_date_bs = replaceNumbers(
+                $this->adToBs(Carbon::parse($schedule->hearing_date)->format('Y-m-d')),
+                true
+            );
+
+            $schedule->defenders = $schedule->complaintRegistration->parties
+                ->where('pivot.type', 'Defender')
+                ->pluck('name')
+                ->toArray();
+
+            $schedule->complainers = $schedule->complaintRegistration->parties
+                ->where('pivot.type', 'Complainer')
+                ->pluck('name')
+                ->toArray();
+        }
     }
+
+    public function clear()
+    {
+        $this->reset(['startDate', 'endDate', 'selectedReconciliationCenter', 'hearingSchedules']);
+    }
+
+    public function export()
+    {
+        // Export functionality can be implemented here
+        $this->searchReport();
+        // Add export logic
+    }
+
     public function downloadPdf()
     {
         $startDate = $this->bsToAd($this->startDate);

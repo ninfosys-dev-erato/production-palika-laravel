@@ -16,7 +16,7 @@
                             {{ __('tasktracking::tasktracking.task_tracking_record_list') }}</h5>
                     </div>
                     <div>
-                        @perm('case_records create')
+                        @perm('tsk_management create')
                             <a href="{{ route('admin.anusuchis.addReport') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('tasktracking::tasktracking.add_task_tracking_report') }}</a>

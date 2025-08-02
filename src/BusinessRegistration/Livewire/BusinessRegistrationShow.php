@@ -124,26 +124,38 @@ class BusinessRegistrationShow extends Component
             'bill_no' => 'required|string|max:255',
         ]);
 
+
         $service = new BusinessRegistrationAdminService();
         try {
-            $registrationNumber = $service->generateBusinessRegistrationNumber();
-            $registration_date_en = date('Y-m-d');
-            $registration_date_ne = $this->adToBs($registration_date_en);
+
+            $registrationNumber = $this->businessRegistration->registration_number;
+            $registrationDateEn = $this->businessRegistration->registration_date_en;
+            $registrationDateNe = $this->businessRegistration->registration_date;
+
+            if (!$registrationNumber) {
+                $registrationNumber = $service->generateBusinessRegistrationNumber($this->businessRegistration->fiscal_year);
+            }
+            // If both are missing, generate both
+            if (!$registrationDateEn && !$registrationDateNe) {
+                $registrationDateEn = date('Y-m-d');
+                $registrationDateNe = $this->adToBs($registrationDateEn);
+            }
 
             $data = [
                 'registration_number' => $registrationNumber,
-                'registration_date' => $registration_date_ne,
-                'registration_date_en' => $registration_date_en,
+                'registration_date' => $registrationDateNe,
+                'registration_date_en' => $registrationDateEn,
                 'certificate_number' => $registrationNumber,
                 'bill_no' => $this->bill_no,
             ];
+
 
             $service->accept($this->businessRegistration, $data);
             $this->successFlash(__('businessregistration::businessregistration.business_registration_approved_successfully'));
             return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
         } catch (\Exception $e) {
             logger()->error($e);
-            $this->errorFlash('Something went wrong while rejecting.', $e->getMessage());
+            $this->errorFlash('Something went wrong while accepting.', $e->getMessage());
         }
     }
 

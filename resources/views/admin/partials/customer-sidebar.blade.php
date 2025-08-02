@@ -35,27 +35,34 @@
     </li>
 
     @if (!empty($customer->kyc_verified_at))
-        <li class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.grievance.index') ? 'active' : '' }}">
-            <a href="{{ route('customer.grievance.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user-circle"></i>
-                <div data-i18n="Form">{{ __('Grievance') }}</div>
-            </a>
-        </li>
+        @if (isModuleEnabled('grievance'))
+            <li
+                class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.grievance.index') ? 'active' : '' }}">
+                <a href="{{ route('customer.grievance.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-user-circle"></i>
+                    <div data-i18n="Form">{{ __('Grievance') }}</div>
+                </a>
+            </li>
+        @endif
 
-        <li
-            class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.recommendations.apply-recommendation.index') ? 'active' : '' }}">
-            <a href="{{ route('customer.recommendations.apply-recommendation.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-notepad"></i>
-                <div data-i18n="Form">{{ __('Recommendation') }}</div>
-            </a>
-        </li>
-        <li
-            class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.business-registration.business-registration.index') ? 'active' : '' }}">
-            <a href="{{ route('customer.business-registration.business-registration.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons  bx bx-briefcase"></i>
-                <div data-i18n="Form">{{ __('Business Registration') }}</div>
-            </a>
-        </li>
+        @if (isModuleEnabled('recommendation'))
+            <li
+                class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.recommendations.apply-recommendation.index') ? 'active' : '' }}">
+                <a href="{{ route('customer.recommendations.apply-recommendation.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-notepad"></i>
+                    <div data-i18n="Form">{{ __('Recommendation') }}</div>
+                </a>
+            </li>
+        @endif
+        @if (isModuleEnabled('business_regsitration'))
+            <li
+                class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.business-registration.business-registration.index') ? 'active' : '' }}">
+                <a href="{{ route('customer.business-registration.business-registration.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons  bx bx-briefcase"></i>
+                    <div data-i18n="Form">{{ __('Business Registration') }}</div>
+                </a>
+            </li>
+        @endif
         @if ($businessRenew->isNotEmpty())
             <li
                 class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.business-registration.renewals.index') ? 'active' : '' }}">
@@ -65,52 +72,34 @@
                 </a>
             </li>
         @endif
-        {{-- 
-        <li class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.ebps.index') ? 'active' : '' }}">
-            <a href="{{ route('customer.ebps.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons  bx bx-briefcase"></i>
-                <div data-i18n="Ebps">{{ __('EBPS') }}</div>
-            </a>
-        </li> --}}
+        @if (isModuleEnabled('ebps'))
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">{{ __('Ebps') }}</span>
+            </li>
+            <li class="menu-item  {{ \Illuminate\Support\Facades\Route::is('customer.ebps.*') ? 'open' : '' }}">
+                <a href="#" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                    <div data-i18n="Account Settings">{{ __('Ebps') }}</div>
+                </a>
+                <ul class="menu-sub">
 
-
-        {{-- @if (\Illuminate\Support\Facades\Route::is('customer.ebps.*')) --}}
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">{{ __('Ebps') }}</span>
-        </li>
-        <li class="menu-item  {{ \Illuminate\Support\Facades\Route::is('customer.ebps.*') ? 'open' : '' }}">
-            <a href="#" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">{{ __('Ebps') }}</div>
-            </a>
-            <ul class="menu-sub">
-
-                <li
-                    class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.ebps.apply.*') ? 'active' : '' }}">
-                    <a href="{{ route('customer.ebps.apply.map-apply.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-calendar"></i>
-                        <div data-i18n="FiscalYear">{{ __('Map Apply') }}</div>
-                    </a>
-                </li>
-                <li
-                    class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.ebps.building-registrations.*') ? 'active' : '' }}">
-                    <a href="{{ route('customer.ebps.building-registrations.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-calendar"></i>
-                        <div data-i18n="FiscalYear">{{ __('Building Registration') }}</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        {{-- @endif --}}
-
-        {{-- <li
-            class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.customer.darta_chalani.index') ? 'active' : '' }}">
-            <a href="{{ route('customer.darta_chalani.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons  bx bx-book"></i>
-                <div data-i18n="Form">{{ __('Darta Chalani') }}</div>
-            </a>
-        </li> --}}
-
+                    <li
+                        class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.ebps.apply.*') ? 'active' : '' }}">
+                        <a href="{{ route('customer.ebps.apply.map-apply.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-calendar"></i>
+                            <div data-i18n="FiscalYear">{{ __('Map Apply') }}</div>
+                        </a>
+                    </li>
+                    <li
+                        class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.ebps.building-registrations.*') ? 'active' : '' }}">
+                        <a href="{{ route('customer.ebps.building-registrations.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-calendar"></i>
+                            <div data-i18n="FiscalYear">{{ __('ebps::ebps.building_registration_application') }}</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
 
     @endif
 

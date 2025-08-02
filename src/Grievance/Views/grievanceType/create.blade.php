@@ -21,7 +21,7 @@
                         {{ $action->value === 'create' ? __('grievance::grievance.add_grievance_type') : __('grievance::grievance.update_grievance_type') }}
                     </h5>
                     <div>
-                        @perm('grievance_type_access')
+                        @perm('grievance_setting access')
                             <a href="{{ route('admin.grievance.grievanceType.index') }}" class="btn btn-info"><i
                                     class="bx bx-list-ol"></i>{{ __('grievance::grievance.grievance_type_list') }}</a>
                         @endperm

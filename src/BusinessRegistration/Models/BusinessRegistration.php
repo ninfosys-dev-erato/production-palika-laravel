@@ -47,6 +47,7 @@ class BusinessRegistration extends Model
         'business_ward',
         'business_tole',
         'business_street',
+        'purpose',
 
         'working_capital',
         'fixed_capital',
@@ -60,6 +61,7 @@ class BusinessRegistration extends Model
         'others',
         'houseownername',
         'monthly_rent',
+        'house_owner_phone',
         'rentagreement',
         'east',
         'west',
@@ -68,7 +70,7 @@ class BusinessRegistration extends Model
         'landplotnumber',
         'area',
 
-        'registration_id',
+
 
         'amount',
         'application_rejection_reason',
@@ -90,6 +92,7 @@ class BusinessRegistration extends Model
         'is_rented',
         'registration_category',
         'business_status',
+        'is_previouslyRegistered',
     ];
 
     protected $casts = [
@@ -108,6 +111,7 @@ class BusinessRegistration extends Model
         'business_ward' => 'string',
         'business_tole' => 'string',
         'business_street' => 'string',
+        'purpose' => 'string',
 
         'working_capital' => 'string',
         'fixed_capital' => 'string',
@@ -121,6 +125,7 @@ class BusinessRegistration extends Model
         'others' => 'string',
         'houseownername' => 'string',
         'monthly_rent' => 'string',
+        'house_owner_phone' => 'string',
         'rentagreement' => 'string',
         'east' => 'string',
         'west' => 'string',
@@ -144,6 +149,7 @@ class BusinessRegistration extends Model
         'application_status' => 'string',
         'total_running_day' => 'string',
         'is_rented' => 'string',
+        'is_previouslyRegistered' => 'string',
         'registration_category' => 'string',
         'business_status' => BusinessStatusEnum::class,
     ];
@@ -257,10 +263,6 @@ class BusinessRegistration extends Model
         $enum = BusinessStatusEnum::tryFrom($this->business_status);
         return $enum ? BusinessStatusEnum::getNepaliLabel($enum) : '';
     }
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(BusinessRegistration::class, 'registration_id');
-    }
 
     public function applicants(): HasMany
     {
@@ -270,5 +272,9 @@ class BusinessRegistration extends Model
     public function requiredBusinessDocs(): HasMany
     {
         return $this->hasMany(BusinessRequiredDoc::class, 'business_registration_id');
+    }
+    public function renewals(): HasMany
+    {
+        return $this->hasMany(BusinessRenewal::class, 'business_registration_id');
     }
 }

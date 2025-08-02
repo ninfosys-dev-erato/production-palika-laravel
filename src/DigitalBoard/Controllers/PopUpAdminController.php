@@ -15,9 +15,9 @@ class PopUpAdminController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:popups_access', only: ['index']),
-            new Middleware('permission:popups_create', only: ['create']),
-            new Middleware('permission:popups_edit', only: ['edit']),
+            new Middleware('permission:digital_board access', only: ['index']),
+            new Middleware('permission:digital_board create', only: ['create']),
+            new Middleware('permission:digital_board edit', only: ['edit']),
         ];
     }
 

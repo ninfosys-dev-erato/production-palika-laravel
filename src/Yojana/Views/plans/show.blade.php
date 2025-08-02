@@ -738,33 +738,80 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="advance-payment" role="tabpanel">
-                                <div class="card p-4">
-                                    <div class="card-header d-flex justify-content-between">
-                                        <h5 class="text-primary fw-bold mb-0">
-                                            {{ __('yojana::yojana.advance_payment') }}
-                                        </h5>
-                                        <div>
-                                            <a class="btn btn-info" data-bs-toggle="modal"
-                                                data-bs-target="#indexModal3" onclick="resetForm()">
-                                                <i class="bx bx-plus"></i>{{ __('yojana::yojana.add_payment') }}
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <livewire:yojana.advance_payment_table theme="bootstrap-4" :$plan />
-                                </div>
-                                <div class="modal fade" id="indexModal3" tabindex="-1" aria-labelledby="ModalLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title text-primary" id="ModalLabel">
-                                                    {{ __('yojana::yojana.advance_payment_form') }}
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    onclick="resetForm()" aria-label="Close"></button>
+{{--                                <div class="card p-4">--}}
+{{--                                    <div class="card-header d-flex justify-content-between">--}}
+{{--                                        <h5 class="text-primary fw-bold mb-0">--}}
+{{--                                            {{ __('yojana::yojana.advance_payment') }}--}}
+{{--                                        </h5>--}}
+{{--                                        <div>--}}
+{{--                                            <a class="btn btn-info" data-bs-toggle="modal"--}}
+{{--                                                data-bs-target="#indexModal3" onclick="resetForm()">--}}
+{{--                                                <i class="bx bx-plus"></i>{{ __('yojana::yojana.add_payment') }}--}}
+{{--                                            </a>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <livewire:yojana.advance_payment_table theme="bootstrap-4" :$plan />--}}
+{{--                                </div>--}}
+{{--                                <div class="modal fade" id="indexModal3" tabindex="-1" aria-labelledby="ModalLabel"--}}
+{{--                                    aria-hidden="true">--}}
+{{--                                    <div class="modal-dialog modal-lg">--}}
+{{--                                        <div class="modal-content">--}}
+{{--                                            <div class="modal-header">--}}
+{{--                                                <h5 class="modal-title text-primary" id="ModalLabel">--}}
+{{--                                                    {{ __('yojana::yojana.advance_payment_form') }}--}}
+{{--                                                </h5>--}}
+{{--                                                <button type="button" class="btn-close" data-bs-dismiss="modal"--}}
+{{--                                                    onclick="resetForm()" aria-label="Close"></button>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="modal-body">--}}
+{{--                                                <livewire:yojana.advance_payment_form :$plan :action="App\Enums\Action::CREATE" />--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+
+                                <div class="card p-4 mb-4">
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs " id="advancePaymentTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="advance-payment-table-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#advancePaymentTablePane" type="button" role="tab" onclick="resetAdvancePaymentForm()">
+                                                {{ __('yojana::yojana.advance_payment_table') }}
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link " id="advance-payment-form-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#advancePaymentFormPane" type="button" role="tab">
+                                                {{ __('yojana::yojana.advance_payment_form') }}
+                                            </button>
+                                        </li>
+
+                                    </ul>
+                                    <!-- Tab content -->
+                                    <div class="tab-content" id="advancePaymentTabContent">
+                                        <div class="tab-pane fade show active" id="advancePaymentTablePane" role="tabpanel">
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between">
+                                                    <h5 class="text-primary fw-bold mb-0">
+                                                        {{ __('yojana::yojana.advance_payment_table') }}
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <livewire:yojana.advance_payment_table theme="bootstrap-4" :$plan />
+                                                </div>
                                             </div>
-                                            <div class="modal-body">
-                                                <livewire:yojana.advance_payment_form :$plan :action="App\Enums\Action::CREATE" />
+                                        </div>
+
+                                        <div class="tab-pane fade" id="advancePaymentFormPane" role="tabpanel">
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between">
+                                                    <h5 class="text-primary fw-bold mb-0">
+                                                        {{ __('yojana::yojana.advance_payment_form') }}
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <livewire:yojana.advance_payment_form :$plan :action="App\Enums\Action::CREATE" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1106,6 +1153,14 @@
         activateTab('[data-bs-target="#target_completion"]');
         activateTab('#target-completion-table-tab');
     });
+    Livewire.on('open-advancePaymentTable', () => {
+        activateTab('[data-bs-target="#advancePaymentTablePane"]');
+        activateTab('#advance-payment-table-tab');
+    });
+    Livewire.on('open-advancePaymentForm', () => {
+        activateTab('[data-bs-target="#advancePaymentFormPane"]');
+        activateTab('#advance-payment-form-tab');
+    });
     Livewire.on('open-payment-tab', () => {
         activateTab('[data-bs-target="#payment-tab"]');
         activateTab('#payment-tab');
@@ -1121,6 +1176,9 @@
     }
     function resetTargetEntryForm() {
         Livewire.dispatch('reset-target-entry-form');
+    }
+    function resetAdvancePaymentForm() {
+        Livewire.dispatch('reset-advance-payment-form');
     }
     function resetForm() {
         Livewire.dispatch('reset-form');

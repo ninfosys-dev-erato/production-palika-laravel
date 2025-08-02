@@ -12,7 +12,7 @@
                     <i class="bi bi-pencil-square me-2"></i> {{ __('filetracking::filetracking.edit_record') }}
                 </a>
 
-                @if (can('darta_delete'))
+                @if (can('darta delete'))
                     <button type="button"
                         onclick="return confirm('Are you sure you want to delete this record?') || event.stopImmediatePropagation()"
                         wire:click="delete({{ $record->id }})"

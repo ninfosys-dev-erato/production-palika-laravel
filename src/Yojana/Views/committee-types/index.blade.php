@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.committee_type_list') }}</h5>
                     </div>
                     <div>
-                        @perm('committee_types create')
+                        @perm('plan_committee_settings create')
                             <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                                 data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('yojana::yojana.add_committee_type') }}

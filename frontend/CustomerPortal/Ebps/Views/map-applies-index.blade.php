@@ -2,9 +2,9 @@
     <nav aria-label="breadcrumb" class="d-flex justify-content-end">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('customer.dashboard') }}"><i class="bx bx-home-alt"></i></a>
-            <li class="breadcrumb-item"><a href="#">{{__('ebps::ebps.map_apply')}}</a>
+            <li class="breadcrumb-item"><a href="#">{{ __('ebps::ebps.map_apply') }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">{{__('ebps::ebps.list')}}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ __('ebps::ebps.list') }}</li>
         </ol>
     </nav>
     <div class="row g-6">
@@ -12,13 +12,13 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="d-flex justify-content-between card-header">
-                        <h5 class="text-primary fw-bold mb-0">{{ __('ebps::ebps.map_apply_list') }}</h5>
+                        <h5 class="text-primary fw-bold mb-0">{{ __('Map Apply List') }}</h5>
                     </div>
 
                     <div>
                         <a href="{{ route('customer.ebps.apply.map-apply.create') }}" class="btn btn-info"><i
-                                class="fa fa-plus"></i>
-                            {{__('ebps::ebps.add_map_apply')}}</a>
+                                class="bx bx-plus"></i>
+                            {{ __('ebps::ebps.add_map_apply') }}</a>
 
                     </div>
                 </div>

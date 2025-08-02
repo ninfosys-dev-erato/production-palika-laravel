@@ -64,21 +64,21 @@ class UserTable extends DataTableComponent
                 ->searchable(),
         ];
 
-        if (can('users_edit') || can('users_delete') || can('users_manage')) {
+        if (can('users edit') || can('users delete') || can('users manage')) {
             $actionsColumn = Column::make(__('wards::wards.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('users_edit')) {
+                if (can('users edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('users_delete')) {
+                if (can('users delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
-                if (can('users_manage')) {
+                if (can('users manage')) {
                     $manage = '&nbsp;<button type="button" class="btn btn-success btn-sm ml-2" wire:click="manage(' . $row->id . ')"><i class="bx bx-cog"></i></button>';
                     $buttons .= $manage;
                 }
@@ -94,7 +94,7 @@ class UserTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('users_edit')) {
+        if (!can('users edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -103,7 +103,7 @@ class UserTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('users_delete')) {
+        if (!can('users delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -113,7 +113,7 @@ class UserTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('users_delete')) {
+        if (!can('users delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

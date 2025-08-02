@@ -23,6 +23,7 @@ class AdvancePaymentForm extends Component
     public ?Plan $plan;
     public $installments;
 
+    protected $listeners = ['load-advance-payment' => 'loadAdvancePayment', 'reset-advance-payment-form' => 'resetAdvancePaymentForm'];
     public function rules(): array
     {
         return [
@@ -90,21 +91,16 @@ class AdvancePaymentForm extends Component
         }
     }
 
-    #[On('edit-advance-payment')]
-    public function editBudgetHead(AdvancePayment $advancePayment)
+    public function loadAdvancePayment(AdvancePayment $advancePayment)
     {
         $this->advancePayment = $advancePayment;
         $this->action = Action::UPDATE;
-        $this->dispatch('open-modal', id: 'indexModal3');
+        $this->dispatch('open-advancePaymentForm');
     }
-    private function resetForm()
+    public function resetAdvancePaymentForm()
     {
         $this->reset(['advancePayment', 'action']);
         $this->advancePayment = new AdvancePayment();
     }
-    #[On('reset-form')]
-    public function resetBudgetHead()
-    {
-        $this->resetForm();
-    }
+
 }

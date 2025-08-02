@@ -5,10 +5,16 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <i class="bx bx-map-alt text-primary fs-3 me-2"></i>
-                        <h3 class="text-primary fw-bold mb-0">
-                            {{ __('ebps::ebps.building_registration_overview') }}
-                        </h3>
+                        <div>
+                            <h3 class="text-primary fw-bold mb-0">
+                                {{ __('ebps::ebps.building_registration_overview') }}
+                            </h3>
+                            <h6 class="text-primary mb-0 mt-2">
+                                {{ $mapApply->submission_id }} - {{ $mapApply->full_name }}
+                            </h6>
+                        </div>
                     </div>
+
                     <div class="d-flex gap-2">
                         <a href="{{ route('organization.ebps.building-registrations.index') }}"
                             class="btn btn-outline-primary">
@@ -65,6 +71,13 @@
                                     ->first();
                                 $canApply = $previousStepApproved;
                                 $previousStepApproved = $status == 'accepted';
+
+                                $document = Src\Ebps\Models\BuildingRegistrationDocument::where(
+                                    'map_step_id',
+                                    $mapStep->id,
+                                )
+                                    ->where('map_apply_id', $mapApply->id)
+                                    ->get();
 
                                 if ($status !== 'accepted') {
                                     $beforeStepsApproved = false;
@@ -139,26 +152,35 @@
                                                     {{ $submitterEnum ? $submitterEnum->label() : ucfirst($mapStep->form_submitter) }}
                                                 </p>
 
-                                                <div class="d-flex justify-content-end mt-2">
-                                                    @if (
-                                                        $status != 'accepted' &&
-                                                            $canApply &&
-                                                            $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::CONSULTANT_SUPERVISOR)
-                                                        <a href="{{ route('organization.ebps.building-registrations.apply-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
-                                                            class="btn btn-primary btn-sm me-2">
-                                                            <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
-                                                        </a>
+
+                                                <div class="d-flex justify-content-end mt-3 gap-2 flex-wrap">
+                                                    
+                                                    @if ($status !== 'accepted' && $canApply && $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::CONSULTANT_SUPERVISOR->value)
+                                                        @if ($mapStep->form && $mapStep->form->isNotEmpty())
+                                                            <a href="{{ route('organization.ebps.building-registrations.apply-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
+                                                                class="btn btn-primary btn-sm d-flex align-items-center">
+                                                                <i class="bx bx-edit me-1"></i>
+                                                                {{ __('ebps::ebps.apply') }}
+                                                            </a>
+                                                        @else
+                                                            <button
+                                                                class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#documentEditModal{{ $mapStep->id }}">
+                                                                <i class="bx bx-upload me-1"></i>
+                                                                {{ __('ebps::ebps.upload') }}
+                                                            </button>
+                                                        @endif
                                                     @endif
 
-                                                    @if ($mapApplyStep)
+                                                    @if ($mapApplyStep || $document->isNotEmpty())
                                                         <a href="{{ route('organization.ebps.building-registrations.preview', ['mapApplyStep' => $mapApplyStep]) }}"
-                                                            class="btn btn-outline-primary btn-sm">
+                                                            class="btn btn-outline-primary btn-sm d-flex align-items-center">
                                                             <i class="bx bx-show me-1"></i> {{ __('ebps::ebps.view') }}
                                                         </a>
                                                     @endif
 
-
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply && $mapStep->form->isNotEmpty())
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -168,6 +190,7 @@
                                                         </button>
                                                     @endif
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +207,6 @@
                         @endforeach
                     </div>
                 </div>
-
 
                 @if (!$beforeStepsApproved)
                     <div class="alert alert-warning mt-4">

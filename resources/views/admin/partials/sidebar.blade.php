@@ -5,7 +5,7 @@
             <div data-i18n="Analytics">{{ __('Main Menu') }}</div>
         </a>
     </li>
-    @perm('customer_access')
+    @perm('customer access')
         <li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.customer.index') ? 'active' : '' }}">
             <a href="{{ route('admin.customer.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user-circle"></i>
@@ -106,7 +106,7 @@
             <span class="menu-header-text">{{ __('Register Files') }}</span>
         </li>
 
-        @perm('darta_access')
+        @perm('darta access')
             <li
                 class="menu-item {{ Route::is('admin.register_files.index', 'admin.register_files.show', 'admin.register_files.edit') ? 'active' : '' }}">
                 <a href="{{ route('admin.register_files.index') }}" class="menu-link">
@@ -127,7 +127,7 @@
             <span class="menu-header-text">{{ __('Chalani') }}</span>
         </li>
 
-        @perm('darta_access')
+        @perm('darta access')
             <li
                 class="menu-item {{ Route::is('admin.chalani.index', 'admin.chalani.show', 'admin.chalani.edit') ? 'active' : '' }}">
                 <a href="{{ route('admin.chalani.index') }}" class="menu-link">
@@ -266,13 +266,14 @@
             'admin.setting_groups.*',
             'admin.users.*',
             'admin.roles.*',
-            'admin.permissions.*'))
-        @perm('system_setting_access')
+            'admin.permissions.*',
+            'admin.letter-head-sample.*'))
+        @perm('general_setting access')
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">{{ __('General Settings') }}</span>
             </li>
             <li
-                class="menu-item  {{ \Illuminate\Support\Facades\Route::is('admin.setting.*', 'admin.wards.index') ? 'open' : '' }}">
+                class="menu-item  {{ \Illuminate\Support\Facades\Route::is('admin.setting.*', 'admin.wards.index', 'admin.letter-head-sample.*') ? 'open' : '' }}">
                 <a href="#" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-dock-top"></i>
                     <div data-i18n="Account Settings">{{ __('System Settings') }}</div>
@@ -293,7 +294,7 @@
                         </a>
                     </li>
 
-                    @perm('office_setting_access')
+                    @perm('office_setting access')
                         <li
                             class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.setting.index') ? 'active' : '' }}">
                             <a href="{{ route('admin.setting.index') }}" class="menu-link">
@@ -308,16 +309,23 @@
                             <div data-i18n="Form">{{ __('Wards') }}</div>
                         </a>
                     </li>
+                    <li
+                        class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.letter-head-sample.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.letter-head-sample.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-video"></i>
+                            <div data-i18n="Videos">{{ __('Letter Head') }}</div>
+                        </a>
+                    </li>
                 </ul>
             </li>
             @include('Settings::menu.sidebar')
         @endperm
 
-        @perm('human_resource_access')
+        @perm('human_resource access')
             @include('Employees::menu.sidebar')
         @endperm
 
-        @perm('users_access')
+        @perm('users access')
             @include('Users::menu.sidebar')
         @endperm
     @endif

@@ -19,7 +19,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.judicial_member_list') }}</h5>
                     </div>
                     <div>
-                        @perm('judicial_members create')
+                        @perm('jms_settings create')
                             <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_judicial_members') }}
                             </button>
@@ -40,7 +40,7 @@
             <div class="modal-content ">
                 <div class="modal-header">
                     <h5 class="modal-title" id="AddJudicialMembersLabel">
-                        {{ __('ejalas::ejalas.judicial_committee') }}
+                        {{ __('ejalas::ejalas.judicial_member') }}
                     </h5>
                     <button type="button" class="btn-close" onclick="resetForm()" data-bs-dismiss="modal"
                         aria-label="Close"></button>

@@ -21,12 +21,12 @@
                     </div>
 
                     <div class="mt-2 mt-md-0 d-flex gap-2">
-                        <a href="{{ route('admin.ebps.map_applies.change-owner', ['id' => $mapApply->id]) }}"
+                        <a href="{{ route('admin.ebps.change-owner', ['id' => $mapApply->id]) }}"
                             class="btn btn-outline-secondary btn-sm">
                             <i class="bx bx-user me-1"></i> {{ __('ebps::ebps.change_owner') }}
                         </a>
 
-                        <a href="{{ route('admin.ebps.map_applies.change-organization', ['id' => $mapApply->id]) }}"
+                        <a href="{{ route('admin.ebps.change-organization', ['id' => $mapApply->id]) }}"
                             class="btn btn-outline-secondary btn-sm">
                             <i class="bx bx-user me-1"></i> {{ __('ebps::ebps.change_organization') }}
                         </a>
@@ -158,7 +158,7 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status != 'accepted' && $canApply)
+                                                    @if ($status != 'accepted')
                                                         <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}

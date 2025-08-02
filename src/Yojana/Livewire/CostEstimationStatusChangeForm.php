@@ -72,8 +72,8 @@ class CostEstimationStatusChangeForm extends Component
     public function save()
     {
         $this->costEstimationLog->cost_estimation_id = $this?->costEstimation->id??null;
-        $this->validate();
         try{
+            $this->validate();
             DB::beginTransaction();
             $this->costEstimation->status = $this->costEstimationLog->status;
             $this->costEstimation->save();

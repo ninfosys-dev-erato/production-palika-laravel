@@ -99,20 +99,44 @@ class DartaForm extends Component
         $this->departments = Branch::whereNull('deleted_at')
             ->pluck('title', 'id')
             ->toArray();
-        $this->recepientDepartment = collect([
-            ...Ward::whereNull('deleted_at')
+        $wards = collect();
+        $branches = collect();
+
+        $user = auth()->user(); // or however you get the logged-in user
+
+        if (GlobalFacade::ward() || $user->hasRole('superadmin')) {
+            $this->fileRecord->document_level = 'ward';
+            $wards = Ward::whereNull('deleted_at')
                 ->whereNull('deleted_by')
-                ->get(['id', 'ward_name_ne']),
-            ...Branch::whereNull('deleted_at')
+                ->get(['id', 'ward_name_ne'])
+                ->map(function ($ward) {
+                    $ward->display_name = $ward->ward_name_ne;
+                    return $ward;
+                });
+        }
+
+        if (GlobalFacade::department() || $user->hasRole('superadmin')) {
+            $this->fileRecord->document_level = 'palika';
+            $branches = Branch::whereNull('deleted_at')
                 ->whereNull('deleted_by')
-                ->get(['id', 'title']),
-        ])->mapWithKeys(fn($item) => [
-            get_class($item) . '_' . $item->id => $item->display_name
-        ])->toArray();
+                ->get(['id', 'title'])
+                ->map(function ($branch) {
+                    $branch->display_name = $branch->title;
+                    return $branch;
+                });
+        }
+
+        $this->recepientDepartment = $wards
+            ->merge($branches)
+            ->mapWithKeys(fn($item) => [
+                get_class($item) . '_' . $item->id => $item->display_name
+            ])
+            ->toArray();
+            
 
         $this->fiscalYears = FiscalYear::whereNull('deleted_at')->pluck('year', 'id');
 
-        $user = Auth::user();
+        $user = auth()->user()->fresh();
 
         if ($user->hasAnyRole(['वडा सचिव', 'वडा अध्यक्ष', 'वडा सदस्य', 'वडा प्रशासकीय प्रमुख'])) {
             $this->hideDocumentType = true;
@@ -211,9 +235,6 @@ class DartaForm extends Component
                 $this->fileRecord->ward = GlobalFacade::ward() ?? null;
                 $this->fileRecord->local_body_id = $applicant->kyc->permanent_local_body_id;
             }
-
-
-
             FileTrackingFacade::recordFile(model: $this->fileRecord, action: $this->action);
             $this->successFlash(__('filetracking::filetracking.file_record_created_successfully'));
             return redirect()->route('admin.register_files.index');

@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.agreement_format_list') }}</h5>
                     </div>
                     <div>
-                        @perm('agreement_formats create')
+                        @perm('plan_basic_settings create')
                             <a href="{{ route('admin.agreement_formats.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_agreement_format') }}</a>
                         @endperm

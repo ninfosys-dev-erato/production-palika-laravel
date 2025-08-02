@@ -157,39 +157,77 @@
     <script>
         function initNepaliDatePicker() {
             document.querySelectorAll('.nepali-date').forEach(function(input) {
+                // Check if already initialized to avoid double initialization
+                if (input.classList.contains('ndp-initialized')) {
+                    return;
+                }
+
                 // Remove any previous initialization (defensive)
                 if (input.nepaliDatePicker) {
                     try {
                         input.nepaliDatePicker('destroy');
                     } catch (e) {}
                 }
-                input.classList.remove('ndp-initialized');
-                // Initialize if not already done
-                if (!input.classList.contains('ndp-initialized')) {
-                    input.nepaliDatePicker({
-                        language: "ne",
-                        ndpYear: true,
-                        ndpMonth: true,
-                        unicodeDate: true,
-                        onChange: function() {
-                            input.dispatchEvent(new Event('input', {
-                                bubbles: true
-                            }));
-                        }
-                    });
-                    input.classList.add('ndp-initialized');
-                }
+
+                // Initialize the date picker
+                input.nepaliDatePicker({
+                    language: "ne",
+                    ndpYear: true,
+                    ndpMonth: true,
+                    unicodeDate: true,
+                    onChange: function() {
+                        input.dispatchEvent(new Event('input', {
+                            bubbles: true
+                        }));
+                    }
+                });
+
+                // Mark as initialized
+                input.classList.add('ndp-initialized');
             });
         }
 
+        // Initialize on DOM ready
         document.addEventListener("DOMContentLoaded", function() {
             initNepaliDatePicker();
         });
 
+        // Initialize on Livewire load
         document.addEventListener("livewire:load", function() {
+            // Initialize immediately
+            initNepaliDatePicker();
+
+            // Initialize after each Livewire update
             Livewire.hook('message.processed', (message, component) => {
-                initNepaliDatePicker();
+                // Add a small delay to ensure DOM is updated
+                setTimeout(() => {
+                    initNepaliDatePicker();
+                }, 100);
             });
+
+            // Initialize after DOM mutations (for conditional rendering)
+            Livewire.hook('element.updated', (el, component) => {
+                // Check if the updated element or its children contain nepali-date inputs
+                const nepaliInputs = el.querySelectorAll('.nepali-date');
+                if (nepaliInputs.length > 0) {
+                    setTimeout(() => {
+                        initNepaliDatePicker();
+                    }, 100);
+                }
+            });
+        });
+
+        // Additional event listeners for modal and tab changes
+        document.addEventListener('shown.bs.modal', function() {
+            setTimeout(() => {
+                initNepaliDatePicker();
+            }, 100);
+        });
+
+        document.addEventListener('shown.bs.tab', function() {
+            setTimeout(() => {
+                initNepaliDatePicker();
+            }, 100);
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.js"></script>

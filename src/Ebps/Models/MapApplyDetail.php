@@ -81,4 +81,9 @@ class MapApplyDetail extends Model
         $this->belongsTo(MapApply::class, 'map_apply_id');
     }
 
+    public function organization()
+{
+    return $this->belongsTo(Organization::class, 'organization_id');
+}
+
 }

@@ -9,6 +9,7 @@ use Src\Ebps\Enums\ApplicationTypeEnum;
 use Src\Ebps\Models\BuildingConstructionType;
 use Src\Ebps\Models\DocumentFile;
 use Src\Ebps\Models\MapApply;
+use Src\Ebps\Models\MapApplyDetail;
 use Src\Ebps\Models\MapApplyStep;
 use Src\Ebps\Models\MapStep;
 use PDF;
@@ -90,8 +91,11 @@ class BuildingRegistrationAdminController extends Controller
         ])->findOrFail($id);
 
         $documents = DocumentFile::where('map_apply_id', $mapApply->id)->get();
+        $mapApplyDetail = MapApplyDetail::with(['organization.localBody', 'organization.district'])->where('map_apply_id', $id)->first();
 
-        return view('Ebps::building-registration.building-registration-show')->with(compact('mapApply', 'documents'));
+        $organization = $mapApplyDetail?->organization;
+
+        return view('Ebps::building-registration.building-registration-show')->with(compact('mapApply', 'documents', 'organization'));
 
     }
 

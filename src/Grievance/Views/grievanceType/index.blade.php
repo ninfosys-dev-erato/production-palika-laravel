@@ -15,7 +15,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="text-primary fw-bold">{{ __('grievance::grievance.grievance_type') }}</h5>
-                    @perm('grievance_type_create')
+                    @perm('grievance_setting create')
                         <div>
                             <a href="{{ route('admin.grievance.grievanceType.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('grievance::grievance.add_grievance_type') }}</a>

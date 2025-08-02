@@ -175,8 +175,7 @@ class MapApply extends Model
     }
     public function houseOwner()
     {
-        return $this->belongsTo(HouseOwnerDetail::class, 'house_owner_id')
-                    ->where('ownership_type', OwnershipTypeEnum::HOUSE_OWNER->value);
+        return $this->belongsTo(HouseOwnerDetail::class, 'house_owner_id');
     }
     
     public function landOwner()

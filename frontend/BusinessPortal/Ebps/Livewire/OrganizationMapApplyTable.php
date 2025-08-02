@@ -51,7 +51,7 @@ class OrganizationMapApplyTable extends DataTableComponent
 
         return MapApply::query()
        ->with(['fiscalYear', 'customer', 'landDetail', 'constructionType', 'mapApplySteps', 'houseOwner', 'localBody', 'district'])
-        ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no')
+        ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id')
         ->where('application_type', ApplicationTypeEnum::MAP_APPLIES)
         ->whereIn('ebps_map_applies.id', $mapApplyIds)
         ->whereNull('ebps_map_applies.deleted_at')

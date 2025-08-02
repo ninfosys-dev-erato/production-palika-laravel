@@ -1,6 +1,8 @@
 <x-layout.customer-app header="{{ __('Dashboard') }}">
     @php
-        $customer = Src\Customers\Models\Customer::where('id', Auth::guard('customer')->id())->with('kyc')->first();
+        $customer = Src\Customers\Models\Customer::where('id', Auth::guard('customer')->id())
+            ->with('kyc')
+            ->first();
     @endphp
     <div class="row">
         <!-- Welcome Card -->

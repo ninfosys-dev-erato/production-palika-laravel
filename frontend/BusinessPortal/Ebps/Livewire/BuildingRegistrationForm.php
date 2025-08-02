@@ -300,7 +300,7 @@ class BuildingRegistrationForm extends Component
         $this->mapProcessTypes = MapProcessTypeEnum::cases();
         $this->applicantTypes = ApplicantTypeEnum::cases();
         $this->ownerships = LandOwernshipEnum::cases();
-        $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::MAP_APPLIES)->get();
+        $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)->get();
         $this->options=DocumentStatusEnum::getForWeb();
         $this->documents = [];
 
@@ -416,7 +416,7 @@ class BuildingRegistrationForm extends Component
             }
             if($this->landOwnerDetail['local_body_id'])
             {
-                $this->geLandOwnerWards();          
+                $this->getLandOwnerWards();          
             }
                    
         }else{

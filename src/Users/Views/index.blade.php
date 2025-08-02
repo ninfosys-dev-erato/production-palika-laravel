@@ -5,7 +5,7 @@
         <div class="card-header d-flex justify-content-between">
             <h5 class="text-primary fw-bold">{{ __('users::users.users') }}</h5>
             <div>
-                @perm('users_create')
+                @perm('users create')
                     <a href="{{ route('admin.users.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                         {{ __('users::users.add_users') }}</a>
                 @endperm

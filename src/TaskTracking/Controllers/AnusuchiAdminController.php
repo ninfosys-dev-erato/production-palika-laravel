@@ -21,6 +21,7 @@ class AnusuchiAdminController extends Controller
 
     function index(Request $request)
     {
+
         return view('TaskTracking::anusuchi.index');
     }
 

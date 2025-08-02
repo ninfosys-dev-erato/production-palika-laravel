@@ -52,16 +52,16 @@ class BranchTable extends DataTableComponent
             Column::make(__('employees::employees.title'), "title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('employees::employees.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('branch _dit') || can('branch_delete')) {
+        if (can('branch edit') || can('branch delete')) {
             $actionsColumn = Column::make(__('employees::employees.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('branch_edit')) {
+                if (can('branch edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('branch_delete')) {
+                if (can('branch delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -79,7 +79,7 @@ class BranchTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('branch_edit')) {
+        if (!can('branch edit')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -89,18 +89,18 @@ class BranchTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('branch_delete')) {
+        if (!can('branch delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
         $service = new BranchAdminService();
         $service->delete(Branch::findOrFail($id));
-        $this->successFlash(__('employees::employees.branch_deleted_successfully'));
+        $this->successFlash(__('employees::employees.branch deleted_successfully'));
     }
 
     public function deleteSelected()
     {
-        if (!can('branch_delete')) {
+        if (!can('branch delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

@@ -38,7 +38,7 @@ class FileRecordAdminDto
         public ?string $fiscal_year,
         public ?string $file,
         public ?string $farsyaut_type,
-        public ?string $farsyaut_id,
+        public int|string|null $farsyaut_id,
         public ?string $sender_document_number,
         public ?string $registration_date,
         public ?string $received_date = null,
@@ -73,9 +73,9 @@ class FileRecordAdminDto
         $applicant_mobile_no = "";
         $applicant_address = "";
         $document_level = $subjectModel->is_ward ? 'ward' : 'palika';
-        $sender_document_number = null;
-        $registration_date = null;
-        $received_date = null;
+        $sender_document_number= null;
+        $registration_date= null;
+        $received_date= null;
         switch ($class) {
             case "Src\Grievance\Models\GrievanceDetail":
                 $title = $subjectModel->subject;
@@ -84,7 +84,6 @@ class FileRecordAdminDto
                 $applicant_mobile_no = $subjectModel->customer->mobile_no ?? 'N/A';
                 $departments =  $subjectModel->grievanceType?->departments;
                 $departmentSelected =  $subjectModel?->branches;
-
                 if ($document_level === 'ward') {
                     $ward = $subjectModel->ward_id ?? GlobalFacade::ward();
                 } else {
@@ -112,10 +111,8 @@ class FileRecordAdminDto
                 $recommendation = $subjectModel->load('recommendation.departments', 'customer.kyc.permanentLocalBody');
                 $signeeType = $subjectModel->signee_type;
                 $signeeId = $subjectModel->signee_id;
-
                 if ($signeeType && $signeeId) {
                     $signee = $signeeType::find($signeeId);
-
                     if ($signee instanceof \App\Models\User) {
                         $signeeName = $signee->name;
                     } elseif ($signee instanceof \Src\Recommendation\Models\RecommendationSigneesUser) {
@@ -126,7 +123,6 @@ class FileRecordAdminDto
                 } else {
                     $signeeName = '';
                 }
-
                 $title = $recommendation->recommendation->title;
                 $subjectModel = $subjectModel->load('customer');
                 $applicant_name = $subjectModel->customer->name;
@@ -180,7 +176,6 @@ class FileRecordAdminDto
                 $recipient_id = $subjectModel->ward_no;
                 $registration_date = $subjectModel->application_date_en ?? null;
 
-
                 break;
 
             case "Src\FileTracking\Models\FileRecord":
@@ -226,8 +221,8 @@ class FileRecordAdminDto
                 $applicant_mobile_no = $subjectModel->phone_no ?? 'N/A';
                 $departments =  null;
                 $local_body_id = $subjectModel->local_body_id;
-                $recipient_type = 'Src\Wards\Models\Ward';
-                $recipient_id = $complainant->permanent_ward_id ?? GlobalFacade::ward();
+                    $recipient_type = 'Src\Wards\Models\Ward';
+                    $recipient_id = $complainant->permanent_ward_id ?? GlobalFacade::ward();
                 break;
         }
 
@@ -257,10 +252,10 @@ class FileRecordAdminDto
             file: $file ?? null,
             fiscal_year: $fiscal_year ?? key(getSettingWithKey('fiscal-year')),
             farsyaut_type: $farsyaut_type ?? null,
-            farsyaut_id: $farsyaut_id ?? null,
-            sender_document_number: $sender_document_number ?? null,
-            registration_date: $registration_date ?? null,
-            received_date: $received_date ?? null,
+            farsyaut_id: (!empty($farsyaut_id) && is_numeric($farsyaut_id)) ? (int)$farsyaut_id : null,
+            sender_document_number: $sender_document_number??null,
+            registration_date: $registration_date??null,
+            received_date: $received_date??null,
             cc: $cc ?? null,
             recipient_address: $recipient_address ?? null,
         );

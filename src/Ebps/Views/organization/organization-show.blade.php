@@ -180,12 +180,6 @@
                         {{ __('ebps::ebps.other_document') }}
                     </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                        data-bs-target="#navs-pills-tax" aria-controls="navs-pills-logs" aria-selected="false">
-                        {{ __('ebps::ebps.tax_clearance') }}
-                    </button>
-                </li>
 
             </ul>
 
@@ -264,31 +258,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="navs-pills-tax" role="tabpanel">
-                    <div class="card-01">
-                        <div class="row">
-                            <div class="card-body border shadow-lg bg-light flex-fill" style="border-radius: 2px;">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <strong>{{ __('ebps::ebps.tax_document') }}:</strong><br>
-                                        @if ($organization->taxClearances)
-                                            @php
-                                                $taxClearance = $organization->taxClearances->first();
-                                            @endphp
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalTaxImage"
-                                                onclick="showTaxImage('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')">
-                                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}"
-                                                    alt="" class="img-fluid" />
-                                            </a>
-                                        @else
-                                            <p>{{ __('ebps::ebps.not_provided') }}</p>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
                     aria-hidden="true">
@@ -322,6 +291,63 @@
                         </div>
                     </div>
                 </div>
+                <div class="card shadow-sm border-0 rounded-lg bg-white mb-4 mt-4">
+                    <div class="card-header bg-transparent border-0 pb-0">
+                        <h5 class="fw-bold text-dark mb-0">
+                            <i class="bx bx-receipt me-2 text-primary"></i>
+                            {{ __('ebps::ebps.tax_clearances_and_renewal') }}
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        @if ($organization->taxClearances && $organization->taxClearances->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="fw-semibold">{{ __('ebps::ebps.year') }}</th>
+                                            <th class="fw-semibold">{{ __('ebps::ebps.document') }}</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($organization->taxClearances as $taxClearance)
+                                            <tr>
+                                                <td>
+                                                    <span
+                                                        class="badge bg-primary rounded-pill">{{ $taxClearance->year }}</span>
+                                                </td>
+                                                <td>
+                                                    @if ($taxClearance->document)
+                                                        <a href="#" data-bs-toggle="modal"
+                                                            data-bs-target="#taxImageModal"
+                                                            onclick="showTaxImageModal('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')"
+                                                            class="btn btn-sm btn-outline-primary">
+                                                            <i class="bx bx-image me-1"></i>
+                                                            {{ __('ebps::ebps.view_document') }}
+                                                        </a>
+                                                    @else
+                                                        <span
+                                                            class="text-muted">{{ __('ebps::ebps.not_provided') }}</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="bx bx-receipt text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                                <h6 class="text-muted mb-2">{{ __('ebps::ebps.no_tax_clearances_found') }}</h6>
+                                <p class="text-muted small">
+                                    {{ __('ebps::ebps.upload_your_first_tax_clearance_above') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
                 <script>
                     function showImage(src) {
                         document.getElementById('modalImage').src = src;
@@ -329,6 +355,10 @@
 
                     function showTaxImage(src) {
                         document.getElementById('modalTaxImg').src = src;
+                    }
+
+                    function showTaxImageModal(src) {
+                        document.getElementById('taxImageModalImg').src = src;
                     }
                 </script>
             </div>

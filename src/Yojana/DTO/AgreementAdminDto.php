@@ -24,7 +24,7 @@ public static function fromLiveWireModel(Agreement $agreement):AgreementAdminDto
         plan_start_date: $agreement->plan_start_date,
         plan_completion_date: $agreement->plan_completion_date,
         experience: $agreement->experience,
-        deposit_number: $agreement->deposit_number
+        deposit_number: $agreement->deposit_number ?? ''
     );
 }
 }

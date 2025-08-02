@@ -10,7 +10,7 @@
                     <div class="d-flex gap-2">
                         <a href="{{ route('customer.ebps.building-registrations.index') }}"
                             class="btn btn-outline-primary">
-                            <i class="bx bx-arrow-back"></i> {{ __('ebps:ebps.back') }}
+                            <i class="bx bx-arrow-back"></i> {{ __('Back') }}
                         </a>
                     </div>
                 </div>

@@ -1,106 +1,229 @@
-<x-layout.customer-app header="Map Apply View">
+<x-layout.customer-app header="Business Registration">
+    <style>
+        :root {
+            --primary-color: #14539A;
+            --secondary-color: #E04622;
+            --accent-color: #F1C40F;
+            --light-bg: #fff;
+            --border-color: #d9e2ef;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .header-logo {
+            max-height: 60px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), #0c3b75);
+            color: white;
+            padding: 1.5rem 0;
+
+            margin-bottom: 2rem;
+        }
+
+        .section-card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .section-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.5rem 0.5rem 0 0;
+            /* margin-bottom: 1.5rem; */
+        }
+
+        .section-subheader {
+            background-color: #e9ecef;
+            border-left: 4px solid var(--primary-color);
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .data-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 0;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            width: 35%;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .data-value {
+            width: 65%;
+            font-weight: 600;
+        }
+
+        .badge-fiscal-year {
+            background-color: var(--accent-color);
+            color: #212529;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.3rem;
+        }
+
+        .info-box {
+            background-color: rgba(20, 83, 154, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .registration-details {
+            background-color: #fff8e1;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+        }
+
+
+        @media print {
+            .section-card {
+                break-inside: avoid;
+            }
+
+            .page-header {
+                background: white !important;
+                color: var(--primary-color) !important;
+                border-bottom: 2px solid var(--primary-color);
+            }
+
+            .section-header {
+                background-color: #f1f1f1 !important;
+                color: black !important;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
 
     <div class="d-flex justify-content-end gap-2 mb-3">
         <a href="javascript:history.back()" class="btn btn-outline-primary">
             <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
         </a>
+
+        {{-- <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
+            <i class="bx bx-printer"></i> Download PDF
+        </button> --}}
     </div>
 
-    <div class="container py-4">
-        <div class="card shadow-sm mb-4">
-            <div class="card-body border-start border-dark border-3 bg-light">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2 class="h4 mb-1 fw-bold text-primary">{{ __('ebps::ebps.building_registration_details') }}</h2>
-                        <p class="small mb-0 text-primary">{{ __('ebps::ebps.submission_id') }}:
-                            <strong>{{ $mapApply->submission_id }}</strong>
-                        </p>
-                    </div>
-                    <div>
-                        <span class="badge bg-primary">{{ $mapApply->fiscalYear->year ?? 'N/A' }}</span>
-                    </div>
+    <div class="container mb-5 p-0">
+
+        <div class="section-card">
+            <div class="section-header d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-map-marked-alt me-2"></i> {{ __('ebps::ebps.building_registration_details') }}
+                </div>
+                <div>
+                    <span class="badge badge-fiscal-year">
+                        <i class="far fa-calendar-alt me-1"></i> आ.व. {{ $mapApply->fiscalYear->year }}
+                    </span>
                 </div>
             </div>
-        </div>
 
-        <div class="card shadow-sm h-100 mb-4">
+            <!-- <strong>{{ $mapApply->submission_id }}</strong> -->
+
             <div class="card-body">
                 <!-- Building Details Section -->
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-3 text-dark border-bottom pb-2">१. प्रस्तावित भवनको विवरण</h4>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.१ निर्माण भइसकेको किसिम :</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->buildingConstructionType->title ?? 'Not Provided' }}</span>
+
+                    <!-- section 1 -->
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> १. प्रस्तावित भवनको विवरण
+                    </div>
+
+                    <div class="px-3 mb-4">
+                        <div class="row mb-2">
+
+                            <div class="data-row">
+                                <div class="data-label">१.१ निर्माण भइसकेको किसिम :</div>
+                                <div class="data-value">
+                                    {{ $mapApply->buildingConstructionType->title ?? 'Not Provided' }}
+                                </div>
+                            </div>
+
+                            <div class="data-row">
+                                <div class="data-label">१.२ प्रयोग :</div>
+                                <div class="data-value">आवासीय</div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.२ प्रयोग :</strong>
-                                <span class="text-dark">आवासीय</span>
+
+
+                        <div class="data-row">
+                            <div class="data-label">१.३ भवनको ढलानको किसिम :</div>
+                            <div class="data-value">{{ $mapApply->buildingRoofType->title ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">१.४ भवन निर्माण भएको साल :</div>
+                            <div class="data-value">{{ $mapApply->year_of_house_built ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">१.५ भवनको तल्ला संख्या :</div>
+                            <div class="data-value">{{ $mapApply->storey_no ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">१.६ भवनको कोठा संख्या :</div>
+                            <div class="data-value">{{ $mapApply->no_of_rooms ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">१.७ भवनको जम्मा क्षेत्रफल :</div>
+                            <div class="data-value">{{ $mapApply->area_of_building_plinth ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">१.८ अन्य निर्माण (भवन बाहेक जस्तै: कम्पाउणडवाल, टहरा)ले ढाकेको
+                                क्षेत्रफल (वर्ग फिट/वर्ग मिटर) :</div>
+                            <div class="data-value">{{ $mapApply->detail->other_construction_area ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.३ भवनको ढलानको किसिम :</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->buildingRoofType->title ?? 'Not Provided' }}</span>
+
+                        <div class="data-row">
+                            <div class="data-label">१.९ भवनको कुल उचाई जमिनको सतहबाट (मिटर/फिट) :</div>
+                            <div class="data-value">{{ $mapApply->former_other_construction_area ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.४ भवन निर्माण भएको साल :</strong>
-                                <span class="text-dark">{{ $mapApply->year_of_house_built ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.५ भवनको तल्ला संख्या :</strong>
-                                <span class="text-dark">{{ $mapApply->storey_no ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.६ भवनको कोठा संख्या :</strong>
-                                <span class="text-dark">{{ $mapApply->no_of_rooms ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.७ भवनको जम्मा क्षेत्रफल :</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->area_of_building_plinth ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.८ अन्य निर्माण (भवन बाहेक जस्तै:कम्पाउणडवाल,
-                                    टहरा)ले ढाकेको क्षेत्रफल (वर्ग फिट/वर्ग मिटर) :</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->detail->other_construction_area ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.९ भवनको कुल उचाई जमिनको सतहबाट (मिटर/फिट)
-                                    :</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->former_other_construction_area ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">१.१० भवन निर्माण र साबिक भवन निर्माणले ढाक्ने
-                                    जम्मा क्षेत्रफल(Ground Coverage)(वर्ग फिट/वर्ग मिटर) :</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->former_other_construction_area ?? 'Not Provided' }}</span>
+
+                        <div class="data-row">
+                            <div class="data-label">१.१० भवन निर्माण र साबिक भवन निर्माणले ढाक्ने जम्मा क्षेत्रफल
+                                (Ground Coverage) (वर्ग फिट/वर्ग मिटर) :</div>
+                            <div class="data-value">{{ $mapApply->former_other_construction_area ?? 'Not Provided' }}
                             </div>
                         </div>
                     </div>
 
-                    <h5 class="fw-bold mb-3 text-dark">१.११ भवन/निर्माण तला अनुसार क्षेत्रफल सम्बन्धि विवरण:</h5>
+
+                    <!-- section 1.11 -->
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> १.११ भवन/निर्माण तला अनुसार क्षेत्रफल सम्बन्धि विवरण:
+                    </div>
                     <div class="table-responsive mb-5">
                         <table class="table table-bordered">
                             <thead class="bg-light">
@@ -133,42 +256,47 @@
 
                 <!-- Land Details Section -->
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-3 text-dark border-bottom pb-2">२. जग्गाको विवरण</h4>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">२.१ कित्ता नं:</strong>
-                                <span class="text-dark">{{ $mapApply->landDetail->area_sqm ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">२.२ सिट नं:</strong>
-                                <span class="text-dark">{{ $mapApply->landDetail->seat_no ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">२.३ निर्माण भएको साल:</strong>
-                                <span class="text-dark">{{ $mapApply->year_of_house_built }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">२.४ कित्ताको साबिक गा.वि.स:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->landDetail->localBody->name ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">२.५ टोल:</strong>
-                                <span class="text-dark">{{ $mapApply->landDetail->tole ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> २. जग्गाको विवरण:
                     </div>
 
-                    <h5 class="fw-bold mb-3 text-dark">चार किल्ला विवरण</h5>
+                    <div class="px-3 mb-4">
+
+                        <div class="data-row">
+                            <div class="data-label">२.१ कित्ता नं:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->area_sqm ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">२.२ सिट नं:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->seat_no ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">२.३ निर्माण भएको साल:</div>
+                            <div class="data-value">{{ $mapApply->year_of_house_built ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">२.४ कित्ताको साबिक गा.वि.स:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->localBody->name ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">२.५ टोल:</div>
+                            <div class="data-value">{{ $mapApply->landDetail->tole ?? 'Not Provided' }}</div>
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- char kila bibaran -->
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> चार किल्ला विवरण
+                    </div>
+
                     <div class="table-responsive mb-5">
                         <table class="table table-bordered">
                             <thead class="bg-light">
@@ -199,178 +327,162 @@
 
                 <!-- Land Owner Details Section -->
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-3 text-dark border-bottom pb-2">३. जग्गा धनी विवरण</h4>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.१ नाम:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->landOwner->owner_name ?? 'Not Provided' }}</span>
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> ३. जग्गा धनी विवरण
+                    </div>
+
+                    <div class="px-3 mb-4">
+                        <div class="data-row">
+                            <div class="data-label">३.१ नाम:</div>
+                            <div class="data-value">{{ $mapApply->landOwner->owner_name ?? 'Not Provided' }}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">३.२ फोन नं:</div>
+                            <div class="data-value">{{ $mapApply->landOwner->mobile_no ?? 'Not Provided' }}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">३.३ नागरिकता नं:</div>
+                            <div class="data-value">{{ $mapApply->landOwner->citizenship_no ?? 'Not Provided' }}</div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-label">३.५ जारी मिति:</div>
+                            <div class="data-value">
+                                {{ $mapApply->landOwner->citizenship_issued_date ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.२ फोन नं:</strong>
-                                <span class="text-dark">{{ $mapApply->landOwner->mobile_no ?? 'Not Provided' }}</span>
+                        <div class="data-row">
+                            <div class="data-label">३.६ जारी जिल्ला:</div>
+                            <div class="data-value">
+                                {{ $mapApply->landOwner->citizenship_issued_at ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.३ नागरिकता नं:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->landOwner->citizenship_no ?? 'Not Provided' }}</span>
+                        <div class="data-row">
+                            <div class="data-label">३.७ प्रदेश:</div>
+                            <div class="data-value">{{ $mapApply->landOwner->province->title ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.५ जारी मिति:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->landOwner->citizenship_issued_date ?? 'Not Provided' }}</span>
+                        <div class="data-row">
+                            <div class="data-label">३.८ पालिका:</div>
+                            <div class="data-value">{{ $mapApply->landOwner->localBody->title ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.६ जारी जिल्ला:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->landOwner->citizenship_issued_at ?? 'Not Provided' }}</span>
-                            </div>
+                        <div class="data-row">
+                            <div class="data-label">३.९ टोल:</div>
+                            <div class="data-value">{{ $mapApply->landOwner->tole ?? '-' }}</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.७ प्रदेश:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->landOwner->province->title ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.८ पालिका:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->landOwner->localBody->title ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.९ टोल:</strong>
-                                <span class="text-dark">{{ $mapApply->landOwner->tole ?? '-' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light text-center">
-                                <strong class="d-block mb-2 text-dark">३.१० फोटो:</strong>
-                                <div class="border p-2 d-inline-block">
-                                    <img src="{{ asset('path/to/photo.jpg') }}" alt="Land Owner Photo"
-                                        class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
-                                </div>
+                        <div class="data-row">
+                            <div class="data-label">३.१० फोटो:</div>
+                            <div class="data-value">
+                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $mapApply->landOwner->photo, 'local', 'tempUrl') }}"
+                                    target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
+
                 <!-- House Owner Details Section -->
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-3 text-dark border-bottom pb-2">३. घर धनी विवरण</h4>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.१ नाम:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->houseOwner->owner_name ?? 'Not Provided' }}</span>
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> ३. घर धनी विवरण
+                    </div>
+                    <div class="px-3 mb-4">
+                        <div class="data-row">
+                            <div class="data-label">३.१ नाम:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->owner_name ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">३.२ फोन नं:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->mobile_no ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">३.३ नागरिकता नं:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->citizenship_no ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.२ फोन नं:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->houseOwner->mobile_no ?? 'Not Provided' }}</span>
+
+                        <div class="data-row">
+                            <div class="data-label">३.५ जारी मिति:</div>
+                            <div class="data-value">
+                                {{ $mapApply->houseOwner->citizenship_issued_date ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.३ नागरिकता नं:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->houseOwner->citizenship_no ?? 'Not Provided' }}</span>
+
+                        <div class="data-row">
+                            <div class="data-label">३.६ जारी जिल्ला:</div>
+                            <div class="data-value">
+                                {{ $mapApply->houseOwner->citizenship_issued_at ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.५ जारी मिति:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->houseOwner->citizenship_issued_date ?? 'Not Provided' }}</span>
+
+                        <div class="data-row">
+                            <div class="data-label">३.७ प्रदेश:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->province->title ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.६ जारी जिल्ला:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->houseOwner->citizenship_issued_at ?? 'Not Provided' }}</span>
+
+                        <div class="data-row">
+                            <div class="data-label">३.८ पालिका:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->localBody->title ?? 'Not Provided' }}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.७ प्रदेश:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->houseOwner->province->title ?? 'Not Provided' }}</span>
-                            </div>
+
+                        <div class="data-row">
+                            <div class="data-label">३.९ टोल:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->tole ?? '-' }}</div>
+
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.८ पालिका:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->houseOwner->localBody->title ?? 'Not Provided' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">३.९ टोल:</strong>
-                                <span class="text-dark">{{ $mapApply->landOwner->tole ?? '-' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light text-center">
-                                <strong class="d-block mb-2 text-dark">३.१० फोटो:</strong>
-                                <div class="border p-2 d-inline-block">
-                                    <img src="{{ asset('path/to/photo.jpg') }}" alt="House Owner Photo"
-                                        class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
-                                </div>
+
+                        <div class="data-row">
+                            <div class="data-label">३.१० फोटो:</div>
+                            <div class="data-value">
+
+
+                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $mapApply->houseOwner->photo, 'local', 'tempUrl') }}"
+                                    target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
+
+
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Applicant Details Section -->
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-3 text-dark border-bottom pb-2">४. निवेदकको विवरण</h4>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">४.१ निवेदकको प्रकार:</strong>
-                                <span class="text-dark">{{ $mapApply->applicant_type }}</span>
-                            </div>
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> ४. निवेदकको विवरण
+                    </div>
+                    <div class="px-3 mb-4">
+
+
+                        <div class="data-row">
+                            <div class="data-label">४.१ निवेदकको प्रकार:</div>
+                            <div class="data-value">{{ $mapApply->applicant_type }}</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">४.२ नाम:</strong>
-                                <span class="text-dark">{{ $mapApply->full_name }}</span>
-                            </div>
+                        <div class="data-row">
+                            <div class="data-label">४.२ नाम:</div>
+                            <div class="data-value">{{ $mapApply->full_name }}</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">४.३ फोन नं:</strong>
-                                <span class="text-dark">{{ $mapApply->buildingDetail->mobile_no ?? '१२३' }}</span>
-                            </div>
+                        <div class="data-row">
+                            <div class="data-label">४.३ फोन नं:</div>
+                            <div class="data-value">{{ $mapApply->buildingDetail->mobile_no ?? '१२३' }}</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">४.४ उमेर:</strong>
-                                <span class="text-dark">{{ $mapApply->age ?? '-' }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="border p-3 h-100 bg-light">
-                                <strong class="d-block mb-1 text-dark">४.५ निर्माण मिति:</strong>
-                                <span
-                                    class="text-dark">{{ $mapApply->buildingDetail->build_date ?? '२०८१-०१-२५' }}</span>
+
+                        {{-- <div class="data-row">
+                            <strong class="data-label">४.४ उमेर:</strong>
+                            <span class="data-value">{{ $mapApply->age ?? '-' }}</span>
+                        </div> --}}
+                        <div class="data-row">
+
+                            <div class="data-label">४.४ निर्माण मिति:</div>
+                            <div class="data-value">{{ $mapApply->buildingDetail->build_date ?? '२०८१-०१-२५' }}
                             </div>
                         </div>
                     </div>
@@ -378,7 +490,9 @@
 
                 <!-- Four Boundaries Details Table -->
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-3 text-dark border-bottom pb-2">५. चार किल्ला विवरण</h4>
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i> ५. चार किल्ला विवरण
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="bg-light">
@@ -408,36 +522,107 @@
                     </div>
                 </div>
 
+
+                <div class="section-subheader">
+                    <i class="fas fa-user me-2"></i> {{ __('संस्था/परामर्शदाताहरु') }}
+                </div>
+                <div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('परामर्शदाता') }}:</div>
+                        <div class="data-value">{{ $organization->org_name_ne ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('इमेल') }}:</div>
+                        <div class="data-value">{{ $organization->org_email ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('फोन नम्बर') }}:</div>
+                        <div class="data-value">{{ $organization->org_contact ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ठेगाना') }}:</div>
+                        <div class="data-value">
+                            {{ $organization->localBody->title . ', ' . $organization->district->title ?? 'N/A' }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-subheader mt-4">
+                    <i class="fas fa-signature me-2"></i> {{ __('ebps::ebps.other_documents') }}
+                </div>
+
+                <div class="row">
+                    @forelse ($documents as $document)
+                        @php
+                            $fileUrl = customFileAsset(
+                                config('src.Ebps.ebps.path'),
+                                $document->file,
+                                'local',
+                                'tempUrl',
+                            );
+                        @endphp
+
+                        <div class="col-md-4 mb-3 text-center">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body">
+                                    <h6 class="text-truncate" title="{{ $document->title }}">{{ $document->title }}
+                                    </h6>
+                                    <a href="{{ $fileUrl }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm mt-2">
+                                        <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12 text-center text-muted fst-italic">
+                            <i class="ti ti-file-off fs-2 d-block mb-2"></i>
+                            {{ __('ebps::ebps.no_documents_uploaded') }}.
+                        </div>
+                    @endforelse
+                </div>
+
+
                 <!-- Certification Section -->
-                {{-- <div class="mt-5 pt-4 border-top">
+                <!-- <div class="mt-5 pt-4 border-top">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="border p-4 bg-light">
                                 <h5 class="fw-bold mb-4 text-dark">प्रमाणित गर्ने:</h5>
+
                                 <p class="mb-2 text-dark">नाम: <span
                                         class="fw-medium">{{ $officerName ?? 'प्रकाश शर्मा' }}</span></p>
                                 <p class="mb-2 text-dark">पद: <span
                                         class="fw-medium">{{ $officerPost ?? 'ईन्जिनियर' }}</span></p>
                                 <div class="mt-4">
                                     <p class="mb-1 text-dark">सही:</p>
-                                    <div class="border-bottom border-dark" style="width: 200px; height: 40px;"></div>
+                                    <div class="border-bottom border-dark" style="width: 200px; height: 40px;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                      
+                        {{-- <div class="col-md-6 d-flex align-items-center justify-content-center">
+                            <div class="text-center">
+                                <div class="border border-2 border-dark rounded-circle d-inline-flex align-items-center justify-content-center"
+                                    style="width: 150px; height: 150px;">
+                                    <p class="mb-0 fw-bold text-dark">कार्यालयको छाप</p>
+                                </div>
+                            </div>
+                        </div> --}}
                     </div>
-                </div> --}}
+                </div> -->
             </div>
-        </div>
 
-        <!-- Action Buttons -->
-        <div class="d-flex justify-content-end gap-2 mb-4">
-            <button type="button" class="btn btn-outline-dark" onclick="window.print()">
-                <i class="bi bi-printer me-1"></i> प्रिन्ट गर्नुहोस्
-            </button>
-            <button type="button" class="btn btn-dark">
-                <i class="bi bi-check-square me-1"></i> स्वीकृत गर्नुहोस्
-            </button>
+
+            <!-- Action Buttons -->
+            {{-- <div class="d-flex justify-content-end gap-2 mb-4">
+                <button type="button" class="btn btn-outline-dark" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i> प्रिन्ट गर्नुहोस्
+                </button>
+                <button type="button" class="btn btn-dark">
+                    <i class="bi bi-check-square me-1"></i> स्वीकृत गर्नुहोस्
+                </button>
+            </div> --}}
         </div>
     </div>
 
@@ -486,4 +671,26 @@
             vertical-align: middle;
         }
     </style>
+
+    <script>
+        function downloadPdf(id) {
+            fetch(`/admin/ebps/building-registrations/print-form/${id}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'building_registration_exports.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(console.error);
+        }
+    </script>
 </x-layout.customer-app>

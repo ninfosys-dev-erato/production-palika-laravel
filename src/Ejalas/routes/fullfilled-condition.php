@@ -12,7 +12,7 @@ Route::group(['prefix' => 'admin/ejalas/fulfilled_conditions', 'as' => 'admin.ej
     // Route::get('/reconciliation/index', [FulfilledConditionAdminController::class, 'reconciliationIndex'])->name('reconciliationIndex');
 });
 Route::group(['prefix' => 'admin/ejalas/fulfilled_conditions', 'as' => 'admin.ejalas.report.fulfilled_conditions.', 'middleware' => ['web', 'auth', 'check_module:ejalash']], function () {
-    Route::get('/report', [FulfilledConditionAdminController::class, 'report'])->name('report');
+    Route::get('/fulfilled_conditions/report', [FulfilledConditionAdminController::class, 'report'])->name('report');
 });
 
 Route::group(['prefix' => 'admin/ejalas/fulfilled_conditions', 'as' => 'admin.ejalas.reconciliation.fulfilled_conditions.', 'middleware' => ['web', 'auth', 'check_module:ejalash']], function () {

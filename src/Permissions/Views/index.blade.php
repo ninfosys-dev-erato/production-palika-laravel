@@ -4,7 +4,7 @@
 
         <div class="card-header d-flex justify-content-between">
             <h5 class="text-primary fw-bold">{{ __('Permission') }} {{ __('List') }}</h5>
-            @perm('permissions_create')
+            @perm('permissions create')
                 <div>
                     <a href="{{ route('admin.permissions.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                         {{ __('Add') }} {{ __('Permission') }}</a>

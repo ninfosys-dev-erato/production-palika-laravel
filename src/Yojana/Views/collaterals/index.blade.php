@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('Collateral List') }}</h5>
                     </div>
                     <div>
-                        @perm('collaterals create')
+                        @perm('plan create')
                             <a href="{{ route('admin.collaterals.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('Add Collateral') }}</a>
                         @endperm

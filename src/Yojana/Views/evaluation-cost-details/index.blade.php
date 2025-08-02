@@ -16,7 +16,7 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('evaluation_cost_details create')
+                        @perm('plan create')
                             <a href="{{ route('admin.evaluation_cost_details.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_evaluation_cost_detail') }}</a>
                         @endperm

@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.plan_extension_record_list') }}</h5>
                     </div>
                     <div>
-                        @perm('plan_extension_records create')
+                        @perm('plan create')
                             <a href="{{ route('admin.plan_extension_records.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_plan_extension_record') }}</a>
                         @endperm

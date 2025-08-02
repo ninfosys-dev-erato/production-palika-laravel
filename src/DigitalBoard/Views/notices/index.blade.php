@@ -16,7 +16,7 @@
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="text-primary fw-bold">{{ __('digitalboard::digitalboard.notices') }}</h5>
                         <div>
-                            @perm('notices create')
+                            @perm('digital_board create')
                                 <a href="{{ route('admin.digital_board.notices.create') }}" class="btn btn-info"><i
                                         class="bx bx-plus"></i> {{ __('digitalboard::digitalboard.add_notice') }}</a>
                             @endperm

@@ -48,7 +48,7 @@ class RegisterTokenTable extends DataTableComponent
     }
     public function builder(): Builder
     {
-         $query = RegisterToken::query()
+        $query = RegisterToken::query()
             ->with([
                 'tokenHolder',
                 'branches',
@@ -61,15 +61,15 @@ class RegisterTokenTable extends DataTableComponent
             ->select('entry_time', 'exit_time', 'estimated_time', 'stage')
             ->orderBy('created_at', 'DESC'); // Select some things
 
-            $departmentId = GlobalFacade::department();
+        $departmentId = GlobalFacade::department();
 
-            if (!isSuperAdmin()) {
-                if ($departmentId) {
-                    $query->where('current_branch', $departmentId);
-                }
+        if (!isSuperAdmin()) {
+            if ($departmentId) {
+                $query->where('current_branch', $departmentId);
             }
+        }
 
-            return $query;
+        return $query;
     }
     public function filters(): array
     {
@@ -108,15 +108,18 @@ class RegisterTokenTable extends DataTableComponent
 
             Column::make(__('tokentracking::tokentracking.stage'))
                 ->label(function ($row, Column $column) {
-                    return (string) view('TokenTracking::livewire.table.status-stage-dropdown', [
-                        'row' => $row,
-                    ]);
+                    if (can('tok_token action')) {
+                        return (string) view('TokenTracking::livewire.table.status-stage-dropdown', [
+                            'row' => $row,
+                        ]);
+                    }
+                    return '';
                 })
                 ->html()
                 ->collapseOnTablet(),
 
         ];
-        if (can('register_tokens edit') || can('register_tokens delete')) {
+        if (can('tok_token action')) {
             $actionsColumn = Column::make(__('tokentracking::tokentracking.actions'))->label(function ($row, Column $column) {
                 return (string) view('TokenTracking::livewire.table.col-register-token-actions', [
                     'row' => $row,
@@ -131,7 +134,7 @@ class RegisterTokenTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('register_tokens edit')) {
+        if (!can('tok_token action')) {
             SessionFlash::WARNING_FLASH(__('tokentracking::tokentracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -140,7 +143,7 @@ class RegisterTokenTable extends DataTableComponent
 
     public function view($id)
     {
-        if (!can('register_tokens access')) {
+        if (!can('tok_token action')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -160,7 +163,7 @@ class RegisterTokenTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('register_tokens delete')) {
+        if (!can('tok_token action')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -170,7 +173,7 @@ class RegisterTokenTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('register_tokens delete')) {
+        if (!can('tok_token action')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

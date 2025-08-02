@@ -24,8 +24,7 @@ class DisputeDeadlineReport extends Component
     use SessionFlash, HelperDate;
     public $startDate;
     public $endDate;
-
-
+    public $disputeDeadlines = [];
 
     protected $rules = [
         'startDate' => 'required',
@@ -45,8 +44,42 @@ class DisputeDeadlineReport extends Component
         $startDate = $this->bsToAd($this->startDate);
         $endDate = $this->bsToAd($this->endDate);
 
-        $this->dispatch('getSearchDate', $startDate, $endDate);
+        $this->disputeDeadlines = DisputeDeadline::with(['complaintRegistration.parties', 'complaintRegistration.disputeMatter', 'complaintRegistration', 'judicialMember'])
+            ->whereNull('deleted_at')
+            ->whereBetween('deadline_set_date', [$startDate, $endDate])
+            ->latest()
+            ->get();
+
+        foreach ($this->disputeDeadlines as $deadline) {
+            $deadline->deadline_set_date_bs = replaceNumbers(
+                $this->adToBs(Carbon::parse($deadline->deadline_set_date)->format('Y-m-d')),
+                true
+            );
+
+            $deadline->defenders = $deadline->complaintRegistration->parties
+                ->where('pivot.type', 'Defender')
+                ->pluck('name')
+                ->toArray();
+
+            $deadline->complainers = $deadline->complaintRegistration->parties
+                ->where('pivot.type', 'Complainer')
+                ->pluck('name')
+                ->toArray();
+        }
     }
+
+    public function clear()
+    {
+        $this->reset(['startDate', 'endDate', 'disputeDeadlines']);
+    }
+
+    public function export()
+    {
+        // Export functionality can be implemented here
+        $this->searchReport();
+        // Add export logic
+    }
+
     public function downloadPdf()
     {
         try {

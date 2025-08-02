@@ -117,22 +117,22 @@ class EmployeeTable extends DataTableComponent
             Column::make(__('employees::employees.designation'), "designation.title")->sortable()->searchable()->collapseOnTablet(),
         ];
 
-        if (can('employee_update') || can('employee_delete')) {
+        if (can('employee update') || can('employee delete')) {
             $actionsColumn = Column::make(__('employees::employees.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('employee_udpate')) {
+                if (can('employee update')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('employee_delete')) {
+                if (can('employee delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
 
-                if ($row->user && $row->user->id && can('users_manage')) {
+                if ($row->user && $row->user->id && can('users manage')) {
 
                     $manage = '&nbsp;<button type="button" class="btn btn-success btn-sm ml-2" wire:click="manage(' . $row->user->id . ')"><i class="bx bx-cog"></i></button>';
                     $buttons .= $manage;
@@ -151,7 +151,7 @@ class EmployeeTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('employee_update')) {
+        if (!can('employee update')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -160,7 +160,7 @@ class EmployeeTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('employee_delete')) {
+        if (!can('employee delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -171,7 +171,7 @@ class EmployeeTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('employee_delete')) {
+        if (!can('employee delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

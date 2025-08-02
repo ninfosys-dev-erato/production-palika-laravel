@@ -15,7 +15,7 @@
                         {{ __('tasktracking::tasktracking.task_type_list') }}
                     </h5>
                     <div>
-                        @perm('task_types create')
+                        @perm('tsk_setting create')
                             <a href="{{ route('admin.task-types.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('tasktracking::tasktracking.add_task_type') }}</a>
                         @endperm

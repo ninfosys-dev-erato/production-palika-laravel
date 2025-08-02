@@ -31,7 +31,7 @@ class GrievanceDashboardController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:grievance_access', only: ['index']),
+            new Middleware('permission:grievance access', only: ['index']),
         ];
     }
 

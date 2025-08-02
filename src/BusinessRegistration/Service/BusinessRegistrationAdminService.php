@@ -14,6 +14,7 @@ use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 use Src\BusinessRegistration\Enums\BusinessStatusEnum;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Traits\BusinessRegistrationTemplate;
+use Src\Settings\Models\FiscalYear;
 use Src\Settings\Models\Setting;
 
 class BusinessRegistrationAdminService
@@ -34,8 +35,10 @@ class BusinessRegistrationAdminService
             'business_tole'                => $businessRegistrationAdminDto->business_tole,
             'business_street'              => $businessRegistrationAdminDto->business_street,
             'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
+            'purpose'                      => $businessRegistrationAdminDto->purpose,
             'entity_name'                  => $businessRegistrationAdminDto->entity_name,
             'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
+            'registration_date'            => $businessRegistrationAdminDto->registration_date,
             'registration_date_en'         => $businessRegistrationAdminDto->registration_date_en,
             'application_date'             => $businessRegistrationAdminDto->application_date,
             'application_date_en'         => $businessRegistrationAdminDto->application_date_en,
@@ -43,7 +46,7 @@ class BusinessRegistrationAdminService
             'created_at'                    => date('Y-m-d H:i:s'),
             'created_by'                     => $businessRegistrationAdminDto->created_by,
             'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
-            'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
+
             'registration_number' => $businessRegistrationAdminDto->registration_number,
             'certificate_number' => $businessRegistrationAdminDto->certificate_number,
             'application_status' => ApplicationStatusEnum::PENDING->value,
@@ -59,7 +62,7 @@ class BusinessRegistrationAdminService
             'operation_date'               => $businessRegistrationAdminDto->operation_date,
             'others'                       => $businessRegistrationAdminDto->others,
             'houseownername' => $businessRegistrationAdminDto->houseownername,
-            'phone' => $businessRegistrationAdminDto->phone,
+            'house_owner_phone' => $businessRegistrationAdminDto->house_owner_phone,
             'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
             'rentagreement' => $businessRegistrationAdminDto->rentagreement,
             'east' => $businessRegistrationAdminDto->east,
@@ -90,6 +93,7 @@ class BusinessRegistrationAdminService
             'business_ward'                => $businessRegistrationAdminDto->business_ward,
             'business_tole'                => $businessRegistrationAdminDto->business_tole,
             'business_street'              => $businessRegistrationAdminDto->business_street,
+            'purpose'                      => $businessRegistrationAdminDto->purpose,
             'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
             'entity_name'                  => $businessRegistrationAdminDto->entity_name,
             'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
@@ -101,7 +105,6 @@ class BusinessRegistrationAdminService
             'created_at'                    => date('Y-m-d H:i:s'),
             'created_by'                     => $businessRegistrationAdminDto->created_by,
             'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
-            'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
             'registration_number' => $businessRegistrationAdminDto->registration_number,
             'certificate_number' => $businessRegistrationAdminDto->certificate_number,
             'application_status' => ApplicationStatusEnum::PENDING->value,
@@ -117,7 +120,7 @@ class BusinessRegistrationAdminService
             'operation_date'               => $businessRegistrationAdminDto->operation_date,
             'others'                       => $businessRegistrationAdminDto->others,
             'houseownername' => $businessRegistrationAdminDto->houseownername,
-            'phone' => $businessRegistrationAdminDto->phone,
+            'house_owner_phone' => $businessRegistrationAdminDto->house_owner_phone,
             'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
             'rentagreement' => $businessRegistrationAdminDto->rentagreement,
             'east' => $businessRegistrationAdminDto->east,
@@ -198,7 +201,6 @@ class BusinessRegistrationAdminService
             'business_status' => BusinessStatusEnum::ACTIVE->value,
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
-            'business_status' => BusinessStatusEnum::ACTIVE->value,
         ]);
 
         return $businessRegistration;
@@ -219,18 +221,25 @@ class BusinessRegistrationAdminService
         return $businessRegistration;
     }
 
-    public function generateBusinessRegistrationNumber()
+    public function generateBusinessRegistrationNumber($fiscalYearId)
     {
-        $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
+        $fiscalYearName = FiscalYear::findOrFail($fiscalYearId);
+        $fiscalYear = $this->convertNepaliToEnglish($fiscalYearName->year);
 
-        $lastRegistration = BusinessRegistration::latest('id')->first();
+        // Get the max registration number (only the numeric part before '/')
+        $maxNumber = BusinessRegistration::where('fiscal_year', $fiscalYearId)
+            ->whereNotNull('registration_number')
+            ->selectRaw("MAX(CAST(SUBSTRING_INDEX(registration_number, '/', 1) AS UNSIGNED)) as max_num")
+            ->value('max_num');
 
-        $newNumber = str_pad($lastRegistration->id + 1, 6, '0', STR_PAD_LEFT);
+        // If no records yet, start from 1
+        $newSerial = $maxNumber ? $maxNumber + 1 : 1;
 
-        $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
+        $newNumber = str_pad($newSerial, 6, '0', STR_PAD_LEFT);
 
-        return $newRegistrationNumber;
+        return $newNumber . '/' . $fiscalYear;
     }
+
 
     public function getLetter(BusinessRegistration $businessRegistration, $request = 'web')
     {

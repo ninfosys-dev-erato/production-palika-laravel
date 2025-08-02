@@ -14,9 +14,9 @@ class DesignationController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:designation_access', only: ['index']),
-            new Middleware('permission:designation_create', only: ['create']),
-            new Middleware('permission:designation_update', only: ['edit']),
+            new Middleware('permission:designation access', only: ['index']),
+            new Middleware('permission:designation create', only: ['create']),
+            new Middleware('permission:designation edit', only: ['edit']),
         ];
     }
 

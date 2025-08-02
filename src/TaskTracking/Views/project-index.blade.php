@@ -15,7 +15,7 @@
                         {{ __('tasktracking::tasktracking.project_list') }}
                     </h5>
                     <div>
-                        @perm('project_create')
+                        @perm('tsk_setting create')
                             <a href="{{ route('admin.task.projects.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('tasktracking::tasktracking.add_project') }}</a>

@@ -23,15 +23,16 @@ trait BusinessRegistrationTemplate
             $businessRegistration = $businessRegistration->businessRegistration;
         }
 
-        $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature');
+        $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature', 'renewals');
 
 
         $fileRecord = FileRecord::where('subject_id',  $businessRegistration->id)->whereNull('deleted_at')->first();
         $regNo = $fileRecord && $fileRecord->reg_no ? replaceNumbers($fileRecord->reg_no, true) : ' ';
         $this->reg_no = $regNo;
         $globalData = $this->getGlobalData($businessRegistration->approvedBy?->name, $businessRegistration->ward_no, $businessRegistration->id);
-        $letterHeadwithCampaign = $this->getLetterHeader($businessRegistration->ward_no, getFormattedBsDate(), $regNo, true, $businessRegistration?->fiscalYear?->year ?? getSetting('fiscal-year'));
-        $letterHead = $this->getLetterHeaderForBusiness(null, getFormattedBsDate(), $regNo, true, $businessRegistration?->fiscalYear?->year ?? getSetting('fiscal-year'));
+
+
+        $letterHead = $this->getBusinessLetterHeaderFromSample();
         // $letterFoot = $this->getLetterFooter(getFormattedBsDate());
         $businessRegistrationData = $this->resolveBusinessDate($businessRegistration);
 
@@ -39,7 +40,7 @@ trait BusinessRegistrationTemplate
         $customerData = $this->getCustomerData($businessRegistration);
 
         $replacements = array_merge(
-            ['{{global.letter-head}}' => $letterHead, '{{global.letter-head-with-campaign-logo}}' => $letterHeadwithCampaign],
+            ['{{global.letter-head}}' => $letterHead],
 
             $globalData,
             $formData,
@@ -68,14 +69,14 @@ trait BusinessRegistrationTemplate
     {
         return [
             // Registration type and fiscal year
-            '{{business.fiscal_year}}' => $businessRegistration->fiscalYear?->title ?? ' ',
+            '{{business.fiscal_year}}' => $businessRegistration->fiscalYear?->year ?? ' ',
 
             // Entity and registration details
             '{{business.entity_name}}' => $businessRegistration->entity_name ?? ' ',
             '{{business.registration_date}}' => replaceNumbers($businessRegistration->registration_date, true) ?? ' ',
             '{{business.registration_date_en}}' => $businessRegistration->registration_date_en ?? ' ',
-            '{{business.registration_number}}' => $businessRegistration->registration_number ?? ' ',
-            '{{business.certificate_number}}' => $businessRegistration->certificate_number ?? ' ',
+            '{{business.registration_number}}' => replaceNumbers($businessRegistration->registration_number, true) ?? ' ',
+            '{{business.certificate_number}}' => replaceNumbers($businessRegistration->certificate_number, true) ?? ' ',
 
             // Applicant details - handle multiple applicants
             '{{business.applicant_name}}' => $this->getApplicantNames($businessRegistration),
@@ -99,12 +100,13 @@ trait BusinessRegistrationTemplate
 
             // Business details (relationships)
             '{{business.business_nature}}' => $businessRegistration->business_nature ?? ' ',
+            '{{business.business_purpose}}' => $businessRegistration->purpose ?? ' ',
             '{{business.main_service_or_goods}}' => $businessRegistration->main_service_or_goods ?? ' ',
             '{{business.total_capital}}' => $businessRegistration->total_capital ?? ' ',
             '{{business.business_province}}' => $businessRegistration->businessProvince?->title ?? ' ',
             '{{business.business_district}}' => $businessRegistration->businessDistrict?->title ?? ' ',
             '{{business.business_local_body}}' => $businessRegistration->businessLocalBody?->title ?? ' ',
-            '{{business.business_ward}}' => $businessRegistration->business_ward ?? ' ',
+            '{{business.business_ward}}' => replaceNumbers($businessRegistration->business_ward, true) ?? ' ',
             '{{business.business_tole}}' => $businessRegistration->business_tole ?? ' ',
             '{{business.business_street}}' => $businessRegistration->business_street ?? ' ',
 
@@ -143,8 +145,7 @@ trait BusinessRegistrationTemplate
             '{{business.is_rented}}' => $businessRegistration->is_rented ?? ' ',
             '{{business.total_running_day}}' => $businessRegistration->total_running_day ?? ' ',
 
-
-
+            '{{business.renewal_table}}' => $this->generateRenewalTable($businessRegistration),
 
         ];
     }
@@ -265,11 +266,16 @@ trait BusinessRegistrationTemplate
     private function getApplicantWards($businessRegistration)
     {
         $applicants = $businessRegistration->applicants;
+
         if ($applicants->isEmpty()) {
-            return $businessRegistration->applicant_ward ?? ' ';
+            return replaceNumbers($businessRegistration->applicant_ward ?? ' ', true);
         }
-        return $applicants->pluck('applicant_ward')->filter()->implode(', ');
+
+        $wards = $applicants->pluck('applicant_ward')->filter()->implode(', ');
+
+        return replaceNumbers($wards, true);
     }
+
 
     private function getApplicantToles($businessRegistration)
     {
@@ -287,5 +293,50 @@ trait BusinessRegistrationTemplate
             return $businessRegistration->applicant_street ?? ' ';
         }
         return $applicants->pluck('applicant_street')->filter()->implode(', ');
+    }
+    public function generateRenewalTable($businessRegistration)
+    {
+        $renewals = $businessRegistration->renewals;
+        $renewals->load('fiscalYear');
+
+        if ($renewals->isEmpty()) {
+            return ' ';
+        }
+
+        $tableRows = '';
+
+        foreach ($renewals as $renewal) {
+            $fiscalYear = $renewal->fiscalYear->year ?? '';
+            $renewalDate = $renewal->renew_date ?? '';
+            $billNo = $renewal->bill_no ?? '';
+            $paymentDate = $renewal->payment_receipt_date ?? '';
+
+            $tableRows .= "
+                <tr>
+                    <td style='padding: 10px; border: 2px solid black;'>{$fiscalYear}</td>
+                    <td style='padding: 10px; border: 2px solid black;'>{$renewalDate}</td>
+                    <td style='padding: 10px; border: 2px solid black;'>{$billNo}</td>
+                    <td style='padding: 10px; border: 2px solid black;'>{$paymentDate}</td>
+                    <td style='padding: 10px; border: 2px solid black;'></td>
+                </tr>
+            ";
+        }
+
+        return "
+            <table style='width: 100%; border-collapse: collapse;'>
+                <thead>
+                    <tr>
+                        <th style='padding: 10px; border: 2px solid black;'>आर्थिक वर्ष</th>
+                        <th style='padding: 10px; border: 2px solid black;'>नवीकरण मिति</th>
+                        <th style='padding: 10px; border: 2px solid black;'>बिल नं</th>
+                        <th style='padding: 10px; border: 2px solid black;'>तिर्ने मिति</th>
+                        <th style='padding: 10px; border: 2px solid black;'>कैफियत</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {$tableRows}
+                </tbody>
+            </table>
+        ";
     }
 }

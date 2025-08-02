@@ -181,22 +181,22 @@
             @foreach ($mapApplyData as $index => $data)
                 <tr>
                     <td>{{ replaceNumbers($loop->iteration, true) }}</td>
-                    <td>{{ replaceNumbers($data->submission_id, true) }}</td>
-                    <td>{{ $data->fiscalYear->year }}</td>
+                    <td>{{ replaceNumbers($data->submission_id ?? '', true) }}</td>
+                    <td>{{ $data->fiscalYear?->year ?? '-' }}</td>
                     {{-- @if ($data->application_type != \Src\Ebps\Enums\ApplicationTypeEnum::BUILDING_DOCUMENTATION->value) --}}
                     <td>{{ Src\Ebps\Enums\PurposeOfConstructionEnum::tryFrom($data->usage)?->label() ?? '-' }}</td>
-                    <td>{{ $data->constructionType->title }}</td>
+                    <td>{{ $data->constructionType?->title ?? '-' }}</td>
                     {{-- @endif --}}
                     @if ($data->application_type == \Src\Ebps\Enums\ApplicationTypeEnum::OLD_APPLICATIONS->value)
-                        <td>{{ $data->registration_no }}</td>
-                        <td>{{ $data->registration_date }}</td>
+                        <td>{{ $data->registration_no ?? '-' }}</td>
+                        <td>{{ $data->registration_date ?? '-' }}</td>
                     @endif
 
-                    <td>{{ $data->full_name }}</td>
-                    <td>{{ $data->mobile_no }}</td>
-                    <td>{{ ($data->localBody?->title ?? '') . '-' . $data->ward_no }}</td>
-                    <td>{{ \Src\Ebps\Enums\ApplicationTypeEnum::from($data->application_type)->label() }}</td>
-                    <td>{{ $data->applied_date }}</td>
+                    <td>{{ $data->full_name ?? '-' }}</td>
+                    <td>{{ $data->mobile_no ?? '-' }}</td>
+                    <td>{{ ($data->localBody?->title ?? '') . '-' . ($data->ward_no ?? '') }}</td>
+                    <td>{{ \Src\Ebps\Enums\ApplicationTypeEnum::tryFrom($data->application_type)?->label() ?? '-' }}</td>
+                    <td>{{ $data->applied_date ?? '-' }}</td>
 
                 </tr>
             @endforeach

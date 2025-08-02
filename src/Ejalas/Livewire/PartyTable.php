@@ -79,7 +79,7 @@ class PartyTable extends DataTableComponent
                     ->filter(fn($item) => $item['type'] === $this->type)
                     ->pluck('id')
                     ->toArray();
-                Log::info($filteredIds);
+
                 return $query->whereIn('id', $filteredIds);
             })
 
@@ -176,23 +176,24 @@ class PartyTable extends DataTableComponent
                 ->collapseOnTablet(),
 
         ];
-        if (can('parties edit') || can('parties delete')) {
+        if (can('jms_settings edit') || can('jms_settings delete')) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('parties edit')) {
+                if (can('jms_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
-                if ($this->type == null) {
-                    if (can('parties delete')) {
+
+                if (can('jms_settings delete')) {
+
+
+                    if ($this->type == null) {
                         $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                         $buttons .= $delete;
                     }
-                }
 
-                if ($this->type) {
-                    if (can('parties delete')) {
+                    if ($this->type) {
                         $deleteEntry = '<button type="button" class="btn btn-warning btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="deleteEntry(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                         $buttons .= $deleteEntry;
                     }
@@ -207,12 +208,10 @@ class PartyTable extends DataTableComponent
 
         return $columns;
     }
-    public function refresh()
-    {
-    }
+    public function refresh() {}
     public function edit($id)
     {
-        if (!can('parties edit')) {
+        if (!can('jms_settings edit')) {
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
@@ -221,7 +220,7 @@ class PartyTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('parties delete')) {
+        if (!can('jms_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -231,7 +230,7 @@ class PartyTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('parties delete')) {
+        if (!can('jms_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

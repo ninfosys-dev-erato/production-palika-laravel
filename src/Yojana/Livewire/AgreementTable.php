@@ -72,19 +72,19 @@ class AgreementTable extends DataTableComponent
             ->format(fn($value, $row, Column $column) => $row?->implementationMethod?->title)
             ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('agreements edit') || can('agreements delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__(__('yojana::yojana.actions')))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('agreements settings')) {
+                if (can('plan settings')) {
                     $settings = '<button class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')" ><i class="bx bx-printer"></i></button>&nbsp;';
                     $buttons .= $settings;
                 }
-                if (can('agreements edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('agreements delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -101,7 +101,7 @@ class AgreementTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('agreements edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -110,7 +110,7 @@ class AgreementTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('agreements delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -130,7 +130,7 @@ class AgreementTable extends DataTableComponent
     }
 
     public function deleteSelected(){
-        if(!can('agreements delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

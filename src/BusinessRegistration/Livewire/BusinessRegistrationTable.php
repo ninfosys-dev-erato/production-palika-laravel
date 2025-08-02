@@ -12,6 +12,7 @@ use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
+use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Models\BusinessRenewal;
 use Src\BusinessRegistration\Service\BusinessRegistrationAdminService;
@@ -89,7 +90,7 @@ class BusinessRegistrationTable extends DataTableComponent
     public function columns(): array
     {
         $columns = [
-            Column::make(__('businessregistration::businessregistration.business_details'))->label(
+            Column::make(__('businessregistration::businessregistration.registration_details'))->label(
                 fn($row, Column $column) => view('BusinessRegistration::livewire.business-registration-table.col-detail')->with([
                     'row' => $row
                 ])->render()
@@ -100,15 +101,21 @@ class BusinessRegistrationTable extends DataTableComponent
             Column::make(__('businessregistration::businessregistration.registration_type'), "registration_type_id")
                 ->label(function ($row) {
                     $registration_type_id = $row->registration_type_id ? $row->registrationType?->title : '';
+                    $registration_type_enum = RegistrationCategoryEnum::tryFrom($row->registration_category)?->label()
+                        ?? RegistrationCategoryEnum::BUSINESS->label();
                     return "
                         <div><strong>" . (__('businessregistration::businessregistration.type')) . ":" . "</strong> {$registration_type_id}</div>
+                         <div><strong>" . (__('businessregistration::businessregistration.registration_category')) . ":" . "</strong> {$registration_type_enum}</div>
+
+
+                      
                     ";
                 })
                 ->sortable()
                 ->searchable()
                 ->html(),
 
-            Column::make(__('businessregistration::businessregistration.applicant_detail'))
+            Column::make(__('businessregistration::businessregistration.personal_detail'))
                 ->label(function ($row) {
                     $firstApplicant = $row->applicants->first();
 
@@ -121,9 +128,9 @@ class BusinessRegistrationTable extends DataTableComponent
                         $ward = $firstApplicant->applicant_ward;
                         $applicant_address = collect([$province, $district, $localBody, $ward])->filter()->implode(', ');
                         return "
-                            <div><strong>" . (__('businessregistration::businessregistration.applicant_name')) . ":</strong> {$applicant_name}</div>
-                            <div><strong>" . (__('businessregistration::businessregistration.applicant_number')) . ":</strong> {$applicant_number}</div>
-                            <div><strong>" . (__('businessregistration::businessregistration.applicant_address')) . ":</strong> {$applicant_address}</div>
+                            <div><strong>" . (__('businessregistration::businessregistration.name')) . ":</strong> {$applicant_name}</div>
+                            <div><strong>" . (__('businessregistration::businessregistration.number')) . ":</strong> {$applicant_number}</div>
+                            <div><strong>" . (__('businessregistration::businessregistration.address')) . ":</strong> {$applicant_address}</div>
                         ";
                     }
                     return '';
@@ -150,7 +157,7 @@ class BusinessRegistrationTable extends DataTableComponent
         if (can('business_registration edit') || can('business_registration delete')) {
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('business-registration_access')) {
+                if (can('business_registration access')) {
                     $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
                 }
@@ -205,7 +212,7 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('registration_delete delete')) {
+        if (!can('business_registration delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -217,7 +224,7 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('registration_delete delete')) {
+        if (!can('business_registration delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

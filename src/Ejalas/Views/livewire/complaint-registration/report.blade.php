@@ -89,6 +89,10 @@
                         @enderror
                     </div>
 
+
+                </div>
+
+                <div class="row g-3 align-items-center mt-3">
                     <!-- Dispute Area -->
                     <div class="col-md col-12">
                         <label class="form-label">{{ __('ejalas::ejalas.dispute_area') }}</label>
@@ -106,9 +110,6 @@
                             <small class="text-danger">{{ __($message) }}</small>
                         @enderror
                     </div>
-                </div>
-
-                <div class="row g-3 align-items-center mt-3">
                     <!-- Ward -->
                     <div class="col-md col-12">
                         <label class="form-label">{{ __('ejalas::ejalas.ward') }}</label>

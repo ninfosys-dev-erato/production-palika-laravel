@@ -15,9 +15,9 @@ class CommitteeTypeAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:committee_type_access', only: ['index']),
-            new Middleware('permission:committee_type_create', only: ['create']),
-            new Middleware('permission:committee_type_update', only: ['edit']),
+            // new Middleware('permission:committee_type_access', only: ['index']),
+            // new Middleware('permission:committee_type_create', only: ['create']),
+            // new Middleware('permission:committee_type_update', only: ['edit']),
         ];
     }
 

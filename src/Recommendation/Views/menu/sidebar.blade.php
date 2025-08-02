@@ -16,7 +16,7 @@ $categories = Cache::remember('recommendation_category_tree', 60, function () us
     <span
         class="menu-header-text">{{ __('recommendation::recommendation.apply') . ' ' . __('recommendation::recommendation.recommendation') }}</span>
 </li>
-@perm('apply_recommendation_create')
+@perm('recommendation_apply access')
     @foreach ($categories as $category)
         @if ($category['recommendations_count'] > 0)
             <li class="menu-item" style="">

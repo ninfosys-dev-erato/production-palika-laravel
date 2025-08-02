@@ -202,6 +202,8 @@ class PlanForm extends Component
 
     public function save()
     {
+        $this->plan->ward_id = 1;
+
         $this->validate();
         try {
             DB::beginTransaction();
@@ -215,6 +217,8 @@ class PlanForm extends Component
             });
             $dto = PlanAdminDto::fromLiveWireModel($this->plan);
             $service = new PlanAdminService();
+                    $this->plan->ward_id = 1;
+
             switch ($this->action) {
                 case Action::CREATE:
                     $plan = $service->store($dto);

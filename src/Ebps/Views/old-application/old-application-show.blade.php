@@ -246,7 +246,7 @@
                             <div class="data-row">
                                 <div class="data-label">२.७ फोटो:</div>
                                 <div class="data-value">
-                                 <a href="{{ $mapApply->houseOwner->photo }}" target="_blank"
+                                    <a href="{{ $mapApply->houseOwner->photo }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm mt-2">
                                         <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
                                     </a>
@@ -344,7 +344,7 @@
                     @empty
                         <div class="col-12 text-center text-muted fst-italic">
                             <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps._no_documents_uploaded') }}.
+                            {{ __('ebps::ebps.no_documents_uploaded') }}.
                         </div>
                     @endforelse
                 </div>

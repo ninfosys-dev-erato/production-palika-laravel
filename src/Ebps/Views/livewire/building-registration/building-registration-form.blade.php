@@ -192,7 +192,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='area_sqm'>{{ __('ebps::ebps.area_sqm') }}</label>
-                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='number'
+                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_area_sqm') }}">
                         <div>
                             @error('customerLandDetail.area_sqm')
@@ -204,7 +204,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='lot_no'>{{ __('ebps::ebps.lot_no') }}</label>
-                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='number'
+                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
                         <div>
                             @error('customerLandDetail.lot_no')
@@ -216,7 +216,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='seat_no'>{{ __('ebps::ebps.seat_no') }}</label>
-                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='number'
+                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_seat_no') }}">
                         <div>
                             @error('customerLandDetail.seat_no')
@@ -300,7 +300,7 @@
                                         <div class='form-group'>
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
-                                                name='fourBoundaries.{{ $index }}.distance' type='number'
+                                                name='fourBoundaries.{{ $index }}.distance' type='text'
                                                 class='form-control'
                                                 placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>
@@ -867,6 +867,7 @@
                     <label for="applicant_type" class="form-label">{{ __('ebps::ebps.applicant_type') }}</label>
                     <span class="text-danger">*</span>
                     <select wire:model="mapApply.applicant_type" name="applicant_type"
+                        wire:change='updateApplicantForm'
                         class="form-control {{ $errors->has('mapApply.applicant_type') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('mapApply.applicant_type') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
                         <option value="" selected hidden>{{ __('ebps::ebps.select_applicant_type') }}</option>
@@ -888,7 +889,8 @@
                     <label class="form-label" for='full_name'>{{ __('ebps::ebps.full_name') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model.defer='mapApply.full_name' id="full_name" name='full_name' type='text'
-                        class='form-control' placeholder='निवेदकको नाम'>
+                        class='form-control' placeholder='निवेदकको नाम'
+                        @if (!$showNameAndNumber) readonly @endif>
                     <div>
                         @error('mapApply.full_name')
                             <small class='text-danger'>{{ $message }}</small>
@@ -902,7 +904,7 @@
                     <label class="form-label" for='mobile_no'>{{ __('ebps::ebps.phone_number') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.mobile_no' id="mobile_no" name='mobile_no' type='number'
-                        class='form-control' placeholder='फोन नं.'>
+                        class='form-control' placeholder='फोन नं.' @if (!$showNameAndNumber) readonly @endif>
                     <div>
                         @error('mapApply.mobile_no')
                             <small class='text-danger'>{{ $message }}</small>

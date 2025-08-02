@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.bank_detail_list') }}</h5>
                     </div>
                     <div>
-                        @perm('bank_details create')
+                        @perm('plan_basic_settings create')
                             <a href="{{ route('admin.bank_details.create') }}" class="btn btn-info" onclick="resetForm()"
                                 data-bs-toggle="modal" data-bs-target="#indexModal"><i class="bx bx-plus"></i>
                                 {{ __('yojana::yojana.add_bank_detail') }}</a>

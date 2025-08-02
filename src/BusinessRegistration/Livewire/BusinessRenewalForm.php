@@ -57,14 +57,14 @@ class BusinessRenewalForm extends Component
             'businessLocalBody'
         )
             ->whereNull('deleted_at')
-            ->whereNull('deleted_by')
             ->where(function ($query) {
                 $query->where('entity_name', $this->search)
                     ->orWhere('registration_number', $this->search);
             })
             ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
-            ->where('business_status', BusinessStatusEnum::ACTIVE->value)
+            ->where('business_status', BusinessStatusEnum::ACTIVE)
             ->first();
+
 
 
         if (is_null($this->businessData)) {

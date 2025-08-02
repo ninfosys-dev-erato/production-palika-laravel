@@ -15,14 +15,14 @@ class TaxClearance extends Model
     protected $table = 'org_tax_clearances';
 
     protected $fillable = [
-        'organization_detail_id',
+        'organization_id',
         'document',
         'year',
     ];
 
     public function casts():array{
         return [
-            'organization_detail_id' => 'integer',
+            'organization_id' => 'integer',
             'document'  => 'string',
             'year' =>'string'
         ];

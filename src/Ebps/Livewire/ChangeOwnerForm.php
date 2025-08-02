@@ -4,33 +4,23 @@ namespace Src\Ebps\Livewire;
 
 use App\Enums\Action;
 use App\Traits\SessionFlash;
-use Frontend\CustomerPortal\Ebps\DTO\CustomerLandDetailDto;
 use Livewire\Component;
 use Src\Customers\Models\Customer;
 use Src\Districts\Models\District;
-use Src\Ebps\DTO\FourBoundaryAdminDto;
 use Src\Ebps\DTO\HouseOwnerDetailDto;
 use Src\Ebps\DTO\MapApplyAdminDto;
 use Src\Ebps\Enums\ApplicantTypeEnum;
-use Src\Ebps\Enums\ApplicationTypeEnum;
 use Src\Ebps\Enums\BuildingStructureEnum;
-use Src\Ebps\Enums\DocumentTypeEnum;
 use Src\Ebps\Enums\LandOwernshipEnum;
 use Src\Ebps\Enums\MapProcessTypeEnum;
 use Src\Ebps\Enums\OwnershipTypeEnum;
-use Src\Ebps\Models\FourBoundary;
 use Src\Ebps\Models\HouseOwnerDetail;
 use Src\Ebps\Models\MapApply;
-use Src\Ebps\Service\CustomerLandDetailService;
-use Src\Ebps\Service\FourBoundaryAdminService;
 use Src\Ebps\Service\HouseOwnerDetailService;
 use Src\Ebps\Service\MapApplyAdminService;
 use App\Facades\ImageServiceFacade;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
-use Src\Ebps\Models\ConstructionType;
 use Src\Ebps\Models\CustomerLandDetail;
-use Src\Ebps\Models\Document;
-use Src\Ebps\Models\DocumentFile;
 use Illuminate\Support\Facades\DB;
 use Src\LocalBodies\Models\LocalBody;
 use Src\Settings\Models\FiscalYear;
@@ -212,13 +202,10 @@ class ChangeOwnerForm extends Component
         try{
        
             $houseOwner = $ownerDetail->store( $houseOwnerDto);
-            // $this->mapApply->house_owner_id = $houseOwner->id;
-
-            // $mapApply = $service->update($this->mapApply,$dto);
-            // $this->storeDocumentFiles( $mapApply->id, $this->uploadedFiles, $this->mapDocuments, $houseOwner->id);
+            
             DB::commit();
             $this->successFlash(__('ebps::ebps.application_updated_successfully'));
-            return redirect()->route('admin.ebps.map_applies.show-template', ['houseOwnerId' => $houseOwner->id]);
+            return redirect()->route('admin.ebps.show-template', ['houseOwnerId' => $houseOwner->id]);
            
         }  catch (\Exception $e) {
             logger($e);

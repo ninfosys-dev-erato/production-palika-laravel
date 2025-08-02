@@ -18,7 +18,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.item_list') }}</h5>
                     </div>
                     <div>
-                        @perm('items create')
+                        @perm('plan_basic_settings create')
                             <a href="{{ route('admin.items.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('yojana::yojana.add_item') }}</a>
                         @endperm

@@ -27,9 +27,9 @@ class  FormController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:form_access', only: ['index']),
-            new Middleware('permission:form_create', only: ['create']),
-            new Middleware('permission:form_update', only: ['edit'])
+            new Middleware('permission:form access', only: ['index']),
+            new Middleware('permission:form create', only: ['create']),
+            new Middleware('permission:form edit', only: ['edit'])
         ];
     }
 

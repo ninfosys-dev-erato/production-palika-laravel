@@ -17,7 +17,7 @@
                             {{ __('tasktracking::tasktracking.employee_marking_score_list') }}</h5>
                     </div>
                     <div>
-                        @perm('employee_marking_scores create')
+                        @perm('tsk_management create')
                             <a href="{{ route('admin.employee_marking_scores.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('tasktracking::tasktracking.add_employee_marking_score') }}</a>

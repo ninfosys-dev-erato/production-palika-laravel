@@ -37,7 +37,6 @@ class FormTemplate extends Component
                 'title' => __('settings::settings.global_fields'),
                 'fields' => [
                     'global.letter-head' => __('settings::settings.letter_head'),
-                    'global.letter-head-with-campaign-logo' => __('settings::settings.letter_head_with_campaign_logo'),
                     'global.province' => __('settings::settings.province'),
                     'global.district' => __('settings::settings.district'),
                     'global.local-body' => __('settings::settings.local_body'),
@@ -55,7 +54,8 @@ class FormTemplate extends Component
                     'global.acceptor_name' => __('settings::settings.acceptor_name'),
                     'global.palika_email' => __('settings::settings.palika_email'),
                     'global.palika_phone' => __('settings::settings.palika_phone'),
-
+                    'global.palika_logo' => __('settings::settings.palika_logo'),
+                    'global.palika_campaign_logo' => __('settings::settings.palika_campaign_logo'),
                 ]
             ],
             [

@@ -24,6 +24,8 @@ class FulfilledConditionReport extends Component
     use SessionFlash, HelperDate;
     public $startDate;
     public $endDate;
+    public $fulfilledConditions = [];
+
     protected $rules = [
         'startDate' => 'required',
         'endDate' => 'required'
@@ -42,8 +44,32 @@ class FulfilledConditionReport extends Component
         $startDate = $this->bsToAd($this->startDate);
         $endDate = $this->bsToAd($this->endDate);
 
-        $this->dispatch('getSearchDate', $startDate, $endDate);
+        $this->fulfilledConditions = FulfilledCondition::with('complaintRegistration', 'party', 'judicialEmployee', 'SettlementDetail')
+            ->whereNull('deleted_at')
+            ->whereBetween('entry_date', [$startDate, $endDate])
+            ->latest()
+            ->get();
+
+        foreach ($this->fulfilledConditions as $condition) {
+            $condition->entry_date_bs = replaceNumbers(
+                $this->adToBs(Carbon::parse($condition->entry_date)->format('Y-m-d')),
+                true
+            );
+        }
     }
+
+    public function clear()
+    {
+        $this->reset(['startDate', 'endDate', 'fulfilledConditions']);
+    }
+
+    public function export()
+    {
+        // Export functionality can be implemented here
+        $this->searchReport();
+        // Add export logic
+    }
+
     public function downloadPdf()
     {
         try {

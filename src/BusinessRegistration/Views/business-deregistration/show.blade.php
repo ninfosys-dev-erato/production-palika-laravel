@@ -8,7 +8,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6>
                     <i class="bx bx-building me-2"></i>
-                    {{ __('businessregistration::businessregistration.business_deregistration_details') }}
+                    {{ __('businessregistration::businessregistration.deregistration_details') }}
                 </h6>
                 <a href="javascript:history.back()" class="btn-back">
                     <i class="bx bx-arrow-back me-2"></i>
@@ -117,11 +117,15 @@
                                     {{ $businessDeRegistration->application_date }}</p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.registration_number') }}:</strong>
+                                <p><strong>{{ __('businessregistration::businessregistration.old_registration_number') }}:</strong>
+                                    {{ $businessDeRegistration->businessRegistration?->registration_number }}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong>{{ __('businessregistration::businessregistration.deregistration_registration_number') }}:</strong>
                                     {{ $businessDeRegistration?->registration_number }}</p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.status') }}:</strong>
+                                <p><strong>{{ __('businessregistration::businessregistration.application_status') }}:</strong>
                                     {{ $businessDeRegistration->application_status }}</p>
                             </div>
                             <div class="col-sm-6">
@@ -129,7 +133,7 @@
                                     {{ $businessDeRegistration->businessRegistration?->business_status?->label() }}</p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.amount') }}:</strong>
+                                <p><strong>{{ __('businessregistration::businessregistration.paid_amount') }}:</strong>
                                     {{ $businessDeRegistration->amount }}</p>
                             </div>
                             <div class="col-sm-6">
@@ -232,7 +236,7 @@
                 <button type="button" class="btn active btn-primary mx-2" role="tab" data-bs-toggle="tab"
                     data-bs-target="#navs-pills-business-detail" aria-controls="navs-pills-business-detail"
                     aria-selected="false">
-                    {{ __('businessregistration::businessregistration.business_de_registration_application_detail') }}
+                    {{ __('businessregistration::businessregistration.de_registration_application_detail') }}
                 </button>
             </li>
 

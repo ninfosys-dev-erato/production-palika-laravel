@@ -15,9 +15,9 @@ class RecommendationCategoryController extends Controller implements HasMiddlewa
     public static function middleware()
     {
         return [
-            new Middleware('permission:recommendation_category_access', only: ['index']),
-            new Middleware('permission:recommendation_category_create', only: ['create']),
-            new Middleware('permission:recommendation_category_update', only: ['edit']),
+            new Middleware('permission:recommendation_settings access', only: ['index']),
+            new Middleware('permission:recommendation_settings create', only: ['create']),
+            new Middleware('permission:recommendation_settings update', only: ['edit']),
         ];
     }
 

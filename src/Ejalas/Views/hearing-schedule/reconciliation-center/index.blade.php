@@ -15,9 +15,10 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.hearing_schedule_list') }}</h5>
                     </div>
                     <div>
-                        @perm('hearing_schedules create')
-                            <a href="{{ route('admin.ejalas.hearing_schedules.create') }}" class="btn btn-info"><i
-                                    class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_hearing_schedule') }}</a>
+                        @perm('jms_judicial_management create')
+                            <a href="{{ route('admin.ejalas.hearing_schedules.create', ['from' => $from]) }}"
+                                class="btn btn-info"><i class="bx bx-plus"></i>
+                                {{ __('ejalas::ejalas.add_hearing_schedule') }}</a>
                         @endperm
                     </div>
                 </div>

@@ -15,7 +15,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     {{ __('settings::settings.letter_head_list') }}
-                    @perm('letter_head_create')
+                    @perm('letter_head create')
                         <div>
                             <a href="{{ route('admin.setting.letter-head.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('settings::settings.add_letter_head') }}</a>

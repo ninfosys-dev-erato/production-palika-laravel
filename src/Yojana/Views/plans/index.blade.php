@@ -29,7 +29,7 @@
                             <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.plan_list') }}</h5>
                         </div>
                         <div>
-                            @perm('plans create')
+                            @perm('plan create')
                                 <a href="{{ route('admin.plans.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                     {{ __('yojana::yojana.add_plan') }}</a>
                             @endperm
@@ -39,7 +39,7 @@
                             <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.program_list') }}</h5>
                         </div>
                         <div>
-                            @perm('plans create')
+                            @perm('plan create')
                                 <a href="{{ route('admin.programs.create') }}" class="btn btn-info"><i
                                         class="bx bx-plus"></i>
                                     {{ __('yojana::yojana.add_program') }}</a>

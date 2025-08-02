@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.letter_sample_list') }}</h5>
                     </div>
                     <div>
-                        @perm('letter_samples create')
+                        @perm('plan_basic_settings create')
                             <a href="{{ route('admin.letter_samples.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_letter_sample') }}</a>
                         @endperm
