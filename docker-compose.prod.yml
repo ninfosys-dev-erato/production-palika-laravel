@@ -94,8 +94,6 @@ services:
       # Mount logs directory for external access
       - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/logs/nginx:/tmp/nginx-logs"
       - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/logs/php-fpm:/tmp/php-fpm-logs"
-      # Additional volume for temporary files with liberal permissions
-      - "/tmp:/tmp"
     networks:
       - laravel-network
     extra_hosts:
