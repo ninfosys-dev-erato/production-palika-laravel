@@ -5,8 +5,11 @@ namespace Src\BusinessRegistration\Traits;
 use App\Traits\HelperTemplate;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Illuminate\Support\Str;
+use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Models\BusinessDeRegistration;
 use Src\FileTracking\Models\FileRecord;
+use Src\Settings\Enums\TemplateEnum;
+use Src\Settings\Models\LetterHeadSample;
 
 trait BusinessRegistrationTemplate
 {
@@ -41,6 +44,7 @@ trait BusinessRegistrationTemplate
 
         $replacements = array_merge(
             ['{{global.letter-head}}' => $letterHead],
+            ['{{business.renewal_table}}' => $this->renderRenewalTemplateWithData($businessRegistration)],
 
             $globalData,
             $formData,
@@ -145,7 +149,7 @@ trait BusinessRegistrationTemplate
             '{{business.is_rented}}' => $businessRegistration->is_rented ?? ' ',
             '{{business.total_running_day}}' => $businessRegistration->total_running_day ?? ' ',
 
-            '{{business.renewal_table}}' => $this->generateRenewalTable($businessRegistration),
+
 
         ];
     }
@@ -294,49 +298,46 @@ trait BusinessRegistrationTemplate
         }
         return $applicants->pluck('applicant_street')->filter()->implode(', ');
     }
-    public function generateRenewalTable($businessRegistration)
+
+    public function renderRenewalTemplateWithData(BusinessRegistration $businessRegistration): string
     {
-        $renewals = $businessRegistration->renewals;
+        $template = LetterHeadSample::where('slug', TemplateEnum::BusinessRenewal)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$template) {
+            return '';
+        }
+
+        $style = $template->style ? "<style>{$template->style}</style>" : '';
+        $content = $template->content;
+
+        $renewals = $businessRegistration->renewals->where('application_status', ApplicationStatusEnum::ACCEPTED);
         $renewals->load('fiscalYear');
+        preg_match('/<tbody>\s*<tr>(.*?)<\/tr>\s*<\/tbody>/s', $content, $matches);
 
-        if ($renewals->isEmpty()) {
-            return ' ';
+        if (!isset($matches[0], $matches[1])) {
+            return <<<HTML
+            {$style}
+            {$content}
+            HTML; // Return as-is if row not found
         }
-
-        $tableRows = '';
-
+        $originalRowHtml = $matches[1];
+        $generatedRows = '';
         foreach ($renewals as $renewal) {
-            $fiscalYear = $renewal->fiscalYear->year ?? '';
-            $renewalDate = $renewal->renew_date ?? '';
-            $billNo = $renewal->bill_no ?? '';
-            $paymentDate = $renewal->payment_receipt_date ?? '';
+            $row = $originalRowHtml;
+            $row = Str::replace('{{renew.fiscalYear}}', $renewal->fiscalYear->year ?? '', $row);
+            $row = Str::replace('{{renew.renewalDate}}', $renewal->renew_date ?? '', $row);
+            $row = Str::replace('{{renew.billNo}}', $renewal->bill_no ?? '', $row);
+            $row = Str::replace('{{renew.paymentDate}}', $renewal->payment_receipt_date ?? '', $row);
 
-            $tableRows .= "
-                <tr>
-                    <td style='padding: 10px; border: 2px solid black;'>{$fiscalYear}</td>
-                    <td style='padding: 10px; border: 2px solid black;'>{$renewalDate}</td>
-                    <td style='padding: 10px; border: 2px solid black;'>{$billNo}</td>
-                    <td style='padding: 10px; border: 2px solid black;'>{$paymentDate}</td>
-                    <td style='padding: 10px; border: 2px solid black;'></td>
-                </tr>
-            ";
+            $generatedRows .= "<tr>{$row}</tr>\n";
         }
+        $content = Str::replace($matches[0], "<tbody>\n{$generatedRows}</tbody>", $content);
 
-        return "
-            <table style='width: 100%; border-collapse: collapse;'>
-                <thead>
-                    <tr>
-                        <th style='padding: 10px; border: 2px solid black;'>आर्थिक वर्ष</th>
-                        <th style='padding: 10px; border: 2px solid black;'>नवीकरण मिति</th>
-                        <th style='padding: 10px; border: 2px solid black;'>बिल नं</th>
-                        <th style='padding: 10px; border: 2px solid black;'>तिर्ने मिति</th>
-                        <th style='padding: 10px; border: 2px solid black;'>कैफियत</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {$tableRows}
-                </tbody>
-            </table>
-        ";
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
     }
 }

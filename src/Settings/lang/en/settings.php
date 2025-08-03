@@ -225,4 +225,5 @@ return [
     'the_template_type_must_be_a_string' => 'The template type must be a string.',
     'the_template_type_must_be_a_valid_selection' => 'The template type must be a valid selection.',
     'footer' => 'Footer',
+    'business_renewal' => 'Business Renewal',
 ];
