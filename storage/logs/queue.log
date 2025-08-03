@@ -2302,3 +2302,49 @@ In Application.php line 935:
   25  app/Providers/PassportCustomConfigProvider.php:37
       Illuminate\Database\Eloquent\Model::all()
 
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `permissions`)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+      [2m+23 vendor frames [22m
+
+  25  app/Providers/PassportCustomConfigProvider.php:37
+      Illuminate\Database\Eloquent\Model::all()
+
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (Connection: mysql, SQL: select * from `permissions`)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:825
+    821▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    822▕                 );
+    823▕             }
+    824▕ 
+  ➜ 825▕             throw new QueryException(
+    826▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    827▕             );
+    828▕         }
+    829▕     }
+
+  1   [internal]:0
+      Illuminate\Foundation\Application::Illuminate\Foundation\{closure}()
+      [2m+23 vendor frames [22m
+
+  25  app/Providers/PassportCustomConfigProvider.php:37
+      Illuminate\Database\Eloquent\Model::all()
+
