@@ -312,27 +312,61 @@ trait BusinessRegistrationTemplate
         $style = $template->style ? "<style>{$template->style}</style>" : '';
         $content = $template->content;
 
+        $globalData = $this->getGlobalData($businessRegistration->approvedBy?->name, $businessRegistration->ward_no, $businessRegistration->id);
+        $globalData = $this->sanitizeReplacements($globalData);
+
+
+        // Replace global variables anywhere in the content
+        $content = Str::replace(array_keys($globalData), array_values($globalData), $content);
+
+        // Step 2: Renewal records
         $renewals = $businessRegistration->renewals->where('application_status', ApplicationStatusEnum::ACCEPTED);
         $renewals->load('fiscalYear');
+        $renewals = $renewals->values(); // Reset array keys for index access
+
         preg_match('/<tbody>\s*<tr>(.*?)<\/tr>\s*<\/tbody>/s', $content, $matches);
 
         if (!isset($matches[0], $matches[1])) {
+            // No match for row template — return global-replaced template only
             return <<<HTML
             {$style}
             {$content}
-            HTML; // Return as-is if row not found
+            HTML;
         }
+
         $originalRowHtml = $matches[1];
         $generatedRows = '';
-        foreach ($renewals as $renewal) {
+        $maxRows = 10;
+
+        for ($i = 0; $i < $maxRows; $i++) {
             $row = $originalRowHtml;
-            $row = Str::replace('{{renew.fiscalYear}}', $renewal->fiscalYear->year ?? '', $row);
-            $row = Str::replace('{{renew.renewalDate}}', $renewal->renew_date ?? '', $row);
-            $row = Str::replace('{{renew.billNo}}', $renewal->bill_no ?? '', $row);
-            $row = Str::replace('{{renew.paymentDate}}', $renewal->payment_receipt_date ?? '', $row);
+
+            if (isset($renewals[$i])) {
+                $renewal = $renewals[$i];
+
+                $additionalData = [
+                    '{{renew.fiscalYear}}' => $renewal->fiscalYear->year ?? '',
+                    '{{renew.renewalDate}}' => replaceNumbers($renewal->renew_date ?? '', true) ?? '',
+                    '{{renew.billNo}}' => replaceNumbers($renewal->bill_no ?? '', true) ?? '',
+                    '{{renew.paymentDate}}' => replaceNumbers($renewal->payment_receipt_date ?? '', true) ?? '',
+                ];
+            } else {
+                // Blank row if no renewal exists
+                $additionalData = [
+                    '{{renew.fiscalYear}}' => '',
+                    '{{renew.renewalDate}}' => '',
+                    '{{renew.billNo}}' => '',
+                    '{{renew.paymentDate}}' => '',
+                ];
+            }
+
+            $additionalData = $this->sanitizeReplacements($additionalData);
+            $row = Str::replace(array_keys($additionalData), array_values($additionalData), $row);
 
             $generatedRows .= "<tr>{$row}</tr>\n";
         }
+
+
         $content = Str::replace($matches[0], "<tbody>\n{$generatedRows}</tbody>", $content);
 
         return <<<HTML
