@@ -14,8 +14,8 @@ class CustomerLandDetailDto
         public ?int $ward,
         public ?string $tole,
         public int|string|null $area_sqm,
-        public ?int $lot_no,
-        public ?int $seat_no,
+        public int|string|null $lot_no,
+        public int|string|null $seat_no,
         public ?string $ownership,
         public ?bool $is_landlord
     ) {}

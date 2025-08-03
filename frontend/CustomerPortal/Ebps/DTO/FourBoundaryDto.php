@@ -10,8 +10,8 @@ class FourBoundaryDto
         public string $land_detail_id,
         public string $title,
         public string $direction,
-        public string $distance,
-        public string $lot_no
+        public int|string|null $distance,
+        public int|string|null $lot_no
     ){}
 
 public static function fromLiveWireModel(FourBoundary $fourBoundary):FourBoundaryDto{

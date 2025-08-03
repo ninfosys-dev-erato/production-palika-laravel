@@ -21,9 +21,9 @@ class MapApplyDetailAdminDto
         public ?string $former_other_construction_area,
         public ?string $public_property_name,
         public ?string $material_used,
-        public ?string $distance_left,
-        public ?string $area_unit,
-        public ?string $length_unit
+        public int|string|null $distance_left,
+        public int|string|null $area_unit,
+        public int|string|null $length_unit
     ){}
 
 public static function fromLiveWireModel(MapApplyDetail $mapApplyDetail):MapApplyDetailAdminDto{
