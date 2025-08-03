@@ -159,7 +159,7 @@ class TokenFeedbackForm extends Component
     {
         $this->registerToken = $registerToken;
         $this->tokenNumber = $registerToken->token;
-        $this->tokenDate = $registerToken->date_en;
+        $this->tokenDate = $registerToken->date;
         $this->mobileNumber = $registerToken->tokenHolder->mobile_no;
         $this->findToken();
     }
