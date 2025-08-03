@@ -138,6 +138,7 @@
     <link rel="stylesheet" href="https://unpkg.com/nepali-date-picker@2.0.2/dist/nepaliDatePicker.min.css"
           crossorigin="anonymous" />
     @livewireStyles
+    <link rel="stylesheet" href="{{ asset('vendor/rappasoft/livewire-tables/css/laravel-livewire-tables.min.css') }}" />
 </head>
 
 
