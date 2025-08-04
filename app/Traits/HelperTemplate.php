@@ -347,7 +347,7 @@ trait HelperTemplate
             '{{global.today_date_bs}}' => getFormattedBsDate() ?? self::EMPTY_LINES,
             '{{global.acceptor_sign}}' => '{{global.acceptor_sign}}',
             '{{global.acceptor_name}}' => $acceptorName,
-            '{{global.signee_name}}' => '',
+            '{{global.signee_name}}' => $acceptorName,
             '{{global.palika_name}}' => getSetting('palika-name') ?? self::EMPTY_LINES,
             '{{global.palika_name_en}}' => getSetting('palika-name-english') ?: self::EMPTY_LINES,
             '{{global.office_name}}' => getSetting('office-name') ?? self::EMPTY_LINES,
