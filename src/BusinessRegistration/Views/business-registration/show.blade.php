@@ -7,8 +7,6 @@
 @endphp
 
 <x-dynamic-component :component="$layoutComponent" :header="$header">
-
-    {{-- <x-layout.app header="{{ __('businessregistration::businessregistration.business_registration_details') }}"> --}}
     @push('styles')
         <link rel="stylesheet" href="{{ asset('home') }}/businessstyle.css">
     @endpush
@@ -345,4 +343,4 @@
             </div>
         </div>
     </div>
-    </x-layout.app>
+</x-dynamic-component>
