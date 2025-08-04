@@ -55,12 +55,26 @@
             </li>
         @endif
         @if (isModuleEnabled('business_registration'))
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">{{ __('Business Registration') }}</span>
+            </li>
             <li
-                class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.business-registration.business-registration.index') ? 'active' : '' }}">
-                <a href="{{ route('customer.business-registration.business-registration.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons  bx bx-briefcase"></i>
-                    <div data-i18n="Form">{{ __('Business Registration') }}</div>
+                class="menu-item  {{ \Illuminate\Support\Facades\Route::is('customer.business-registration.business-registration.*') ? 'open' : '' }}">
+                <a href="#" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                    <div data-i18n="Account Settings">{{ __('Business Registration') }}</div>
                 </a>
+                <ul class="menu-sub">
+
+                    <li
+                        class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.business-registration.business-registration.index') ? 'active' : '' }}">
+                        <a href="{{ route('customer.business-registration.business-registration.index') }}"
+                            class="menu-link">
+                            <i class="menu-icon tf-icons  bx bx-briefcase"></i>
+                            <div data-i18n="Form">{{ __('Business Registration') }}</div>
+                        </a>
+                    </li>
+                </ul>
             </li>
         @endif
         @if ($businessRenew->isNotEmpty())
