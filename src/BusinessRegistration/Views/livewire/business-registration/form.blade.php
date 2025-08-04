@@ -51,7 +51,7 @@
                     <div class="tab-pane fade {{ $activeTab === 'personal' ? 'show active' : '' }}" id="personal"
                         role="tabpanel">
                         <!-- Phone Search for this personal detail -->
-                        @if ($action === App\Enums\Action::CREATE)
+                        @if ($action === App\Enums\Action::CREATE && !$isCustomer)
                             <livewire:phone_search />
                         @endif
                         @foreach ($personalDetails as $index => $detail)
@@ -475,7 +475,7 @@
                                 </div>
 
 
-                                @if ($action == Action::CREATE)
+                                @if ($action == Action::CREATE && !$isCustomer)
                                     <div class="col-md-12">
                                         <label class="form-label-peaceful d-block">
                                             {{ __('businessregistration::businessregistration.do_you_want_to_enter_custom_registration_number?') }}

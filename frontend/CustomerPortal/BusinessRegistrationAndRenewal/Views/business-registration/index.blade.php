@@ -16,16 +16,16 @@
                         <h5 class="text-primary fw-bold">{{ __('Business Registration Lists') }}</h5>
                         <div>
 
-                            <a href="{{ route('customer.business-registration.business-registration.create') }}"
+                            <a href="{{ route('customer.business-registration.business-registration.create', ['type' => $type]) }}"
                                 class="btn btn-info"><i class="bx bx-plus"></i>
-                                {{ __('Apply For Registration') }}</a>
+
+                                {{ __('businessregistration::businessregistration.apply') }}</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <livewire:customer_portal.business_registration_and_renewal.business_registration_table
-                        theme="bootstrap-4" />
+                    <livewire:business_registration.business_registration_table theme="bootstrap-4" :$type />
                 </div>
             </div>
         </div>

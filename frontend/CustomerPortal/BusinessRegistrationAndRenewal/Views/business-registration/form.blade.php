@@ -26,10 +26,11 @@
         </div>
         <div class="card-body">
             @if (isset($businessRegistration))
-                <livewire:customer_portal.business_registration_and_renewal.business_registration_form :$action
-                    :$businessRegistration />
+                <livewire:business_registration.business_registration_form :$businessRegistration :$action
+                    :$businessRegistrationType />
             @else
-                <livewire:customer_portal.business_registration_and_renewal.business_registration_form :$action />
+                <livewire:business_registration.business_registration_form :$action :$businessRegistrationType
+                    :$registration />
             @endif
         </div>
     </div>

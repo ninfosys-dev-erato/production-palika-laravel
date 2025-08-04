@@ -54,7 +54,7 @@
                 </a>
             </li>
         @endif
-        @if (isModuleEnabled('business_regsitration'))
+        @if (isModuleEnabled('business_registration'))
             <li
                 class="menu-item {{ \Illuminate\Support\Facades\Route::is('customer.business-registration.business-registration.index') ? 'active' : '' }}">
                 <a href="{{ route('customer.business-registration.business-registration.index') }}" class="menu-link">

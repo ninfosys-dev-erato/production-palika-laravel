@@ -27,14 +27,20 @@ class BusinessRegistrationAdminController extends Controller implements HasMiddl
     public function index(Request $request)
     {
         // $type = $request->query('type');
-        $type = $request->query('type') ?? BusinessRegistrationType::REGISTRATION->value;
+        $type = $request->query('type');
+        try {
+            $type = BusinessRegistrationType::from($type);
+        } catch (\ValueError $e) {
+            $type = BusinessRegistrationType::REGISTRATION;
+        }
 
         return view('BusinessRegistration::business-registration.index')->with(compact('type'));
     }
 
     public function create(Request $request, RegistrationType $registration)
     {
-        $businessRegistrationType = BusinessRegistrationType::from($request->query('type'));
+        $businessRegistrationType = BusinessRegistrationType::tryFrom($request->query('type'))
+            ?? BusinessRegistrationType::REGISTRATION;
         $action = Action::CREATE;
         return view('BusinessRegistration::business-registration.form')->with(compact('action', 'registration', 'businessRegistrationType'));
     }
@@ -45,7 +51,8 @@ class BusinessRegistrationAdminController extends Controller implements HasMiddl
         $businessRegistrationType = $request->query('type');
         $businessRegistration->data = json_decode($businessRegistration->data, true, 512);
         $action = Action::UPDATE;
-        $businessRegistrationType = $businessRegistration->registration_type ?? BusinessRegistrationType::REGISTRATION;
+        $businessRegistrationType = BusinessRegistrationType::tryFrom($request->query('type'))
+            ?? BusinessRegistrationType::REGISTRATION;
 
         return view('BusinessRegistration::business-registration.form')->with(compact('action', 'businessRegistration', 'businessRegistrationType'));
     }

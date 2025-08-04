@@ -9,6 +9,7 @@ use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -122,6 +123,7 @@ class BusinessRegistrationForm extends Component
 
     public $rentagreement; // Holds uploaded file name
     public $rentagreement_url;
+    public $isCustomer = false;
 
 
 
@@ -266,6 +268,7 @@ class BusinessRegistrationForm extends Component
 
     public function mount(?BusinessRegistration $businessRegistration, Action $action, ?BusinessRegistrationType $businessRegistrationType, $registration = null)
     {
+
         $this->businessRegistration = $businessRegistration;
         $this->businessRegistrationType = $businessRegistrationType;
 
@@ -275,8 +278,9 @@ class BusinessRegistrationForm extends Component
 
         $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('action', $businessRegistrationType)->where('status', true)->pluck('title', 'id');
 
-
-
+        if (Auth::guard('customer')->user()) {
+            $this->isCustomer = true;
+        }
 
         $this->registrationCategories = RegistrationCategory::pluck('title', 'id')->toArray();
 
@@ -291,6 +295,19 @@ class BusinessRegistrationForm extends Component
 
         if ($this->action == Action::CREATE) {
             $this->preSetBusinessAddress();
+
+            if ($this->isCustomer) {
+
+                $customer = Auth::guard('customer')->user();
+                if ($customer) {
+                    // Create the result array that restructureData expects
+                    $result = [
+                        'type' => 'Customer',
+                        'id' => $customer->id
+                    ];
+                    $this->restructureData($result);
+                }
+            }
         }
         if ($this->action == Action::UPDATE && $businessRegistration) {
 
@@ -810,7 +827,13 @@ class BusinessRegistrationForm extends Component
 
                         DB::commit();
                         $this->successFlash(__('businessregistration::businessregistration.business_registration_applied_successfully'));
-                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+
+                        // Determine redirect route based on user type
+                        if ($this->isCustomer) {
+                            return redirect()->route('customer.business-registration.business-registration.index');
+                        } else {
+                            return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                        }
                     } else {
                         DB::rollBack();
                         $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
@@ -848,7 +871,13 @@ class BusinessRegistrationForm extends Component
 
                         DB::commit();
                         $this->successFlash(__('businessregistration::businessregistration.business_registration_application_updated_successfully'));
-                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+
+                        // Determine redirect route based on user type
+                        if ($this->isCustomer) {
+                            return redirect()->route('customer.business-registration.business-registration.index');
+                        } else {
+                            return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                        }
                     } else {
                         DB::rollBack();
                         $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
@@ -858,7 +887,13 @@ class BusinessRegistrationForm extends Component
                 default:
                     DB::rollBack();
                     $this->errorFlash(__('Invalid action.'));
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+
+                    // Determine redirect route based on user type
+                    if ($this->isCustomer) {
+                        return redirect()->route('customer.business-registration.business-registration.index');
+                    } else {
+                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                    }
             }
         } catch (\Throwable $e) {
             DB::rollBack();

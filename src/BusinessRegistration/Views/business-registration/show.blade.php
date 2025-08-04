@@ -1,4 +1,14 @@
-<x-layout.app header="{{ __('businessregistration::businessregistration.business_registration_details') }}">
+@php
+    $isCustomer = Auth::guard('customer')->check();
+    $layoutComponent = $isCustomer ? 'layout.customer-app' : 'layout.app';
+    $header = $isCustomer
+        ? 'Business registration'
+        : __('businessregistration::businessregistration.business_registration_details');
+@endphp
+
+<x-dynamic-component :component="$layoutComponent" :header="$header">
+
+    {{-- <x-layout.app header="{{ __('businessregistration::businessregistration.business_registration_details') }}"> --}}
     @push('styles')
         <link rel="stylesheet" href="{{ asset('home') }}/businessstyle.css">
     @endpush
@@ -110,19 +120,21 @@
                                 {{ __('businessregistration::businessregistration.business_organization_industry_firm_details') }}
                             </h5>
                             @if ($businessRegistration->application_status == 'accepted')
-                                @if (empty($businessRegistration->records->first()?->reg_no))
-                                    <a href="{{ route('admin.business-registration.business.register', ['id' => $businessRegistration->id]) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-registered me-1"></i>
-                                        {{ __('businessregistration::businessregistration.register_business') }}
-                                    </a>
-                                @else
-                                    <a href="{{ route('admin.file_records.show', ['id' => $businessRegistration->records->first()->id]) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-file me-1"></i>
-                                        {{ __('recommendation::recommendation.view_registerd_file') }}
-                                    </a>
-                                @endif
+                                @perm('business_registration status')
+                                    @if (empty($businessRegistration->records->first()?->reg_no))
+                                        <a href="{{ route('admin.business-registration.business.register', ['id' => $businessRegistration->id]) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            <i class="bx bx-registered me-1"></i>
+                                            {{ __('businessregistration::businessregistration.register_business') }}
+                                        </a>
+                                    @else
+                                        <a href="{{ route('admin.file_records.show', ['id' => $businessRegistration->records->first()->id]) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            <i class="bx bx-file me-1"></i>
+                                            {{ __('recommendation::recommendation.view_registerd_file') }}
+                                        </a>
+                                    @endif
+                                @endperm
                             @endif
                         </div>
                     </div>
@@ -333,4 +345,4 @@
             </div>
         </div>
     </div>
-</x-layout.app>
+    </x-layout.app>
