@@ -52,7 +52,7 @@ class RecommendationService
                 'signee_id' => $data->signee_id ?? null,
                 'signee_type' => $data->signee_type ?? null,
                 'recommendation_medium' => $data->recommendation_medium ?? null,
-                'fiscal_year_id' => $data->fiscal_year_id ?? null,
+                'fiscal_year_id' => $data->fiscal_year_id ?? key(getSettingWithKey('fiscal-year')),
                 'created_at_en' => $data->created_at_en ?? null
             ]);
 
@@ -243,5 +243,4 @@ class RecommendationService
 
         return $applyRecommendation;
     }
-
 }
