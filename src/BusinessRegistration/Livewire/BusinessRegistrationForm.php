@@ -867,6 +867,93 @@ class BusinessRegistrationForm extends Component
         }
     }
 
+    private function mergeExistingDataWithFields($fieldDefinitions, $existingData)
+    {
+        return collect($fieldDefinitions)->map(function ($field) use ($existingData) {
+            if ($field['type'] === "table") {
+                $field['fields'] = [];
+                $row = [];
+                foreach ($field as $key => $values) {
+                    if (is_numeric($key)) {
+                        $values['value'] = $this->initializeFieldValue($values);
+                        $row[$values['slug']] = $values;
+                        unset($field[$key]);
+                    }
+                }
+                $field['fields'][] = $row;
+
+                // If editing and we have existing table data, merge it
+                if ($this->action === Action::UPDATE && isset($existingData[$field['slug']])) {
+                    $existingField = $existingData[$field['slug']];
+                    if (isset($existingField['fields']) && is_array($existingField['fields'])) {
+                        $field['fields'] = $existingField['fields'];
+                    }
+                }
+            } elseif ($field['type'] === 'group') {
+                $groupFields = [];
+                foreach ($field as $key => $values) {
+                    if (is_numeric($key)) {
+                        $values['value'] = $this->initializeFieldValue($values);
+                        $groupFields[$values['slug']] = $values;
+                    }
+                }
+                $field['fields'] = $groupFields;
+                $field = array_filter($field, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
+
+                // If editing and we have existing group data, merge it
+                if ($this->action === Action::UPDATE && isset($existingData[$field['slug']])) {
+                    $existingField = $existingData[$field['slug']];
+                    if (isset($existingField['fields']) && is_array($existingField['fields'])) {
+                        foreach ($existingField['fields'] as $slug => $existingValue) {
+                            if (isset($field['fields'][$slug])) {
+                                $field['fields'][$slug]['value'] = $existingValue['value'] ?? $field['fields'][$slug]['value'];
+                            }
+                        }
+                    }
+                }
+            } elseif ($field['type'] === 'checkbox') {
+                $field['value'] = [];
+            } elseif ($field['type'] === 'select') {
+                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
+            } elseif ($field['type'] === 'file') {
+                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
+            }
+
+            // If editing and we have existing data for this field, merge it
+            if ($this->action === Action::UPDATE && isset($existingData[$field['slug']])) {
+                $existingField = $existingData[$field['slug']];
+
+                // Merge existing values with field definition (for non-table/group fields)
+                if ($field['type'] !== 'table' && $field['type'] !== 'group' && isset($existingField['value'])) {
+                    $field['value'] = $existingField['value'];
+                }
+
+                // Handle file URLs for existing files
+                if ($field['type'] === 'file') {
+                    if (($field['is_multiple'] ?? 'no') === 'yes' && is_array($field['value'])) {
+                        $field['urls'] = array_map(function ($filename) {
+                            return FileFacade::getTemporaryUrl(
+                                config('src.BusinessRegistration.businessRegistration.registration'),
+                                $filename,
+                                'local'
+                            );
+                        }, $field['value']);
+                    } elseif (is_string($field['value']) && !empty($field['value'])) {
+                        $field['url'] = FileFacade::getTemporaryUrl(
+                            config('src.BusinessRegistration.businessRegistration.registration'),
+                            $field['value'],
+                            'local'
+                        );
+                    }
+                }
+            }
+
+            return $field;
+        })->mapWithKeys(function ($field) {
+            return [$field['slug'] => $field];
+        })->toArray();
+    }
+
     public function setFields(int|string $registrationTypeId)
     {
 
@@ -902,60 +989,13 @@ class BusinessRegistrationForm extends Component
             return;
         }
 
+        // Store existing data for merging
+        $existingData = $this->data;
 
-
-
-        $this->data = collect(json_decode($registrationType->form->fields, true))->map(function ($field) {
-            if ($field['type'] === "table") {
-                $field['fields'] = [];
-                $row = [];
-                foreach ($field as $key => $values) {
-                    if (is_numeric($key)) {
-                        $values['value'] = $this->initializeFieldValue($values);
-                        $row[$values['slug']] = $values;
-                        unset($field[$key]);
-                    }
-                }
-                $field['fields'][] = $row;
-            } elseif ($field['type'] === 'group') {
-                $fields = [];
-                foreach ($field as $key => $values) {
-                    if (is_numeric($key)) {
-                        $values['value'] = $this->initializeFieldValue($values);
-                        $fields[$values['slug']] = $values;
-                    }
-                }
-                $field['fields'] = $fields;
-                $field = array_filter($field, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
-            } elseif ($field['type'] === 'checkbox') {
-                $field['value'] = [];
-            } elseif ($field['type'] === 'select') {
-                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
-            } elseif ($field['type'] === 'file') {
-                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
-                // If editing, generate URL(s) for existing value(s)
-                if (!empty($field['value'])) {
-                    if (($field['is_multiple'] ?? 'no') === 'yes' && is_array($field['value'])) {
-                        $field['urls'] = array_map(function ($filename) {
-                            return FileFacade::getTemporaryUrl(
-                                config('src.BusinessRegistration.businessRegistration.registration'),
-                                $filename,
-                                'local'
-                            );
-                        }, $field['value']);
-                    } elseif (is_string($field['value'])) {
-                        $field['url'] = FileFacade::getTemporaryUrl(
-                            config('src.BusinessRegistration.businessRegistration.registration'),
-                            $field['value'],
-                            'local'
-                        );
-                    }
-                }
-            }
-            return $field;
-        })->mapWithKeys(function ($field) {
-            return [$field['slug'] => $field];
-        })->toArray();
+        $this->data = $this->mergeExistingDataWithFields(
+            json_decode($registrationType->form->fields, true),
+            $existingData
+        );
     }
 
     public function addTableRow(string $tableName): void
