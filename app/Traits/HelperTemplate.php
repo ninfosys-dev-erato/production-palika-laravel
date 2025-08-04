@@ -111,15 +111,15 @@ trait HelperTemplate
         $office_name_en = $office_name_en ?: getSetting('office-name-en') ?: self::EMPTY_LINES;
 
         $additionalData = [
-            '{{rec.reg_no}}' => $regNo,
-            '{{rec.fiscal_year}}' => $fiscalYear,
-            '{{rec.label}}' => $label,
-            '{{rec.date}}' => getFormattedBsDate(),
-            '{{rec.office_name}}' => $office_name,
-            '{{rec.office_name_en}}' => $office_name_en,
-            '{{rec.ward_name}}' => $ward_name,
-            '{{rec.ward_name_en}}' => $ward_name_en,
-            '{{rec.ward_location}}' => $ward_location,
+            '{{rec.reg_no}}' => $regNo ?? '',
+            '{{rec.fiscal_year}}' => $fiscalYear ?? '',
+            '{{rec.label}}' => $label ?? '',
+            '{{rec.date}}' => getFormattedBsDate() ?? '',
+            '{{rec.office_name}}' => $office_name ?? '',
+            '{{rec.office_name_en}}' => $office_name_en ?? '',
+            '{{rec.ward_name}}' => $ward_name ?? '',
+            '{{rec.ward_name_en}}' => $ward_name_en ?? '',
+            '{{rec.ward_location}}' => $ward_location ?? '',
         ];
         $globalData = $this->getGlobalData(null);
         $replacements = array_merge(

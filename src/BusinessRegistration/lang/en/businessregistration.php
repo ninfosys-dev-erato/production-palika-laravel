@@ -98,6 +98,8 @@ return [
     'select_operator' => 'Select Operator',
     'select_prepare' => 'Select Prepare',
     'select_approver' => 'Select Approver',
+    'search_by_phone' => 'Search by Phone',
+    'customer_data_loaded_successfully' => 'Customer data loaded successfully!',
     'payable_amount' => 'Payable Amount',
     'not_defined' => 'Not Defined',
     'payment_photo' => 'Payment Photo',
@@ -492,6 +494,7 @@ return [
     "do_you_want_to_enter_custom_registration_number?" => "Do you want to enter custom registration number?",
     "search_by_company_name/registration_number" => "Search by company name/registration number",
     "registration_number_already_exists" => "Registration number already exists.",
+    'personal_detail_removed_successfully' => 'Personal detail removed successfully.',
 
 
 

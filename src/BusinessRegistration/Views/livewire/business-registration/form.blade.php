@@ -50,7 +50,10 @@
                     <!-- Personal Details Tab -->
                     <div class="tab-pane fade {{ $activeTab === 'personal' ? 'show active' : '' }}" id="personal"
                         role="tabpanel">
-
+                        <!-- Phone Search for this personal detail -->
+                        @if ($action === App\Enums\Action::CREATE)
+                            <livewire:phone_search />
+                        @endif
                         @foreach ($personalDetails as $index => $detail)
                             <div wire:key="personal-detail-{{ $index }}">
                                 <!-- Personal Details Header -->
@@ -306,6 +309,7 @@
                                         </label>
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_district"
+                                            wire:key="personalDetails-{{ $index }}-{{ $personalDetails[$index]['applicant_province'] ?? 'none' }}"
                                             class="form-control" name="applicant_district"
                                             wire:change="getApplicantLocalBodies({{ $index }})">
                                             <option value="">
@@ -324,6 +328,7 @@
                                         </label>
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_local_body"
+                                            wire:key="personalDetails-{{ $index }}-{{ $personalDetails[$index]['applicant_district'] ?? 'none' }}"
                                             class="form-control" name="applicant_local_body"
                                             wire:change="getApplicantWards({{ $index }})">
                                             <option value="">
@@ -342,6 +347,7 @@
                                             {{ __('businessregistration::businessregistration.ward') }}
                                         </label>
                                         <select wire:model.live="personalDetails.{{ $index }}.applicant_ward"
+                                            wire:key="personalDetails-{{ $index }}-{{ $personalDetails[$index]['applicant_local_body'] ?? 'none' }}"
                                             class="form-control" name="applicant_ward">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_ward') }}

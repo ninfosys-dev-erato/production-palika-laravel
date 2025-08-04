@@ -11,6 +11,7 @@ enum TemplateEnum: string implements EnumInterface
     case Recommendation = 'recommendation';
     case Business = 'business';
     case Footer = 'footer';
+    case BusinessRenewal = 'business_renewal';
 
 
     public function label(): string
@@ -49,6 +50,7 @@ enum TemplateEnum: string implements EnumInterface
             self::Recommendation => __('settings::settings.recommendation'),
             self::Business => __('settings::settings.business'),
             self::Footer => __('settings::settings.footer'),
+            self::BusinessRenewal => __('settings::settings.business_renewal'),
         };
     }
 }
