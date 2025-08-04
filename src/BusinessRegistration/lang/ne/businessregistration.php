@@ -98,6 +98,8 @@ return [
     'select_registration_type' => 'दर्ता प्रकार चयन गर्नुहोस्',
     'select_operator' => 'सञ्चालक चयन गर्नुहोस्',
     'select_prepare' => 'तयार गर्ने व्यक्ति चयन गर्नुहोस्',
+    'search_by_phone' => 'फोन नम्बरले खोज्नुहोस्',
+    'customer_data_loaded_successfully' => 'ग्राहक डाटा सफलतापूर्वक लोड गरियो!',
     'select_approver' => 'स्वीकृत गर्ने व्यक्ति चयन गर्नुहोस्',
     'payable_amount' => 'तिर्नुपर्ने रकम',
     'not_defined' => 'निर्धारित छैन',
@@ -517,4 +519,5 @@ return [
     "do_you_want_to_enter_custom_registration_number?" => "के तपाई आफै दर्ता नम्बर लेख्न चाहनु हुन्छ ?",
     "search_by_company_name/registration_number" => "कम्पनीको नाम/दर्ता नम्बर द्वारा खोज्नुहोस्",
     "registration_number_already_exists" => "दर्ता नम्बर पहिले छ।",
+    'personal_detail_removed_successfully' => 'व्यक्तिगत विवरण सफलतापूर्वक हटाइएको छ।',
 ];

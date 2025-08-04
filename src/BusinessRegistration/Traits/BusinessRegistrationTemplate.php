@@ -40,16 +40,17 @@ trait BusinessRegistrationTemplate
         $businessRegistrationData = $this->resolveBusinessDate($businessRegistration);
 
         $formData = $this->getResolvedFormData(is_array($businessRegistration->data) ? $businessRegistration->data : json_decode($businessRegistration->data, true), true);
+
+
+
         $customerData = $this->getCustomerData($businessRegistration);
 
         $replacements = array_merge(
             ['{{global.letter-head}}' => $letterHead],
             ['{{business.renewal_table}}' => $this->renderRenewalTemplateWithData($businessRegistration)],
-
             $globalData,
             $formData,
             $customerData,
-            // ['{{global.letter-foot}}' => $letterFoot],
             $businessRegistrationData
         );
 

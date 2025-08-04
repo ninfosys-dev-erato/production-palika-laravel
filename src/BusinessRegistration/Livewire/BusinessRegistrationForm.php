@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\DB;
 use Src\Address\Models\District;
 use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 use Src\Settings\Models\FiscalYear;
+use Livewire\Attributes\On;
+use Src\Customers\Models\Customer;
 
 class BusinessRegistrationForm extends Component
 {
@@ -462,6 +464,7 @@ class BusinessRegistrationForm extends Component
     {
         unset($this->personalDetails[$index]);
         $this->personalDetails = array_values($this->personalDetails); // reindex
+        $this->successToast(__('businessregistration::businessregistration.personal_detail_removed_successfully'));
     }
 
 
@@ -697,6 +700,58 @@ class BusinessRegistrationForm extends Component
         } elseif ($target === 'businessRegistration') {
             $this->businessRegistration[$field] = $filename;
             $this->{$field . '_url'} = $url;
+        }
+    }
+    #[On('search-user')]
+    public function restructureData($result, $personalDetailIndex = 0)
+    {
+        if ($result['type'] === 'Customer') {
+            $customer = Customer::with('kyc')->where('id', $result['id'])->first();
+
+            if ($customer) {
+                // Ensure the personal detail index exists
+                if (!isset($this->personalDetails[$personalDetailIndex])) {
+                    $this->addPersonalDetail();
+                }
+
+                // Populate the specific personal detail
+                $this->personalDetails[$personalDetailIndex]['applicant_name'] = $customer->name ?? '';
+                $this->personalDetails[$personalDetailIndex]['phone'] = $customer->mobile_no ?? '';
+                $this->personalDetails[$personalDetailIndex]['email'] = $customer->email ?? '';
+                $this->personalDetails[$personalDetailIndex]['gender'] = $customer->gender->value ?? '';
+
+                // Populate KYC data if available
+                if ($customer->kyc) {
+                    $this->personalDetails[$personalDetailIndex]['father_name'] = $customer->kyc->father_name ?? '';
+                    $this->personalDetails[$personalDetailIndex]['grandfather_name'] = $customer->kyc->grandfather_name ?? '';
+                    $this->personalDetails[$personalDetailIndex]['citizenship_number'] = $customer->kyc->document_number ?? '';
+                    $this->personalDetails[$personalDetailIndex]['citizenship_issued_date'] = $customer->kyc->document_issued_date_nepali ?? '';
+                    $this->personalDetails[$personalDetailIndex]['citizenship_issued_district'] = $customer->kyc->document_issued_at ?? '';
+
+                    // Populate address information if available
+                    if ($customer->kyc->permanent_province_id) {
+                        $this->personalDetails[$personalDetailIndex]['applicant_province'] = $customer->kyc->permanent_province_id;
+                        $this->getApplicantDistricts($personalDetailIndex);
+                    }
+                    if ($customer->kyc->permanent_district_id) {
+                        $this->personalDetails[$personalDetailIndex]['applicant_district'] = $customer->kyc->permanent_district_id;
+                        $this->getApplicantLocalBodies($personalDetailIndex);
+                    }
+                    if ($customer->kyc->permanent_local_body_id) {
+                        $this->personalDetails[$personalDetailIndex]['applicant_local_body'] = $customer->kyc->permanent_local_body_id;
+                        $this->getApplicantWards($personalDetailIndex);
+                    }
+                    if ($customer->kyc->permanent_ward) {
+                        $this->personalDetails[$personalDetailIndex]['applicant_ward'] = $customer->kyc->permanent_ward;
+                    }
+                    if ($customer->kyc->permanent_tole) {
+                        $this->personalDetails[$personalDetailIndex]['applicant_tole'] = $customer->kyc->permanent_tole;
+                    }
+                }
+
+                // Show success message
+                $this->successToast(__('businessregistration::businessregistration.customer_data_loaded_successfully'));
+            }
         }
     }
     public function save()
