@@ -51,7 +51,7 @@ trait RecommendationTemplate
         // $letterHead = $this->getLetterHeader($wardId, getFormattedBsDate(), $regNo, true, $applyRecommendation?->fiscalYear?->year);
 
 
-        $letterHead = $this->getRecommendationLetterHead($regNo, $applyRecommendation?->fiscalYear?->year, true);
+        $letterHead = $this->getRecommendationLetterHead($regNo, $applyRecommendation?->fiscalYear?->year ?? getSetting('fiscal-year)'), true);
 
         $letterFoot = $this->getFooter();
 
