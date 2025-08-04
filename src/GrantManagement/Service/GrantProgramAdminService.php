@@ -22,7 +22,9 @@ class GrantProgramAdminService
             'grant_provided_type' => $grantProgramAdminDto->grant_provided_type,
             'grant_provided_quantity' => $grantProgramAdminDto->grant_provided_quantity,
             'grant_provided' => $grantProgramAdminDto->grant_provided,
-            
+            'decision_type' => $grantProgramAdminDto->decision_type,
+            'decision_date' => $grantProgramAdminDto->decision_date,
+
             'created_at' => now(),
             'created_by' => Auth::id(),
         ]);
@@ -41,6 +43,8 @@ class GrantProgramAdminService
             'grant_provided_type' => $grantProgramAdminDto->grant_provided_type,
             'grant_provided_quantity' => $grantProgramAdminDto->grant_provided_quantity,
             'grant_provided' => $grantProgramAdminDto->grant_provided,
+            'decision_type' => $grantProgramAdminDto->decision_type,
+            'decision_date' => $grantProgramAdminDto->decision_date,
             'updated_at' => now(),
             'updated_by' => Auth::id(),
         ]);
@@ -61,5 +65,3 @@ class GrantProgramAdminService
         ]);
     }
 }
-
-

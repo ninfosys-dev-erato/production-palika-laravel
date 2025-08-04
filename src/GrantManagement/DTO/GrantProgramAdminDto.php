@@ -3,6 +3,7 @@
 namespace Src\GrantManagement\DTO;
 
 use Src\GrantManagement\Models\GrantProgram;
+use Src\GrantManagement\Enums\DecisionTypeEnum;
 
 class GrantProgramAdminDto
 {
@@ -17,13 +18,13 @@ class GrantProgramAdminDto
         public string $grant_provided_type,
         public string $condition,
         public ?string $grant_provided,
-        public ?string $grant_provided_quantity
-    ) {
-    }
+        public ?string $grant_provided_quantity,
+        public ?string $decision_type,
+        public ?string $decision_date
+    ) {}
 
     public static function fromLiveWireModel(GrantProgram $grantProgram): GrantProgramAdminDto
     {
-
         return new self(
             program_name: $grantProgram->program_name,
             grant_amount: $grantProgram->grant_amount,
@@ -36,6 +37,8 @@ class GrantProgramAdminDto
             grant_provided_type: $grantProgram->grant_provided_type,
             grant_provided_quantity: $grantProgram->grant_provided_quantity,
             grant_provided: $grantProgram->grant_provided,
+            decision_type: $grantProgram->decision_type?->value,
+            decision_date: $grantProgram->decision_date,
         );
     }
 }

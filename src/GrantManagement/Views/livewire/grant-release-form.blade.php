@@ -160,6 +160,34 @@
 
                 <div class="form-group">
                     <label class='form-label'
+                        for="grant_expenses">{{ __('grantmanagement::grantmanagement.grant_expenses') }}</label>
+                    <input wire:model="grantRelease.grant_expenses" type="text" id="grant_expenses"
+                        class="form-control"
+                        placeholder="{{ __('grantmanagement::grantmanagement.enter_grant_expenses') }}">
+                    @error('grantRelease.grant_expenses')
+                        <small class="text-danger">{{ __($message) }}</small>
+                    @enderror
+                </div>
+            </div>
+
+            <div class='col-md-6 mb-4'>
+
+                <div class="form-group">
+                    <label class='form-label'
+                        for="private_expenses">{{ __('grantmanagement::grantmanagement.private_expenses') }}</label>
+                    <input wire:model="grantRelease.private_expenses" type="text" id="private_expenses"
+                        class="form-control"
+                        placeholder="{{ __('grantmanagement::grantmanagement.enter_private_expenses') }}">
+                    @error('grantRelease.private_expenses')
+                        <small class="text-danger">{{ __($message) }}</small>
+                    @enderror
+                </div>
+            </div>
+
+            <div class='col-md-6 mb-4'>
+
+                <div class="form-group">
+                    <label class='form-label'
                         for="condition">{{ __('grantmanagement::grantmanagement.condition') }}</label>
                     <textarea wire:model="grantRelease.condition" id="condition" class="form-control"
                         placeholder="{{ __('grantmanagement::grantmanagement.enter_condition') }}"></textarea>

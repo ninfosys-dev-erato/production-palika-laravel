@@ -40,6 +40,8 @@ class GrantReleaseForm extends Component
             'grantRelease.contact_no' => 'required',
             'grantRelease.condition' => 'required',
             'grantRelease.grant_program' => 'required',
+            'grantRelease.grant_expenses' => 'nullable',
+            'grantRelease.private_expenses' => 'nullable',
         ];
     }
 
@@ -57,6 +59,8 @@ class GrantReleaseForm extends Component
             'grantRelease.contact_no.required' => __('grantmanagement::grantmanagement.contact_no_is_required'),
             'grantRelease.condition.required' => __('grantmanagement::grantmanagement.condition_is_required'),
             'grantRelease.grant_program.required' => __('grantmanagement::grantmanagement.grant_program_is_required'),
+            'grantRelease.grant_expenses.required' => __('grantmanagement::grantmanagement.grant_expenses_is_required'),
+            'grantRelease.private_expenses.required' => __('grantmanagement::grantmanagement.private_expenses_is_required'),
         ];
     }
 

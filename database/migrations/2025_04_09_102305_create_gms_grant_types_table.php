@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('title_en')->nullable();
+            $table->string('amount')->nullable();
+            $table->string('department')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
