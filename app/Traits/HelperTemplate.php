@@ -17,11 +17,11 @@ trait HelperTemplate
     function getLetterHeader(
         ?int $ward_no = null,
         string $date = '',     // default inside function if empty
-        string $reg_no = '1',
+        string|null $reg_no = '',
         bool $is_darta = true,
         string|null $fiscal_year = ''
     ): string {
-        $date = $date ?: date('Y-m-d');
+        $date = $date ?: getFormattedBsDate() ?? '';
         $fiscal_year = $fiscal_year ?: (getSetting('fiscal-year') ?? self::EMPTY_LINES);
 
 
