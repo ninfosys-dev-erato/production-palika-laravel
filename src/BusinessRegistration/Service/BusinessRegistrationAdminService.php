@@ -137,12 +137,12 @@ class BusinessRegistrationAdminService
         return $registration;
     }
 
-    public function delete(BusinessRegistration $businessRegistration): bool|BusinessRegistration
+    public function delete(BusinessRegistration $businessRegistration, bool $admin = true): bool|BusinessRegistration
     {
 
         $businessRegistration = tap($businessRegistration)->update([
             'deleted_at' => date('Y-m-d H:i:s'),
-            'deleted_by' => Auth::user()->id
+            'deleted_by' => $admin ? Auth::user()->id : Auth::guard('customer')->user()->id,
         ]);
 
         return $businessRegistration;

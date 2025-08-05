@@ -85,6 +85,8 @@ class GrantReleaseTable extends DataTableComponent
             Column::make(__('grantmanagement::grantmanagement.newcontinuous'), 'is_new_or_ongoing')->sortable()->collapseOnTablet(),
             Column::make(__('grantmanagement::grantmanagement.planning_site'), 'last_year_investment')->sortable()->collapseOnTablet(),
             Column::make(__('grantmanagement::grantmanagement.contact_number'), 'location')->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.grant_expenses'), 'grant_expenses')->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.private_expenses'), 'private_expenses')->sortable()->searchable()->collapseOnTablet(),
         ];
 
         if (can('gms_activity edit') || can('gms_activity delete')) {

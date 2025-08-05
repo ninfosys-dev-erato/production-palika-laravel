@@ -8,9 +8,11 @@ Route::group(['prefix' => 'customer/business-registration-system', 'as' => 'cust
 
     Route::group(['prefix' => 'business-registration', 'as' => 'business-registration.', 'middleware' => ['web', 'customer']], function () {
         Route::get('/', [BusinessRegistrationAdminController::class, 'index'])->name('index');
-        Route::get('/create', [BusinessRegistrationAdminController::class, 'create'])->name('create');
+
+        Route::get('/create/{registration?}', [BusinessRegistrationAdminController::class, 'create'])->name('create');
         Route::get('/edit/{id}', [BusinessRegistrationAdminController::class, 'edit'])->name('edit');
         Route::get('/show/{id}', [BusinessRegistrationAdminController::class, 'view'])->name('show');
+        Route::get('/preview/{id}', [BusinessRegistrationAdminController::class, 'preview'])->name('preview');
     });
 
     Route::group(['prefix' => 'renewals', 'as' => 'renewals.', 'middleware' => ['web', 'customer']], function () {

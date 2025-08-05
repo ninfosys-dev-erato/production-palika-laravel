@@ -10,6 +10,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Src\Customers\Models\Customer;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property string $grantee_id
+ * @property string $grantee_type
+ * @property string $investment
+ * @property string $is_new_or_ongoing
+ * @property string $last_year_investment
+ * @property string $plot_no
+ * @property string $location
+ * @property string $contact_person
+ * @property string $contact_no
+ * @property string $condition
+ * @property string $grant_program
+ * @property string|null $grant_expenses
+ * @property string|null $private_expenses
+ */
 class GrantRelease extends Model
 {
     use HasFactory, LogsActivity, SoftDeletes;
@@ -29,6 +44,8 @@ class GrantRelease extends Model
         'grant_program',
         'contact_no',
         'condition',
+        'grant_expenses',
+        'private_expenses',
         'deleted_by',
     ];
 
@@ -45,7 +62,9 @@ class GrantRelease extends Model
             'contact_person' => 'string',
             'contact_no' => 'string',
             'condition' => 'string',
-            'grant_program' => 'string'
+            'grant_program' => 'string',
+            'grant_expenses' => 'string',
+            'private_expenses' => 'string'
         ];
     }
 
@@ -54,7 +73,8 @@ class GrantRelease extends Model
         return $this->belongsTo(Customer::class, 'grantee');
     }
 
-    public function grantProgram(){
+    public function grantProgram()
+    {
         return $this->belongsTo(GrantProgram::class, 'grant_program');
     }
 

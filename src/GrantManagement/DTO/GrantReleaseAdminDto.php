@@ -21,7 +21,9 @@ class GrantReleaseAdminDto
         public string $contact_person,
         public string $contact_no,
         public string $condition,
-        public string $grant_program
+        public string $grant_program,
+        public ?string $grant_expenses,
+        public ?string $private_expenses
     ) {}
 
     public static function fromLivewireModel(GrantRelease $grantRelease): GrantReleaseAdminDto
@@ -38,7 +40,9 @@ class GrantReleaseAdminDto
             contact_person: $grantRelease->contact_person,
             contact_no: $grantRelease->contact_no,
             condition: $grantRelease->condition,
-            grant_program: $grantRelease->grant_program
+            grant_program: $grantRelease->grant_program,
+            grant_expenses: $grantRelease->grant_expenses,
+            private_expenses: $grantRelease->private_expenses
         );
     }
 }

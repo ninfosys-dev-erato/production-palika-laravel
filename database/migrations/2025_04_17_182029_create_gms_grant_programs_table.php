@@ -21,11 +21,11 @@ return new class extends Migration
             $table->string('grant_amount')->nullable();
             $table->string('for_grant')->nullable();
             $table->text('condition')->nullable();
+            $table->string('decision_type')->nullable();
+            $table->string('decision_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
-
-       
     }
 
     /**

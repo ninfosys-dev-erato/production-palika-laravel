@@ -180,8 +180,8 @@
                     <div class='form-group' wire:ignore>
                         <label for='for_grant'
                             class='form-label'>{{ __('grantmanagement::grantmanagement.for_grant') }}</label>
-                        <select name='selectedGrants' id="selectedGrants"
-                            class='form-control select2-component' multiple wire:ignore>
+                        <select name='selectedGrants' id="selectedGrants" class='form-control select2-component'
+                            multiple wire:ignore>
                             @foreach ($forGrants as $grant)
                                 <option value="{{ $grant['value'] }}">{{ $grant['label'] }}</option>
                             @endforeach
@@ -189,6 +189,46 @@
 
                         <div>
                             @error('grantProgram.for_grant')
+                                <small class='text-danger'>{{ __($message) }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class='col-md-6 mb-4'>
+                    <div class='form-group'>
+                        <label for='decision_type'
+                            class='form-label'>{{ __('grantmanagement::grantmanagement.decision_type') }}</label>
+
+                        <div class="mt-2">
+                            @foreach ($decisionTypes as $decisionType)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="grantProgram.decision_type"
+                                        id="decision_type_{{ $decisionType['value'] }}"
+                                        wire:model="grantProgram.decision_type" value="{{ $decisionType['value'] }}">
+                                    <label class="form-check-label" for="decision_type_{{ $decisionType['value'] }}">
+                                        {{ $decisionType['label'] }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div>
+                            @error('grantProgram.decision_type')
+                                <small class='text-danger'>{{ __($message) }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class='col-md-6 mb-4' wire:ignore>
+                    <div class='form-group'>
+                        <label for='decision_date'
+                            class='form-label'>{{ __('grantmanagement::grantmanagement.decision_date') }}</label>
+                        <input wire:model='grantProgram.decision_date' name='decision_date' type='text'
+                            class='form-control nepali-date'
+                            placeholder="{{ __('grantmanagement::grantmanagement.enter_decision_date') }}">
+                        <div>
+                            @error('grantProgram.decision_date')
                                 <small class='text-danger'>{{ __($message) }}</small>
                             @enderror
                         </div>
@@ -240,14 +280,13 @@
         // });
 
 
-         $(document).ready(function() {
+        $(document).ready(function() {
             const elements = [{
-                    id: '#selectedGrants',
-                    placeholder: "{{ __('grantmanagement::grantmanagement.select_farmers') }}",
-                    selectedValues: @json($grantProgram->for_grant) ?? [],
-                    updateFunction: 'updateSelectedForGrant'
-                },
-            ];
+                id: '#selectedGrants',
+                placeholder: "{{ __('grantmanagement::grantmanagement.select_farmers') }}",
+                selectedValues: @json($grantProgram->for_grant) ?? [],
+                updateFunction: 'updateSelectedForGrant'
+            }, ];
 
             elements.forEach(function(element) {
                 const selectElement = $(element.id);
@@ -268,11 +307,7 @@
 
             });
 
-           
+
         });
-
-
-
-       
     </script>
 @endpush

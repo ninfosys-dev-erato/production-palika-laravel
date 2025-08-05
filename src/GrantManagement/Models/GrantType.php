@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Employees\Models\Branch;
 
 /**
  * @property string $title
  * @property string $title_en
+ * @property string|null $amount
+ * @property string|null $department
  */
 
 class GrantType extends Model
@@ -21,6 +24,8 @@ class GrantType extends Model
     protected $fillable = [
         'title',
         'title_en',
+        'amount',
+        'department',
         'created_at',
         'created_by',
         'deleted_at',
@@ -34,6 +39,8 @@ class GrantType extends Model
         return [
             'title' => 'string',
             'title_en' => 'string',
+            'amount' => 'string',
+            'department' => 'string',
             'id' => 'int',
             'created_at' => 'datetime',
             'created_by' => 'string',
@@ -57,5 +64,8 @@ class GrantType extends Model
             ->logOnlyDirty()
             ->setDescriptionForEvent(fn(string $eventName) => "This GrantType has been {$eventName}");
     }
-
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'department', 'id');
+    }
 }

@@ -9,6 +9,7 @@ use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -122,6 +123,7 @@ class BusinessRegistrationForm extends Component
 
     public $rentagreement; // Holds uploaded file name
     public $rentagreement_url;
+    public $isCustomer = false;
 
 
 
@@ -266,6 +268,7 @@ class BusinessRegistrationForm extends Component
 
     public function mount(?BusinessRegistration $businessRegistration, Action $action, ?BusinessRegistrationType $businessRegistrationType, $registration = null)
     {
+
         $this->businessRegistration = $businessRegistration;
         $this->businessRegistrationType = $businessRegistrationType;
 
@@ -275,8 +278,9 @@ class BusinessRegistrationForm extends Component
 
         $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('action', $businessRegistrationType)->where('status', true)->pluck('title', 'id');
 
-
-
+        if (Auth::guard('customer')->user()) {
+            $this->isCustomer = true;
+        }
 
         $this->registrationCategories = RegistrationCategory::pluck('title', 'id')->toArray();
 
@@ -291,6 +295,19 @@ class BusinessRegistrationForm extends Component
 
         if ($this->action == Action::CREATE) {
             $this->preSetBusinessAddress();
+
+            if ($this->isCustomer) {
+
+                $customer = Auth::guard('customer')->user();
+                if ($customer) {
+                    // Create the result array that restructureData expects
+                    $result = [
+                        'type' => 'Customer',
+                        'id' => $customer->id
+                    ];
+                    $this->restructureData($result);
+                }
+            }
         }
         if ($this->action == Action::UPDATE && $businessRegistration) {
 
@@ -810,7 +827,13 @@ class BusinessRegistrationForm extends Component
 
                         DB::commit();
                         $this->successFlash(__('businessregistration::businessregistration.business_registration_applied_successfully'));
-                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+
+                        // Determine redirect route based on user type
+                        if ($this->isCustomer) {
+                            return redirect()->route('customer.business-registration.business-registration.index');
+                        } else {
+                            return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                        }
                     } else {
                         DB::rollBack();
                         $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
@@ -848,7 +871,13 @@ class BusinessRegistrationForm extends Component
 
                         DB::commit();
                         $this->successFlash(__('businessregistration::businessregistration.business_registration_application_updated_successfully'));
-                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+
+                        // Determine redirect route based on user type
+                        if ($this->isCustomer) {
+                            return redirect()->route('customer.business-registration.business-registration.index');
+                        } else {
+                            return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                        }
                     } else {
                         DB::rollBack();
                         $this->errorFlash(__('businessregistration::businessregistration.business_registration_failed'));
@@ -858,13 +887,106 @@ class BusinessRegistrationForm extends Component
                 default:
                     DB::rollBack();
                     $this->errorFlash(__('Invalid action.'));
-                    return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+
+                    // Determine redirect route based on user type
+                    if ($this->isCustomer) {
+                        return redirect()->route('customer.business-registration.business-registration.index');
+                    } else {
+                        return redirect()->route('admin.business-registration.business-registration.index', ['type' => $this->businessRegistrationType]);
+                    }
             }
         } catch (\Throwable $e) {
             DB::rollBack();
             logger($e->getMessage());
             $this->errorFlash('Something went wrong while saving. ' . $e->getMessage());
         }
+    }
+
+    private function mergeExistingDataWithFields($fieldDefinitions, $existingData)
+    {
+        return collect($fieldDefinitions)->map(function ($field) use ($existingData) {
+            if ($field['type'] === "table") {
+                $field['fields'] = [];
+                $row = [];
+                foreach ($field as $key => $values) {
+                    if (is_numeric($key)) {
+                        $values['value'] = $this->initializeFieldValue($values);
+                        $row[$values['slug']] = $values;
+                        unset($field[$key]);
+                    }
+                }
+                $field['fields'][] = $row;
+
+                // If editing and we have existing table data, merge it
+                if ($this->action === Action::UPDATE && isset($existingData[$field['slug']])) {
+                    $existingField = $existingData[$field['slug']];
+                    if (isset($existingField['fields']) && is_array($existingField['fields'])) {
+                        $field['fields'] = $existingField['fields'];
+                    }
+                }
+            } elseif ($field['type'] === 'group') {
+                $groupFields = [];
+                foreach ($field as $key => $values) {
+                    if (is_numeric($key)) {
+                        $values['value'] = $this->initializeFieldValue($values);
+                        $groupFields[$values['slug']] = $values;
+                    }
+                }
+                $field['fields'] = $groupFields;
+                $field = array_filter($field, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
+
+                // If editing and we have existing group data, merge it
+                if ($this->action === Action::UPDATE && isset($existingData[$field['slug']])) {
+                    $existingField = $existingData[$field['slug']];
+                    if (isset($existingField['fields']) && is_array($existingField['fields'])) {
+                        foreach ($existingField['fields'] as $slug => $existingValue) {
+                            if (isset($field['fields'][$slug])) {
+                                $field['fields'][$slug]['value'] = $existingValue['value'] ?? $field['fields'][$slug]['value'];
+                            }
+                        }
+                    }
+                }
+            } elseif ($field['type'] === 'checkbox') {
+                $field['value'] = [];
+            } elseif ($field['type'] === 'select') {
+                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
+            } elseif ($field['type'] === 'file') {
+                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
+            }
+
+            // If editing and we have existing data for this field, merge it
+            if ($this->action === Action::UPDATE && isset($existingData[$field['slug']])) {
+                $existingField = $existingData[$field['slug']];
+
+                // Merge existing values with field definition (for non-table/group fields)
+                if ($field['type'] !== 'table' && $field['type'] !== 'group' && isset($existingField['value'])) {
+                    $field['value'] = $existingField['value'];
+                }
+
+                // Handle file URLs for existing files
+                if ($field['type'] === 'file') {
+                    if (($field['is_multiple'] ?? 'no') === 'yes' && is_array($field['value'])) {
+                        $field['urls'] = array_map(function ($filename) {
+                            return FileFacade::getTemporaryUrl(
+                                config('src.BusinessRegistration.businessRegistration.registration'),
+                                $filename,
+                                'local'
+                            );
+                        }, $field['value']);
+                    } elseif (is_string($field['value']) && !empty($field['value'])) {
+                        $field['url'] = FileFacade::getTemporaryUrl(
+                            config('src.BusinessRegistration.businessRegistration.registration'),
+                            $field['value'],
+                            'local'
+                        );
+                    }
+                }
+            }
+
+            return $field;
+        })->mapWithKeys(function ($field) {
+            return [$field['slug'] => $field];
+        })->toArray();
     }
 
     public function setFields(int|string $registrationTypeId)
@@ -902,60 +1024,13 @@ class BusinessRegistrationForm extends Component
             return;
         }
 
+        // Store existing data for merging
+        $existingData = $this->data;
 
-
-
-        $this->data = collect(json_decode($registrationType->form->fields, true))->map(function ($field) {
-            if ($field['type'] === "table") {
-                $field['fields'] = [];
-                $row = [];
-                foreach ($field as $key => $values) {
-                    if (is_numeric($key)) {
-                        $values['value'] = $this->initializeFieldValue($values);
-                        $row[$values['slug']] = $values;
-                        unset($field[$key]);
-                    }
-                }
-                $field['fields'][] = $row;
-            } elseif ($field['type'] === 'group') {
-                $fields = [];
-                foreach ($field as $key => $values) {
-                    if (is_numeric($key)) {
-                        $values['value'] = $this->initializeFieldValue($values);
-                        $fields[$values['slug']] = $values;
-                    }
-                }
-                $field['fields'] = $fields;
-                $field = array_filter($field, fn($k) => !is_numeric($k), ARRAY_FILTER_USE_KEY);
-            } elseif ($field['type'] === 'checkbox') {
-                $field['value'] = [];
-            } elseif ($field['type'] === 'select') {
-                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
-            } elseif ($field['type'] === 'file') {
-                $field['value'] = ($field['is_multiple'] ?? 'no') === 'yes' ? [] : null;
-                // If editing, generate URL(s) for existing value(s)
-                if (!empty($field['value'])) {
-                    if (($field['is_multiple'] ?? 'no') === 'yes' && is_array($field['value'])) {
-                        $field['urls'] = array_map(function ($filename) {
-                            return FileFacade::getTemporaryUrl(
-                                config('src.BusinessRegistration.businessRegistration.registration'),
-                                $filename,
-                                'local'
-                            );
-                        }, $field['value']);
-                    } elseif (is_string($field['value'])) {
-                        $field['url'] = FileFacade::getTemporaryUrl(
-                            config('src.BusinessRegistration.businessRegistration.registration'),
-                            $field['value'],
-                            'local'
-                        );
-                    }
-                }
-            }
-            return $field;
-        })->mapWithKeys(function ($field) {
-            return [$field['slug'] => $field];
-        })->toArray();
+        $this->data = $this->mergeExistingDataWithFields(
+            json_decode($registrationType->form->fields, true),
+            $existingData
+        );
     }
 
     public function addTableRow(string $tableName): void
