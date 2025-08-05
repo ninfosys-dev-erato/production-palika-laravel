@@ -234,7 +234,7 @@
                                         <div class='form-group'>
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
-                                                name='fourBoundaries.{{ $index }}.distance' type='number'
+                                                name='fourBoundaries.{{ $index }}.distance' type='text'
                                                 class='form-control'
                                                 placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>
