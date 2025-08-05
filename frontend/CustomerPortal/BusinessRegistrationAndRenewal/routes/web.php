@@ -10,9 +10,9 @@ Route::group(['prefix' => 'customer/business-registration-system', 'as' => 'cust
         Route::get('/', [BusinessRegistrationAdminController::class, 'index'])->name('index');
 
         Route::get('/create/{registration?}', [BusinessRegistrationAdminController::class, 'create'])->name('create');
-        Route::get('/edit/{id}', [BusinessRegistrationAdminController::class, 'edit'])->name('edit');
-        Route::get('/show/{id}', [BusinessRegistrationAdminController::class, 'view'])->name('show');
-        Route::get('/preview/{id}', [BusinessRegistrationAdminController::class, 'preview'])->name('preview');
+        Route::get('/edit/{id}', [BusinessRegistrationAdminController::class, 'edit'])->name('edit')->middleware('business_registration_owner');
+        Route::get('/show/{id}', [BusinessRegistrationAdminController::class, 'view'])->name('show')->middleware('business_registration_owner');
+        Route::get('/preview/{id}', [BusinessRegistrationAdminController::class, 'preview'])->name('preview')->middleware('business_registration_owner');
     });
 
     Route::group(['prefix' => 'renewals', 'as' => 'renewals.', 'middleware' => ['web', 'customer']], function () {
