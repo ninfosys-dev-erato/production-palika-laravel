@@ -293,15 +293,25 @@
                                 @enderror
                                 @if ($uploadedImage1)
                                     @php
-                                        $previewUrl = safeFilePreview($uploadedImage1);
+                                        $mime = $uploadedImage1->getMimeType();
+                                        $isImage = str_starts_with($mime, 'image/');
+                                        $isPDF = $mime === 'application/pdf';
                                     @endphp
-                                    
-                                    @if ($previewUrl)
-                                        <img src="{{ $previewUrl }}" alt="Uploaded Image Preview"
-                                            class="img-thumbnail mt-2" style="height: 300px;">
+
+                                    @if ($isImage)
+                                        <img src="{{ $uploadedImage1->temporaryUrl() }}" alt="Image Preview"
+                                            class="img-thumbnail mt-2" style="height: 300px; object-fit: cover;" />
+                                    @elseif ($isPDF)
+                                        <div class="mt-2 p-3 bg-light border rounded d-flex align-items-center">
+                                            <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
+                                            <a href="{{ $uploadedImage1->temporaryUrl() }}" target="_blank"
+                                                class="text-primary fw-bold text-decoration-none">
+                                                {{ __('View Uploaded File') }}
+                                            </a>
+                                        </div>
                                     @else
                                         <div class="mt-2 p-3 bg-light border rounded">
-                                            <i class="{{ getFileTypeIcon($uploadedImage1) }}"></i>
+                                            <i class="fas fa-file"></i>
                                             <span class="ms-2">{{ $uploadedImage1->getFilename() }}</span>
                                             <br>
                                             <small class="text-muted">{{ __('This file type cannot be previewed') }}</small>
@@ -324,16 +334,25 @@
                                     @enderror
                                     @if ($uploadedImage2)
                                         @php
-                                            $previewUrl2 = safeFilePreview($uploadedImage2);
+                                            $mime2 = $uploadedImage2->getMimeType();
+                                            $isImage2 = str_starts_with($mime2, 'image/');
+                                            $isPDF2 = $mime2 === 'application/pdf';
                                         @endphp
-                                        
-                                        @if ($previewUrl2)
-                                            <img src="{{ $previewUrl2 }}"
-                                                alt="Uploaded Image Preview" class="img-thumbnail mt-2"
-                                                style="height: 300px;">
+
+                                        @if ($isImage2)
+                                            <img src="{{ $uploadedImage2->temporaryUrl() }}" alt="Image Preview"
+                                                class="img-thumbnail mt-2" style="height: 300px; object-fit: cover;" />
+                                        @elseif ($isPDF2)
+                                            <div class="mt-2 p-3 bg-light border rounded d-flex align-items-center">
+                                                <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
+                                                <a href="{{ $uploadedImage2->temporaryUrl() }}" target="_blank"
+                                                    class="text-primary fw-bold text-decoration-none">
+                                                    {{ __('View Uploaded File') }}
+                                                </a>
+                                            </div>
                                         @else
                                             <div class="mt-2 p-3 bg-light border rounded">
-                                                <i class="{{ getFileTypeIcon($uploadedImage2) }}"></i>
+                                                <i class="fas fa-file"></i>
                                                 <span class="ms-2">{{ $uploadedImage2->getFilename() }}</span>
                                                 <br>
                                                 <small class="text-muted">{{ __('This file type cannot be previewed') }}</small>
