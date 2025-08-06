@@ -92,7 +92,10 @@ class BuildingRegistrationForm extends Component
     public $fourBoundaries = [];
     public $organizations;
     public ?OrganizationDetail $organizationDetail;
-        public $documents = [];
+    public $documents = [];
+    public $formerLocalBodies;
+
+    public $formerWards;
 
     public function rules(): array
     {
@@ -130,6 +133,8 @@ class BuildingRegistrationForm extends Component
             'mapApply.ward_no' => ['required'],
             'mapApply.application_date' => ['nullable'],
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['nullable'],
+            'customerLandDetail.former_ward_no' => ['nullable'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],
@@ -283,6 +288,17 @@ class BuildingRegistrationForm extends Component
         }
     }
 
+         public function loadFormerWards(): void
+    {
+        $localBody = LocalBody::find($this->customerLandDetail->former_local_body);
+
+        if ($localBody) {
+            $this->formerWards = getWards($localBody->wards);
+        } else {
+            $this->formerWards = [];
+        }
+    }
+
     public function mount(MapApply $mapApply,Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail, MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
     {
 
@@ -298,8 +314,10 @@ class BuildingRegistrationForm extends Component
         $this->applicantProvinces = getProvinces()->pluck('title', 'id')->toArray();
         $this->landOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
         $this->houseOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
-       $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
-       
+        $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerLocalBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerWards = [];
+
         $this->usageOptions = PurposeOfConstructionEnum::cases();
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
         $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)->get();
@@ -328,6 +346,8 @@ class BuildingRegistrationForm extends Component
             $this->getApplicantDistricts();
             $this->getApplicantLocalBodies();
             $this->getApplicantWards();
+            $this->loadWards();
+            $this->loadFormerWards();
         }
     }
 

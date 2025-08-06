@@ -40,7 +40,7 @@ class CustomerLandDetailTable extends DataTableComponent
     {
         return CustomerLandDetail::query()
             ->with('localBody')
-            ->select('ward','tole')
+            ->select('ward','tole','former_local_body','former_ward_no')
             ->where('ebps_customer_land_details.deleted_at',null)
             ->where('ebps_customer_land_details.deleted_by',null)
            ->orderBy('ebps_customer_land_details.created_at','DESC'); // Select some things
@@ -58,6 +58,8 @@ class CustomerLandDetailTable extends DataTableComponent
             ->sortable()
             ->searchable()
             ->collapseOnTablet(),
+            Column::make(__("Former Local Body"), "former_local_body") ->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__("Former Ward No"), "former_ward_no") ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__("ebps::ebps.area_sqm"), "area_sqm") ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__("ebps::ebps.lot_no"), "lot_no") ->sortable()->searchable()->collapseOnTablet(),
             Column::make(__("ebps::ebps.seat_no"), "seat_no") ->sortable()->searchable()->collapseOnTablet(),

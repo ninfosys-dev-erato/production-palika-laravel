@@ -78,12 +78,16 @@ class MapApplyForm extends Component
     public $documents = [];
     public $options = [];
     public $organizations;
+    public $formerLocalBodies;
+    public $formerWards;
 
     public function rules(): array
     {
         if ($this->addLandForm) {
             return [
                 'customerLandDetail.local_body_id' => ['required'],
+                'customerLandDetail.former_local_body' => ['nullable'],
+                'customerLandDetail.former_ward_no' => ['nullable'],
                 'customerLandDetail.ward' => ['required'],
                 'customerLandDetail.tole' => ['required'],
                 'customerLandDetail.area_sqm' => ['required'],
@@ -114,6 +118,8 @@ class MapApplyForm extends Component
             'houseOwnerDetail.local_body_id' => ['required'],
             'houseOwnerDetail.ward_no' => ['required'],
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['nullable'],
+            'customerLandDetail.former_ward_no' => ['nullable'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],
@@ -196,6 +202,17 @@ class MapApplyForm extends Component
         }
     }
 
+    public function loadFormerWards(): void
+    {
+        $localBody = LocalBody::find($this->customerLandDetail->former_local_body);
+
+        if ($localBody) {
+            $this->formerWards = getWards($localBody->wards);
+        } else {
+            $this->formerWards = [];
+        }
+    }
+
 
     public function addFourBoundaries()
     {
@@ -239,11 +256,13 @@ class MapApplyForm extends Component
 
         $this->organizations  = Organization::whereNull('deleted_at')->get();
         $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerLocalBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
 
         // $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
         $this->ownerships = LandOwernshipEnum::cases();
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
         $this->wards = [];
+        $this->formerWards = [];
         $this->organizationDetail = $organizationDetail;
 
         $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::MAP_APPLIES)->get();
@@ -282,6 +301,7 @@ class MapApplyForm extends Component
             }
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
             $this->loadWards();
+            $this->loadFormerWards();
             $this->loadFourBoundaries($this->customerLandDetail);
         }
     }
@@ -293,6 +313,11 @@ class MapApplyForm extends Component
             $index = (int) filter_var($propertyName, FILTER_SANITIZE_NUMBER_INT);
             // Call the fileUpload method with the relevant index
             $this->fileUpload($index);
+        }
+
+        // Handle former local body changes
+        if ($propertyName === 'customerLandDetail.former_local_body') {
+            $this->loadFormerWards();
         }
     }
 

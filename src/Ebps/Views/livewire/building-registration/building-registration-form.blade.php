@@ -143,6 +143,41 @@
                 <div class="divider-text ">{{ __('ebps::ebps.land_details') }}</div>
             </div>
 
+
+
+            <div class="col-md-6 mb-4">
+                <label for="former_local_body">{{ __('ebps::ebps.former_local_body') }}</label>
+                <select id="former_local_body" wire:model="customerLandDetail.former_local_body"
+                    name="customerLandDetail.former_local_body" class="form-control" wire:change="loadFormerWards">
+
+                    <option value="">{{ __('ebps::ebps.choose_former_local_body') }}</option>
+
+                    @foreach ($formerLocalBodies as $id => $title)
+                        <option value="{{ $id }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_local_body')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+
+            <div class="col-md-6 mb-4">
+                <label for="former_ward_no">{{ __('ebps::ebps.former_ward_no') }}</label>
+                <select id="former_ward_no" name="customerLandDetail.former_ward_no" class="form-control"
+                    wire:model="customerLandDetail.former_ward_no">
+                    <option value="">{{ __('ebps::ebps.choose_former_ward_no') }}</option>
+                    @foreach ($formerWards as $id => $title)
+                        <option value="{{ $title }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_ward_no')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <label for="local_body_id">{{ __('ebps::ebps.local_body') }}</label>
@@ -867,7 +902,6 @@
                     <label for="applicant_type" class="form-label">{{ __('ebps::ebps.applicant_type') }}</label>
                     <span class="text-danger">*</span>
                     <select wire:model="mapApply.applicant_type" name="applicant_type"
-                        wire:change='updateApplicantForm'
                         class="form-control {{ $errors->has('mapApply.applicant_type') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('mapApply.applicant_type') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
                         <option value="" selected hidden>{{ __('ebps::ebps.select_applicant_type') }}</option>
@@ -890,7 +924,7 @@
                     <span class="text-danger">*</span>
                     <input wire:model.defer='mapApply.full_name' id="full_name" name='full_name' type='text'
                         class='form-control' placeholder='निवेदकको नाम'
-                        @if (!$showNameAndNumber) readonly @endif>
+                        >
                     <div>
                         @error('mapApply.full_name')
                             <small class='text-danger'>{{ $message }}</small>
@@ -904,7 +938,7 @@
                     <label class="form-label" for='mobile_no'>{{ __('ebps::ebps.phone_number') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.mobile_no' id="mobile_no" name='mobile_no' type='number'
-                        class='form-control' placeholder='फोन नं.' @if (!$showNameAndNumber) readonly @endif>
+                        class='form-control' placeholder='फोन नं.' >
                     <div>
                         @error('mapApply.mobile_no')
                             <small class='text-danger'>{{ $message }}</small>

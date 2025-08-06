@@ -633,4 +633,8 @@ return [
     'organization_information_and_documents' => 'Organization Information and Documents',
     'Tax clearance document uploaded successfully!' => 'Tax clearance document uploaded successfully!',
     'no_signature_uploaded' => 'No Signature Uploaded',
+    'former_local_body' => 'Former Local Body',
+    'former_ward_no' => 'Former Ward Number',
+    'choose_former_local_body' => 'Choose Former Local Body',
+    'choose_former_ward_no' => 'Choose Former Ward',
 ];
