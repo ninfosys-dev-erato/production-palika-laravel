@@ -12,6 +12,8 @@ public function store(CustomerLandDetailDto $customerLandDetaiAdminDto){
     return CustomerLandDetail::create([
         'customer_id' => $customerLandDetaiAdminDto->customer_id,
         'local_body_id' => $customerLandDetaiAdminDto->local_body_id,
+        'former_local_body' => $customerLandDetaiAdminDto->former_local_body,
+        'former_ward_no' => $customerLandDetaiAdminDto->former_ward_no,
         'ward' => $customerLandDetaiAdminDto->ward,
         'tole' => $customerLandDetaiAdminDto->tole,
         'area_sqm' => $customerLandDetaiAdminDto->area_sqm,
@@ -26,6 +28,8 @@ public function update(CustomerLandDetail $customerLandDetai, CustomerLandDetail
     return tap($customerLandDetai)->update([
         'customer_id' => $customerLandDetaiAdminDto->customer_id,
         'local_body_id' => $customerLandDetaiAdminDto->local_body_id,
+        'former_local_body' => $customerLandDetaiAdminDto->former_local_body,
+        'former_ward_no' => $customerLandDetaiAdminDto->former_ward_no,
         'ward' => $customerLandDetaiAdminDto->ward,
         'tole' => $customerLandDetaiAdminDto->tole,
         'area_sqm' => $customerLandDetaiAdminDto->area_sqm,

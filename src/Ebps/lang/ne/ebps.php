@@ -630,4 +630,8 @@ return [
     'organization_profile' => 'संस्था प्रोफाइल',
     'organization_information_and_documents' => 'संस्था जानकारी र कागजातहरू',
     'Tax clearance document uploaded successfully!' => 'कर चुक्ता कागजात सफलतापूर्वक अपलोड गरियो!',
+    'former_local_body'=> 'पूर्व स्थानीय तह',
+    'former_ward_no' => 'पूर्व वडा नम्बर',
+    'choose_former_local_body' => 'पूर्व स्थानीय तह चयन गर्नुहोस्',
+    'choose_former_ward_no' => 'पूर्व वडा नम्बर चयन गर्नुहोस्',
 ];

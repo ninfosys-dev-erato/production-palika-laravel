@@ -351,6 +351,7 @@ trait HelperTemplate
             '{{global.palika_name}}' => getSetting('palika-name') ?? self::EMPTY_LINES,
             '{{global.palika_name_en}}' => getSetting('palika-name-english') ?: self::EMPTY_LINES,
             '{{global.office_name}}' => getSetting('office-name') ?? self::EMPTY_LINES,
+            '{{global.office_name_en}}' => getSetting('office-name-eng') ?: self::EMPTY_LINES,
             '{{global.fiscal_year}}' => getSetting('fiscal-year') ?? self::EMPTY_LINES,
             '{{global.palika_address}}' => getSetting('palika-address') ?? self::EMPTY_LINES,
             '{{global.palika_email}}' => getSetting('office_email') ?? self::EMPTY_LINES,

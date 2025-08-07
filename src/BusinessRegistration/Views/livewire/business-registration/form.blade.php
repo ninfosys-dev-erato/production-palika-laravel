@@ -1046,6 +1046,16 @@
                                             id="required_manpower"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_required_manpower') }}">
                                     </div>
+                                    <!-- Required electric power -->
+                                    <div class="col-md-6">
+                                        <label for="required_electric_power" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.required_electric_power') }}
+                                        </label>
+                                        <input wire:model="businessRegistration.required_electric_power"
+                                            name="required_electric_power" type="text" class="form-control"
+                                            id="required_electric_power"
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_required_electric_power') }}">
+                                    </div>
                                     <!-- Number of Shifts for Industry Operation -->
                                     <div class="col-md-6">
                                         <label for="number_of_shifts" class="form-label-peaceful">
@@ -1074,6 +1084,15 @@
                                             name="total_running_day" type="text" class="form-control nepali-date"
                                             id="total_running_day"
                                             placeholder="{{ __('businessregistration::businessregistration.industry_total_running_day') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="others" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.others') }}
+                                        </label>
+                                        <input wire:model="businessRegistration.others"
+                                            name="others" type="text" class="form-control nepali-date"
+                                            id="others"
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_others') }}">
                                     </div>
                                 </div>
                             @endif

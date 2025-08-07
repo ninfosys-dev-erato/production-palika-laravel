@@ -306,6 +306,12 @@
                     {{ __('businessregistration::businessregistration.business_registration_application_detail') }}
                 </button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="btn mx-2 btn-primary" role="tab" data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-nibedan" aria-controls="navs-pills-nibedan" aria-selected="false">
+                    {{ __('businessregistration::businessregistration.registration_application') }}
+                </button>
+            </li>
 
 
             @if ($businessRegistration->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
@@ -340,6 +346,9 @@
 
             <div class="tab-pane fade" id="navs-pills-letter" role="tabpanel">
                 <livewire:business_registration.business_registration_preview :$businessRegistration />
+            </div>
+            <div class="tab-pane fade" id="navs-pills-nibedan" role="tabpanel">
+                <livewire:business_registration.business_registration_application :$businessRegistration />
             </div>
         </div>
     </div>

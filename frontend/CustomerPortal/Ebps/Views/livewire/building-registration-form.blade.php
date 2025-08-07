@@ -139,6 +139,39 @@
                 <div class="divider-text ">{{ __('ebps::ebps.land_details') }}</div>
             </div>
 
+
+            <div class="col-md-6 mb-4">
+                <label for="former_local_body">{{ __('ebps::ebps.former_local_body') }}</label>
+                <select id="former_local_body" wire:model="customerLandDetail.former_local_body"
+                    name="customerLandDetail.former_local_body" class="form-control" wire:change="loadFormerWards">
+
+                    <option value="">{{ __('ebps::ebps.choose_former_local_body') }}</option>
+
+                    @foreach ($formerLocalBodies as $id => $title)
+                        <option value="{{ $id }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_local_body')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label for="former_ward_no">{{ __('ebps::ebps.former_ward_no') }}</label>
+                <select id="former_ward_no" name="customerLandDetail.former_ward_no" class="form-control"
+                    wire:model="customerLandDetail.former_ward_no">
+                    <option value="">{{ __('ebps::ebps.choose_former_ward_no') }}</option>
+                    @foreach ($formerWards as $id => $title)
+                        <option value="{{ $title }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_ward_no')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+            
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <label for="local_body_id">{{ __('ebps::ebps.local_body') }}</label>

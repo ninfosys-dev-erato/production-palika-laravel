@@ -11,6 +11,8 @@ class CustomerLandDetailDto
     public function __construct(
         public ?string $customer_id,
         public ?int $local_body_id,
+        public ?string $former_local_body,
+        public ?string $former_ward_no,
         public ?int $ward,
         public ?string $tole,
         public int|string|null $area_sqm,
@@ -25,6 +27,8 @@ class CustomerLandDetailDto
         return new self(
             customer_id: $customerLandDetai->customer_id ?? null,
             local_body_id: $customerLandDetai->local_body_id,
+            former_local_body: $customerLandDetai->former_local_body ?? null,
+            former_ward_no: $customerLandDetai->former_ward_no ?? null,
             ward: $customerLandDetai->ward,
             tole: $customerLandDetai->tole,
             area_sqm: $customerLandDetai->area_sqm,

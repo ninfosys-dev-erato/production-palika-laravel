@@ -17,10 +17,10 @@ trait BusinessRegistrationTemplate
     const EMPTY_LINES = '____________________';
     public $reg_no;
 
-    public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration)
+    public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration, $template = null)
     {
 
-        $template = $businessRegistration->registrationType?->form?->template ?? '';
+        $template = $template ?? $businessRegistration->registrationType?->form?->template ?? '';
 
         if ($businessRegistration instanceof \Src\BusinessRegistration\Models\BusinessDeRegistration) {
             $businessRegistration = $businessRegistration->businessRegistration;

@@ -87,6 +87,8 @@ class BuildingRegistrationForm extends Component
     public $mapDocuments = [];
     public $documents = [];
     public $options = [];
+    public $formerLocalBodies;
+    public $formerWards;
     public ?OrganizationDetail $organizationDetail;
 
     public function rules(): array
@@ -122,6 +124,8 @@ class BuildingRegistrationForm extends Component
             'mapApply.ward_no' => ['required'],
             'mapApply.application_date' => ['nullable'],
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['nullable'],
+            'customerLandDetail.former_ward_no' => ['nullable'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],
@@ -256,7 +260,6 @@ class BuildingRegistrationForm extends Component
     
     public function loadWards(): void
     {
-        // $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
 
          $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
         
@@ -264,6 +267,16 @@ class BuildingRegistrationForm extends Component
             $this->wards = getWards($localBody->wards);
         } else {
             $this->wards = [];
+        }
+    }
+        public function loadFormerWards(): void
+    {
+        $localBody = LocalBody::find($this->customerLandDetail->former_local_body);
+
+        if ($localBody) {
+            $this->formerWards = getWards($localBody->wards);
+        } else {
+            $this->formerWards = [];
         }
     }
 
@@ -286,6 +299,8 @@ class BuildingRegistrationForm extends Component
         $this->options=DocumentStatusEnum::getForWeb();
         $this->documents = [];
         $this->organizationDetail = $organizationDetail;
+        $this->formerLocalBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerWards = [];
 
         if ($this->action === Action::UPDATE) {
             $this->handleUpdateState();
@@ -329,6 +344,7 @@ class BuildingRegistrationForm extends Component
         $this->landOwnerPhoto = $this->landOwnerDetail->photo;
 
         $this->loadOwnerAndApplicantLocationData();
+        $this->loadFormerWards();
 
         $this->mapApplyDetail = MapApplyDetail::where('map_apply_id', $this->mapApply->id)->first() ?? new MapApplyDetail();
         $this->loadStoredDocuments();
