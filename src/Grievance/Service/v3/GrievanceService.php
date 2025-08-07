@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Src\Grievance\Enums\GrievancePriorityEnum;
 use Src\Grievance\Enums\GrievanceStatusEnum;
 use Src\Grievance\Models\GrievanceDetail;
-use Src\Grievance\Models\GrievanceFile;
 
 class GrievanceService
 {
@@ -38,16 +37,19 @@ class GrievanceService
             'ward_id' => $customer->kyc->permanent_ward ?? null,
             'is_visible_to_public' => true,
             'is_ward' => $grievanceDto->is_ward,
-            'grievance_medium' => $grievanceDto->grievance_medium
+            'grievance_medium' => $grievanceDto->grievance_medium,
+            'documents' => $grievanceDto->files ?? []  // ← FIXED: Store files in documents column
         ]);
 
         $grievance->branches()->sync($grievanceDto->branch_id);
-        if (!empty($grievanceDto->files)) {
-            GrievanceFile::create([
-                'grievance_detail_id' => $grievance->id,
-                'file_name' => $grievanceDto->files,
-            ]);
-        }
+        
+        // REMOVED: No longer creating separate GrievanceFile records
+        // if (!empty($grievanceDto->files)) {
+        //     GrievanceFile::create([
+        //         'grievance_detail_id' => $grievance->id,
+        //         'file_name' => $grievanceDto->files,
+        //     ]);
+        // }
 
         $locale = App::getLocale();
         $message = $locale === 'ne'

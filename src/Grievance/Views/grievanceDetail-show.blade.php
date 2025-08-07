@@ -201,110 +201,23 @@
                                             style="border-radius: 10px;">
                                             <h5 class="text">{{ __('grievance::grievance.supporting_documents') }}</h5>
                                             <div class="row">
-                                                @if ($grievanceDetail->files->isNotEmpty())
-                                                    @foreach ($grievanceDetail->files as $file)
-                                                        @if (is_array($file->file_name))
-                                                            @foreach ($file->file_name as $index => $fileName)
-                                                                <div class="col-md-3 mb-3">
-                                                                    <div class="card border shadow-sm"
-                                                                        style="border-radius: 8px; cursor: pointer;">
-                                                                        <div class="card-body text-center p-2">
-                                                                            @php
-                                                                                $fileExtension = pathinfo(
+                                                @if (!empty($grievanceDetail->documents))
+                                                    @foreach ($grievanceDetail->documents as $fileName)
+                                                        @php
+                                                            $fileUrl = customFileAsset(
+                                                                config('src.Grievance.grievance.path'),
                                                                                     $fileName,
-                                                                                    PATHINFO_EXTENSION,
+                                                                'local',
+                                                                'tempUrl',
                                                                                 );
-                                                                                $isImage = in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
-                                                                                
-                                                                                // The service has already processed the file URLs
-                                                                                $fileUrl = $fileName;
                                                                             @endphp
-
-                                                                            <div style="display: flex; gap: 5px;">
-
-                                                                                @if ($isImage)
-                                                                                    <a href="#"
-                                                                                        data-bs-toggle="modal"
-                                                                                        data-bs-target="#imageModal"
-                                                                                        onclick="showImage('{{ $fileUrl }}')"
-                                                                                        style="display: inline-flex; align-items: center;">
-                                                                                        <i class="bx bx-image"
-                                                                                            style="font-size: 24px; color: #000; margin-right: 5px;"></i>
-                                                                                    </a>
-                                                                                @elseif(strtolower($fileExtension) === 'pdf')
-                                                                                    <a href="{{ $fileUrl }}"
-                                                                                        target="_blank"
-                                                                                        style="display: inline-flex; align-items: center;">
-                                                                                        <i class='bx bxs-file-pdf'
-                                                                                            style="font-size: 24px; color: red; margin-right: 8px;"></i>
-                                                                                    </a>
-                                                                                @else
-                                                                                    <a href="{{ $fileUrl }}"
-                                                                                        target="_blank"
-                                                                                        style="display: inline-flex; align-items: center;">
-                                                                                        <i class='bx bx-file'
-                                                                                            style="font-size: 24px; color: #007bff; margin-right: 8px;"></i>
-                                                                                    </a>
-                                                                                @endif
-                                                                                <p class="text-muted mb-0 small">
-                                                                                    {{ __('grievance::grievance.document') }}
-                                                                                    {{ $index + 1 }}:
-                                                                                    {{ strtoupper($fileExtension) }}
-                                                                                </p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        @else
-                                                            <div class="col-md-3 mb-3">
-                                                                <div class="card border shadow-sm"
-                                                                    style="border-radius: 8px;">
-                                                                    <div class="card-body text-center p-2">
-                                                                        @php
-                                                                            $fileExtension = pathinfo(
-                                                                                $file->file_name,
-                                                                                PATHINFO_EXTENSION,
-                                                                            );
-                                                                            $isImage = in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
-                                                                            
-                                                                            // The service has already processed the file URLs
-                                                                            $fileUrl = $file->file_name;
-                                                                        @endphp
-
-                                                                        @if ($isImage)
-                                                                            <a href="#" data-bs-toggle="modal"
-                                                                                data-bs-target="#imageModal"
-                                                                                onclick="showImage('{{ $fileUrl }}')">
-                                                                                <img src="{{ $fileUrl }}"
-                                                                                    alt="Document Image"
-                                                                                    class="img-fluid"
-                                                                                    style="height: 100px; width: 100%; object-fit: cover; border-radius: 4px;" />
-                                                                            </a>
-                                                                        @elseif (strtolower($fileExtension) === 'pdf')
-                                                                            <a href="{{ $fileUrl }}"
-                                                                                target="_blank">
-                                                                                <img src="{{ asset('images/pdf-icon.png') }}"
-                                                                                    alt="PDF Document Icon"
-                                                                                    class="img-fluid"
-                                                                                    style="height: 120px; width: 100%; object-fit: cover; border-radius: 4px;" />
-                                                                            </a>
-                                                                        @else
-                                                                            <a href="{{ $fileUrl }}"
-                                                                                target="_blank">
-                                                                                <img src="{{ asset('images/file-icon.png') }}"
-                                                                                    alt="Document Icon"
-                                                                                    class="img-fluid"
-                                                                                    style="height: 120px; width: 100%; object-fit: cover; border-radius: 4px;" />
-                                                                            </a>
-                                                                        @endif
-                                                                        <p class="text-muted mt-2 mb-0 small">
-                                                                            {{ __('grievance::grievance.document') }}:{{ $fileExtension }}
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
+                                                        <div class="col-auto mb-2">
+                                                            <a href="{{ $fileUrl }}" target="_blank"
+                                                                class="btn btn-outline-primary btn-sm">
+                                                                <i class="bx bx-file"></i>
+                                                                {{ __('yojana::yojana.view_uploaded_file') }}
+                                                            </a>
                                                             </div>
-                                                        @endif
                                                     @endforeach
                                                 @else
                                                     <div class="col-md-12">
@@ -316,30 +229,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal fade" id="imageModal" tabindex="-1"
-                                    aria-labelledby="imageModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-fullscreen">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="imageModalLabel">
-                                                    {{ __('grievance::grievance.document_image') }}
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body d-flex justify-content-center align-items-center">
-                                                <img id="modalImage" src="" alt="Full-size Document"
-                                                    class="img-fluid" style="max-width: 90%; max-height: 90%;" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <script>
-                                    function showImage(src) {
-                                        document.getElementById('modalImage').src = src;
-                                    }
-                                </script>
                             </div>
 
                             <div class="tab-pane fade" id="navs-pills-assign-user" role="tabpanel">
