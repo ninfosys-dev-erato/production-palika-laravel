@@ -49,65 +49,63 @@
 
         <div class='col-md-12 mb-3'>
             <div class='form-group'>
-                <label for='photo'
-                    class="form-label">{{ __('digitalboard::digitalboard.select_notice_photo') }}</label>
-                <input dusk="digitalboard-uploadedImage-field" wire:model="uploadedImage" name='uploadedImage'
-                    type='file' class="form-control {{ $errors->has('uploadedImage') ? 'is-invalid' : '' }}"
-                    style="{{ $errors->has('uploadedImage') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
-                    accept=".jpg,.jpeg,.png,.pdf"
+                <label for='file' class="form-label">{{ __('digitalboard::digitalboard.select_notice_photo') }}</label>
+                <input dusk="digitalboard-uploadedFiles-field" wire:model="uploadedFiles" name='uploadedFiles'
+                    type='file' class="form-control {{ $errors->has('uploadedFiles') ? 'is-invalid' : '' }}"
+                    style="{{ $errors->has('uploadedFiles') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                     placeholder="{{ __('digitalboard::digitalboard.select_notice_file') }}">
                 <div>
-                    @error('uploadedImage')
+                    @error('uploadedFiles')
                         <small class='text-danger'>{{ $message }}</small>
                     @enderror
                 </div>
-                @if (
-                    ($uploadedImage && $uploadedImage instanceof \Illuminate\Http\File) ||
-                        $uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ||
-                        $uploadedImage instanceof \Illuminate\Http\UploadedFile)
-                    @php
-                        $extension = strtolower($uploadedImage->getClientOriginalExtension());
-                    @endphp
+                @if ($uploadedFiles)
+                    <div class="row mt-3">
+                        @foreach ($uploadedFiles as $file)
+                            @php
+                                $mime = $file->getMimeType();
+                                $isImage = str_starts_with($mime, 'image/');
+                                $isPDF = $mime === 'application/pdf';
+                            @endphp
 
-                    @if (in_array($extension, ['jpg', 'jpeg', 'png']))
-                        <img src="{{ $uploadedImage->temporaryUrl() }}" alt="Uploaded Image Preview"
-                            class="img-thumbnail mt-2" style="height: 300px;">
-                    @elseif ($extension === 'pdf')
-                        <div class="card mt-2" style="max-width: 200px;">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ __('digitalboard::digitalboard.pdf_file') }}</h5>
-                                <p class="card-text">{{ $uploadedImage->getClientOriginalName() }}</p>
-                                <a href="{{ $uploadedImage->temporaryUrl() }}" target="_blank"
-                                    class="btn btn-primary btn-sm">
-                                    {{ __('digitalboard::digitalboard.open_pdf') }}
-                                </a>
+                            <div class="col-md-3 col-sm-4 col-6 mb-3">
+                                @if ($isImage)
+                                    <img src="{{ $file->temporaryUrl() }}" alt="Image Preview"
+                                        class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
+                                @elseif ($isPDF)
+                                    <div class="border rounded p-3 d-flex align-items-center"
+                                        style="height: 60px;">
+                                        <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
+                                        <a href="{{ $file->temporaryUrl() }}" target="_blank"
+                                            class="text-primary fw-bold text-decoration-none">
+                                            {{ __('अपलोड गरिएको फाइल हेर्नुहोस्') }}
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="border p-2 text-center" style="height: 150px;">
+                                        <p class="mb-1">Unsupported File</p>
+                                    </div>
+                                @endif
                             </div>
-                        </div>
-                    @endif
-                @elseif($action === App\Enums\Action::UPDATE)
+                        @endforeach
+                    </div>
+                @elseif($action === App\Enums\Action::UPDATE && !empty($existingImage))
                     @php
-                        $extension = strtolower(pathinfo($uploadedImage, PATHINFO_EXTENSION));
+                        $fileUrl = customFileAsset(
+                            config('src.DigitalBoard.notice.notice_path'),
+                            $existingImage,
+                            'local',
+                            'tempUrl',
+                        );
                     @endphp
-
-                    @if (in_array($extension, ['jpg', 'jpeg', 'png']))
-                        <img src="{{ customAsset(config('src.DigitalBoard.notice.notice_path'), $uploadedImage) }}"
-                            alt="Current Banner Image" class="img-thumbnail mt-2" style="height: 300px;">
-                    @elseif ($extension === 'pdf')
-                        <div class="card mt-2" style="max-width: 200px;">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ __('digitalboard::digitalboard.pdf_file') }}</h5>
-                                <p class="card-text">{{ $uploadedImage }}</p>
-                                <a href="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $uploadedImage) }}"
-                                    target="_blank" class="btn btn-primary btn-sm">
-                                    {{ __('digitalboard::digitalboard.open_pdf') }}
-                                </a>
-                            </div>
-                        </div>
-                    @endif
+                    <div class="mt-3">
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bx bx-file"></i>
+                            {{ __('yojana::yojana.view_uploaded_file') }}
+                        </a>
+                    </div>
                 @endif
-
             </div>
-
         </div>
 
         <div class="col-md-4 mb-3">
