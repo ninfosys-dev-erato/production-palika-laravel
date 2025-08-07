@@ -496,9 +496,39 @@ return [
     "registration_number_already_exists" => "Registration number already exists.",
     'personal_detail_removed_successfully' => 'Personal detail removed successfully.',
 
+    'registration_application' => 'Registration Application',
+    'registration_application_detail' => 'Registration Application Detail',
+    'registration_application_list' => 'Registration Application List',
+    'application' => 'Application',
+    'required_electric_power' => 'Required Electric Power',
+    'others' => 'Others',
+    'placeholder_others' => 'Enter other details',
+    'placeholder_required_electric_power' => 'Enter required electric power',
 
+    // Application Letter Module
+    'application_letter' => 'Application Letter',
+    'upload_application_letter' => 'Upload Application Letter',
+    'reset' => 'Reset',
+    'preview' => 'Preview',
+    'edit' => 'Edit',
+    'print' => 'Print',
+    'document_label_nepali' => 'Document Label (Nepali)',
+    'select_file' => 'Select File',
+    'uploading' => 'Uploading...',
+    'upload_document' => 'Upload Document',
+    'application_letter_written_successfully' => 'Application letter written successfully!',
+    'application_letter_reset_successfully' => 'Application letter reset successfully!',
+    'please_save_changes_before_printing' => 'Please save your changes before printing!',
+    'application_letter_uploaded_successfully' => 'Application letter uploaded successfully!',
 
-
-
-
+    // Document Labels
+    'business_application_letter' => 'Business Application Letter',
+    'business_application_letter_ne' => 'व्यवसाय निवेदन पत्र',
+    'organization_application_letter' => 'Organization Application Letter',
+    'organization_application_letter_ne' => 'संघ/संस्था निवेदन पत्र',
+    'firm_application_letter' => 'Firm Application Letter',
+    'firm_application_letter_ne' => 'फर्म निवेदन पत्र',
+    'industry_application_letter' => 'Industry Application Letter',
+    'industry_application_letter_ne' => 'उद्योग निवेदन पत्र',
+    'application_letter_ne' => 'निवेदन पत्र',
 ];

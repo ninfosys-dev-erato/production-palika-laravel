@@ -75,6 +75,7 @@ class BusinessRegistrationAdminService
             'total_running_day' => $businessRegistrationAdminDto->total_running_day,
             'registration_category' => $businessRegistrationAdminDto->registration_category,
             'business_status' => BusinessStatusEnum::ACTIVE->value,
+            'application_letter' => $businessRegistrationAdminDto->application_letter,
         ]);
 
         return $businessRegistration;
@@ -132,6 +133,7 @@ class BusinessRegistrationAdminService
             'is_rented' => $businessRegistrationAdminDto->is_rented,
             'total_running_day' => $businessRegistrationAdminDto->total_running_day,
             'registration_category' => $businessRegistrationAdminDto->registration_category,
+            'application_letter' => $businessRegistrationAdminDto->application_letter,
         ]);
 
         return $registration;

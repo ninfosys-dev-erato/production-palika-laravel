@@ -70,6 +70,7 @@ class BusinessRegistrationAdminDto
         public ?int $updated_by,
         public array $data,
         public ?string $registration_category = null,
+        public ?string $application_letter = null,
     ) {}
 
     public static function fromLiveWireModel(BusinessRegistration $businessRegistration, bool $admin = false): self
@@ -130,6 +131,7 @@ class BusinessRegistrationAdminDto
             updated_by: $admin ? Auth::user()?->id : Auth::guard('customer')->id(),
             data: $businessRegistration->data ?? [],
             registration_category: $businessRegistration->registration_category ?? null,
+            application_letter: $businessRegistration->application_letter ?? null,
         );
     }
 }
