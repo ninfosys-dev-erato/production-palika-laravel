@@ -80,4 +80,9 @@ class CustomerLandDetail extends Model
         return $this->belongsTo(LocalBody::class, 'local_body_id');
     }
 
+    public function formerLocalBody(): BelongsTo
+    {
+        return $this->belongsTo(LocalBody::class, 'local_body_id');
+    }
+
 }
