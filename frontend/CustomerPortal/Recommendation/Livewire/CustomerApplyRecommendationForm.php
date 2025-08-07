@@ -5,7 +5,6 @@ namespace Frontend\CustomerPortal\Recommendation\Livewire;
 use App\Enums\Action;
 use App\Facades\ActivityLogFacade;
 use App\Facades\FileFacade;
-use App\Facades\ImageServiceFacade;
 use App\Traits\SessionFlash;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
