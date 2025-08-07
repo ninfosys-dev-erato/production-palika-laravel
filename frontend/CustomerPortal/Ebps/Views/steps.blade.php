@@ -136,12 +136,12 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status != 'accepted' && $mapStep->form_submitter === 'house_owner')
+                                                    {{-- @if ($status != 'accepted' && $mapStep->form_submitter === 'house_owner')
                                                         <a href="{{ route('customer.ebps.apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
                                                         </a>
-                                                    @endif
+                                                    @endif --}}
 
                                                     @if ($mapApplyStep)
                                                         <a href="{{ route('customer.ebps.apply.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
@@ -150,7 +150,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    {{-- @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -158,7 +158,7 @@
                                                             <i class="bx bx-upload me-1"></i>
                                                             {{ __('ebps::ebps.upload') }}
                                                         </button>
-                                                    @endif
+                                                    @endif --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -275,16 +275,12 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if (
-                                                        !$isDisabled &&
-                                                            $status != 'accepted' &&
-                                                            $canApply &&
-                                                            $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::HOUSEOWNER)
+                                                    {{-- @if (!$isDisabled && $status != 'accepted' && $canApply && $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::HOUSEOWNER)
                                                         <a href="{{ route('customer.ebps.apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
                                                         </a>
-                                                    @endif
+                                                    @endif --}}
 
                                                     @if ($mapApplyStep)
                                                         <a href="{{ route('customer.ebps.apply.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
@@ -292,7 +288,7 @@
                                                             <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
                                                         </a>
                                                     @endif
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    {{-- @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -300,7 +296,7 @@
                                                             <i class="bx bx-upload me-1"></i>
                                                             {{ __('ebps::ebps.upload') }}
                                                         </button>
-                                                    @endif
+                                                    @endif --}}
                                                 </div>
                                             </div>
                                         </div>
