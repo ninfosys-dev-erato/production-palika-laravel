@@ -58,12 +58,17 @@
 
                 <!-- Before Filling Application Steps -->
                 <div class="mb-5">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                            style="width: 40px; height: 40px;">
-                            <i class="bx bx-list-check fs-5"></i>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 40px; height: 40px;">
+                                <i class="bx bx-list-check fs-5"></i>
+                            </div>
+                            <h4 class="fw-bold text-dark mb-0">{{ __('ebps::ebps.steps_before_filling_application') }}</h4>
                         </div>
-                        <h4 class="fw-bold text-dark mb-0">{{ __('ebps::ebps.steps_before_filling_application') }}</h4>
+                        
+                        <!-- Approve All Steps Button -->
+                        <livewire:ebps.approve_all_steps :mapApply="$mapApply" />
                     </div>
 
                     @php
