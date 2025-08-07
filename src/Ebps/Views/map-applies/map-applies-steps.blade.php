@@ -163,28 +163,52 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status != 'accepted')
+                                                    @if (isSuperAdmin())
+                                                        <!-- Superadmin buttons - always visible -->
                                                         <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
                                                         </a>
-                                                    @endif
 
-                                                    @if ($mapApplyStep)
-                                                        <a href="{{ route('admin.ebps.map_applies.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
-                                                            class="btn btn-outline-primary btn-sm">
-                                                            <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
-                                                        </a>
-                                                    @endif
-
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
                                                         <button
-                                                            class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                                            class="btn btn-outline-secondary btn-sm d-flex align-items-center me-2"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#documentEditModal{{ $mapStep->id }}">
                                                             <i class="bx bx-upload me-1"></i>
                                                             {{ __('ebps::ebps.upload') }}
                                                         </button>
+
+                                                        @if ($mapApplyStep)
+                                                            <a href="{{ route('admin.ebps.map_applies.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
+                                                                class="btn btn-outline-primary btn-sm">
+                                                                <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
+                                                            </a>
+                                                        @endif
+                                                    @else
+                                                        <!-- Regular user buttons - with status restrictions -->
+                                                        @if ($status != 'accepted')
+                                                            <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
+                                                                class="btn btn-primary btn-sm me-2">
+                                                                <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
+                                                            </a>
+                                                        @endif
+
+                                                        @if ($mapApplyStep)
+                                                            <a href="{{ route('admin.ebps.map_applies.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
+                                                                class="btn btn-outline-primary btn-sm me-2">
+                                                                <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
+                                                            </a>
+                                                        @endif
+
+                                                        @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                            <button
+                                                                class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#documentEditModal{{ $mapStep->id }}">
+                                                                <i class="bx bx-upload me-1"></i>
+                                                                {{ __('ebps::ebps.upload') }}
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </div>
