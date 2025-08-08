@@ -4,6 +4,7 @@ namespace Src\DigitalBoard\Livewire;
 
 use App\Enums\Action;
 use App\Facades\FileFacade;
+use App\Facades\ImageServiceFacade;
 use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,7 @@ class NoticeForm extends Component
     public array $wards = [];
     public array $selectedWards = [];
 
-    public $uploadedFiles;
+    public $uploadedImage;
     public $existingImage;
 
     public function rules(): array
@@ -35,7 +36,7 @@ class NoticeForm extends Component
             'notice.title' => ['required'],
             'notice.date' => ['required'],
             'notice.description' => ['required'],
-            'uploadedFiles' => ['required', 'file', 'mimes:jpeg,png,jpg,pdf', 'max:2048']
+            'uploadedImage' => ['required', 'file', 'mimes:jpeg,png,jpg,pdf', 'max:2048']
         ];
     }
 
@@ -45,10 +46,10 @@ class NoticeForm extends Component
             'notice.title.required' => __('digitalboard::digitalboard.the_title_is_required'),
             'notice.date.required' => __('digitalboard::digitalboard.the_date_is_required'),
             'notice.description.required' => __('digitalboard::digitalboard.the_description_is_required'),
-            'uploadedFiles.required' => __('digitalboard::digitalboard.the_uploaded_image_is_required'),
-            'uploadedFiles.file' => __('digitalboard::digitalboard.the_uploaded_file_must_be_an_image'),
-            'uploadedFiles.mimes' => __('digitalboard::digitalboard.the_image_must_be_a_file_of_type_jpeg_png_jpg'),
-            'uploadedFiles.max' => __('digitalboard::digitalboard.the_image_size_must_not_exceed_2mb'),
+            'uploadedImage.required' => __('digitalboard::digitalboard.the_uploaded_image_is_required'),
+            'uploadedImage.file' => __('digitalboard::digitalboard.the_uploaded_file_must_be_an_image'),
+            'uploadedImage.mimes' => __('digitalboard::digitalboard.the_image_must_be_a_file_of_type_jpeg_png_jpg'),
+            'uploadedImage.max' => __('digitalboard::digitalboard.the_image_size_must_not_exceed_2mb'),
         ];
     }
 
@@ -67,17 +68,14 @@ class NoticeForm extends Component
             $this->canShowOnAdmin = $notice->can_show_on_admin ?? false;
             $this->notice->date = $this->convertEnglishToNepali($this->notice->date);
             $this->selectedWards = $notice->wards()?->pluck('ward')->toArray() ?? [];
-            $this->existingImage = $notice->file;
+            $this->uploadedImage = $notice->file;
         }
     }
 
     public function save()
     {
         $this->validate();
-        
-        if ($this->uploadedFiles) {
-            $this->notice->file = $this->storeFile($this->uploadedFiles);
-        }
+        $this->notice->file = $this->storeFile($this->uploadedImage);
 
         $this->notice->can_show_on_admin = $this->canShowOnAdmin;
         $this->notice->date = $this->convertNepaliToEnglish($this->notice->date);
@@ -109,9 +107,12 @@ class NoticeForm extends Component
             $this->errorFlash(__('digitalboard::digitalboard.an_error_occurred_during_operation_please_try_again_later'));
         }
     }
-    
     private function storeFile($file): string
     {
+        if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
+            return ImageServiceFacade::compressAndStoreImage($file, config('src.DigitalBoard.notice.notice_path'), getStorageDisk('public'));
+        }
+
         return FileFacade::saveFile(
             path: config('src.DigitalBoard.notice.notice_path'),
             filename: null,
