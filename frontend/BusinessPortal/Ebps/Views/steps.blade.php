@@ -148,7 +148,7 @@
                                                             <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
                                                         </a>
                                                     @endif
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    @if ($status != 'Not Applied')
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
