@@ -20,6 +20,8 @@ class DownloadForm extends Component
     public ?Action $action;
     public $files = [];
 
+    public $existingImages = [];
+
     public function rules(): array
     {
         return [
@@ -53,7 +55,7 @@ class DownloadForm extends Component
         $this->download = $download;
         $this->download->status = 'active';
         $this->action = $action;
-        // Don't set existingImages here - let the blade handle it like DartaForm
+        $this->existingImages = $this->download->files;
     }
 
     public function save()
@@ -61,18 +63,7 @@ class DownloadForm extends Component
         $this->validate();
 
         try{
-            $storedDocuments = [];
-            if ($this->files) {
-                foreach ($this->files as $file) {
-                    $path = FileFacade::saveFile(
-                        config('src.Downloads.download.file_path'), 
-                        '', 
-                        $file, 
-                        getStorageDisk('private')
-                    );
-                    $storedDocuments[] = $path;
-                }
-            }
+            $storedDocuments = $this->files ? $this->processFiles($this->files) : [];
 
             $this->download->files = $storedDocuments;  
 
@@ -94,5 +85,29 @@ class DownloadForm extends Component
             logger($e->getMessage());
             $this->errorFlash(__('downloads::downloads.something_went_wrong_while_saving') . $e->getMessage());
         }
+    }
+
+    private function processFiles(array|string $files): array
+    {
+        $storedFiles = [];
+        foreach ($files as $file) {
+            if($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+            $storedFiles[] = $this->storeFile($file);
+        }
+        return $storedFiles;
+    }
+
+    private function storeFile($file): string
+    {
+        if (in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'])) {
+            return ImageServiceFacade::compressAndStoreImage($file, config('src.Downloads.download.file_path'), getStorageDisk('public'));
+        }
+
+        return FileFacade::saveFile(
+            path: config('src.Downloads.download.file_path'),
+            filename: null,
+            file: $file,
+            disk: getStorageDisk('private')
+        );
     }
 }

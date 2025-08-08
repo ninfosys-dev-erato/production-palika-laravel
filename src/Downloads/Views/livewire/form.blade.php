@@ -40,79 +40,56 @@
 
 
                     @if ($files)
-                        <div class="row mt-3">
+                        <div class="row">
                             @foreach ($files as $file)
-                                @php
-                                    $mime = $file->getMimeType();
-                                    $isImage = str_starts_with($mime, 'image/');
-                                    $isPDF = $mime === 'application/pdf';
-                                @endphp
-
                                 <div class="col-md-3 col-sm-4 col-6 mb-3">
-                                    @if ($isImage)
-                                        <img src="{{ $file->temporaryUrl() }}" alt="Image Preview"
-                                            class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
-                                    @elseif ($isPDF)
-                                        <div class="border rounded p-3 d-flex align-items-center"
-                                            style="height: 60px;">
-                                            <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
-                                            <a href="{{ $file->temporaryUrl() }}" target="_blank"
-                                                class="text-primary fw-bold text-decoration-none">
-                                                {{ __('View Uploaded File') }}
-                                            </a>
-                                        </div>
-                                    @else
-                                        <div class="border p-2 text-center" style="height: 150px;">
-                                            <p class="mb-1">Unsupported File</p>
+                                    @if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png']))
+                                        <img src="{{ $file->temporaryUrl() }}" alt="Image Preview" class="img-thumbnail w-100"
+                                            style="height: 150px; object-fit: cover;">
+                                    @endif
+
+                                    @if (in_array($file->getClientOriginalExtension(), ['pdf']))
+                                        <div class="card" style="max-width: 200px;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ __('downloads::downloads.pdf_file') }}</h5>
+                                                <p class="card-text">{{ $file->getClientOriginalName() }}</p>
+                                                <a href="{{ $file->temporaryUrl() }}" target="_blank"
+                                                    class="btn btn-primary btn-sm">
+                                                    {{ __('downloads::downloads.open_pdf') }}
+                                                </a>
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
-                    @elseif (!empty($this->download->files))
-                        @php
-                            $fileList = is_string($this->download->files)
-                                ? json_decode($this->download->files, true)
-                                : $this->download->files;
-                        @endphp
+                    @endif
 
-                        @if (!empty($fileList) && is_array($fileList))
-                            <div class="row mt-3">
-                                @foreach ($fileList as $existingFile)
-                                    @php
-                                        $extension = pathinfo($existingFile, PATHINFO_EXTENSION);
-                                        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
-                                        $isPDF = $extension === 'pdf';
-                                        $fileUrl = customFileAsset(
-                                            config('src.Downloads.download.file_path'),
-                                            $existingFile,
-                                            'local',
-                                            'tempUrl',
-                                        );
-                                    @endphp
+                    @if ($existingImages)
+                        <div class="row mt-3">
+                            @foreach ($existingImages as $existingFile)
+                                <div class="col-md-3 col-sm-4 col-6 mb-3">
+                                    @if (in_array(pathinfo($existingFile, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
+                                        <img src="{{ customAsset(config('src.Downloads.download.file_path'), $existingFile) }}"
+                                            alt="Existing Image" class="img-thumbnail w-100"
+                                            style="height: 150px; object-fit: cover;">
+                                    @endif
 
-                                    <div class="col-md-3 col-sm-4 col-6 mb-3">
-                                        @if ($isImage)
-                                            <img src="{{ $fileUrl }}" alt="Existing Image" 
-                                                class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
-                                        @elseif ($isPDF)
-                                            <div class="border rounded p-3 d-flex align-items-center"
-                                                style="height: 60px;">
-                                                <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
-                                                <a href="{{ $fileUrl }}" target="_blank"
-                                                    class="text-primary fw-bold text-decoration-none">
-                                                    {{ __('View Uploaded File') }}
+                                    @if (in_array(pathinfo($existingFile, PATHINFO_EXTENSION), ['pdf']))
+                                        <div class="card" style="max-width: 200px;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ __('downloads::downloads.pdf_file') }}</h5>
+                                                <p class="card-text">{{ $existingFile }}</p>
+                                                <a href="{{ customAsset(config('src.Downloads.download.file_path'), $existingFile) }}"
+                                                    target="_blank" class="btn btn-primary btn-sm">
+                                                    {{ __('downloads::downloads.open_pdf') }}
                                                 </a>
                                             </div>
-                                        @else
-                                            <div class="border p-2 text-center" style="height: 150px;">
-                                                <p class="mb-1">Unsupported File</p>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
                 </div>
             </div>
