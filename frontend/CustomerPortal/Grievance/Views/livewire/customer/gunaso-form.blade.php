@@ -49,38 +49,20 @@
 
         <div class="mb-3">
             <div class='form-group'>
-                <label for="file">{{ __('grievance::grievance.file') }}</label>
-                <input wire:model="uploadedFiles" name="file" type="file" class="form-control"
-                    multiple>
-                @error('uploadedFiles')
-                    <small class="text-danger">{{ __($message) }}</small>
-                @enderror
-                @if ($uploadedFiles)
-                    <div class="row mt-3">
-                        @foreach ($uploadedFiles as $file)
-                            @php
-                                $mime = $file->getMimeType();
-                                $isImage = str_starts_with($mime, 'image/');
-                                $isPDF = $mime === 'application/pdf';
-                            @endphp
+                <label fclass="form-label" for='image'>{{ __('grievance::grievance.image') }}</label>
+                <input wire:model="uploadedImage" name='uploadedImage' type='file' class='form-control' multiple
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                <div>
+                    @error('uploadedImage')
+                        <small class='text-danger'>{{ $message }}</small>
+                    @enderror
+                </div>
+                @if ($uploadedImage)
+                    <div class="row">
+                        @foreach ($uploadedImage as $image)
                             <div class="col-md-3 col-sm-4 col-6 mb-3">
-                                @if ($isImage)
-                                    <img src="{{ $file->temporaryUrl() }}" alt="Image Preview"
-                                        class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
-                                @elseif ($isPDF)
-                                    <div class="border rounded p-3 d-flex align-items-center"
-                                        style="height: 60px;">
-                                        <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
-                                        <a href="{{ $file->temporaryUrl() }}" target="_blank"
-                                            class="text-primary fw-bold text-decoration-none">
-                                            {{ __('अपलोड गरिएको फाइल हेर्नुहोस्') }}
-                                        </a>
-                                    </div>
-                                @else
-                                    <div class="border p-2 text-center" style="height: 150px;">
-                                        <p class="mb-1">Unsupported File</p>
-                                    </div>
-                                @endif
+                                <img src="{{ $image->temporaryUrl() }}" alt="Uploaded Image Preview"
+                                    class="img-thumbnail w-100 " style="height: 150px; object-fit: cover;" />
                             </div>
                         @endforeach
                     </div>

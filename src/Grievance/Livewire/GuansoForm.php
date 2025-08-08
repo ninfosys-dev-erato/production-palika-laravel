@@ -3,7 +3,7 @@
 namespace Src\Grievance\Livewire;
 
 use App\Enums\Action;
-use App\Facades\FileFacade;
+use App\Facades\ImageServiceFacade;
 use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Domains\CustomerGateway\Grievance\DTO\GrievanceDto;
@@ -34,7 +34,7 @@ class GuansoForm extends Component
     public $admin;
     public $customer_id;
     public $customerID;
-    public $uploadedFiles;
+    public $uploadedImage;
     public bool $is_ward = true;
     public bool $showCustomerKycModal = false;
     public ?bool $isModalForm;
@@ -63,7 +63,7 @@ class GuansoForm extends Component
             'is_public' => ['nullable', 'boolean'],
             'is_anonymous' => ['nullable', 'boolean'],
             'is_ward' => ['nullable', 'boolean'],
-            'uploadedFiles' => ['nullable'],
+            'uploadedImage' => ['nullable'],
         ];
     }
 
@@ -148,10 +148,29 @@ class GuansoForm extends Component
             'is_ward' => $this->is_ward ?? false,
         ];
 
-        if ($this->uploadedFiles) {
+        if ($this->uploadedImage) {
             $storedDocuments = [];
-            foreach ($this->uploadedFiles as $file) {
-                $path = FileFacade::saveFile(config('src.Grievance.grievance.path'), '', $file, getStorageDisk('private'));
+
+            foreach ($this->uploadedImage as $file) {
+                $fileExtension = strtolower($file->getClientOriginalExtension());
+                $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                
+                if ($isImage) {
+                    // Use ImageServiceFacade for images
+                    if ($this->is_public == true) {
+                        $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
+                    } else {
+                        $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                    }
+                } else {
+                    // Use FileFacade for other file types (PDF, DOC, etc.)
+                    if ($this->is_public == true) {
+                        $path = uploadToStorage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
+                    } else {
+                        $path = uploadToStorage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                    }
+                }
+
                 $storedDocuments[] = $path;
             }
             $data['files'] = $storedDocuments;

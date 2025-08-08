@@ -4,7 +4,7 @@ namespace Frontend\CustomerPortal\Grievance\Livewire;
 
 use App\Enums\Action;
 use App\Facades\ActivityLogFacade;
-use App\Facades\FileFacade;
+use App\Facades\ImageServiceFacade;
 use App\Traits\SessionFlash;
 use Domains\CustomerGateway\Grievance\DTO\GrievanceDto;
 use Illuminate\Validation\Rule;
@@ -34,7 +34,7 @@ class GunasoForm extends Component
     public ?Action $action;
     public $admin;
     public $customer_id;
-    public $uploadedFiles;
+    public $uploadedImage;
     public bool $is_ward = true;
     public array $selectedDepartments = [];
 
@@ -62,7 +62,7 @@ class GunasoForm extends Component
             'is_public' => ['nullable', 'boolean'],
             'is_anonymous' => ['nullable', 'boolean'],
             'is_ward' => ['nullable', 'boolean'],
-            'uploadedFiles' => ['nullable'],
+            'uploadedImage' => ['nullable'],
         ];
     }
 
@@ -134,11 +134,16 @@ class GunasoForm extends Component
             'customer_id' => $this->customer_id
         ];
 
-        if ($this->uploadedFiles) {
+        if ($this->uploadedImage) {
             $storedDocuments = [];
 
-            foreach ($this->uploadedFiles as $file) {
-                $path = FileFacade::saveFile(config('src.Grievance.grievance.path'), '', $file, getStorageDisk('private'));
+            foreach ($this->uploadedImage as $file) {
+                if($this->is_public == true){
+                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
+                }
+                else{
+                    $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                }
                 $storedDocuments[] = $path;
             }
             $data['files'] = $storedDocuments;
