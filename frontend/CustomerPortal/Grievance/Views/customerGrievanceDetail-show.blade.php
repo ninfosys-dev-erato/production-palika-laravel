@@ -157,49 +157,26 @@
                                                                                 ? 'public'
                                                                                 : 'private';
                                                                             
-                                                                            $isImage = in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
                                                                             
-                                                                            if ($isImage) {
-                                                                                $fileUrl = customAsset(
-                                                                                    config('src.Grievance.grievance.path'),
-                                                                                    $fileName,
-                                                                                    $disk,
-                                                                                );
-                                                                            } else {
                                                                                 $fileUrl = customFileAsset(
                                                                                     config('src.Grievance.grievance.path'),
                                                                                     $fileName,
                                                                                     $disk,
                                                                                     'tempUrl'
                                                                                 );
-                                                                            }
+                                                                            
                                                                         @endphp
 
                                                                         <div style="display: flex; gap: 5px;">
 
-                                                                            @if ($isImage)
-                                                                                <a href="#" data-bs-toggle="modal"
-                                                                                    data-bs-target="#imageModal"
-                                                                                    onclick="showImage('{{ $fileUrl }}')"
-                                                                                    style="display: inline-flex; align-items: center;">
-                                                                                    <i class="bx bx-image"
-                                                                                        style="font-size: 24px; color: #000; margin-right: 5px;"></i>
-                                                                                </a>
-                                                                            @elseif(strtolower($fileExtension) === 'pdf')
-                                                                                <a href="{{ $fileUrl }}"
-                                                                                    target="_blank"
-                                                                                    style="display: inline-flex; align-items: center;">
-                                                                                    <i class='bx bxs-file-pdf'
-                                                                                        style="font-size: 24px; color: red; margin-right: 8px;"></i>
-                                                                                </a>
-                                                                            @else
+                                                                           
                                                                                 <a href="{{ $fileUrl }}"
                                                                                     target="_blank"
                                                                                     style="display: inline-flex; align-items: center;">
                                                                                     <i class='bx bx-file'
                                                                                         style="font-size: 24px; color: #007bff; margin-right: 8px;"></i>
                                                                                 </a>
-                                                                            @endif
+
                                                                             <p class="text-muted mb-0 small">
                                                                                 {{ __('grievance::grievance.document') }}
                                                                                 {{ $index + 1 }}:

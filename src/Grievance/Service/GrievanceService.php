@@ -152,38 +152,9 @@ class GrievanceService
 
     public function attachImagePaths($complaints, $path): mixed
     {
-        foreach ($complaints as $complaint) {
-            if ($complaint->files) {
-                foreach ($complaint->files as $file) {
-                    $fileNames = is_array($file->file_name) ? $file->file_name : json_decode($file->file_name, true);
-
-                    if (is_array($fileNames)) {
-                        $processedFileNames = [];
-                        foreach ($fileNames as $fileName) {
-                            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                            $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
-                            
-                            if ($isImage) {
-                                // Use ImageServiceFacade for images
-                                if ($complaint->is_public == true) {
-                                    $processedFileNames[] = ImageServiceFacade::getImage($path, $fileName, getStorageDisk('public'));
-                                } else {
-                                    $processedFileNames[] = ImageServiceFacade::getImage($path, $fileName, getStorageDisk('private'));
-                                }
-                            } else {
-                                // Use FileFacade for other file types (PDF, DOC, etc.)
-                                if ($complaint->is_public == true) {
-                                    $processedFileNames[] = FileFacade::getFile($path, $fileName, getStorageDisk('public'));
-                                } else {
-                                    $processedFileNames[] = FileFacade::getFile($path, $fileName, getStorageDisk('private'));
-                                }
-                            }
-                        }
-                        $file->file_name = $processedFileNames;
-                    }
-                }
-            }
-        }
+        // Since we're now using customFileAsset in views (darta approach),
+        // we don't need to modify the model attributes here
+        // This prevents JSON encoding issues with malformed UTF-8 characters
         return $complaints;
     }
     public function grievanceType()

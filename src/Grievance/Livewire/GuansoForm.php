@@ -9,6 +9,7 @@ use App\Traits\SessionFlash;
 use Domains\CustomerGateway\Grievance\DTO\GrievanceDto;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use App\Facades\FileFacade;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Src\Customers\Models\Customer;
 use Src\Employees\Models\Branch;
@@ -155,21 +156,17 @@ class GuansoForm extends Component
                 $fileExtension = strtolower($file->getClientOriginalExtension());
                 $isImage = in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
                 
-                if ($isImage) {
+            
                     // Use ImageServiceFacade for images
                     if ($this->is_public == true) {
-                        $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
+                        // $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
+                        $path = FileFacade::saveFile(config('src.Grievance.grievance.path'), '', $file, getStorageDisk('public'));
+
                     } else {
-                        $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                        // $path = ImageServiceFacade::compressAndStoreImage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
+                        $path = FileFacade::saveFile(config('src.Grievance.grievance.path'), '', $file, getStorageDisk('private'));
                     }
-                } else {
-                    // Use FileFacade for other file types (PDF, DOC, etc.)
-                    if ($this->is_public == true) {
-                        $path = uploadToStorage($file, config('src.Grievance.grievance.path'), getStorageDisk('public'));
-                    } else {
-                        $path = uploadToStorage($file, config('src.Grievance.grievance.path'), getStorageDisk('private'));
-                    }
-                }
+             
 
                 $storedDocuments[] = $path;
             }

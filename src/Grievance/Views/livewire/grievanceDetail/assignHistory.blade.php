@@ -95,10 +95,11 @@
                                                 <div class="document-list mt-2">
                                                     @foreach ($log->documents as $index => $document)
                                                         @php
-                                                            $documentUrl = customAsset(
+                                                            $documentUrl = customFileAsset(
                                                                 config('src.Grievance.grievance.document_path'),
                                                                 $document,
                                                                 'local',
+                                                                'tempUrl',
                                                             );
                                                             $extension = strtolower(
                                                                 pathinfo($document, PATHINFO_EXTENSION),

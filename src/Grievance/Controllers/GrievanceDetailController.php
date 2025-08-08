@@ -47,8 +47,8 @@ class GrievanceDetailController extends Controller implements HasMiddleware
             ->findOrFail($id);
             
         // Process file paths using the service
-        $grievanceService = new \Src\Grievance\Service\GrievanceService();
-        $grievanceService->attachImagePaths(collect([$grievanceDetail]), config('src.Grievance.grievance.path'));
+        // $grievanceService = new \Src\Grievance\Service\GrievanceService();
+        // $grievanceService->attachImagePaths(collect([$grievanceDetail]), config('src.Grievance.grievance.path'));
         
         $branchTitle = $grievanceDetail->branches->pluck('title');
         $departmentTitles = $grievanceDetail->grievanceType?->departments->pluck('title')->toArray();
