@@ -151,6 +151,13 @@
                 <div data-i18n="Tasks">{{ __('ebps::ebps.ebps_document') }}</div>
             </a>
         </li>
+        <li
+            class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.ebps.filter-settings.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.ebps.filter-settings') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-group"></i>
+                <div data-i18n="Tasks">{{ __('Filter Setting') }}</div>
+            </a>
+        </li>
 
 
     </ul>
