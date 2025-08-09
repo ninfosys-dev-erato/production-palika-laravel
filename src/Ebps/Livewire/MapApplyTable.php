@@ -62,8 +62,8 @@ class MapApplyTable extends DataTableComponent
             ->where('ebps_map_applies.deleted_by', null)
             ->orderBy('ebps_map_applies.created_at', 'DESC');
 
-        // Apply role-based filtering
-        return $this->roleFilterService->filterApplicationsByUserRoles(
+        // Apply enhanced role-based filtering based on current step access
+        return $this->roleFilterService->filterApplicationsByCurrentStepAccess(
             $query, 
             ApplicationTypeEnum::MAP_APPLIES->value
         );
