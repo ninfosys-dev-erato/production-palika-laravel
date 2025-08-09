@@ -4,8 +4,10 @@ namespace Src\Ebps\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Models\Role;
 
 class MapPassGroupMapStep extends Model
 {
@@ -18,6 +20,8 @@ class MapPassGroupMapStep extends Model
 'map_pass_group_id',
 'type',
 'position',
+        'submitter_role_id',
+        'approver_role_id',
 'created_at',
 'created_by',
 'deleted_at',
@@ -28,10 +32,12 @@ class MapPassGroupMapStep extends Model
 
     public function casts():array{
       return [
-    'map_step_id' => 'string',
-    'map_pass_group_id' => 'string',
+        'map_step_id' => 'int',
+        'map_pass_group_id' => 'int',
     'type' => 'string',
-    'position' => 'string',
+        'position' => 'int',
+        'submitter_role_id' => 'int',
+        'approver_role_id' => 'int',
     'id' => 'int',
     'created_at' => 'datetime',
     'created_by' => 'string',
@@ -50,5 +56,24 @@ class MapPassGroupMapStep extends Model
                 ->setDescriptionForEvent(fn(string $eventName) => "This MapPassGroupMapStep has been {$eventName}");
         }
 
+    // New role relationships
+    public function submitterRole(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'submitter_role_id');
+    }
 
+    public function approverRole(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'approver_role_id');
+    }
+
+    public function mapStep(): BelongsTo
+    {
+        return $this->belongsTo(MapStep::class, 'map_step_id');
+    }
+
+    public function mapPassGroup(): BelongsTo
+    {
+        return $this->belongsTo(MapPassGroup::class, 'map_pass_group_id');
+    }
 }

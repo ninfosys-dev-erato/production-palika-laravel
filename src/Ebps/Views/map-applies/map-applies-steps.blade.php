@@ -1,5 +1,9 @@
 <x-layout.app header="{{ __('ebps::ebps.map_apply_steps') }}">
 
+    @php
+        $isRoleFilteringEnabled = Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled();
+    @endphp
+
     <div class="d-flex justify-content-end gap-2">
         <a href="{{ route('admin.ebps.map_applies.index') }}" class="btn btn-outline-primary">
             <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
@@ -185,8 +189,8 @@
                                                             </a>
                                                         @endif
                                                     @else
-                                                        <!-- Regular user buttons - with status restrictions -->
-                                                        @if ($status != 'accepted')
+                                                        <!-- Regular user buttons - with role-based access control -->
+                                                        @if ($status != 'accepted' || $isRoleFilteringEnabled)
                                                             <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                                 class="btn btn-primary btn-sm me-2">
                                                                 <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
@@ -322,29 +326,56 @@
                                                 </p>
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status !== 'accepted' && $canApply)
-                                                        <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
-                                                            class="btn btn-primary btn-sm me-2">
-                                                            <i
-                                                                class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
-                                                        </a>
-                                                    @endif
+                                                    @if (isSuperAdmin())
+                                                        <!-- Superadmin buttons - always visible -->
+                                                        @if ($status !== 'accepted' && $canApply)
+                                                            <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
+                                                                class="btn btn-primary btn-sm me-2">
+                                                                <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
+                                                            </a>
+                                                        @endif
 
-                                                    @if ($mapApplyStep)
-                                                        <a href="{{ route('admin.ebps.map_applies.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
-                                                            class="btn btn-outline-primary btn-sm">
-                                                            <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
-                                                        </a>
-                                                    @endif
+                                                        @if ($mapApplyStep)
+                                                            <a href="{{ route('admin.ebps.map_applies.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
+                                                                class="btn btn-outline-primary btn-sm">
+                                                                <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
+                                                            </a>
+                                                        @endif
 
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
-                                                        <button
-                                                            class="btn btn-outline-secondary btn-sm d-flex align-items-center"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#documentEditModal{{ $mapStep->id }}">
-                                                            <i class="bx bx-upload me-1"></i>
-                                                            {{ __('ebps::ebps.upload') }}
-                                                        </button>
+                                                        @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                            <button
+                                                                class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#documentEditModal{{ $mapStep->id }}">
+                                                                <i class="bx bx-upload me-1"></i>
+                                                                {{ __('ebps::ebps.upload') }}
+                                                            </button>
+                                                        @endif
+                                                    @else
+                                                        <!-- Regular user buttons - with role-based access control -->
+                                                        @if ($status !== 'accepted' && $canApply)
+                                                            <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
+                                                                class="btn btn-primary btn-sm me-2">
+                                                                <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
+                                                            </a>
+                                                        @endif
+
+                                                        @if ($mapApplyStep)
+                                                            <a href="{{ route('admin.ebps.map_applies.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
+                                                                class="btn btn-outline-primary btn-sm">
+                                                                <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
+                                                            </a>
+                                                        @endif
+
+                                                        @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                            <button
+                                                                class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#documentEditModal{{ $mapStep->id }}">
+                                                                <i class="bx bx-upload me-1"></i>
+                                                                {{ __('ebps::ebps.upload') }}
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </div>

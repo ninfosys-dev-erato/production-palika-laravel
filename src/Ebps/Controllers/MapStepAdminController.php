@@ -31,4 +31,8 @@ class MapStepAdminController extends Controller
         return view('Ebps::map-step.map-step-form')->with(compact('action','mapStep'));
     }
 
+    function manageRoles(Request $request){
+        $mapStep = MapStep::findOrFail($request->route('id'));
+        return view('Ebps::map-step.map-step-role-manager')->with(compact('mapStep'));
+    }
 }

@@ -17,4 +17,9 @@ Route::group(['prefix' =>'admin/ebps', 'as'=>'admin.ebps.','middleware'=>['web',
     Route::get('/print/{formId}', [EbpsSystemDashboardController::class, 'print'])->name('print');
 
     Route::get('/requested-change', [EbpsSystemDashboardController::class, 'requestedChange'])->name('requested-change');
+
+    // Application Filter Settings
+    Route::get('/filter-settings', function () {
+        return view('Ebps::ebps-settings.filter-setting');
+    })->name('filter-settings');
 });
