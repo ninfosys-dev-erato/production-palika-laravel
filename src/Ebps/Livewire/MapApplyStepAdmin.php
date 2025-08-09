@@ -134,7 +134,9 @@ class MapApplyStepAdmin extends Component
             $service->saveOrUpdate($dto, $data);
 
             $this->successToast(__('ebps::ebps.saved_successfully'));
-            if($this->mapApply->type === 'map_applies') 
+
+           
+            if($this->mapApply->application_type === 'map_applies') 
             {
                 return redirect()->route('admin.ebps.map_applies.step', ['id'=>$this->mapApply->id]);
             }

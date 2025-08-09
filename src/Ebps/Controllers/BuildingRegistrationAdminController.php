@@ -47,8 +47,11 @@ class BuildingRegistrationAdminController extends Controller
     {
         $steps = MapStep::with('form')->whereNull('deleted_by')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)->get();
         $mapApply = MapApply::where('id', $id)->with('mapApplySteps')->first();
+        
+        // Initialize role filter service for step access checks
+        $roleFilterService = new \Src\Ebps\Service\ApplicationRoleFilterService();
 
-        return view('Ebps::building-registration.building-registration-steps', compact('steps', 'mapApply'));
+        return view('Ebps::building-registration.building-registration-steps', compact('steps', 'mapApply', 'roleFilterService'));
     }
 
     function mapApplyStep(MapStep $mapStep, MapApply $mapApply)

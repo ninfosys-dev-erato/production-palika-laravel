@@ -67,11 +67,7 @@ class StepRoleManager extends Component
         $stepRoleService = new StepRoleService();
         $this->availableRoles = $stepRoleService->getAvailableRoles();
         
-        // Debug information
-        \Log::info('Loaded available roles', [
-            'count' => count($this->availableRoles),
-            'roles' => $this->availableRoles
-        ]);
+      
     }
 
     public function determineSubmitterVisibility()
@@ -79,10 +75,7 @@ class StepRoleManager extends Component
         // Show submitter roles only if form_submitter is 'Palika'
         $this->showSubmitterRoles = $this->mapStep->form_submitter === 'Palika';
         
-        \Log::info('Submitter visibility', [
-            'form_submitter' => $this->mapStep->form_submitter,
-            'show_submitter_roles' => $this->showSubmitterRoles
-        ]);
+       
     }
 
     public function addSubmitterRole()

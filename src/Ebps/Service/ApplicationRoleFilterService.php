@@ -125,6 +125,16 @@ class ApplicationRoleFilterService
             return false;
         }
 
+        // Superadmin can always access
+        if (isSuperAdmin()) {
+            return true;
+        }
+
+        // If role filtering is disabled, allow access
+        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
+            return true;
+        }
+
         $currentStep = $this->getCurrentStep($application);
         
         if (!$currentStep) {
@@ -132,6 +142,127 @@ class ApplicationRoleFilterService
         }
 
         return $currentStep->canUserAccess($user);
+    }
+
+    /**
+     * Check if user can access a specific step (for step action buttons)
+     */
+    public function canUserAccessStep(MapStep $step, $user = null): bool
+    {
+        $user = $user ?: Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        // Superadmin can always access
+        if (isSuperAdmin()) {
+            return true;
+        }
+
+        // If role filtering is disabled, allow access
+        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
+            return true;
+        }
+
+        // Check if user has any role that can access this step (submit or approve)
+        return $step->canUserAccess($user);
+    }
+
+    /**
+     * Check if user can perform action on a specific step (for apply buttons)
+     */
+    public function canUserPerformStepAction(MapStep $step, MapApply $application, $user = null): bool
+    {
+        $user = $user ?: Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        // Superadmin can always perform actions
+        if (isSuperAdmin()) {
+            return true;
+        }
+
+        // If role filtering is disabled, allow action
+        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
+            return true;
+        }
+
+        // Check if user can submit or approve this specific step
+        return $step->canUserSubmit($user) || $step->canUserApprove($user);
+    }
+
+    /**
+     * Enhanced method to filter applications based on current step and user roles
+     */
+    public function filterApplicationsByCurrentStepAccess(Builder $query, $applicationType = null): Builder
+    {
+        // Check if role filtering is enabled for this municipality
+        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
+            // Role filtering is disabled, return all applications
+            return $query;
+        }
+
+        // Role filtering is enabled, apply the strict filtering
+        $user = Auth::user();
+        
+        if (!$user) {
+            return $query->whereRaw('1 = 0'); // Return no results if no user
+        }
+
+        // Superadmin should see everything regardless of role filtering
+        if (isSuperAdmin()) {
+            return $query;
+        }
+
+        $userRoles = $user->getRoleNames()->toArray();
+        
+        if (empty($userRoles)) {
+            return $query->whereRaw('1 = 0'); // Return no results if user has no roles
+        }
+
+        // Filter applications where user can access the current step
+        return $query->whereExists(function ($subQuery) use ($userRoles, $applicationType) {
+            $subQuery->selectRaw('1')
+                ->from('ebps_map_applies as current_app')
+                ->whereColumn('current_app.id', 'ebps_map_applies.id')
+                ->whereExists(function ($stepQuery) use ($userRoles, $applicationType) {
+                    $stepQuery->selectRaw('1')
+                        ->from('ebps_map_steps as current_step')
+                        ->where('current_step.application_type', $applicationType)
+                        ->whereExists(function ($roleQuery) use ($userRoles) {
+                            $roleQuery->selectRaw('1')
+                                ->from('ebps_step_roles as sr')
+                                ->whereColumn('sr.map_step_id', 'current_step.id')
+                                ->where('sr.is_active', true)
+                                ->whereExists(function ($userRoleQuery) use ($userRoles) {
+                                    $userRoleQuery->selectRaw('1')
+                                        ->from('roles as r')
+                                        ->whereColumn('r.id', 'sr.role_id')
+                                        ->whereIn('r.name', $userRoles);
+                                });
+                        })
+                        ->where(function ($currentStepQuery) {
+                            // This step is the current step (either not started or not accepted)
+                            $currentStepQuery->whereNotExists(function ($appliedStepQuery) {
+                                $appliedStepQuery->selectRaw('1')
+                                    ->from('ebps_map_apply_steps as applied')
+                                    ->whereColumn('applied.map_step_id', 'current_step.id')
+                                    ->whereColumn('applied.map_apply_id', 'current_app.id');
+                            })->orWhereExists(function ($pendingStepQuery) {
+                                $pendingStepQuery->selectRaw('1')
+                                    ->from('ebps_map_apply_steps as pending')
+                                    ->whereColumn('pending.map_step_id', 'current_step.id')
+                                    ->whereColumn('pending.map_apply_id', 'current_app.id')
+                                    ->where('pending.status', '!=', 'accepted');
+                            });
+                        })
+                        ->orderBy('current_step.form_position')
+                        ->limit(1);
+                });
+        });
     }
 
     /**
