@@ -90,7 +90,7 @@
                     @endphp
 
                     @if (in_array($extension, ['jpg', 'jpeg', 'png']))
-                        <img src="{{ customAsset(config('src.DigitalBoard.notice.notice_path'), $uploadedImage) }}"
+                        <img src="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $uploadedImage, 'local', 'tempUrl') }}"
                             alt="Current Banner Image" class="img-thumbnail mt-2" style="height: 300px;">
                     @elseif ($extension === 'pdf')
                         <div class="card mt-2" style="max-width: 200px;">

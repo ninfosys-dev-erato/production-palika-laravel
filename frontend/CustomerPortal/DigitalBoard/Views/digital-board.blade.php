@@ -11,7 +11,7 @@
                     <a href="{{ route('digital-board.notice.show') }}"
                         class="bg-gradient-to-r from-blue-600 to-blue-800 hover:bg-blue-600 px-4 py-2 rounded-md flex items-center gap-2">
                         <span class="text-white text-sm">{{ __('View All') }}</span>
-                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">
+                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" class="w-5 h-5">
                     </a>
                 </div>
 
@@ -30,7 +30,7 @@
                                 @endphp
 
                                 @if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg']))
-                                    <img src="{{ asset('storage/digital-board/notices/' . $notice->file) }}"
+                                    <img src="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $notice->file, 'local', 'tempUrl') }}"
                                         alt="Notice Image" class="w-full h-full object-cover object-center">
                                 @elseif ($fileExtension === 'pdf')
                                     <div id="pdf-container-{{ $notice->id }}"
@@ -45,7 +45,7 @@
                                     </div>
                                     <script>
                                         (function() {
-                                            const pdfUrl = "{{ asset('storage/digital-board/notices/' . $notice->file) }}";
+                                            const pdfUrl = "{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $notice->file, 'local', 'tempUrl') }}";
                                             const container = document.getElementById("pdf-container-{{ $notice->id }}");
 
                                             function renderPDF() {
@@ -122,7 +122,7 @@
                     <a href="{{ route('digital-board.charter.showDetail', ['id' => \Src\DigitalBoard\Models\CitizenCharter::latest()?->first()?->id]) }}"
                         class="bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-2 rounded-md flex items-center gap-2 hover:scale-105 transition-transform">
                         <span class="text-white text-sm">{{ __('View All') }}</span>
-                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">
+                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" class="w-5 h-5">
                     </a>
                 </div>
 
@@ -143,7 +143,7 @@
                                     <a href="{{ route('digital-board.charter.showDetail', ['id' => $citizenCharter->id]) }}"
                                         class="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-blue-800 rounded-md px-3 py-1 text-white text-xs hover:scale-105 transition-transform">
                                         <span>{{ __('View') }}</span>
-                                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" alt="arrow"
+                                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="arrow"
                                             class="w-5 h-5">
                                     </a>
                                 </div>
@@ -171,7 +171,7 @@
                     <button
                         class="bg-gradient-to-r from-blue-600 to-blue-800 px-3 py-1 rounded-[10px] text-white text-xs md:text-sm flex items-center gap-1">
                         {{ __('View') }}
-                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" alt="right arrow"
+                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="right arrow"
                             class="h-[10px] md:h-[12px] w-[18px] md:w-[20px]">
                     </button>
                 </a>
@@ -221,7 +221,7 @@
                     <button
                         class="bg-gradient-to-r from-blue-600 to-blue-800 px-3 py-1 rounded-[10px] text-white text-xs md:text-sm flex items-center gap-1">
                         {{ __('View') }}
-                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" alt="right arrow"
+                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="right arrow"
                             class="h-[10px] md:h-[12px] w-[18px] md:w-[20px]">
                     </button>
                 </a>
@@ -241,7 +241,7 @@
                                         class="flex-none w-[calc(50%-16px)] sm:w-[calc(33.33%-16px)] min-w-[150px] md:min-w-[180px]">
                                         <div class="flex flex-col gap-2 md:gap-3">
                                             <div class="rounded-lg overflow-hidden h-32 md:h-40">
-                                                <img src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $program->photo) }}"
+                                                <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $program->photo, 'local', 'tempUrl') }}"
                                                     alt="thumbnail"
                                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                                             </div>
@@ -292,7 +292,7 @@
                                 class="flex-none w-[calc(50%-16px)] sm:w-[calc(33.33%-16px)] min-w-[150px] md:min-w-[180px]">
                                 <div class="flex flex-col gap-2 md:gap-3">
                                     <div class="rounded-lg overflow-hidden h-32 md:h-40 relative group">
-                                        <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $representative->photo) }}"
+                                        <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $representative->photo, 'local', 'tempUrl') }}"
                                             alt="{{ $representative->name }}"
                                             class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-105">
                                         <div
@@ -336,7 +336,7 @@
                                 class="flex-none w-[calc(50%-16px)] sm:w-[calc(33.33%-16px)] min-w-[150px] md:min-w-[180px]">
                                 <div class="flex flex-col gap-2 md:gap-3">
                                     <div class="rounded-lg overflow-hidden h-32 md:h-40 relative group">
-                                        <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $employee->photo) }}"
+                                        <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $employee->photo, 'local', 'tempUrl') }}"
                                             alt="{{ $employee->name }}"
                                             class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-105">
                                         <div
@@ -460,7 +460,7 @@
                     <button
                         class="bg-gradient-to-r from-[#103268b3] to-[#103268e6] px-3 py-1 rounded rounded-[10px] text-white py-2 px-1 rounded mt-2 text-sm flex items-center justify-center gap-1">
                         {{ __('View') }}
-                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" alt="right arrow"
+                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="right arrow"
                             class="h-[12px] w-[20px]" />
                     </button>
                 </a>
@@ -470,7 +470,7 @@
                 @foreach ($employees as $employee)
                     <div class="min-w-[200px] px-0 py-2 flex  flex-col justify-start">
                         <div class="rounded rounded-lg bg-white flex justify-center items-center px-8 py-2">
-                            <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $employee->photo) }}"
+                            <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $employee->photo, 'local', 'tempUrl') }}"
                                 alt="{{ $employee->name }}" class="h-[150px] w-full">
                         </div>
                         <div class="text-center mt-2 leading-tight">

@@ -3,7 +3,7 @@
 
         <a href="{{ route('digital-board.program.show') }}">
             <div class="flex gap-1 text-[#7E7E7E] items-center mt-9 md:mt-0 md:gap-3 mx-2 md:mx-0">
-                <img src="{{ asset('digitalBoard/icons/left-arrow (1).png') }}" alt=""
+                <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'left-arrow (1).png', 'local', 'tempUrl') }}" alt=""
                     class="w-2 md:w-3 h-2 md:h-3">
                 <p class="text-[10px] md:text-[15px]">{{ __('Back to all programs') }}</p>
             </div>
@@ -15,7 +15,7 @@
         </div>
         <div class="flex flex-col gap-1 md:gap-3 mx-12 md:mx-40">
             <div class="flex rounded-2xl w-full max-h-[400px] md:max-h-[600px] bg-cover border border-background">
-                <img src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $selectedProgram->photo) }}"
+                <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $selectedProgram->photo, 'local', 'tempUrl') }}"
                     alt="notices" class="w-full h-full">
             </div>
         </div>
@@ -31,7 +31,7 @@
                     <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 cursor-pointer"
                         wire:click="showProgramDetail({{ $latestProgram->id }})">
 
-                        <img src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $latestProgram->photo) }}"
+                        <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $latestProgram->photo, 'local', 'tempUrl') }}"
                             alt="{{ $latestProgram->title }}" class="w-32 h-10">
                         <div class="space-y-1">
                             <p class="text-[#444444] text-[14px] underline">{{ $latestProgram->title }}</p>

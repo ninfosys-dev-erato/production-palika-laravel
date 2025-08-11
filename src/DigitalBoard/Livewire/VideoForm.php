@@ -67,9 +67,6 @@ class VideoForm extends Component
             $this->canShowOnAdmin = $video->can_show_on_admin;
             $this->isPrivate = $video->is_private;
             $this->selectedWards = $video->wards()?->pluck('ward')->toArray() ?? [];
-
-            $disk = $video->is_private ? getStorageDisk('private') : getStorageDisk('public');
-            $this->videoFile = $video->file;
         }
     }
 

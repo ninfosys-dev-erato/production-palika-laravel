@@ -15,13 +15,26 @@ class VideoService
         $desiredFilename = null
     ) {
         $disk = $disk ?: getStorageDisk('public');
+        
+        // Store the file temporarily and get the path
         $tempPath = $video->store($path);
         $finalFilename = $desiredFilename ?? basename($tempPath);
 
+        // Get the contents from the temporary file
+        $contents = Storage::disk('local')->get($tempPath);
+        
+        if ($contents === null) {
+            throw new \Exception("Failed to read temporary file: {$tempPath}");
+        }
+
+        // Store the contents to the final destination
         Storage::disk($disk)->put(
             "{$path}/{$finalFilename}",
-            Storage::get($tempPath)
+            $contents
         );
+
+        // Clean up the temporary file
+        Storage::disk('local')->delete($tempPath);
 
         return $finalFilename;
     }

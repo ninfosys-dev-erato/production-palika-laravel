@@ -83,11 +83,11 @@
                             Your browser does not support the video tag.
                         </video>
                     </div>
-                @elseif($video->exists)
+                @elseif($video->exists && $video->file)
                     <div class='video-preview'>
                         <video width="320" height="240" controls>
                             <source
-                                src="{{ customVideoAsset(config('src.DigitalBoard.video.video_path'), $videoFile, $isPrivate ? 'local' : 'public') }}"
+                                src="{{ customFileAsset(config('src.DigitalBoard.video.video_path'), $video->file, $isPrivate ? 'local' : 'public', 'tempUrl') }}"
                                 type="video/mp4">
                             Your browser does not support the video tag.
                         </video>

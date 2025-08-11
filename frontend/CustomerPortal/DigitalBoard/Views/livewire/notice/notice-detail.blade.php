@@ -21,12 +21,12 @@
         <!-- Notice File (PDF/Image) -->
         <div class="w-full max-w-full flex justify-center">
             @if ($fileExtension === 'pdf')
-                <iframe src="{{ asset('storage/digital-board/notices/' . $selectedNotice->file) }}" width="100%"
+                <iframe src="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $selectedNotice->file, 'local', 'tempUrl') }}" width="100%"
                     height="400px" class="rounded-lg shadow-lg border-0"></iframe>
             @else
                 <div
                     class="flex w-full max-h-[500px] justify-center overflow-hidden rounded-lg shadow-lg bg-cover border-2 border-gray-300">
-                    <img src="{{ asset('storage/digital-board/notices/' . $selectedNotice->title) }}" alt="notice"
+                    <img src="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $selectedNotice->file, 'local', 'tempUrl') }}" alt="notice"
                         class="w-full h-full object-cover rounded-lg">
                 </div>
             @endif
@@ -49,7 +49,7 @@
             @foreach ($latestNotices as $latestNotice)
                 <div class="flex gap-4 bg-white hover:bg-gray-100 rounded-lg p-4 cursor-pointer transition-all duration-300 shadow-md sm:text-sm sm:px-2"
                     wire:click="showNoticeDetail({{ $latestNotice->id }})">
-                    <img src="{{ customAsset(config('src.DigitalBoard.notice.notice_path'), $latestNotice->file) }}"
+                    <img src="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $latestNotice->file, 'local', 'tempUrl') }}"
                         alt="image" class="w-16 h-16 rounded-full shadow-lg">
                     <div class="flex flex-col space-y-1">
                         <p class="text-lg font-medium text-gray-800 hover:text-blue-500">{{ $latestNotice->title }}</p>

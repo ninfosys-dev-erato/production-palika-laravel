@@ -8,7 +8,7 @@
                 <p class="text-[#4E4E4E] text-xs md:text-sm font-bold">
                     {{ $ward }}
                 </p>
-                <img src="{{ asset('digitalBoard/icons/down-arrow.png') }}" alt="down-arrow" class="w-3 md:w-4 w-3 md:h-5">
+                <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'down-arrow.png', 'local', 'tempUrl') }}" alt="down-arrow" class="w-3 md:w-4 w-3 md:h-5">
             </div>
 
             @if ($isDropdownVisible)
@@ -71,7 +71,7 @@
             <h2 class="text-base lg:text-2xl mx-3 md:mx-0 font-semibold mb-3">{{ __('Videos') }}</h2>
             <div class="md:w-full flex flex-col md:flex-row mx-3 md:mx-0 md:justify-between gap-2 md:gap-6">
                 <div class="relative w-full md:w-4/5">
-                    <img src="{{ asset('digitalBoard/icons/searchh.png') }}" alt="search"
+                    <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'searchh.png', 'local', 'tempUrl') }}" alt="search"
                         class="absolute left-3 w-4 h-4 top-2">
                     <input type="text" wire:model.debounce.300ms="search"
                         class="text-xs border border-[#AEAEAE] rounded-lg py-2 pl-9 pr-10 w-full"

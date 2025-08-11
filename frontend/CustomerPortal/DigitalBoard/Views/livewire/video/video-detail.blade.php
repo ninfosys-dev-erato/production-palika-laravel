@@ -2,7 +2,7 @@
     <div class="flex flex-col w-full md:w-4/6 justify-center md:justify-start md:my-12">
         <a href="{{ route('digital-board.video.show') }}">
             <div class="flex gap-1 text-[#7E7E7E] items-center mt-9 md:mt-0 md:gap-3 mx-2 md:mx-0">
-                <img src="{{ asset('digitalBoard/icons/left-arrow (1).png') }}" alt=""
+                <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'left-arrow (1).png', 'local', 'tempUrl') }}" alt=""
                     class="w-2 md:w-3 h-2 md:h-3">
                 <p class="text-[10px] md:text-[15px]">{{ __('Back to all videos') }}</p>
             </div>
@@ -16,7 +16,7 @@
             <div class="flex bg-slate-100 md:h-[270px] bg-cover w-full overflow-hidden rounded-sm">
                 @if ($selectedVideo->file)
                     <iframe
-                        src="{{ customVideoAsset(config('src.DigitalBoard.video.video_path'), $selectedVideo->file) }}"
+                        src="{{ customFileAsset(config('src.DigitalBoard.video.video_path'), $selectedVideo->file, 'local', 'tempUrl') }}"
                         frameborder="0" class="w-full h-auto rounded-sm" sandbox="allow-scripts allow-same-origin"
                         loading="lazy" allow="fullscreen; geolocation" referrerpolicy="no-referrer">
                     </iframe>
@@ -31,7 +31,7 @@
             </div>
 
             <div class="ml-auto flex gap-1 md:gap-2 items-center">
-                <img src="{{ asset('digitalBoard/icons/clock.png') }}" alt="date-time" class="w-3 md:w-4 h-3 md:h-4">
+                <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'clock.png', 'local', 'tempUrl') }}" alt="date-time" class="w-3 md:w-4 h-3 md:h-4">
                 <p class="text-[#818181] text-xs font-semibold">
                     {{ $selectedVideo->created_at->diffForHumans() }}
                 </p>
