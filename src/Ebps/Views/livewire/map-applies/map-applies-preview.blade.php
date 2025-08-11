@@ -12,7 +12,7 @@
                     @php
                         $firstStep = $mapApplySteps->first();
                     @endphp
-                    @if ($firstStep->status != 'accepted')
+                    @if (isSuperAdmin() || $firstStep->status != 'accepted')
                         <button type="button" class="btn btn-info" wire:click="changeStatus({{ $firstStep->id }})">
                             {{ $selectedStatus }} <i class="bx bx-chevron-down text-muted"></i>
                             {{ __('ebps::ebps.change_status') }}

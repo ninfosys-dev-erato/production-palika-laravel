@@ -152,6 +152,13 @@
                                                     {{ $submitterEnum ? $submitterEnum->label() : ucfirst($mapStep->form_submitter) }}
                                                 </p>
 
+                                                @if ($mapApplyStep && $mapApplyStep->reason)
+                                                    <div class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <small class="text-dark">{{ $mapApplyStep->reason }}</small>
+                                                        </div>
+                                                    </div>
+                                                @endif
 
                                                 <div class="d-flex justify-content-end mt-3 gap-2 flex-wrap">
                                                     
