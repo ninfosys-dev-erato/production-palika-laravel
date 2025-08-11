@@ -651,4 +651,5 @@ return [
     'detail_complainer' => 'निवेदक',
     'no_data_to_show' => 'देखाउन कुनै डाटा छैन',
     'general' => 'general',
+    'invited_member' => 'आमन्त्रित सदस्य',
 ];
