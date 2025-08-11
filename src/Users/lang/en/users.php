@@ -48,8 +48,17 @@ return [
     'the_password_must_be_at_least_6_characters' => 'The password must be at least 6 characters.',
     'the_email_has_already_been_taken' => 'The email has already been taken.',
     'the_mobile_number_has_already_been_taken' => 'The mobile number has already been taken.',
+    'signature' => 'Signature',
+    'the_signature_must_be_an_image' => 'The signature must be an image.',
+    'the_signature_must_not_be_greater_than_1_mb' => 'The signature must not be greater than 1 MB.',
     'user_created_successfully' => 'User Created Successfully',
     'user_updated_successfully' => 'User Updated Successfully',
     'departments_assigned_successfully' => 'Departments assigned successfully',
     'you_cannot_perform_this_action' => 'You Cannot Perform this action.',
+    'signature_preview' => 'Signature Preview',
+    'view_uploaded_file' => 'View Uploaded File',
+    'uploading' => 'Uploading...',
+    'upload_signature' => 'Upload Signature',
+
+
 ];

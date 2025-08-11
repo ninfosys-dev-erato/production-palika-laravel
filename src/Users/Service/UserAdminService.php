@@ -19,21 +19,24 @@ class UserAdminService
             'email' => $userAdminDto->email,
             'password' => $userAdminDto->password,
             'mobile_no' => $userAdminDto->mobile_no,
+            'signature' => $userAdminDto->signature,
             'active' => $userAdminDto->active,
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->id,
         ]);
-        
+
         return $user;
     }
 
     public function update(User $user, UserAdminDto $userAdminDto): bool
     {
+
         $updateData = [
             'name' => $userAdminDto->name,
             'email' => $userAdminDto->email,
             'password' => $userAdminDto->password,
             'mobile_no' => $userAdminDto->mobile_no,
+            'signature' => $userAdminDto->signature,
             'active' => $userAdminDto->active,
             'updated_at' => now(),
             'updated_by' => Auth::user()->id,

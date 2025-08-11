@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class='col-md-6 mb-4'>
+            <div class='col-md-6'>
                 <div class='form-group'>
                     <label for='password' class="mb-2 mt-4">{{ __('users::users.password') }}</label>
                     <input wire:model='user_password' name='password' type='password'
@@ -53,14 +53,43 @@
                 </div>
             </div>
 
+            <div class='col-md-6 mb-4'>
+                <div class='form-group'>
+                    <label for='signature' class="mb-2 mt-4">{{ __('users::users.signature') }}</label>
+                    <input wire:model='userSignature' name='signature' type='file'
+                        class="form-control {{ $errors->has('userSignature') ? 'is-invalid' : '' }}"
+                        style="{{ $errors->has('userSignature') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
+                        placeholder="{{ __('users::users.signature') }}">
+                    <div wire:loading wire:target="userSignature">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Uploading...
+                    </div>
+                    @if ($userSignatureUrl)
+                        <div class="col-12 mb-3">
+                            <p class="mb-1">
+                                <strong>{{ __('users::users.signature_preview') }}:</strong>
+                            </p>
+                            <a href="{{ $userSignatureUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bx bx-file"></i> {{ __('users::users.view_uploaded_file') }}
+                            </a>
+                        </div>
+                    @endif
+                    @error('userSignature')
+                        <small class='text-danger'>{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+
             <div wire:ignore>
                 <x-form.select :options="array_combine($wards, $wards)" multiple name="selected_wards" wireModel="selected_wards"
-                    placeholder="{{ __('users::users.select_wards') }}" label="{{ __('users::users.select_assigned_wards') }}" />
+                    placeholder="{{ __('users::users.select_wards') }}"
+                    label="{{ __('users::users.select_assigned_wards') }}" />
             </div>
 
             <div wire:ignore>
                 <x-form.select :options="$roles" multiple name="selectedRoles" wireModel="selectedRoles"
-                    placeholder="{{ __('users::users.select_roles') }}" label="{{ __('users::users.select_assigned_roles') }}" />
+                    placeholder="{{ __('users::users.select_roles') }}"
+                    label="{{ __('users::users.select_assigned_roles') }}" />
             </div>
 
         </div>
@@ -107,7 +136,8 @@
     </div>
 
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">{{ __('users::users.save') }}</button>
+        <button type="submit" class="btn btn-primary"
+            wire:loading.attr="disabled">{{ __('users::users.save') }}</button>
         <a href="javascript:void(0);" class="btn btn-danger" wire:loading.attr="disabled"
             onclick="window.history.back();">{{ __('users::users.back') }} </a>
 
