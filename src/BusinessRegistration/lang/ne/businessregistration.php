@@ -557,4 +557,5 @@ return [
     'industry_application_letter_ne' => 'उद्योग निवेदन पत्र',
     'application_letter_ne' => 'निवेदन पत्र',
     'registration_application' => 'दर्ता निवेदन',
+    'submitting' => 'पेश गर्दै...',
 ];

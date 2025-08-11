@@ -1089,9 +1089,8 @@
                                         <label for="others" class="form-label-peaceful">
                                             {{ __('businessregistration::businessregistration.others') }}
                                         </label>
-                                        <input wire:model="businessRegistration.others"
-                                            name="others" type="text" class="form-control nepali-date"
-                                            id="others"
+                                        <input wire:model="businessRegistration.others" name="others" type="text"
+                                            class="form-control nepali-date" id="others"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_others') }}">
                                     </div>
                                 </div>
@@ -1244,9 +1243,12 @@
                                     class="badge bg-light text-muted">{{ __('businessregistration::businessregistration.step_3_of_3') }}</span>
                             </div>
 
-                            <button type="submit" class="btn btn-success-peaceful">
-                                <i
-                                    class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit_registration') }}
+                            <button type="submit" class="btn btn-success-peaceful" wire:loading.attr="disabled">
+                                <i class="fas fa-check me-2"></i>
+                                <span
+                                    wire:loading.remove>{{ __('businessregistration::businessregistration.submit_registration') }}</span>
+                                <span
+                                    wire:loading>{{ __('businessregistration::businessregistration.submitting') }}</span>
                             </button>
                         </div>
                     </div>
