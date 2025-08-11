@@ -31,25 +31,74 @@
     @if (!empty($applyRecommendation->bill))
         <div class="col-md-12 mb-3">
             <div class="card-header text-white d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">{{ __('recommendation::recommendation.uploaded_payment') }}</h6>
-                <a href="{{ customAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local') }}"
-                    class="btn btn-sm btn-light text-primary">
+                <h5 class="mb-0 fw-bold">{{ __('recommendation::recommendation.uploaded_payment') }}</h6>
+                @php
+                    $fileUrl = customFileAsset(
+                        config('src.Recommendation.recommendation.bill'),
+                        $applyRecommendation->bill,
+                        'local',
+                        'tempUrl',
+                    );
+                @endphp
+                <!-- <a href="{{ $fileUrl }}" target="_blank" class="btn btn-sm btn-light text-primary">
                     {{ __('recommendation::recommendation.view') }}
-                </a>
+                </a> -->
+                @if ($applyRecommendation->status == Src\Recommendation\Enums\RecommendationStatusEnum::BILL_UPLOADED)
+                <div class="d-flex justify-content-end mt-2 mb-2">
+                    <button class="btn btn-primary" wire:click="sendToApprover">{{ __('recommendation::recommendation.send_for_approval') }}</button>
+                </div>
+            @endif
             </div>
-            <div class="card-body text-center p-3">
-                <iframe
-                    src="{{ customAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local') }}"
-                    frameborder="0"
-                    style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                </iframe>
+            <div class="card-body text-start p-3">
+                @php
+                    $extension = strtolower(pathinfo($applyRecommendation->bill, PATHINFO_EXTENSION));
+                    $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+                    $isImage = in_array($extension, $imageExtensions);
+                @endphp
+
+                @if ($isImage)
+                    <div class="card d-inline-block me-2 mb-2 cursor-pointer" style="width: 200px;"
+                        data-bs-toggle="modal" data-bs-target="#billPreviewModal">
+                        <div class="card-body text-center p-2">
+                            <img src="{{ $fileUrl }}" alt="Bill Preview"
+                                class="img-fluid rounded mb-2" style="max-height: 120px;">
+                            <div class="text-muted small">Payment Image</div>
+                            <div class="text-truncate small">{{ basename($applyRecommendation->bill) }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Modal for Image Preview -->
+                    <div class="modal fade" id="billPreviewModal" tabindex="-1" role="dialog" wire:ignore.self>
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ __('Payment Preview') }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="{{ $fileUrl }}" alt="{{ __('Payment Preview') }}" class="img-fluid rounded">
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="{{ $fileUrl }}" target="_blank" class="btn btn-primary">{{ __('Open in New Tab') }}</a>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="card d-inline-block me-2 mb-2" style="width: 200px;">
+                        <div class="card-body text-center p-2">
+                            <div class="text-muted" style="font-size: 14px;">
+                                {{ strtoupper($extension) }} File
+                            </div>
+                            <div class="text-truncate small">{{ basename($applyRecommendation->bill) }}</div>
+                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-sm btn-primary mt-2">{{ __('Open') }}</a>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     @endif
 
-    @if ($applyRecommendation->status == Src\Recommendation\Enums\RecommendationStatusEnum::BILL_UPLOADED)
-        <div class="d-flex justify-content-end mt-2 mb-2">
-            <button class="btn btn-primary" wire:click="sendToApprover">{{ __('recommendation::recommendation.send_for_approval') }}</button>
-        </div>
-    @endif
+  
 </div>

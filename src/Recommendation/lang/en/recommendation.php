@@ -196,4 +196,6 @@ return [
     'data_is_required' => 'Data is required',
     'remarks_is_required' => 'Remarks is required',
     'remarks_must_be_a_string' => 'Remarks must be a string',
+    'send_for_approval' => 'Send For Approval',
+    'open_in_new_tab' => 'Open in New Tab',
 ];

@@ -30,20 +30,14 @@
                                         $extension = strtolower(pathinfo($fileValue, PATHINFO_EXTENSION));
                                         $isImage = in_array($extension, $imageExtensions);
                                         
-                                        if ($isImage) {
-                                            $fileUrl = customAsset(
-                                                config('src.Recommendation.recommendation.path'),
-                                                $fileValue,
-                                                'local',
-                                            );
-                                        } else {
+                                      
                                             $fileUrl = customFileAsset(
                                                 config('src.Recommendation.recommendation.path'),
                                                 $fileValue,
                                                 'local',
                                                 'tempUrl'
                                             );
-                                        }
+                                        
                                     @endphp
 
                                     @if ($isImage)

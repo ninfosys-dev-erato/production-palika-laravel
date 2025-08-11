@@ -30,11 +30,11 @@
         <div class="col-md-12 mb-3">
             <div class="card-header text-white d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">{{ __('recommendation::recommendation.uploaded_payment') }}</h6>
-                <a href="{{ customAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local') }}"
+                <!-- <a href="{{ customAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local') }}"
                     class="btn btn-sm btn-secondary">
                     <i class="bx bx-show-alt"></i>
                     {{ __('recommendation::recommendation.view') }}
-                </a>
+                </a> -->
             </div>
             <div class="card-body text-center p-3">
                 {{-- <iframe

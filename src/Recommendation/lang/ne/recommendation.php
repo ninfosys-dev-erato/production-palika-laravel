@@ -199,4 +199,6 @@ return [
     'data_is_required' => 'डाटा आवश्यक छ।',
     'remarks_is_required' => 'कैफियत आवश्यक छ।',
     'remarks_must_be_a_string' => 'कैफियत स्ट्रिङ हुनुपर्छ।',
+    'send_for_approval' => 'स्वीकृतिका लागि पठाउनुहोस्',
+    'open_in_new_tab' => 'नयाँ टॅबमा खोल्नुहोस्',
 ];
