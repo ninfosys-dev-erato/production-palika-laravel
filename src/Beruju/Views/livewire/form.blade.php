@@ -273,7 +273,7 @@
 
     <div class="card-footer">
         <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">{{ __('beruju.save') }}</button>
-        <a href="{{ route('admin.beruju.index') }}" class="btn btn-secondary">
+        <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-secondary">
             {{ __('beruju::beruju.back') }}
         </a>
     </div>
