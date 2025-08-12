@@ -78,43 +78,48 @@
             @if (is_array($files))
                 @foreach ($files as $file)
                     @php
-                        $fileUrl = customAsset(config('src.FileTracking.fileTracking.file'), $file, 'local');
+                        $fileUrl = customFileAsset(config('src.FileTracking.fileTracking.file'), $file, 'local', 'tempUrl');
 
-                        $extension = strtolower(pathinfo(parse_url($file, PHP_URL_PATH), PATHINFO_EXTENSION));
-
+                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                     @endphp
 
                     @if ($file)
-                        <div class="p-4 border rounded bg-light text-center text-muted position-relative mt-4">
-                            {{-- Download Icon --}}
-                            <a href="{{ $fileUrl }}" download title="डाउनलोड गर्नुहोस्"
-                                class="btn btn-light border rounded-circle shadow-sm position-absolute top-0 end-0 m-3"
-                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                <i class='bx bx-download bx-sm'></i>
-                            </a>
+                        <div class="card d-inline-block me-2 mb-2 cursor-pointer" style="width: 150px;"
+                            data-bs-toggle="modal" data-bs-target="#filePreviewModal{{ $loop->index }}">
+                            <div class="card-body text-center p-2">
+                                <img src="{{ $fileUrl }}" alt="File Preview"
+                                    class="img-fluid rounded mb-2" style="max-height: 80px; object-fit: cover;">
+                                <div class="text-muted small">File Preview</div>
+                                <div class="text-truncate small">{{ basename($file) }}</div>
+                            </div>
+                        </div>
 
-                            {{-- Preview based on file type --}}
-                            @switch($extension)
-                                @case('jpg')
-                                @case('jpeg')
-                                @case('png')
-                                @case('gif')
-                                @case('bmp')
-                                @case('webp')
-                                    <img src="{{ $fileUrl }}" alt="Uploaded Document" class="img-fluid rounded shadow-sm"
-                                        style="max-height: 400px; width: 100%; object-fit: contain;">
-                                @break
-
-                                @case('pdf')
-                                    <embed src="{{ $fileUrl }}" type="application/pdf" width="100%" height="600px"
-                                        style="object-fit: contain;" />
-                                @break
-
-                                @default
-                                    <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary mt-3">
-                                        <i class='bx bx-link-external'></i> कागजात हेर्नुहोस्
-                                    </a>
-                            @endswitch
+                        <!-- Modal -->
+                        <div class="modal fade" id="filePreviewModal{{ $loop->index }}" tabindex="-1"
+                            role="dialog" wire:ignore.self>
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{{ __('File Preview') }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <img src="{{ $fileUrl }}" alt="{{ __('File Preview') }}"
+                                            class="img-fluid rounded">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{{ $fileUrl }}" download class="btn btn-primary">
+                                            <i class="bx bx-download"></i> {{ __('Download') }}
+                                        </a>
+                                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-info">
+                                            <i class="bx bx-link-external"></i> {{ __('Open in New Tab') }}
+                                        </a>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">{{ __('Close') }}</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @endif
                 @endforeach
@@ -129,40 +134,46 @@
 
             @foreach ($urls as $docUrl)
                 @php
-                    $extension = strtolower(pathinfo(parse_url($docUrl, PHP_URL_PATH), PATHINFO_EXTENSION));
+                    $extension = strtolower(pathinfo($docUrl, PATHINFO_EXTENSION));
                 @endphp
 
                 @if ($docUrl && $extension)
-                    <div class="p-4 border rounded bg-light text-center text-muted position-relative">
-                        {{-- Download Icon --}}
-                        <a href="{{ $docUrl }}" download title="डाउनलोड गर्नुहोस्"
-                            class="btn btn-light border rounded-circle shadow-sm position-absolute top-0 end-0 m-3"
-                            style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                            <i class='bx bx-download bx-sm'></i>
-                        </a>
+                    <div class="card d-inline-block me-2 mb-2 cursor-pointer" style="width: 150px;"
+                        data-bs-toggle="modal" data-bs-target="#docPreviewModal{{ $loop->index }}">
+                        <div class="card-body text-center p-2">
+                            <img src="{{ $docUrl }}" alt="File Preview"
+                                class="img-fluid rounded mb-2" style="max-height: 80px; object-fit: cover;">
+                            <div class="text-muted small">File Preview</div>
+                            <div class="text-truncate small">{{ basename($docUrl) }}</div>
+                        </div>
+                    </div>
 
-                        {{-- Preview based on file type --}}
-                        @switch($extension)
-                            @case('jpg')
-                            @case('jpeg')
-                            @case('png')
-                            @case('gif')
-                            @case('bmp')
-                            @case('webp')
-                                <img src="{{ $docUrl }}" alt="Uploaded Document" class="img-fluid rounded shadow-sm"
-                                    style="max-height: 400px; width: 100%; object-fit: contain;">
-                            @break
-
-                            @case('pdf')
-                                <embed src="{{ $docUrl }}" type="application/pdf" width="100%" height="600px"
-                                    style="object-fit: contain;" />
-                            @break
-
-                            @default
-                                <a href="{{ $docUrl }}" target="_blank" class="btn btn-outline-primary mt-3">
-                                    <i class='bx bx-link-external'></i> {{ __('filetracking::filetracking.view_document') }}
-                                </a>
-                        @endswitch
+                    <!-- Modal -->
+                    <div class="modal fade" id="docPreviewModal{{ $loop->index }}" tabindex="-1"
+                        role="dialog" wire:ignore.self>
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ __('File Preview') }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="{{ $docUrl }}" alt="{{ __('File Preview') }}"
+                                        class="img-fluid rounded">
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="{{ $docUrl }}" download class="btn btn-primary">
+                                        <i class="bx bx-download"></i> {{ __('Download') }}
+                                    </a>
+                                    <a href="{{ $docUrl }}" target="_blank" class="btn btn-info">
+                                        <i class="bx bx-link-external"></i> {{ __('Open in New Tab') }}
+                                    </a>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">{{ __('Close') }}</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @endif
             @endforeach

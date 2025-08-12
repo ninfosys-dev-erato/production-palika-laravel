@@ -94,10 +94,11 @@
                                     $isImage = in_array($extension, $imageExtensions);
                                     
                                     if ($isImage) {
-                                        $fileUrl = customAsset(
+                                        $fileUrl = customFileAsset(
                                             config('src.Recommendation.recommendation.path'),
                                             $field['value'],
                                             'local',
+                                            'tempUrl'
                                         );
                                     } else {
                                         $fileUrl = customFileAsset(

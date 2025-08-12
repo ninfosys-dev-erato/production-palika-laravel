@@ -38,7 +38,7 @@
             </div>
             <div class="card-body text-center p-3">
                 {{-- <iframe
-                    src="{{ customAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local') }}"
+                    src="{{ customFileAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local', 'tempUrl') }}"
                     frameborder="0"
                     style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
                 </iframe> --}}
