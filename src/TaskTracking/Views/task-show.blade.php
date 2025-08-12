@@ -94,19 +94,14 @@
                                                 $fileName = pathinfo($file, PATHINFO_FILENAME);
                                                 $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
                                                 
-                                                if ($isImage) {
-                                                    $fileUrl = customAsset(
-                                                        config('src.TaskTracking.TaskTracking.path'),
-                                                        $file,
-                                                    );
-                                                } else {
+                                              
                                                     $fileUrl = customFileAsset(
                                                         config('src.TaskTracking.TaskTracking.path'),
                                                         $file,
                                                         'local',
                                                         'tempUrl'
                                                     );
-                                                }
+                                                
                                             @endphp
 
                                             <li class="document-item d-flex align-items-center mb-2 p-2 border rounded"

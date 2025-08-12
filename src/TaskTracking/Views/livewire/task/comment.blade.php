@@ -89,13 +89,17 @@
                                     @if ($files && is_array($files))
                                         @foreach ($files as $file)
                                             @php
-                                                $fileUrl = customAsset(
+                                                $fileUrl = customFileAsset(
                                                     config('src.TaskTracking.TaskTracking.path'),
                                                     $file,
+                                                    'local',
+                                                    'tempUrl'
                                                 );
                                                 $pdfUrl = customFileAsset(
                                                     config('src.TaskTracking.TaskTracking.path'),
                                                     $file,
+                                                    'local',
+                                                    'tempUrl'
                                                 );
                                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                                 $fileName = pathinfo($file, PATHINFO_FILENAME);
