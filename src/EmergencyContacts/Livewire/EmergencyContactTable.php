@@ -39,7 +39,7 @@ class EmergencyContactTable extends DataTableComponent
     public function builder(): Builder
     {
         return EmergencyContact::query()
-            ->select('contact_person', 'contact_numbers', 'address', 'site_map')
+            ->select('id', 'icon', 'service_name', 'contact_person', 'contact_numbers', 'address', 'site_map')
             ->where('deleted_at',null)
             ->where('deleted_by',null)
            ->orderBy('created_at','DESC'); // Select some things
@@ -52,11 +52,11 @@ class EmergencyContactTable extends DataTableComponent
     {
      $columns = [
         ImageColumn::make(__('emergencycontacts::emergencycontacts.icon'), "icon")->location(
-            fn($row) => customAsset(config('src.EmergencyContacts.emergencyContact.icon_path'), $row->icon)
+            fn($row) => customFileAsset(config('src.EmergencyContacts.emergencyContact.icon_path'), $row->icon, 'local', 'tempUrl')
         )
             ->attributes(fn($row) => [
                 'style' => 'width:100px;border-radius:50%',
-                'alt' => $row->name,
+                'alt' => $row->service_name ?? 'Emergency Contact Icon',
             ]),
 
             Column::make(__('emergencycontacts::emergencycontacts.service_name'), "service_name") ->sortable()->searchable()->collapseOnTablet(),

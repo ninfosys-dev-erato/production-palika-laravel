@@ -70,7 +70,7 @@
                             @foreach ($existingImages as $existingFile)
                                 <div class="col-md-3 col-sm-4 col-6 mb-3">
                                     @if (in_array(pathinfo($existingFile, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
-                                        <img src="{{ customAsset(config('src.Downloads.download.file_path'), $existingFile) }}"
+                                        <img src="{{ customFileAsset(config('src.Downloads.download.file_path'), $existingFile, 'local', 'tempUrl') }}"
                                             alt="Existing Image" class="img-thumbnail w-100"
                                             style="height: 150px; object-fit: cover;">
                                     @endif
@@ -80,7 +80,7 @@
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ __('downloads::downloads.pdf_file') }}</h5>
                                                 <p class="card-text">{{ $existingFile }}</p>
-                                                <a href="{{ customAsset(config('src.Downloads.download.file_path'), $existingFile) }}"
+                                                <a href="{{ customFileAsset(config('src.Downloads.download.file_path'), $existingFile, 'local', 'tempUrl') }}"
                                                     target="_blank" class="btn btn-primary btn-sm">
                                                     {{ __('downloads::downloads.open_pdf') }}
                                                 </a>

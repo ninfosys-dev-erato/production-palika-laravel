@@ -1,6 +1,6 @@
 <div class="d-flex gap-2 align-items-center" style="height: 70px;">
     <img class="bg-light rounded-circle h-100"
-        src={{customAsset(config('src.Employees.employee.photo_path'), $row->photo)}}
+        src={{customFileAsset(config('src.Employees.employee.photo_path'), $row->photo, 'local', 'tempUrl')}}
         alt={{ __($row->name) }} style="width: 70px;">
     
     <div class="d-flex gap-0 flex-column justify-content-center ">

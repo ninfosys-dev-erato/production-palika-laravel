@@ -14,7 +14,7 @@
                         <x-form.file-input :label="__('Signature')" id="signature" name="user.signature" accept="image/*" />
                     </span>
                     @if (is_string($user['signature']) && !empty($user['signature']))
-                        <img src="{{ customAsset(config('src.Profile.profile.path'), $this->user['signature']) }}"
+                        <img src="{{ customFileAsset(config('src.Profile.profile.path'), $this->user['signature'], 'local', 'tempUrl') }}"
                             alt="Signature" width="50">
                     @endif
                 </div>

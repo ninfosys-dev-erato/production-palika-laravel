@@ -87,7 +87,7 @@
                 </div>
                 <div>
                     @if ($existingImage)
-                        <img src="{{ customAsset(config('src.EmergencyContacts.emergencyContact.icon_path'), $existingImage) }}"
+                        <img src="{{ customFileAsset(config('src.EmergencyContacts.emergencyContact.icon_path'), $existingImage, 'local', 'tempUrl') }}"
                             alt="Current Banner Image" class="img-thumbnail mt-2" style="height: 50px;">
                     @endif
                 </div>
