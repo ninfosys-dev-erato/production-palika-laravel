@@ -646,7 +646,7 @@
                                         {{-- Show existing file if no new file is uploaded --}}
 
 
-                                        <a href="{{ customAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tmpUrl') }}"
+                                        <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tmpUrl') }}"
                                             target="_blank" class="btn btn-outline-primary btn-sm">
                                             <i class="bx bx-file"></i>
                                             {{ __('yojana::yojana.view_uploaded_file') }}

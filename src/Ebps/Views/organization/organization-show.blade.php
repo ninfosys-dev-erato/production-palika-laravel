@@ -42,7 +42,7 @@
                         style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
 
                         @if ($organization->logo)
-                            <img src="{{ customAsset(config('src.Ebps.ebps.path'), $organization->logo, 'local') }}"
+                            <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->logo, 'local', 'tempUrl') }}"
                                 alt="{{ $organization->org_name_en }}" class="rounded-circle border shadow mb-3"
                                 style="width: 120px; height: 120px; object-fit: cover;">
                         @elseif($organization->org_name_en)
@@ -201,8 +201,8 @@
                                         <strong>{{ __('ebps::ebps.organization_registration_document') }}:</strong><br>
                                         @if ($organization->org_registration_document)
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                onclick="showImage('{{ customAsset(config('src.Ebps.ebps.path'), $organization->org_registration_document, 'local') }}')">
-                                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $organization->org_registration_document, 'local') }}"
+                                                onclick="showImage('{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->org_registration_document, 'local', 'tempUrl') }}')">
+                                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->org_registration_document, 'local', 'tempUrl') }}"
                                                     alt="" class="img-fluid" />
                                             </a>
                                         @else
@@ -213,8 +213,8 @@
                                         <strong>{{ __('ebps::ebps.organization_pan_document') }}:</strong><br>
                                         @if ($organization->org_pan_document)
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                onclick="showImage('{{ customAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local') }}')">
-                                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local') }}"
+                                                onclick="showImage('{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local', 'tempUrl') }}')">
+                                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local', 'tempUrl') }}"
                                                     alt="" class="img-fluid" />
                                             </a>
                                         @else
@@ -239,8 +239,8 @@
                                         <strong>{{ __('ebps::ebps.company_registration_document') }}:</strong><br>
                                         @if ($organization->company_registration_document)
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                onclick="showImage('{{ customAsset(config('src.Ebps.ebps.path'), $organization->company_registration_document, 'local') }}')">
-                                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $organization->company_registration_document, 'local') }}"
+                                                onclick="showImage('{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->company_registration_document, 'local', 'tempUrl') }}')">
+                                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->company_registration_document, 'local', 'tempUrl') }}"
                                                     alt="" class="img-fluid" />
                                             </a>
                                         @else
@@ -251,8 +251,8 @@
                                         <strong>{{ __('ebps::ebps.organization_pan_document') }}:</strong><br>
                                         @if ($organization->org_pan_document)
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                onclick="showImage('{{ customAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local') }}')">
-                                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local') }}"
+                                                onclick="showImage('{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local', 'tempUrl') }}')">
+                                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $organization->org_pan_document, 'local', 'tempUrl') }}"
                                                     alt="" class="img-fluid" />
                                             </a>
                                         @else
@@ -276,8 +276,8 @@
                                                 $taxClearance = $organization->taxClearances->first();
                                             @endphp
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#modalTaxImage"
-                                                onclick="showTaxImage('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')">
-                                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}"
+                                                onclick="showTaxImage('{{ customFileAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local', 'tempUrl') }}')">
+                                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local', 'tempUrl') }}"
                                                     alt="" class="img-fluid" />
                                             </a>
                                         @else

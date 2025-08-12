@@ -82,10 +82,11 @@
                                 @php
                                     $extension = strtolower(pathinfo($field['value'], PATHINFO_EXTENSION));
                                     $isImage = in_array($extension, $imageExtensions);
-                                    $fileUrl = customAsset(
+                                    $fileUrl = customFileAsset(
                                         config('src.Recommendation.recommendation.path'),
                                         $field['value'],
                                         'local',
+                                        'tempUrl'
                                     );
                                 @endphp
 

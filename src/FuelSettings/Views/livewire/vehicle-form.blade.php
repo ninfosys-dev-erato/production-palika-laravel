@@ -187,7 +187,7 @@
     @endif
     {{-- 
     @if ($vehicle . license_photo){
-        <img src="{{ customAsset(config('src.EmergencyContacts.emergencyContact.icon_path'), $row->icon) }}"
+        <img src="{{ customFileAsset(config('src.EmergencyContacts.emergencyContact.icon_path'), $row->icon, 'local', 'tempUrl') }}"
             alt="" style="height: 300px;">
         } --}}
 

@@ -306,7 +306,7 @@
                             @foreach($programs as $index => $program)
                                 <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                                     <div class="carousel-image-container">
-                                        <img src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $program->photo) }}"
+                                        <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $program->photo, 'local', 'tempUrl') }}"
                                              class="d-block w-100 mt-10" alt="{{ $program->title }}">
                                     </div>
                                     <div class="carousel-caption d-none d-md-block">
@@ -450,7 +450,7 @@
                     <div class="slider-item">
                         <div class="app-card">
                             <div class="position-relative">
-                                <img src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $program->photo) }}"
+                                <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $program->photo, 'local', 'tempUrl') }}"
                                      class="card-img-top" alt="{{ $program->title }}" style="height: 180px; object-fit: cover;">
                             </div>
                             <div class="card-body">

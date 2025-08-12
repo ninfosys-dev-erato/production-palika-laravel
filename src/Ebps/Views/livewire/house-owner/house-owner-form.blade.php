@@ -233,7 +233,7 @@
                     <img src="{{ $uploadedImage->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
                         class="img-thumbnail mt-2" style="height: 300px;">
                 @elseif (!empty(trim($uploadedImage)))
-                    <img src="{{ customAsset(config('src.Ebps.ebps.path'), $uploadedImage) }}" alt="Existing Image 2"
+                    <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $uploadedImage, 'local', 'tempUrl') }}" alt="Existing Image 2"
                         class="img-thumbnail mt-2" style="height: 300px;">
                 @endif
             </div>

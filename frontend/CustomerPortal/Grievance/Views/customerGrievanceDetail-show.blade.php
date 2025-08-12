@@ -204,10 +204,11 @@
                                                                         $isImage = in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
                                                                         
                                                                         if ($isImage) {
-                                                                            $fileUrl = customAsset(
+                                                                            $fileUrl = customFileAsset(
                                                                                 config('src.Grievance.grievance.path'),
                                                                                 $file->file_name,
                                                                                 $disk,
+                                                                                'tempUrl'
                                                                             );
                                                                         } else {
                                                                             $fileUrl = customFileAsset(

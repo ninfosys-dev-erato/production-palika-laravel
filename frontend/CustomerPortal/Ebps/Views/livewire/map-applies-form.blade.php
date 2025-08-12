@@ -44,7 +44,7 @@
                             <img src="{{ $uploadedImage->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
                                 class="img-thumbnail mt-2" style="height: 300px;">
                         @elseif (!empty(trim($uploadedImage)))
-                            <img src="{{ customAsset(config('src.Ebps.ebps.path'), $uploadedImage) }}"
+                            <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $uploadedImage, 'local', 'tempUrl') }}"
                                 alt="Existing Image 2" class="img-thumbnail mt-2" style="height: 300px;">
                         @endif
                     </div>
@@ -327,7 +327,7 @@
                                         style="height: 300px;">
                                 @elseif (!empty($filePath))
                                     {{-- Show existing file if no new file is uploaded --}}
-                                    <img src="{{ customAsset(config('src.Ebps.ebps.path'), $filePath) }}"
+                                    <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tempUrl') }}"
                                         alt="Existing Document Preview" class="img-thumbnail mt-2"
                                         style="height: 300px;">
                                 @endif
@@ -427,6 +427,7 @@
                         @endforeach
                     </div>
                 </div>
+            @endif
             @endif
         </div>
     </div>
