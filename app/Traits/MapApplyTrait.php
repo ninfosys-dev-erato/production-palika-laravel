@@ -128,12 +128,12 @@ trait MapApplyTrait
             '{{mapApply.houseOwnerName}}' => $houseOwner?->owner_name ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerMobileNo}}' => replaceNumbers($houseOwner?->mobile_no, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerFatherName}}' => $houseOwner?->father_name ?? self::EMPTY_LINES,
-            '{{mapApply.houseOwnerGrandFatherName}}' => $houseOwner?->grand_father_name ?? self::EMPTY_LINES,
+            '{{mapApply.houseOwnerGrandFatherName}}' => $houseOwner?->grandfather_name ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerCitizenshipNo}}' => replaceNumbers($houseOwner?->citizenship_no, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerProvince}}' => isset($houseOwner?->province, $houseOwner?->province->title) ? $houseOwner?->province->title : self::EMPTY_LINES,
             '{{mapApply.houseOwnerDistrict}}' => isset($houseOwner?->district, $houseOwner?->district->title) ? $houseOwner?->district->title : self::EMPTY_LINES,
-            '{{mapApply.houseOwnerLocalBody}}' => isset($houseOwner?->local_body, $houseOwner?->local_body->title) ? $houseOwner?->local_body->title : self::EMPTY_LINES,
-            '{{mapApply.houseOwnerWard}}' => replaceNumbers($houseOwner?->ward, true) ?? self::EMPTY_LINES,
+            '{{mapApply.houseOwnerLocalBody}}' => isset($houseOwner?->localBody, $houseOwner?->localBody->title) ? $houseOwner?->localBody->title : self::EMPTY_LINES,
+            '{{mapApply.houseOwnerWard}}' => replaceNumbers($houseOwner?->ward_no, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerTole}}' => $houseOwner?->tole ?? self::EMPTY_LINES,
         ];
     }

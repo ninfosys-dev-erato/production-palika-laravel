@@ -542,7 +542,7 @@
                     <div class="data-row">
                         <div class="data-label">{{ __('ठेगाना') }}:</div>
                         <div class="data-value">
-                            {{ $organization->localBody->title . ', ' . $organization->district->title ?? 'N/A' }}
+                            {{ $organization?->localBody?->title . ', ' . $organization?->district?->title ?? 'N/A' }}
                         </div>
                     </div>
                 </div>
