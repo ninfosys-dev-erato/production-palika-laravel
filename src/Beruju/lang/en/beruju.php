@@ -26,6 +26,7 @@ return [
     'submitted_at' => 'Submitted At',
     'resolved_at' => 'Resolved At',
     'resolution_notes' => 'Resolution Notes',
+
     // New fields
     'fiscal_year_id' => 'Fiscal Year',
     'audit_type' => 'Audit Type',
@@ -51,9 +52,11 @@ return [
     'enter_subject' => 'Enter Subject',
     'enter_details' => 'Enter Details',
     'enter_resolution_notes' => 'Enter Resolution Notes',
+
     // New field placeholders
     'enter_entry_date' => 'Enter Entry Date',
     'enter_reference_number' => 'Enter Reference Number',
+    'enter_project_id' => 'Enter Project ID',
     'enter_amount' => 'Enter Amount',
     'enter_legal_provision' => 'Enter Legal Provision',
     'enter_action_deadline' => 'Enter Action Deadline',
@@ -98,6 +101,7 @@ return [
     'the_details_field_is_required' => 'The details field is required.',
     'the_status_field_is_required' => 'The status field is required.',
     'the_priority_field_is_required' => 'The priority field is required.',
+    'the_submission_status_field_is_required' => 'The submission status field is required.',
 
     // Table Headers
     'id' => 'ID',
@@ -110,6 +114,7 @@ return [
     'select_status' => 'Select Status',
     'select_priority' => 'Select Priority',
     'select_user' => 'Select User',
+
     // New select options
     'select_fiscal_year' => 'Select Fiscal Year',
     'select_audit_type' => 'Select Audit Type',
@@ -118,6 +123,15 @@ return [
     'select_beruju_category' => 'Select Beruju Category',
     'select_sub_category' => 'Select Sub Category',
     'select_currency_type' => 'Select Currency Type',
+
+    // Form Sections
+    'general_information' => 'General Information',
+    'beruju_details' => 'Beruju Details',
+    'details_and_evidences' => 'Details and Evidences',
+    'status_information' => 'Status Information',
+    'evidences' => 'Evidences',
+
+    // Additional
     'basic_information' => 'Basic Information',
     'applicant_information' => 'Applicant Information',
     'assignment_and_status' => 'Assignment and Status',
@@ -132,4 +146,66 @@ return [
     'created_at' => 'Created At',
     'updated_by' => 'Updated By',
     'updated_at' => 'Updated At',
+    'beruju_entry_form' => 'Beruju Entry Form',
+    'beruju_registration' => 'Beruju Registration',
+    'beruju_registration_lists' => 'Beruju Registration Lists',
+    'beruju_registration_form' => 'Beruju Registration Form',
+
+    // Evidence Document Upload
+    'add_evidence' => 'Add Evidence',
+    'add_new_evidence' => 'Add New Evidence',
+    'evidence_name' => 'Evidence Name',
+    'evidence_file' => 'Evidence File',
+    'evidence_description' => 'Evidence Description',
+    'enter_evidence_name' => 'Enter Evidence Name',
+    'enter_evidence_description' => 'Enter Evidence Description',
+    'save_evidence' => 'Save Evidence',
+    'cancel' => 'Cancel',
+    'evidence_list' => 'Evidence List',
+    'file_name' => 'File Name',
+    'uploaded_at' => 'Uploaded At',
+    'download' => 'Download',
+    'delete' => 'Delete',
+    'confirm_delete_evidence' => 'Are you sure you want to delete this evidence?',
+    'no_evidences_found' => 'No evidences found',
+    'click_add_evidence_to_upload' => 'Click "Add Evidence" to upload documents',
+    'loading' => 'Loading...',
+    'saving' => 'Saving...',
+    'allowed_file_types' => 'Allowed file types',
+    'max_size' => 'Max size',
+    'evidence_added_successfully' => 'Evidence added successfully',
+    'evidence_deleted_successfully' => 'Evidence deleted successfully',
+    'failed_to_add_evidence' => 'Failed to add evidence',
+    'failed_to_delete_evidence' => 'Failed to delete evidence',
+    'file_not_found' => 'File not found',
+
+    // Dashboard
+    'beruju_dashboard' => 'Beruju Dashboard',
+    'welcome_to_beruju' => 'Welcome to Beruju',
+    'hello_beruju' => 'Hello Beruju!',
+    'welcome_message' => 'Welcome to the Beruju Management System. Here you can manage all your beruju entries and track their progress.',
+    'dashboard_description' => 'This dashboard provides you with an overview of all beruju activities, statistics, and quick access to common actions.',
+    'quick_actions' => 'Quick Actions',
+    'view_all_beruju' => 'View All Beruju',
+    'beruju_reports' => 'Beruju Reports',
+    'beruju_settings' => 'Beruju Settings',
+    'total_beruju' => 'Total Beruju',
+    'pending_beruju' => 'Pending Beruju',
+    'resolved_beruju' => 'Resolved Beruju',
+    'rejected_beruju' => 'Rejected Beruju',
+
+    // Sidebar Menu
+
+    'beruju_categories' => 'Beruju Categories',
+    'audit_types' => 'Audit Types',
+    'status_management' => 'Status Management',
+
+    'add' => 'Add',
+    'status_report' => 'Status Report',
+    'category_report' => 'Category Report',
+    'audit_type_report' => 'Audit Type Report',
+    'monthly_report' => 'Monthly Report',
+    'general_settings' => 'General Settings',
+    'notification_settings' => 'Notification Settings',
+    'workflow_settings' => 'Workflow Settings',
 ];

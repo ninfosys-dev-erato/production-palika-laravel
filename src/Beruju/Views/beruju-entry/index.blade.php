@@ -4,7 +4,7 @@
             <h5 class="text-primary fw-bold">{{ __('beruju::beruju.beruju_entries') }}</h5>
             <div>
                 @perm('beruju create')
-                    <a href="{{ route('admin.beruju.create') }}" class="btn btn-info">
+                    <a href="{{ route('admin.beruju.registration.create') }}" class="btn btn-info">
                         <i class="bx bx-plus"></i> {{ __('beruju::beruju.add_beruju') }}
                     </a>
                 @endperm
