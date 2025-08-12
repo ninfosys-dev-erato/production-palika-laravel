@@ -209,5 +209,6 @@ return [
     'general_settings' => 'सामान्य सेटिङहरू',
     'notification_settings' => 'सूचना सेटिङहरू',
     'workflow_settings' => 'कार्यप्रवाह सेटिङहरू',
+    'dashboard' => 'ड्यासबोर्ड',
 
 ];

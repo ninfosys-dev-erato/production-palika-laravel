@@ -199,6 +199,7 @@ return [
     'beruju_categories' => 'Beruju Categories',
     'audit_types' => 'Audit Types',
     'status_management' => 'Status Management',
+    'dashboard' => 'Dashboard',
 
     'add' => 'Add',
     'status_report' => 'Status Report',

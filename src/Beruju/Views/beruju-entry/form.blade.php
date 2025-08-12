@@ -1,6 +1,6 @@
 <x-layout.app header="{{ __('beruju::beruju.beruju_registration_form') }}">
 
-    <nav aria-label="breadcrumb" class="d-flex justify-content-end">
+    <nav aria-label="breadcrumb" class="d-flex justify-content-start">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="bx bx-home-alt"></i></a>
             <li class="breadcrumb-item"><a
@@ -22,7 +22,7 @@
                 {{ __('beruju::beruju.beruju_entry_form') }}
             </h5>
 
-            <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-info"><i
+            <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-info rounded-0"><i
                     class="bx bx-list-ul"></i>{{ __('beruju::beruju.beruju_registration_lists') }}</a>
         </div>
     </div>

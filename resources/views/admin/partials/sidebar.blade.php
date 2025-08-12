@@ -245,9 +245,9 @@
         @include('TaskTracking::menu.sidebar')
     @endif
 
-    {{-- @if (\Illuminate\Support\Facades\Route::is('admin.beruju.registration.*', 'admin.beruju.dashboard.*'))
+    @if (\Illuminate\Support\Facades\Route::is('admin.beruju.registration.*', 'admin.beruju.dashboard.*'))
         @include('Beruju::menu.sidebar')
-    @endif --}}
+    @endif
 
     @if (
         \Illuminate\Support\Facades\Route::is(
