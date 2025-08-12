@@ -149,7 +149,7 @@
                                                 @endphp
 
                                                 @if(in_array($extension, ['jpg', 'jpeg', 'png']))
-                                                    <img src="{{ customAsset(config('src.GrantManagement.grant.photo'), $farmer->photo) }}"
+                                                    <img src="{{ customFileAsset(config('src.GrantManagement.grant.photo'), $farmer->photo, 'local', 'tempUrl') }}"
                                                         alt="Farmer Photo" class="img-thumbnail mt-2" style="height: 300px;">
                                                 @elseif($extension === 'pdf')
                                                     <div class="card mt-2" style="max-width: 200px;">
@@ -158,7 +158,7 @@
                                                                 {{ __('grantmanagement::grantmanagement.pdf_file') }}
                                                             </h5>
                                                             <p class="card-text">{{ $farmer->photo }}</p>
-                                                            <a href="{{ customFileAsset(config('src.GrantManagement.grant.photo'), $farmer->photo) }}"
+                                                            <a href="{{ customFileAsset(config('src.GrantManagement.grant.photo'), $farmer->photo, 'local', 'tempUrl') }}"
                                                                 target="_blank" class="btn btn-primary btn-sm">
                                                                 {{ __('grantmanagement::grantmanagement.open_pdf') }}
                                                             </a>

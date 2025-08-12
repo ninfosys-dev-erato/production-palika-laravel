@@ -403,7 +403,7 @@ class FarmerForm extends Component
             }
 
             return FileFacade::saveFile(
-                path: config('src.DigitalBoard.notice.notice_path'),
+                path: config('src.GrantManagement.grant.photo'),
                 filename: null,
                 file: $file,
                 disk: getStorageDisk('private')

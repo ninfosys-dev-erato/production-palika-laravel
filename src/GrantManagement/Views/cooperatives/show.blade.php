@@ -107,13 +107,13 @@
                                         <h6 class="border-bottom pb-2 mt-4 mb-3">
                                             {{ __('grantmanagement::grantmanagement.photo') }}
                                         </h6>
-
+                                        {{ dd($cooperative->photo) }}
                                         @php
                                             $extension = strtolower(pathinfo($cooperative->photo, PATHINFO_EXTENSION));
                                         @endphp
 
                                         @if (in_array($extension, ['jpg', 'jpeg', 'png']))
-                                            <img src="{{ customAsset(config('src.GrantManagement.grant.photo'), $cooperative->photo) }}"
+                                            <img src="{{ customFileAsset(config('src.GrantManagement.grant.photo'), $cooperative->photo, 'local', 'tempUrl') }}"
                                                 alt="{{ __('grantmanagement::grantmanagement.cooperative_photo') }}"
                                                 class="img-thumbnail mt-2" style="height: 300px;">
                                         @elseif($extension === 'pdf')

@@ -94,24 +94,30 @@
                                 @php
                                     $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
                                     $isImage = false;
+                                    $fileUrl = '';
 
-                                    if (!empty($cashGrant['file'])) {
-                                        $extension = strtolower(pathinfo($cashGrant['file'], PATHINFO_EXTENSION));
+                                    if (!empty($cashGrant->file)) {
+                                        $extension = strtolower(pathinfo($cashGrant->file, PATHINFO_EXTENSION));
                                         $isImage = in_array($extension, $imageExtensions);
+                                        
+                                        // Generate file URL using customFileAsset
+                                        $fileUrl = customFileAsset(
+                                            config('src.GrantManagement.grant.file'),
+                                            $cashGrant->file,
+                                            'local',
+                                            'tempUrl'
+                                        );
                                     }
                                 @endphp
 
                                 <strong>{{ __('grantmanagement::grantmanagement.file') }}:</strong>
-                                @if (!empty($cashGrant['file']))
-
+                                @if (!empty($cashGrant->file))
                                     @if ($isImage)
-                                        <img src="{{ $fileUrl }}" class="img-thumbnail" style="height: 300px;"
-                                            alt="Uploaded File">
+                                        <img src="{{ $fileUrl }}" class="img-thumbnail" style="height: 300px;" alt="Uploaded File">
                                     @else
                                         <div class="mt-1">
                                             <strong>{{ __('File Preview') }}:</strong>
-                                            <a href="{{ $fileUrl }}" target="_blank"
-                                                class="btn btn-outline-primary btn-sm ms-2">
+                                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm ms-2">
                                                 <i class="bx bx-file"></i> {{ __('View Uploaded File') }}
                                             </a>
                                         </div>
