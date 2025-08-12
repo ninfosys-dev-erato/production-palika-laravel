@@ -32,7 +32,7 @@
                         <div class="bg-[#F3F3F3] py-2 px-2 rounded-md flex items-center flex-col gap-4">
                             <div class="bg-[#ECEAEA] rounded-lg py-3 px-4">
 
-                                <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $employee->photo) }}"
+                                <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $employee->photo, 'local', 'tempUrl') }}"
                                     alt="{{ $employee->name }}" class="h-16 md:h-24 w-12 md:w-20">
                             </div>
                             <div class="flex flex-col items-center gap-0">

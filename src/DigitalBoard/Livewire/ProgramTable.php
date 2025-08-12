@@ -65,7 +65,7 @@ class ProgramTable extends DataTableComponent
             ->collapseOnTablet()
             ->format(function ($value, $row) {
                 if ($value) {
-                    return "<img src='" . customAsset(config('src.DigitalBoard.program.photo_path'), $value) . "' 
+                    return "<img src='" . customFileAsset(config('src.DigitalBoard.program.photo_path'), $value,'local','tempUrl') . "' 
                                 alt='Program Photo' 
                                 style='width: 250px; height: 150px; object-fit: cover; border-radius: 5px;'>";
                 }

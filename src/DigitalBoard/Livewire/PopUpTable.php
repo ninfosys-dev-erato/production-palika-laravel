@@ -57,7 +57,7 @@ class PopUpTable extends DataTableComponent
                 ->collapseOnTablet()
                 ->format(function ($value, $row) {
                     if ($value) {
-                        return "<img src='" . customAsset(config('src.DigitalBoard.popup.popup_path'), $value) . "'
+                        return "<img src='" . customFileAsset(config('src.DigitalBoard.popup.popup_path'), $value, 'local', 'tempUrl') . "'
                                 alt='Popup Photo'
                                 style='width: 250px; height: 150px; object-fit: cover; border-radius: 5px;'>";
                     }
