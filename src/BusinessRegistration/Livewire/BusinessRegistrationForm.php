@@ -628,6 +628,7 @@ class BusinessRegistrationForm extends Component
 
         // Dispatch event to initialize date pickers when conditional fields are shown
         if ((int) $value === 1) {
+
             $this->dispatch('init-registration-date');
         }
     }
@@ -997,6 +998,7 @@ class BusinessRegistrationForm extends Component
             return;
         }
         $registrationType = RegistrationType::with('form')->find($registrationTypeId);
+        $this->dispatch('init-registration-date');
 
         $this->registrationTypeEnum = $registrationType->registration_category_enum;
         $this->businessRegistration['registration_category'] = $registrationType->registration_category_enum;
