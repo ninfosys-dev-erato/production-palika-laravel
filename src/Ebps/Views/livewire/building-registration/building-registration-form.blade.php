@@ -1128,7 +1128,8 @@
                                 <div class="form-group">
                                     <label class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
                                     <input type="file" class="form-control-file"
-                                        wire:model.defer="documents.{{ $key }}.file">
+                                        wire:model.defer="documents.{{ $key }}.file"
+                                         accept="image/*,.pdf">
 
                                     <div wire:loading wire:target="documents.{{ $key }}.file">
                                         <span class="spinner-border spinner-border-sm" role="status"
