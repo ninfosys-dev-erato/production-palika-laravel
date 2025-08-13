@@ -558,4 +558,5 @@ return [
     'application_letter_ne' => 'निवेदन पत्र',
     'registration_application' => 'दर्ता निवेदन',
     'submitting' => 'पेश गर्दै...',
+    'business_area' => 'परिचय पाटीको सइज',
 ];

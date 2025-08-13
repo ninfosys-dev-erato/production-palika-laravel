@@ -758,136 +758,160 @@
 
 
 
-                            <!-- Fiscal Year -->
-                            @if ($registrationTypeEnum == RegistrationCategoryEnum::BUSINESS->value)
+                            <div wire:key="registration-type-{{ $registrationTypeEnum }}">
+                                @if ($registrationTypeEnum == RegistrationCategoryEnum::BUSINESS->value)
 
 
-                                <div class="divider divider-primary text-start text-primary mb-4">
-                                    <div class="divider-text fw-bold fs-6">
-                                        {{ __('businessregistration::businessregistration.capital_details') }}
+                                    <div class="divider divider-primary text-start text-primary mb-4">
+                                        <div class="divider-text fw-bold fs-6">
+                                            {{ __('businessregistration::businessregistration.capital_details') }}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row g-4">
-                                    <!-- Capital Investment -->
-                                    <div class="col-md-6">
-                                        <label for="capital_investment" class="form-label-peaceful">
-                                            {{ __('businessregistration::businessregistration.capital_investment') }}
-                                        </label>
-                                        <input wire:model="businessRegistration.capital_investment"
-                                            name="capital_investment" type="text" class="form-control"
-                                            id="capital_investment"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}">
+                                    <div class="row g-4">
+                                        <!-- Capital Investment -->
+                                        <div class="col-md-6">
+                                            <label for="capital_investment" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.capital_investment') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.capital_investment"
+                                                name="capital_investment" type="text" class="form-control"
+                                                id="capital_investment"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}">
+                                        </div>
+                                        <!-- Working Capital -->
+                                        <div class="col-md-6">
+                                            <label for="working_capital" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.working_capital') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.working_capital"
+                                                name="working_capital" type="text" class="form-control"
+                                                id="working_capital"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}">
+                                        </div>
+                                        <!-- Fixed Capital -->
+                                        <div class="col-md-6">
+                                            <label for="fixed_capital" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.fixed_capital') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.fixed_capital"
+                                                name="fixed_capital" type="text" class="form-control"
+                                                id="fixed_capital"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}">
+                                        </div>
+                                        <!-- Operation Date -->
+                                        <div class="col-md-6">
+                                            <label for="operation_date" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.operation_date') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.operation_date"
+                                                name="operation_date" type="text" class="form-control nepali-date"
+                                                id="operation_date"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_operation_date') }}">
+                                        </div>
+                                        <!-- Area -->
+                                        <div class="col-md-6">
+                                            <label for="area" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.area') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.business_area"
+                                                name="business_area" type="text" class="form-control"
+                                                id="business_area"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_area') }}">
+                                        </div>
                                     </div>
-                                    <!-- Working Capital -->
-                                    <div class="col-md-6">
-                                        <label for="working_capital" class="form-label-peaceful">
-                                            {{ __('businessregistration::businessregistration.working_capital') }}
-                                        </label>
-                                        <input wire:model="businessRegistration.working_capital"
-                                            name="working_capital" type="text" class="form-control"
-                                            id="working_capital"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}">
+
+
+
+
+
+                                    <div class="divider divider-primary text-start text-primary mb-4 mt-4">
+                                        <div class="divider-text fw-bold fs-6">
+                                            {{ __('businessregistration::businessregistration.land/house_owner_details') }}
+                                        </div>
                                     </div>
-                                    <!-- Fixed Capital -->
-                                    <div class="col-md-6">
-                                        <label for="fixed_capital" class="form-label-peaceful">
-                                            {{ __('businessregistration::businessregistration.fixed_capital') }}
-                                        </label>
-                                        <input wire:model="businessRegistration.fixed_capital" name="fixed_capital"
-                                            type="text" class="form-control" id="fixed_capital"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}">
-                                    </div>
-                                </div>
-
-
-
-
-
-                                <div class="divider divider-primary text-start text-primary mb-4 mt-4">
-                                    <div class="divider-text fw-bold fs-6">
-                                        {{ __('businessregistration::businessregistration.land/house_owner_details') }}
-                                    </div>
-                                </div>
-                                <div class="row g-4">
-                                    <div class="col-md-12">
-                                        <label class="form-label-peaceful d-block">
-                                            {{ __('businessregistration::businessregistration.is_rented') }}
-                                        </label>
-                                        <div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" id="is_rented_yes"
-                                                    name="is_rented" wire:model="businessRegistration.is_rented"
-                                                    value="1"
-                                                    wire:change="rentStatusChanged($event.target.value)">
-                                                <label class="form-check-label"
-                                                    for="is_rented_yes">{{ __('businessregistration::businessregistration.yes') }}</label>
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <label class="form-label-peaceful d-block">
+                                                {{ __('businessregistration::businessregistration.is_rented') }}
+                                            </label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="is_rented_yes"
+                                                        name="is_rented" wire:model="businessRegistration.is_rented"
+                                                        value="1"
+                                                        wire:change="rentStatusChanged($event.target.value)">
+                                                    <label class="form-check-label"
+                                                        for="is_rented_yes">{{ __('businessregistration::businessregistration.yes') }}</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="is_rented_no"
+                                                        name="is_rented" wire:model="businessRegistration.is_rented"
+                                                        value="0"
+                                                        wire:change="rentStatusChanged($event.target.value)">
+                                                    <label class="form-check-label"
+                                                        for="is_rented_no">{{ __('businessregistration::businessregistration.no') }}</label>
+                                                </div>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" id="is_rented_no"
-                                                    name="is_rented" wire:model="businessRegistration.is_rented"
-                                                    value="0"
-                                                    wire:change="rentStatusChanged($event.target.value)">
-                                                <label class="form-check-label"
-                                                    for="is_rented_no">{{ __('businessregistration::businessregistration.no') }}</label>
-                                            </div>
                                         </div>
+                                        @if ($showRentFields)
+
+
+                                            <!-- House Owner Name -->
+                                            <div class="col-md-6">
+                                                <label for="houseownername" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.houseownername') }}
+                                                </label>
+                                                <input wire:model="businessRegistration.houseownername"
+                                                    name="houseownername" type="text" class="form-control"
+                                                    id="houseownername"
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}">
+                                            </div>
+                                            <!-- Phone -->
+                                            <div class="col-md-6">
+                                                <label for="business_phone" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.land/house_owner_phone') }}
+                                                </label>
+                                                <input wire:model="businessRegistration.house_owner_phone"
+                                                    name="text" type="text" class="form-control"
+                                                    id="business_phone"
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_land/house_owner_phone') }}">
+                                            </div>
+                                            <!-- Monthly Rent -->
+                                            <div class="col-md-6">
+                                                <label for="monthly_rent" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.monthly_rent') }}
+                                                </label>
+                                                <input wire:model="businessRegistration.monthly_rent"
+                                                    name="monthly_rent" type="text" class="form-control"
+                                                    id="monthly_rent"
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_monthly_rent') }}">
+                                            </div>
+                                            <!-- Rent Agreement File -->
+                                            <div class="col-md-6">
+                                                <label for="rentagreement" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.rentagreement') }}
+                                                </label>
+                                                <input wire:model="rentagreement" name="rentagreement" type="file"
+                                                    class="form-control" id="rentagreement">
+                                                <div wire:loading wire:target="rentagreement">
+                                                    <span class="spinner-border spinner-border-sm" role="status"
+                                                        aria-hidden="true"></span>
+                                                    Uploading...
+                                                </div>
+
+                                                @if ($rentagreement_url)
+                                                    <a href="{{ $rentagreement_url }}" target="_blank"
+                                                        class="btn btn-sm btn-outline-primary mt-2">
+                                                        <i class="bx bx-file"></i>
+                                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
-                                    @if ($showRentFields)
 
-
-                                        <!-- House Owner Name -->
-                                        <div class="col-md-6">
-                                            <label for="houseownername" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.houseownername') }}
-                                            </label>
-                                            <input wire:model="businessRegistration.houseownername"
-                                                name="houseownername" type="text" class="form-control"
-                                                id="houseownername"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}">
-                                        </div>
-                                        <!-- Phone -->
-                                        <div class="col-md-6">
-                                            <label for="business_phone" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.land/house_owner_phone') }}
-                                            </label>
-                                            <input wire:model="businessRegistration.house_owner_phone" name="text"
-                                                type="text" class="form-control" id="business_phone"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_land/house_owner_phone') }}">
-                                        </div>
-                                        <!-- Monthly Rent -->
-                                        <div class="col-md-6">
-                                            <label for="monthly_rent" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.monthly_rent') }}
-                                            </label>
-                                            <input wire:model="businessRegistration.monthly_rent" name="monthly_rent"
-                                                type="text" class="form-control" id="monthly_rent"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_monthly_rent') }}">
-                                        </div>
-                                        <!-- Rent Agreement File -->
-                                        <div class="col-md-6">
-                                            <label for="rentagreement" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.rentagreement') }}
-                                            </label>
-                                            <input wire:model="rentagreement" name="rentagreement" type="file"
-                                                class="form-control" id="rentagreement">
-                                            <div wire:loading wire:target="rentagreement">
-                                                <span class="spinner-border spinner-border-sm" role="status"
-                                                    aria-hidden="true"></span>
-                                                Uploading...
-                                            </div>
-
-                                            @if ($rentagreement_url)
-                                                <a href="{{ $rentagreement_url }}" target="_blank"
-                                                    class="btn btn-sm btn-outline-primary mt-2">
-                                                    <i class="bx bx-file"></i>
-                                                    {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                                </a>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-
-                            @endif
+                                @endif
+                            </div>
 
                             @if ($registrationTypeEnum == RegistrationCategoryEnum::FIRM->value)
                                 <div class="divider divider-primary text-start text-primary mb-4">
@@ -1264,79 +1288,97 @@
 @script
     <script>
         $(document).ready(function() {
+
             const natureSelect = $('#business_nature');
             natureSelect.select2();
             natureSelect.on('change', function() {
                 @this.set('businessRegistration.business_nature', $(this).val());
-            })
+            });
+
             const departmentSelect = $('#department_id');
             departmentSelect.select2();
             departmentSelect.on('change', function() {
                 @this.set('businessRegistration.department_id', $(this).val());
-            })
-        })
+            });
 
-        // Initialize Nepali date pickers for conditional fields
-        document.addEventListener('livewire:initialized', () => {
-            // Function to initialize date pickers
-            function initDatePickers() {
-                document.querySelectorAll('.nepali-date').forEach(function(input) {
-                    if (!input.classList.contains('ndp-initialized')) {
+
+
+            // Function to initialize Nepali date pickers
+            function initNepaliDatePickers() {
+                console.log('Initializing Nepali date pickers...');
+                document.querySelectorAll('.nepali-date').forEach(input => {
+
+                    if (!input || typeof input.nepaliDatePicker !== 'function') return;
+
+                    // Preserve current value
+                    const currentValue = input.value;
+
+                    // Destroy existing picker if present
+                    if (input._nepaliDatePicker) {
+                        try {
+                            input._nepaliDatePicker.destroy();
+                        } catch (_) {}
+                    }
+
+                    // Initialize picker
+                    try {
                         input.nepaliDatePicker({
                             language: "ne",
                             ndpYear: true,
                             ndpMonth: true,
                             unicodeDate: true,
-                            onChange: function() {
+                            onChange: () => {
                                 input.dispatchEvent(new Event('input', {
                                     bubbles: true
                                 }));
                             }
                         });
-                        input.classList.add('ndp-initialized');
+
+                        // Restore previous value
+                        input.value = currentValue;
+
+                    } catch (error) {
+                        console.error('Nepali date picker init failed for', input.id || input.name, error);
                     }
                 });
             }
 
-            // Listen for custom event from Livewire
-            Livewire.on('init-date-pickers', () => {
-                setTimeout(() => {
-                    initDatePickers();
-                }, 100);
-            });
+            // Function to set up Livewire listeners
+            function setupLivewireListeners() {
 
-            // Listen for registration date specific event
-            Livewire.on('init-registration-date', () => {
-                setTimeout(() => {
-                    initDatePickers();
-                    console.log('hi');
-                }, 100);
-            });
 
-            // Initialize on tab changes
-            Livewire.on('tab-changed', () => {
-                setTimeout(() => {
-                    initDatePickers();
-                }, 100);
-            });
+                initNepaliDatePickers();
 
-            // Initialize when conditional fields are shown
-            Livewire.hook('message.processed', (message, component) => {
-                setTimeout(() => {
-                    initDatePickers();
-                }, 100);
-            });
+                if (typeof Livewire !== 'undefined') {
+                    Livewire.on('init-registration-date', () => {
+                        setTimeout(() => {
+                            initNepaliDatePickers();
+                        }, 100);
+                    });
 
-            // Initialize after DOM mutations (for conditional rendering)
-            Livewire.hook('element.updated', (el, component) => {
-                // Check if the updated element or its children contain nepali-date inputs
-                const nepaliInputs = el.querySelectorAll('.nepali-date');
-                if (nepaliInputs.length > 0) {
-                    setTimeout(() => {
-                        initDatePickers();
-                    }, 100);
+
+                    Livewire.hook('message.processed', () => {
+
+                        setTimeout(() => {
+                            initNepaliDatePickers();
+                        }, 100);
+                    });
+
+
+                } else {
+                    setTimeout(setupLivewireListeners, 500);
                 }
+            }
+
+            // Try to set up listeners immediately
+            setupLivewireListeners();
+
+            // Also try the event listener approach
+            document.addEventListener('livewire:initialized', () => {
+                setupLivewireListeners();
             });
+
+
         });
     </script>
 @endscript

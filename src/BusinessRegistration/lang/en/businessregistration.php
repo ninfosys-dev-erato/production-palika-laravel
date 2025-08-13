@@ -532,4 +532,5 @@ return [
     'industry_application_letter_ne' => 'उद्योग निवेदन पत्र',
     'application_letter_ne' => 'निवेदन पत्र',
     'submitting' => 'Submitting...',
+    'business_area' => 'Business Area',
 ];
