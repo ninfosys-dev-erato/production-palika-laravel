@@ -79,6 +79,11 @@ text-decoration: underline;
             $pdf->getMpdf()->SetWatermarkText('DRAFT');
             $pdf->getMpdf()->showWatermarkText = true;
         }
+
+        if (getSetting('show-letter-watermark')) {
+            $this->setWatermarkImage($pdf);
+        }
+
         $file = $pdf->getMpdf()->output('document.pdf', 'S');
         $storedFileName = FileFacade::saveFile(
             $file_path,
@@ -95,14 +100,17 @@ text-decoration: underline;
         $content = preg_replace('/<p>\s*&nbsp;\s*<\/p>/i', '', $content, 1);
         $html = "<html><head><meta charset='UTF-8'/>{$styles}" . self::STYLE . "</head><body>{$content}</body></html>";
 
-
-
         $pdf = PDF::loadView('template.print', ['html' => $html]);
         if ($is_draft) {
             $pdf->getMpdf()->SetWatermarkText('DRAFT');
             $pdf->getMpdf()->showWatermarkText = true;
         }
         $pdf->getMpdf()->shrink_tables_to_fit = 1;
+
+        if (getSetting('show-letter-watermark')) {
+            $this->setWatermarkImage($pdf);
+        }
+
         //        $pdf->getMpdf()->ignore_table_width =true;
         $file = $pdf->getMpdf()->output('document.pdf', 'S');
         $storedFileName = FileFacade::saveFile(
@@ -131,5 +139,68 @@ text-decoration: underline;
         // Replace </p> closing tags with <br>
         $html = preg_replace('/<\/p>/i', '<br>', $html);
         return $html;
+    }
+
+
+    private function setWatermarkImage($pdf): void
+    {
+        try {
+            $campaignLogo = getSetting('palika-campaign-logo');
+
+            if (empty($campaignLogo)) {
+                return; // No watermark if no image available
+            }
+
+            // Check if it's a base64 image
+            if (strpos($campaignLogo, 'data:image/') === 0) {
+                $base64Image = preg_replace('#^data:image/\w+;base64,#i', '', $campaignLogo);
+                // Clean the base64 string to remove any null bytes or invalid characters
+                $base64Image = preg_replace('/[^A-Za-z0-9+\/=]/', '', $base64Image);
+                $imageData = base64_decode($base64Image, true); // Use strict mode
+
+                if ($imageData !== false && !empty($imageData)) {
+                    $tempFile = tempnam(sys_get_temp_dir(), 'watermark_');
+                    if (file_put_contents($tempFile, $imageData) !== false) {
+                        $pdf->getMpdf()->SetWatermarkImage($tempFile, 0.3);
+                        $pdf->getMpdf()->showWatermarkImage = true;
+                        // Clean up temp file after PDF generation
+                        register_shutdown_function(function () use ($tempFile) {
+                            if (file_exists($tempFile)) {
+                                unlink($tempFile);
+                            }
+                        });
+                    }
+                }
+            } else {
+                // Handle file path/image URL
+                if (filter_var($campaignLogo, FILTER_VALIDATE_URL)) {
+                    // It's a URL, download the image
+                    $imageData = file_get_contents($campaignLogo);
+                    if ($imageData !== false && !empty($imageData)) {
+                        // Create a temporary file to avoid null byte issues
+                        $tempFile = tempnam(sys_get_temp_dir(), 'watermark_');
+                        if (file_put_contents($tempFile, $imageData) !== false) {
+                            $pdf->getMpdf()->SetWatermarkImage($tempFile, 0.3);
+                            $pdf->getMpdf()->showWatermarkImage = true;
+                            // Clean up temp file after PDF generation
+                            register_shutdown_function(function () use ($tempFile) {
+                                if (file_exists($tempFile)) {
+                                    unlink($tempFile);
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    // It's a local file path
+                    $fullPath = public_path($campaignLogo);
+                    if (file_exists($fullPath)) {
+                        $pdf->getMpdf()->SetWatermarkImage($fullPath, 0.3);
+                        $pdf->getMpdf()->showWatermarkImage = true;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Silently fail - no watermark if there's an error
+        }
     }
 }
