@@ -780,9 +780,9 @@ class BusinessRegistrationForm extends Component
             $this->businessRegistration['application_date_en'] = $this->bsToAd($this->businessRegistration['application_date']);
 
             if (!empty($this->businessRegistration['registration_number'])) {
-                // removes 0 from front
+
                 $serial = (int) $this->businessRegistration['registration_number'];
-                $this->businessRegistration['registration_number'] = str_pad($serial, 6, '0', STR_PAD_LEFT)
+                $this->businessRegistration['registration_number'] = $serial
                     . '/' . replaceNumbers($this->selectedFiscalYearText);
             }
             if (!empty($this->businessRegistration['registration_date'])) {

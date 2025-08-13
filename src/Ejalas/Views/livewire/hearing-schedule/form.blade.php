@@ -16,8 +16,6 @@
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label for='fiscal_year_id' class="form-label">{{ __('ejalas::ejalas.fiscal_year') }}</label>
-                    {{-- <input wire:model='hearingSchedule.fiscal_year_id' name='fiscal_year_id' type='text'
-                        class='form-control' placeholder="{{ __('ejalas::ejalas.enter_fiscal_year_id') }}"> --}}
                     <select wire:model='hearingSchedule.fiscal_year_id' name='fiscal_year_id' class="form-select">
                         <option value="" hidden>{{ __('ejalas::ejalas.select_a_fiscal_year') }}</option>
                         @foreach ($fiscalYears as $id => $value)
@@ -42,8 +40,7 @@
                             <option value="{{ $id }}">{{ $value }}</option>
                         @endforeach
                     </select>
-                    {{-- <input wire:model='hearingSchedule.complaint_registration_id' name='complaint_registration_id'
-                        type='text' class='form-control' placeholder="{{ __('ejalas::ejalas.enter_complain_regis_id') }}"> --}}
+
                     <div>
                         @error('hearingSchedule.fiscal_year_id')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -55,7 +52,7 @@
                 <div class='form-group'>
                     <label for='hearing_date' class="form-label">{{ __('ejalas::ejalas.hearing_date') }}</label>
                     <input wire:model='hearingSchedule.hearing_date' id="hearing_date" name='hearing_date'
-                        type='string' class='form-control'
+                        type='string' class='form-control nepali-date'
                         placeholder="{{ __('ejalas::ejalas.enter_hearing_date') }}">
                     <div>
                         @error('hearingSchedule.hearing_date')
@@ -99,8 +96,6 @@
                             <option value="{{ $id }}">{{ $value }}</option>
                         @endforeach
                     </select>
-                    {{-- <input wire:model='hearingSchedule.reconciliation_center_id' name='reconciliation_center_id'
-                        type='text' class='form-control' placeholder="{{ __('ejalas::ejalas.enter_reconciliation_center_id') }}"> --}}
                     <div>
                         @error('hearingSchedule.reconciliation_center_id')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -159,13 +154,7 @@
 @script
     <script>
         $(document).ready(function() {
-            $('#hearing_date').nepaliDatePicker({
-                dateFormat: '%y-%m-%d',
-                closeOnDateSelect: true,
-            }).on('dateSelect', function() {
-                let nepaliDate = $(this).val();
-                @this.set('hearingSchedule.hearing_date', nepaliDate);
-            });
+
             $('#complaint_registration_id').select2();
             $('#complaint_registration_id').on('change', function(e) {
                 let complaintId = $(this).val();

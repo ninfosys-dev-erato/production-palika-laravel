@@ -1,5 +1,5 @@
 <?php
-return[
+return [
     'update_user' => 'प्रयोगकर्ता अद्यावधिक गर्नुहोस्',
     'user_list' => 'प्रयोगकर्ता सूची',
     'users' => 'प्रयोगकर्ताहरू',
@@ -51,4 +51,8 @@ return[
     'user_created_successfully' => 'प्रयोगकर्ता सफलतापूर्वक सिर्जना गरियो',
     'user_updated_successfully' => 'प्रयोगकर्ता सफलतापूर्वक अद्यावधिक गरियो',
     'departments_assigned_successfully' => 'विभागहरू सफलतापूर्वक निर्धारण गरियो',
+    'signature_preview' => 'हस्ताक्षर पूर्वावलोकन',
+    'view_uploaded_file' => 'अपलोड गरिएको फाइल हेर्नुहोस्',
+    'signature' => 'हस्ताक्षर',
+    'the_signature_must_be_an_image' => 'हस्ताक्षर एक फोटो हुनुपर्दछ।',
 ];

@@ -237,9 +237,7 @@ class BusinessRegistrationAdminService
         // If no records yet, start from 1
         $newSerial = $maxNumber ? $maxNumber + 1 : 1;
 
-        $newNumber = str_pad($newSerial, 6, '0', STR_PAD_LEFT);
-
-        return $newNumber . '/' . $fiscalYear;
+        return $newSerial . '/' . $fiscalYear;
     }
 
 

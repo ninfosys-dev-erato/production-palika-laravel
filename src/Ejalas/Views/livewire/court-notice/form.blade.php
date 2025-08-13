@@ -64,7 +64,7 @@
                 <div class='form-group'>
                     <label for='notice_date' class="form-label ">{{ __('ejalas::ejalas.notice_date') }}</label>
                     <input wire:model='courtNotice.notice_date' id="notice_date" name='notice_date' type='text'
-                        class='form-control' placeholder="{{ __('ejalas::ejalas.enter_notice_date') }}">
+                        class='form-control nepali-date' placeholder="{{ __('ejalas::ejalas.enter_notice_date') }}">
                     <div>
                         @error('courtNotice.notice_date')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -95,8 +95,7 @@
                             <option value="{{ $id }}">{{ $value }}</option>
                         @endforeach
                     </select>
-                    {{-- <input wire:model='hearingSchedule.reconciliation_center_id' name='reconciliation_center_id'
-                        type='text' class='form-control' placeholder="{{ __('ejalas::ejalas.enter_reconciliation_center_id') }}"> --}}
+
                     <div>
                         @error('courtNotice.reconciliation_center_id')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -157,13 +156,7 @@
 @script
     <script>
         $(document).ready(function() {
-            $('#notice_date').nepaliDatePicker({
-                dateFormat: '%y-%m-%d',
-                closeOnDateSelect: true,
-            }).on('dateSelect', function() {
-                let nepaliDate = $(this).val();
-                @this.set('courtNotice.notice_date', nepaliDate);
-            });
+
             $('#complaint_registration_id').select2();
             $('#complaint_registration_id').on('change', function(e) {
                 let complaintId = $(this).val();

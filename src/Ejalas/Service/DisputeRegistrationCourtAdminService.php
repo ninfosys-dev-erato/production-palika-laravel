@@ -14,8 +14,11 @@ class DisputeRegistrationCourtAdminService
     {
         $complainRegistration = ComplaintRegistration::findOrFail($disputeRegistrationCourtAdminDto->complaint_registration_id);
 
+        // Set complaint registration status based on dispute registration court status
+        $complaintStatus = ($disputeRegistrationCourtAdminDto->status === 'Approved') ? true : false;
+
         $complainRegistration->update([
-            'status' => $disputeRegistrationCourtAdminDto->is_details_provided,
+            'status' => $complaintStatus,
         ]);
         FileTrackingFacade::recordFile($complainRegistration);
 
@@ -34,8 +37,11 @@ class DisputeRegistrationCourtAdminService
     {
         $complainRegistration = ComplaintRegistration::findOrFail($disputeRegistrationCourtAdminDto->complaint_registration_id);
 
+        // Set complaint registration status based on dispute registration court status
+        $complaintStatus = ($disputeRegistrationCourtAdminDto->status === 'Approved') ? true : false;
+
         $complainRegistration->update([
-            'status' => $disputeRegistrationCourtAdminDto->is_details_provided,
+            'status' => $complaintStatus,
         ]);
         FileTrackingFacade::recordFile($complainRegistration);
 
