@@ -52,6 +52,7 @@ return [
     'enter_subject' => 'विषय लेख्नुहोस्',
     'enter_details' => 'विवरण लेख्नुहोस्',
     'enter_resolution_notes' => 'समाधान नोटहरू लेख्नुहोस्',
+    'enter_slug' => 'स्लग लेख्नुहोस्',
 
     // New field placeholders
     'enter_entry_date' => 'प्रविष्टि मिति लेख्नुहोस्',
@@ -210,5 +211,109 @@ return [
     'notification_settings' => 'सूचना सेटिङहरू',
     'workflow_settings' => 'कार्यप्रवाह सेटिङहरू',
     'dashboard' => 'ड्यासबोर्ड',
+
+    // Sub Categories
+    'sub_categories' => 'उप-श्रेणीहरू',
+    'sub_category' => 'उप-श्रेणी',
+    'sub_category_name' => 'उप-श्रेणी नाम',
+    'sub_category_slug' => 'उप-श्रेणी स्लग',
+    'parent_category' => 'मूल श्रेणी',
+    'root_category' => 'मूल श्रेणी',
+    'child_categories' => 'साना श्रेणीहरू',
+    'no_parent_category' => 'कुनै मूल श्रेणी छैन',
+    'category_hierarchy' => 'श्रेणी पदानुक्रम',
+
+    // Actions
+    'create_sub_category' => 'उप-श्रेणी सिर्जना गर्नुहोस्',
+    'edit_sub_category' => 'उप-श्रेणी सम्पादन गर्नुहोस्',
+    'delete_sub_category' => 'उप-श्रेणी मेटाउनुहोस्',
+    'view_sub_category' => 'उप-श्रेणी हेर्नुहोस्',
+    'sub_category_created' => 'उप-श्रेणी सफलतापूर्वक सिर्जना गरियो।',
+    'sub_category_updated' => 'उप-श्रेणी सफलतापूर्वक अपडेट गरियो।',
+    'sub_category_deleted' => 'उप-श्रेणी सफलतापूर्वक मेटाइयो।',
+    'sub_category_deleted_selected' => 'चयनित उप-श्रेणीहरू सफलतापूर्वक मेटाइयो।',
+    'failed_to_create_sub_category' => 'उप-श्रेणी सिर्जना गर्न असफल।',
+    'failed_to_update_sub_category' => 'उप-श्रेणी अपडेट गर्न असफल।',
+    'failed_to_delete_sub_category' => 'उप-श्रेणी मेटाउन असफल।',
+    'cannot_delete_with_children' => 'साना श्रेणीहरू भएको श्रेणी मेटाउन सकिँदैन।',
+
+    // Form fields
+    'name' => 'नाम',
+    'slug' => 'स्लग',
+    'parent_id' => 'मूल श्रेणी',
+    'parent_name' => 'मूल नाम',
+    'parent_slug' => 'मूल स्लग',
+    'remarks' => 'टिप्पणीहरू',
+    'created_by' => 'सिर्जनाकर्ता',
+    'updated_by' => 'अपडेटकर्ता',
+    'created_at' => 'सिर्जना मिति',
+    'updated_at' => 'अपडेट मिति',
+
+    // Validation messages
+    'name_required' => 'नाम आवश्यक छ।',
+    'name_max' => 'नाम २५५ अक्षरभन्दा बढी हुन सक्दैन।',
+    'slug_required' => 'स्लग आवश्यक छ।',
+    'slug_regex' => 'स्लगमा सानो अक्षर, संख्या र हाइफन मात्र हुन सक्छ।',
+    'parent_id_exists' => 'चयनित मूल श्रेणी अवस्थित छैन।',
+    'slug_unique' => 'यो स्लग पहिले नै लिइसकेको छ।',
+
+    // Messages
+    'no_remarks' => 'कुनै टिप्पणी छैन',
+    'auto_generated' => 'स्वचालित सिर्जना',
+    'select_parent_category' => 'मूल श्रेणी चयन गर्नुहोस् (वैकल्पिक)',
+    'leave_empty_for_root' => 'मूल श्रेणी सिर्जना गर्न खाली छोड्नुहोस्।',
+    'slug_auto_generated' => 'स्लग नामबाट स्वचालित सिर्जना हुनेछ। सानो अक्षर, संख्या र हाइफन मात्र अनुमति छ।',
+    'auto_populated_from_parent' => 'मूल चयनबाट स्वचालित भर्ने',
+
+    // Table headers
+    'actions' => 'कार्यहरू',
+    'view' => 'हेर्नुहोस्',
+    'edit' => 'सम्पादन गर्नुहोस्',
+    'delete' => 'मेटाउनुहोस्',
+    'select_all' => 'सबै चयन गर्नुहोस्',
+    'delete_selected' => 'चयनित मेटाउनुहोस्',
+
+    // Search and filters
+    'search_sub_categories' => 'उप-श्रेणीहरू खोज्नुहोस्...',
+    'per_page' => 'प्रति पृष्ठ',
+    'showing_results' => ':first देखि :last सम्म :total परिणाम देखाइँदै',
+
+    // Confirmations
+    'confirm_delete' => 'के तपाईं यो उप-श्रेणी मेटाउन निश्चित हुनुहुन्छ?',
+    'confirm_delete_selected' => 'के तपाईं चयनित वस्तुहरू मेटाउन निश्चित हुनुहुन्छ?',
+    'please_select_items' => 'कृपया मेटाउन वस्तुहरू चयन गर्नुहोस्।',
+
+    // Status messages
+    'loading' => 'लोड हुँदैछ...',
+    'no_sub_categories_found' => 'कुनै उप-श्रेणीहरू फेला परेनन्।',
+    'children_count' => ':count साना',
+
+    // Navigation
+    'back_to_list' => 'सूचीमा फिर्ता जानुहोस्',
+    'add_new_sub_category' => 'नयाँ उप-श्रेणी थप्नुहोस्',
+
+    // Buttons
+    'generate_slug' => 'सिर्जना गर्नुहोस्',
+    'save' => 'सुरक्षित गर्नुहोस्',
+    'cancel' => 'रद्द गर्नुहोस्',
+    'create' => 'सिर्जना गर्नुहोस्',
+    'update' => 'अपडेट गर्नुहोस्',
+
+    // Placeholders
+    'enter_sub_category_name' => 'उप-श्रेणी नाम प्रविष्ट गर्नुहोस्',
+    'auto_generated_slug' => 'स्वचालित-सिर्जना-स्लग',
+    'enter_remarks' => 'कुनै अतिरिक्त टिप्पणी वा नोटहरू प्रविष्ट गर्नुहोस्...',
+
+    // Errors
+    'error_occurred' => 'एउटा त्रुटि भयो।',
+    'validation_failed' => 'प्रमाणीकरण असफल।',
+    'operation_failed' => 'कार्य असफल।',
+
+    // Success
+    'operation_successful' => 'कार्य सफलतापूर्वक पूरा भयो।',
+
+    // Additional
+    'list' => 'सूची',
+    'sub_category_details' => 'उप-श्रेणी विवरणहरू',
 
 ];

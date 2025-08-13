@@ -15,3 +15,10 @@
         <div data-i18n="BerujuList">{{ __('beruju::beruju.beruju_registration') }}</div>
     </a>
 </li>
+
+<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.beruju.sub-categories.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.beruju.sub-categories.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-category"></i>
+        <div data-i18n="SubCategories">{{ __('beruju::beruju.sub_categories') }}</div>
+    </a>
+</li>

@@ -52,6 +52,7 @@ return [
     'enter_subject' => 'Enter Subject',
     'enter_details' => 'Enter Details',
     'enter_resolution_notes' => 'Enter Resolution Notes',
+    'enter_slug' => 'Enter Slug',
 
     // New field placeholders
     'enter_entry_date' => 'Enter Entry Date',
@@ -209,4 +210,108 @@ return [
     'general_settings' => 'General Settings',
     'notification_settings' => 'Notification Settings',
     'workflow_settings' => 'Workflow Settings',
+
+    // Sub Categories
+    'sub_categories' => 'Sub Categories',
+    'sub_category' => 'Sub Category',
+    'sub_category_name' => 'Sub Category Name',
+    'sub_category_slug' => 'Sub Category Slug',
+    'parent_category' => 'Parent Category',
+    'root_category' => 'Root Category',
+    'child_categories' => 'Child Categories',
+    'no_parent_category' => 'No parent category',
+    'category_hierarchy' => 'Category Hierarchy',
+
+    // Actions
+    'create_sub_category' => 'Create Sub Category',
+    'edit_sub_category' => 'Edit Sub Category',
+    'delete_sub_category' => 'Delete Sub Category',
+    'view_sub_category' => 'View Sub Category',
+    'sub_category_created' => 'Sub category created successfully.',
+    'sub_category_updated' => 'Sub category updated successfully.',
+    'sub_category_deleted' => 'Sub category deleted successfully.',
+    'sub_category_deleted_selected' => 'Selected sub categories deleted successfully.',
+    'failed_to_create_sub_category' => 'Failed to create sub category.',
+    'failed_to_update_sub_category' => 'Failed to update sub category.',
+    'failed_to_delete_sub_category' => 'Failed to delete sub category.',
+    'cannot_delete_with_children' => 'Cannot delete category with child categories.',
+
+    // Form fields
+    'name' => 'Name',
+    'slug' => 'Slug',
+    'parent_id' => 'Parent Category',
+    'parent_name' => 'Parent Name',
+    'parent_slug' => 'Parent Slug',
+    'remarks' => 'Remarks',
+    'created_by' => 'Created By',
+    'updated_by' => 'Updated By',
+    'created_at' => 'Created At',
+    'updated_at' => 'Updated At',
+
+    // Validation messages
+    'name_required' => 'Name is required.',
+    'name_max' => 'Name cannot exceed 255 characters.',
+    'slug_required' => 'Slug is required.',
+    'slug_regex' => 'Slug can only contain lowercase letters, numbers, and hyphens.',
+    'parent_id_exists' => 'Selected parent category does not exist.',
+    'slug_unique' => 'This slug is already taken.',
+
+    // Messages
+    'no_remarks' => 'No remarks',
+    'auto_generated' => 'Auto-generated',
+    'select_parent_category' => 'Select parent category (optional)',
+    'leave_empty_for_root' => 'Leave empty to create a root category.',
+    'slug_auto_generated' => 'Slug will be auto-generated from name. Only lowercase letters, numbers, and hyphens are allowed.',
+    'auto_populated_from_parent' => 'Auto-populated from parent selection',
+
+    // Table headers
+    'actions' => 'Actions',
+    'view' => 'View',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'select_all' => 'Select All',
+    'delete_selected' => 'Delete Selected',
+
+    // Search and filters
+    'search_sub_categories' => 'Search sub categories...',
+    'per_page' => 'per page',
+    'showing_results' => 'Showing :first to :last of :total results',
+
+    // Confirmations
+    'confirm_delete' => 'Are you sure you want to delete this sub category?',
+    'confirm_delete_selected' => 'Are you sure you want to delete selected items?',
+    'please_select_items' => 'Please select items to delete.',
+
+    // Status messages
+    'loading' => 'Loading...',
+    'no_sub_categories_found' => 'No sub categories found.',
+    'children_count' => ':count children',
+
+    // Navigation
+    'back_to_list' => 'Back to List',
+    'add_new_sub_category' => 'Add New Sub Category',
+
+    // Buttons
+    'generate_slug' => 'Generate',
+    'save' => 'Save',
+    'cancel' => 'Cancel',
+    'create' => 'Create',
+    'update' => 'Update',
+
+    // Placeholders
+    'enter_sub_category_name' => 'Enter sub category name',
+    'auto_generated_slug' => 'auto-generated-slug',
+    'enter_remarks' => 'Enter any additional remarks or notes...',
+
+    // Errors
+    'error_occurred' => 'An error occurred.',
+    'validation_failed' => 'Validation failed.',
+    'operation_failed' => 'Operation failed.',
+
+    // Success
+    'operation_successful' => 'Operation completed successfully.',
+
+    // Additional
+    'list' => 'List',
+    'sub_category_details' => 'Sub Category Details',
 ];
