@@ -211,6 +211,7 @@
                                                     @endif
 
                                                     @if ($mapApplyStep)
+
                                                         <a href="{{ route('admin.ebps.building-registrations.preview', ['mapApplyStep' => $mapApplyStep]) }}"
                                                             class="btn btn-outline-primary btn-sm d-flex align-items-center me-2">
                                                             <i class="bx bx-show me-1"></i> {{ __('ebps::ebps.view') }}

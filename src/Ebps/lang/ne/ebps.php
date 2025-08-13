@@ -114,6 +114,8 @@ return [
     'confirm_approve_first_three_consultant_supervisor_steps' => 'पहिलो तीन परामर्शदाता पर्यवेक्षक मर्यादाक्रमहरू स्वीकृत गर्ने कुरा पुष्टि गर्नुहोस्',
     'are_you_sure_approve_first_three_consultant_supervisor_steps' => 'के तपाईं निश्चित छन् कि तपाईं पहिलो तीन परामर्शदाता पर्यवेक्षक मर्यादाक्रमहरू स्वीकृत गर्न चाहनुहुन्छ?',
     'this_action_will_approve_the_first_three_consultant_supervisor_building_registration_steps_at_once' => 'यो कार्यले पहिलो तीन परामर्शदाता पर्यवेक्षक भवन दर्ता मर्यादाक्रमहरू एकैपटक स्वीकृत गर्नेछ।',
+    'this_action_will_approve_the_first_three_consultant_supervisor_map_applies_steps_at_once' => 'यो कार्यले पहिलो तीन परामर्शदाता पर्यवेक्षक नक्शा पास मर्यादाक्रमहरू एकैपटक स्वीकृत गर्नेछ।',
+    'map_applies_steps_approved_successfully' => ':count नक्शा पास मर्यादाक्रमहरू सफलतापूर्वक स्वीकृत गरियो!',
     'something_went_wrong_while_approving_steps' => 'मर्यादाक्रमहरू स्वीकृत गर्दा केही गलत भयो',
     'map_apply' => 'नक्शा पास आवेदन',
     'map_applications' => 'नक्शा दर्ता',

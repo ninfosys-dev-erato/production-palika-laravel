@@ -73,7 +73,7 @@
                         </div>
 
                         <!-- Approve All Steps Button -->
-                        <livewire:ebps.approve_all_steps :mapApply="$mapApply" />
+                        <livewire:ebps.map_applies_approve_all_steps :mapApply="$mapApply" />
                     </div>
 
                     @php

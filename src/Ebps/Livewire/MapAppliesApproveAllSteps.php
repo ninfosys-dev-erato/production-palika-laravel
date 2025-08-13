@@ -15,7 +15,7 @@ use Src\Ebps\Models\MapApplyStepTemplate;
 use Src\Ebps\Models\MapStep;
 use Src\Ebps\Service\MapApplyStepApproverAdminService;
 
-class BuildingRegistrationApproveAllSteps extends Component
+class MapAppliesApproveAllSteps extends Component
 {
     use SessionFlash;
 
@@ -29,7 +29,7 @@ class BuildingRegistrationApproveAllSteps extends Component
 
     public function render()
     {
-        return view('Ebps::livewire.building-registration-approve-all-steps');
+        return view('Ebps::livewire.map-applies-approve-all-steps');
     }
 
     public function showConfirmation()
@@ -45,16 +45,16 @@ class BuildingRegistrationApproveAllSteps extends Component
     public function approveAllSteps()
     {
         try {
-            // Get the first 3 building registration steps
-            $buildingSteps = MapStep::whereNull('deleted_by')
-                ->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)
+            // Get the first 3 map applies steps
+            $mapSteps = MapStep::whereNull('deleted_by')
+                ->where('application_type', ApplicationTypeEnum::MAP_APPLIES)
                 ->orderBy('id')
                 ->take(3)
                 ->get();
 
             $approvedCount = 0;
 
-            foreach ($buildingSteps as $mapStep) {
+            foreach ($mapSteps as $mapStep) {
                 // Find or create MapApplyStep for this step
                 $mapApplyStep = MapApplyStep::where('map_step_id', $mapStep->id)
                     ->where('map_apply_id', $this->mapApply->id)
@@ -97,7 +97,7 @@ class BuildingRegistrationApproveAllSteps extends Component
                         mapApplyStepId: $mapApplyStep->id,
                         userId: Auth::user()->id,
                         status: 'accepted',
-                        reason: 'Approved via bulk approval for building registration',
+                        reason: 'Approved via bulk approval for map applies',
                     );
 
                     $service = new MapApplyStepApproverAdminService();
@@ -107,11 +107,11 @@ class BuildingRegistrationApproveAllSteps extends Component
                 }
             }
 
-            $this->successFlash(__('ebps::ebps.consultancy_steps_approved_successfully', ['count' => $approvedCount]));
+            $this->successFlash(__('ebps::ebps.map_applies_steps_approved_successfully', ['count' => $approvedCount]));
             $this->hideConfirmation();
             
             // Redirect to refresh the page
-            return redirect()->route('admin.ebps.building-registrations.step', $this->mapApply->id);
+            return redirect()->route('admin.ebps.map_applies.step', $this->mapApply->id);
 
         } catch (\Throwable $e) {
             logger($e->getMessage());
@@ -122,23 +122,23 @@ class BuildingRegistrationApproveAllSteps extends Component
 
     public function canApproveAllSteps()
     {
-        // Get the first 3 building registration steps
-        $buildingSteps = MapStep::whereNull('deleted_by')
-            ->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)
+        // Get the first 3 map applies steps
+        $mapSteps = MapStep::whereNull('deleted_by')
+            ->where('application_type', ApplicationTypeEnum::MAP_APPLIES)
             ->orderBy('id')
             ->take(3)
             ->get();
 
         // If there are fewer than 3 steps, don't show the button
-        if ($buildingSteps->count() < 3) {
+        if ($mapSteps->count() < 3) {
             return false;
         }
 
-        // Check if all 3 steps are pending (not accepted) and have consultancy as submitter
+        // Check if all 3 steps are pending (not accepted) and have consultant_supervisor as submitter
         $pendingCount = 0;
-        $consultancyCount = 0;
+        $consultantSupervisorCount = 0;
         
-        foreach ($buildingSteps as $mapStep) {
+        foreach ($mapSteps as $mapStep) {
             // Use the same logic as the view to determine status
             $appliedStep = $this->mapApply->mapApplySteps->where('map_step_id', $mapStep->id)->first();
             $status = $appliedStep ? $appliedStep->status : 'not_applied';
@@ -146,14 +146,15 @@ class BuildingRegistrationApproveAllSteps extends Component
             if ($appliedStep && $appliedStep->status === 'pending') {
                 $pendingCount++;
             }
-
-            // Check if submitter is consultancy
+            
+            // Check if submitter is consultant_supervisor
             if (strtolower($mapStep->form_submitter) === FormSubmitterEnum::CONSULTANT_SUPERVISOR->value) {
-                $consultancyCount++;
+                $consultantSupervisorCount++;
             }
         }
+        
 
-        // Only show button if exactly 3 steps are pending AND all 3 have consultancy as submitter
-        return $pendingCount === 3 && $consultancyCount === 3;
+        // Only show button if exactly 3 steps are pending AND all 3 have consultant_supervisor as submitter
+        return $pendingCount === 3 && $consultantSupervisorCount === 3;
     }
 } 

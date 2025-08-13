@@ -693,4 +693,6 @@ return [
     'confirm_approve_first_three_consultant_supervisor_steps' => 'Confirm Approve First Three Consultant Supervisor Steps',
     'are_you_sure_approve_first_three_consultant_supervisor_steps' => 'Are you sure you want to approve the first three consultant supervisor steps?',
     'this_action_will_approve_the_first_three_consultant_supervisor_building_registration_steps_at_once' => 'This action will approve the first three consultant supervisor building registration steps at once.',
+    'this_action_will_approve_the_first_three_consultant_supervisor_map_applies_steps_at_once' => 'This action will approve the first three consultant supervisor map applies steps at once.',
+    'map_applies_steps_approved_successfully' => ':count map applies steps approved successfully!',
 ];
