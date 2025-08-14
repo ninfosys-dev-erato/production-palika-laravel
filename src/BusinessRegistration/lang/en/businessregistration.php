@@ -522,6 +522,8 @@ return [
     'application_letter_reset_successfully' => 'Application letter reset successfully!',
     'please_save_changes_before_printing' => 'Please save your changes before printing!',
     'application_letter_uploaded_successfully' => 'Application letter uploaded successfully!',
+    'certificate_letter_written_successfully' => 'Certificate letter written successfully!',
+    'certificate_letter_reset_successfully' => 'Certificate letter reset successfully!',
 
     // Document Labels
     'business_application_letter' => 'Business Application Letter',

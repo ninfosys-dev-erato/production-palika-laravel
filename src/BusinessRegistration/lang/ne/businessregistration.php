@@ -545,6 +545,8 @@ return [
     'application_letter_reset_successfully' => 'निवेदन पत्र सफलतापूर्वक रिसेट गरिएको छ!',
     'please_save_changes_before_printing' => 'कृपया प्रिन्ट गर्नु अघि परिवर्तनहरू सेभ गर्नुहोस्!',
     'application_letter_uploaded_successfully' => 'निवेदन पत्र सफलतापूर्वक अपलोड गरिएको छ!',
+    'certificate_letter_written_successfully' => 'प्रमाणपत्र पत्र सफलतापूर्वक लेखिएको छ!',
+    'certificate_letter_reset_successfully' => 'प्रमाणपत्र पत्र सफलतापूर्वक रिसेट गरिएको छ!',
 
     // Document Labels
     'business_application_letter' => 'व्यवसाय निवेदन पत्र',

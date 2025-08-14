@@ -66,6 +66,7 @@ return new class extends Migration
             $table->unsignedBigInteger('rejected_by')->nullable();
             $table->string('rejected_at')->nullable();
             $table->longText('application_letter')->nullable();
+            $table->longText('certificate_letter')->nullable();
             $table->unsignedBigInteger('operator_id')->nullable();
             $table->unsignedBigInteger('preparer_id')->nullable();
             $table->unsignedBigInteger('approver_id')->nullable();
