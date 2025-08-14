@@ -19,6 +19,7 @@ class BusinessRegistrationAdminDto
 
         // Business Location
         public ?string $business_nature,
+        public ?string $business_category,
         public ?string $main_service_or_goods,
         public ?string $total_capital,
         public ?string $business_province,
@@ -80,6 +81,7 @@ class BusinessRegistrationAdminDto
             fiscal_year: $businessRegistration->fiscal_year,
 
             business_nature: $businessRegistration->business_nature ?? null,
+            business_category: $businessRegistration->business_category ?? null,
             main_service_or_goods: $businessRegistration->main_service_or_goods ?? null,
             total_capital: $businessRegistration->total_capital ?? null,
             business_province: $businessRegistration->business_province ?? null,

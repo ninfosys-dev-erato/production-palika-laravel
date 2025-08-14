@@ -39,6 +39,7 @@ class BusinessRegistration extends Model
         'registration_type_id',
 
         'business_nature',
+        'business_category',
         'main_service_or_goods',
         'total_capital',
         'business_province',
@@ -104,6 +105,7 @@ class BusinessRegistration extends Model
         'registration_type_id' => 'integer',
 
         'business_nature' => 'string',
+        'business_category' => 'string',
         'main_service_or_goods' => 'string',
         'total_capital' => 'integer',
         'business_province' => 'string',

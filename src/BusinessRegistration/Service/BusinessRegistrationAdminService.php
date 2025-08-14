@@ -26,6 +26,7 @@ class BusinessRegistrationAdminService
         $businessRegistration = BusinessRegistration::create([
             // Business Info
             'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'business_category'            => $businessRegistrationAdminDto->business_category,
             'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
             'total_capital'                => $businessRegistrationAdminDto->total_capital,
             'business_province'            => $businessRegistrationAdminDto->business_province,
@@ -86,6 +87,7 @@ class BusinessRegistrationAdminService
         $registration = tap($businessRegistration)->update([
             // Business Info
             'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'business_category'            => $businessRegistrationAdminDto->business_category,
             'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
             'total_capital'                => $businessRegistrationAdminDto->total_capital,
             'business_province'            => $businessRegistrationAdminDto->business_province,

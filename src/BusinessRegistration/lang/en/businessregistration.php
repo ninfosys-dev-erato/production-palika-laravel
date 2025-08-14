@@ -76,6 +76,8 @@ return [
     'payment_date' => 'Payment Date',
     'approve_renewal_request' => 'Approve renewal request',
     'business_nature' => 'Business Nature',
+    'business_category' => 'Business Category',
+    'business_organization_industry_firm_category_or_type' => 'Business/Organization/Industry/Firm Category or Type',
     'primary_detail' => 'Primary Detail',
     'select_fiscal_year' => 'Select Fiscal Year',
     'select_date' => 'Select Date',
@@ -533,4 +535,6 @@ return [
     'application_letter_ne' => 'निवेदन पत्र',
     'submitting' => 'Submitting...',
     'business_area' => 'Business Area',
+    'business_organization_industry_firm_nature' => 'Business/Organization/Industry/Firm Nature',
+    'business_organization_industry_firm_category_or_type' => 'Business/Organization/Industry/Firm Category or Type',
 ];

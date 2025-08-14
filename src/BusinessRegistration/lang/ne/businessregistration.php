@@ -559,4 +559,6 @@ return [
     'registration_application' => 'दर्ता निवेदन',
     'submitting' => 'पेश गर्दै...',
     'business_area' => 'परिचय पाटीको सइज',
+    'business_organization_industry_firm_category_or_type' => 'व्यवसाय/संस्था/उद्योग/फर्मको वर्ग वा प्रकार',
+    'business_organization_industry_firm_nature' => 'व्यवसाय/संस्था/उद्योग/फर्मको प्रकृति',
 ];

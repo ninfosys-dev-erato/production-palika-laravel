@@ -559,15 +559,26 @@
                                 <!-- Business Nature -->
                                 <div class="col-md-6">
                                     <label for="business_nature" class="form-label-peaceful">
-                                        {{ __('businessregistration::businessregistration.business_organization_industry_firm_nature_or_category_or_type') }}
+                                        {{ __('businessregistration::businessregistration.business_organization_industry_firm_nature') }}
                                     </label>
-
 
                                     <input wire:model="businessRegistration.business_nature" name="business_nature"
                                         type="text"
                                         class="form-control @error('businessRegistration.business_nature') is-invalid @enderror"
                                         id="business_nature"
-                                        placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_nature_or_category_or_type') }}">
+                                        placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_nature') }}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="business_category" class="form-label-peaceful">
+                                        {{ __('businessregistration::businessregistration.business_organization_industry_firm_category_or_type') }}
+                                    </label>
+
+                                    <input wire:model="businessRegistration.business_category"
+                                        name="business_category" type="text"
+                                        class="form-control @error('businessRegistration.business_category') is-invalid @enderror"
+                                        id="business_category"
+                                        placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_category_or_type') }}">
                                 </div>
 
                                 <!-- Main Goods/Services -->

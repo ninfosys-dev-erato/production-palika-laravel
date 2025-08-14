@@ -156,6 +156,7 @@ class BusinessRegistrationForm extends Component
             'businessRegistration.entity_name' => ['required'],
 
             'businessRegistration.business_nature' => ['nullable'],
+            'businessRegistration.business_category' => ['nullable'],
             'businessRegistration.main_service_or_goods' => ['nullable'],
             'businessRegistration.total_capital' => ['nullable'],
             'businessRegistration.business_province' => ['nullable'],
