@@ -6,66 +6,79 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\SessionFlash;
+use Src\Beruju\Service\EvidenceService;
+use Src\Beruju\DTO\EvidenceDto;
+use Illuminate\Support\Facades\Auth;
+use Src\Beruju\Models\Evidence;
 
 class EvidenceDocumentUpload extends Component
 {
     use WithFileUploads, SessionFlash;
 
     public $berujuEntryId;
-    public $evidences = [];
-    public $newEvidence = [
-        'name' => '',
-        'file' => null,
-        'description' => ''
-    ];
 
+    public Evidence $evidence;
 
     protected $rules = [
-        'newEvidence.name' => 'required|string|max:255',
-        'newEvidence.file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
-        'newEvidence.description' => 'nullable|string|max:1000',
+        'evidence.beruju_entry_id' => 'required|string',
+        'evidence.name' => 'required|string|max:255',
+        'evidence.file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
+        'evidence.description' => 'nullable|string|max:1000',
     ];
 
     protected $messages = [
-        'newEvidence.name.required' => 'Evidence name is required.',
-        'newEvidence.file.required' => 'Please select a file.',
-        'newEvidence.file.mimes' => 'File must be PDF, DOC, DOCX, JPG, JPEG, or PNG.',
-        'newEvidence.file.max' => 'File size must not exceed 10MB.',
+        'evidence.name.required' => 'Evidence name is required.',
+        'evidence.file.required' => 'Please select a file.',
+        'evidence.file.mimes' => 'File must be PDF, DOC, DOCX, JPG, JPEG, or PNG.',
+        'evidence.file.max' => 'File size must not exceed 10MB.',
     ];
 
-    public function mount($berujuEntryId = null)
+    public function mount(Evidence $evidence = null, $berujuEntryId = null)
     {
-        $this->berujuEntryId = $berujuEntryId;
-        $this->loadEvidences();
+        if ($evidence) {
+            $this->evidence = $evidence;
+        } else {
+            $this->evidence = new Evidence();
+        }
+
+        if ($berujuEntryId) {
+            $this->berujuEntryId = $berujuEntryId;
+            $this->evidence->beruju_entry_id = $berujuEntryId;
+        }
     }
 
-    public function loadEvidences()
+    public function saveEvidence()
     {
-        // Load existing evidences from database
-        // This will be implemented when you have the evidence model
-        $this->evidences = [];
+        $this->validate();
+
+        try {
+            // Handle file upload if file is present
+            if ($this->evidence->file) {
+                $fileName = time() . '_' . uniqid() . '.' . $this->evidence->file->getClientOriginalExtension();
+                $filePath = $this->evidence->file->storeAs('beruju/evidences', $fileName, 'public');
+
+                $this->evidence->file_name = $this->evidence->file->getClientOriginalName();
+                $this->evidence->file_path = $filePath;
+                $this->evidence->file_size = $this->evidence->file->getSize();
+                $this->evidence->file_type = $this->evidence->file->getClientMimeType();
+            }
+
+            $this->evidence->created_by = Auth::id();
+            $this->evidence->save();
+
+            $this->showSuccessMessage(__('beruju::beruju.evidence_added_successfully'));
+            $this->resetForm();
+        } catch (\Exception $e) {
+            $this->showErrorMessage(__('beruju::beruju.failed_to_add_evidence'));
+        }
     }
 
-    public function addEvidence()
+    public function resetForm()
     {
-        $this->showAddForm = true;
-        $this->resetNewEvidence();
+        $this->evidence = new Evidence();
     }
 
-    public function cancelAdd()
-    {
-        $this->showAddForm = false;
-        $this->resetNewEvidence();
-    }
 
-    public function resetNewEvidence()
-    {
-        $this->newEvidence = [
-            'name' => '',
-            'file' => null,
-            'description' => ''
-        ];
-    }
 
 
 

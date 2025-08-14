@@ -68,5 +68,9 @@ class BerujuEntry extends Model
     ];
 
     // Relationships
+    public function evidences()
+    {
 
+        return $this->hasMany(Evidence::class, 'beruju_entry_id');
+    }
 }
