@@ -791,7 +791,6 @@ class BusinessRegistrationForm extends Component
             $this->validate();
             $this->businessRegistration['data'] = $this->getFormattedData();
             $this->businessRegistration['application_date_en'] = $this->bsToAd($this->businessRegistration['application_date']);
-            $this->businessRegistration['registration_type'] = $this->businessRegistrationType->value;
 
             if (!empty($this->businessRegistration['registration_number'])) {
 
@@ -809,6 +808,7 @@ class BusinessRegistrationForm extends Component
 
             switch ($this->action) {
                 case Action::CREATE:
+                    $this->businessRegistration['registration_type'] = $this->businessRegistrationType->value;
                     $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
 
 

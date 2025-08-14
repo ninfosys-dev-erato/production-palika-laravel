@@ -504,7 +504,9 @@
                                         @enderror
                                     </div>
                                 @endif --}}
-                                @if ($businessRegistrationType == BusinessRegistrationType::ARCHIVING)
+                                @if (
+                                    $businessRegistrationType == BusinessRegistrationType::ARCHIVING ||
+                                        $businessRegistration->registration_type == BusinessRegistrationType::ARCHIVING)
                                     <!-- Registration Date -->
                                     <div class="col-md-6">
                                         <label for="registration_date" class="form-label-peaceful">
