@@ -20,6 +20,8 @@ class BusinessRegistrationAdminDto
         // Business Location
         public ?string $business_nature,
         public ?string $business_category,
+        public ?string $kardata_number,
+        public ?string $kardata_miti,
         public ?string $main_service_or_goods,
         public ?string $total_capital,
         public ?string $business_province,
@@ -82,6 +84,8 @@ class BusinessRegistrationAdminDto
 
             business_nature: $businessRegistration->business_nature ?? null,
             business_category: $businessRegistration->business_category ?? null,
+            kardata_number: $businessRegistration->kardata_number ?? null,
+            kardata_miti: $businessRegistration->kardata_miti ?? null,
             main_service_or_goods: $businessRegistration->main_service_or_goods ?? null,
             total_capital: $businessRegistration->total_capital ?? null,
             business_province: $businessRegistration->business_province ?? null,
@@ -116,7 +120,7 @@ class BusinessRegistrationAdminDto
             total_running_day: $businessRegistration->total_running_day,
 
             registration_type_id: $businessRegistration->registration_type_id,
-            registrationType: BusinessRegistrationType::REGISTRATION,
+            registrationType: $businessRegistration->registration_type ?? BusinessRegistrationType::REGISTRATION,
 
             amount: $businessRegistration->amount ?? null,
             application_rejection_reason: $businessRegistration->application_rejection_reason ?? null,

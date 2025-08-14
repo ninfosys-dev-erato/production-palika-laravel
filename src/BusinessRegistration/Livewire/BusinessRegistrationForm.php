@@ -157,6 +157,8 @@ class BusinessRegistrationForm extends Component
 
             'businessRegistration.business_nature' => ['nullable'],
             'businessRegistration.business_category' => ['nullable'],
+            'businessRegistration.kardata_number' => ['nullable'],
+            'businessRegistration.kardata_miti' => ['nullable'],
             'businessRegistration.main_service_or_goods' => ['nullable'],
             'businessRegistration.total_capital' => ['nullable'],
             'businessRegistration.business_province' => ['nullable'],
@@ -273,11 +275,20 @@ class BusinessRegistrationForm extends Component
         $this->businessRegistration = $businessRegistration;
         $this->businessRegistrationType = $businessRegistrationType;
 
+
         $this->action = $action;
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
         $this->provinces = getProvinces()->pluck('title', 'id')->toArray();
 
-        $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('action', $businessRegistrationType)->where('status', true)->pluck('title', 'id');
+        $action = match ($businessRegistrationType) {
+            BusinessRegistrationType::ARCHIVING => BusinessRegistrationType::REGISTRATION->value,
+            default => $businessRegistrationType->value,
+        };
+
+        $this->registrationTypes = RegistrationType::whereNull('deleted_at')
+            ->where('action', $action)
+            ->where('status', true)
+            ->pluck('title', 'id');
 
         if (Auth::guard('customer')->user()) {
             $this->isCustomer = true;
@@ -780,6 +791,7 @@ class BusinessRegistrationForm extends Component
             $this->validate();
             $this->businessRegistration['data'] = $this->getFormattedData();
             $this->businessRegistration['application_date_en'] = $this->bsToAd($this->businessRegistration['application_date']);
+            $this->businessRegistration['registration_type'] = $this->businessRegistrationType->value;
 
             if (!empty($this->businessRegistration['registration_number'])) {
 

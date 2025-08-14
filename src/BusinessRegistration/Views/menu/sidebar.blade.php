@@ -18,11 +18,19 @@ $registrationTypes = Cache::remember('registration_types_by_enum', 60, function 
 </li>
 
 <li
-    class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.business-registration.business-registration.*') ? 'active' : '' }}">
+    class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.business-registration.business-registration.*') && request()->get('type') == BusinessRegistrationType::REGISTRATION->value ? 'active' : '' }}">
     <a href="{{ route('admin.business-registration.business-registration.index', ['type' => BusinessRegistrationType::REGISTRATION]) }}"
         class="menu-link">
         <i class="menu-icon tf-icons bx bx-video"></i>
         <div data-i18n="Videos">{{ __('businessregistration::businessregistration.business_registration') }}</div>
+    </a>
+</li>
+<li
+    class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.business-registration.business-registration.*') && request()->get('type') == BusinessRegistrationType::ARCHIVING->value ? 'active' : '' }}">
+    <a href="{{ route('admin.business-registration.business-registration.index', ['type' => BusinessRegistrationType::ARCHIVING]) }}"
+        class="menu-link">
+        <i class="menu-icon tf-icons bx bx-archive"></i>
+        <div data-i18n="Videos">{{ __('businessregistration::businessregistration.business_archiving') }}</div>
     </a>
 </li>
 

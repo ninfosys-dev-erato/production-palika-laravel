@@ -452,6 +452,10 @@ return [
     'start_date' => 'सुरु मिति',
     'end_date' => 'अन्त्य मिति',
     'business_category' => 'व्यवसाय वर्ग',
+    'kardata_number' => 'करदाता नम्बर',
+    'kardata_miti' => 'करदाता मिति',
+    'placeholder_kardata_number' => 'करदाता नम्बर भर्नुहोस्',
+    'placeholder_kardata_miti' => 'करदाता मिति भर्नुहोस्',
     'business_nature' => 'व्यवसाय प्रकृति',
     'business_type' => 'व्यवसाय प्रकार',
     'application_status' => 'आवेदन स्थिति',
@@ -575,4 +579,6 @@ return [
     'business_report' => 'व्यवसाय रिपोर्ट',
     'view_business_reports' => 'व्यवसाय रिपोर्टहरू हेर्नुहोस्',
     'summarized_records' => 'संक्षेपित रिपोर्ट',
+    'archiving' => 'अभिलेखिकरण',
+    'business_archiving' => 'व्यवसाय अभिलेखिकरण',
 ];

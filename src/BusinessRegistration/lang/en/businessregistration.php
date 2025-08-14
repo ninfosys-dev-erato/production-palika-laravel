@@ -78,6 +78,10 @@ return [
     'business_nature' => 'Business Nature',
     'business_category' => 'Business Category',
     'business_organization_industry_firm_category_or_type' => 'Business/Organization/Industry/Firm Category or Type',
+    'kardata_number' => 'Taxpayer Number',
+    'kardata_miti' => 'Taxpayer Date',
+    'placeholder_kardata_number' => 'Enter taxpayer number',
+    'placeholder_kardata_miti' => 'Enter taxpayer date',
     'primary_detail' => 'Primary Detail',
     'select_fiscal_year' => 'Select Fiscal Year',
     'select_date' => 'Select Date',
@@ -551,4 +555,6 @@ return [
     'business_report' => 'Business Report',
     'view_business_reports' => 'View business reports',
     'summarized_records' => 'Summarized Records',
+    'archiving' => 'Archiving',
+    'business_archiving' => 'Business Archiving',
 ];

@@ -40,6 +40,8 @@ class BusinessRegistration extends Model
 
         'business_nature',
         'business_category',
+        'kardata_number',
+        'kardata_miti',
         'main_service_or_goods',
         'total_capital',
         'business_province',
@@ -107,6 +109,8 @@ class BusinessRegistration extends Model
 
         'business_nature' => 'string',
         'business_category' => 'string',
+        'kardata_number' => 'string',
+        'kardata_miti' => 'string',
         'main_service_or_goods' => 'string',
         'total_capital' => 'integer',
         'business_province' => 'string',

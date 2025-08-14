@@ -3,6 +3,7 @@
 @endpush
 @php
     use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+    use Src\BusinessRegistration\Enums\BusinessRegistrationType;
     use App\Enums\Action;
 @endphp
 <form wire:submit.prevent="save" enctype="multipart/form-data">
@@ -475,7 +476,7 @@
                                 </div>
 
 
-                                @if ($action == Action::CREATE && !$isCustomer)
+                                {{-- @if ($action == Action::CREATE && !$isCustomer)
                                     <div class="col-md-12">
                                         <label class="form-label-peaceful d-block">
                                             {{ __('businessregistration::businessregistration.do_you_want_to_enter_custom_registration_number?') }}
@@ -502,8 +503,8 @@
                                             <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                @endif
-                                @if ($showRegistrationDetailsFields)
+                                @endif --}}
+                                @if ($businessRegistrationType == BusinessRegistrationType::ARCHIVING)
                                     <!-- Registration Date -->
                                     <div class="col-md-6">
                                         <label for="registration_date" class="form-label-peaceful">
@@ -828,6 +829,27 @@
                                                 type="text" class="form-control" id="business_area"
                                                 placeholder="{{ __('businessregistration::businessregistration.placeholder_area') }}">
                                         </div>
+
+                                        <div class="col-md-6">
+                                            <label for="kardata_number" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.kardata_number') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.kardata_number"
+                                                name="kardata_number" type="text" class="form-control"
+                                                id="kardata_number"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_kardata_number') }}">
+                                        </div>
+
+                                        <!-- Kardata Miti -->
+                                        <div class="col-md-6">
+                                            <label for="kardata_miti" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.kardata_miti') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.kardata_miti" name="kardata_miti"
+                                                type="text" class="form-control nepali-date" id="kardata_miti"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_kardata_miti') }}">
+                                        </div>
+
                                     </div>
 
 
