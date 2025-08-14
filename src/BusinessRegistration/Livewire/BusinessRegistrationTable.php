@@ -309,7 +309,10 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function preview($id)
     {
-        return redirect()->route('admin.business-registration.business-registration.preview', ['id' => $id]);
+        return redirect()->route('admin.business-registration.business-registration.preview', [
+            'id' => $id,
+            'type' => $this->type
+        ]);
     }
 
     // Customer Portal Functions for Action buttons
