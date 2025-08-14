@@ -537,4 +537,16 @@ return [
     'business_area' => 'Business Area',
     'business_organization_industry_firm_nature' => 'Business/Organization/Industry/Firm Nature',
     'business_organization_industry_firm_category_or_type' => 'Business/Organization/Industry/Firm Category or Type',
+
+    // Quick Actions
+    'quick_actions' => 'Quick Actions',
+    'new_registration' => 'New Registration',
+    'create_new_business_registration' => 'Create new business registration',
+    'new_deregistration' => 'New Deregistration',
+    'create_new_business_deregistration' => 'Create new business deregistration',
+    'business_renewal' => 'Business Renewal',
+    'manage_business_renewals' => 'Manage business renewals',
+    'business_report' => 'Business Report',
+    'view_business_reports' => 'View business reports',
+    'summarized_records' => 'Summarized Records',
 ];

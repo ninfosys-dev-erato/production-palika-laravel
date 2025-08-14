@@ -822,11 +822,10 @@
                                         <!-- Area -->
                                         <div class="col-md-6">
                                             <label for="area" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.area') }}
+                                                {{ __('businessregistration::businessregistration.business_area') }}
                                             </label>
-                                            <input wire:model="businessRegistration.business_area"
-                                                name="business_area" type="text" class="form-control"
-                                                id="business_area"
+                                            <input wire:model="businessRegistration.area" name="business_area"
+                                                type="text" class="form-control" id="business_area"
                                                 placeholder="{{ __('businessregistration::businessregistration.placeholder_area') }}">
                                         </div>
                                     </div>

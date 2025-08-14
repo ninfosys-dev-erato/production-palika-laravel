@@ -561,4 +561,16 @@ return [
     'business_area' => 'परिचय पाटीको सइज',
     'business_organization_industry_firm_category_or_type' => 'व्यवसाय/संस्था/उद्योग/फर्मको वर्ग वा प्रकार',
     'business_organization_industry_firm_nature' => 'व्यवसाय/संस्था/उद्योग/फर्मको प्रकृति',
+
+    // Quick Actions
+    'quick_actions' => 'द्रुत कार्यहरू',
+    'new_registration' => 'नयाँ दर्ता',
+    'create_new_business_registration' => 'नयाँ व्यवसाय दर्ता सिर्जना गर्नुहोस्',
+    'new_deregistration' => 'नयाँ खारेजी',
+    'create_new_business_deregistration' => 'नयाँ व्यवसाय खारेजी सिर्जना गर्नुहोस्',
+    'business_renewal' => 'व्यवसाय नविकरण',
+    'manage_business_renewals' => 'व्यवसाय नविकरणहरू गर्नुहोस्',
+    'business_report' => 'व्यवसाय रिपोर्ट',
+    'view_business_reports' => 'व्यवसाय रिपोर्टहरू हेर्नुहोस्',
+    'summarized_records' => 'संक्षेपित रिपोर्ट',
 ];

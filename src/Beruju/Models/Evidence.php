@@ -18,10 +18,7 @@ class Evidence extends Model
     protected $fillable = [
         'beruju_entry_id',
         'name',
-        'file_path',
         'file_name',
-        'file_size',
-        'file_type',
         'description',
         'action_id',
         'created_by',
@@ -32,11 +29,11 @@ class Evidence extends Model
     protected $casts = [
         'beruju_entry_id' => 'string',
         'name' => 'string',
-        'file_path' => 'string',
+
         'file_name' => 'string',
-        'file_size' => 'integer',
-        'file_type' => 'string',
+
         'action_id' => 'integer',
+
         'description' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
