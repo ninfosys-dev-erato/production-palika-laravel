@@ -89,8 +89,8 @@ class OrganizationMapApplyTable extends DataTableComponent
                 $buttons .= $view;
                 $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                 $buttons .= $edit;
-                $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
-                $buttons .= $delete;
+                // $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
+                // $buttons .= $delete;
                 $additionalForm = '<button type="button" class="btn btn-secondary btn-sm" wire:click="additionalForm(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Additional Form"><i class="bx bx-file"></i></button>&nbsp;';
                 $buttons .= $additionalForm;
                 $moveForward = '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
