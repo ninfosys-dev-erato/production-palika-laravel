@@ -13,6 +13,7 @@ class BerujuEntryService
     {
         $berujuEntry = BerujuEntry::create([
             // Form fields from form.blade.php
+            'name' => $berujuEntryDto->name,
             'fiscal_year_id' => $berujuEntryDto->fiscal_year_id,
             'audit_type' => $berujuEntryDto->audit_type,
             'entry_date' => $berujuEntryDto->entry_date,
@@ -40,6 +41,7 @@ class BerujuEntryService
     {
         $updateData = [
             // Form fields from form.blade.php
+            'name' => $berujuEntryDto->name,
             'fiscal_year_id' => $berujuEntryDto->fiscal_year_id,
             'audit_type' => $berujuEntryDto->audit_type,
             'entry_date' => $berujuEntryDto->entry_date,

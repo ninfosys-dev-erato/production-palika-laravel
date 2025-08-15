@@ -10,6 +10,18 @@
                 </div>
             </div>
             <div class="row g-4">
+                <div class="col-md-6 ">
+                    <div class="form-group">
+                        <label for="name" class="form-label">{{ __('beruju::beruju.name') }}</label>
+                        <input wire:model="berujuEntry.name" type="text"
+                            class="form-control rounded-0 @error('berujuEntry.name') is-invalid @enderror"
+                            placeholder="{{ __('beruju::beruju.enter_name') }}">
+                        @error('berujuEntry.name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
                 <!-- Fiscal Year ID -->
                 <div class="col-md-6 ">
                     <div class="form-group">
@@ -172,7 +184,8 @@
                 <!-- Currency Type -->
                 <div class="col-md-6 ">
                     <div class="form-group">
-                        <label for="currency_type" class="form-label">{{ __('beruju::beruju.currency_type') }}</label>
+                        <label for="currency_type"
+                            class="form-label">{{ __('beruju::beruju.currency_type') }}</label>
                         <select wire:model="berujuEntry.currency_type"
                             class="form-select rounded-0 @error('berujuEntry.currency_type') is-invalid @enderror">
                             <option value="">{{ __('beruju::beruju.select_currency_type') }}

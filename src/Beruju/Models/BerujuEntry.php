@@ -24,7 +24,7 @@ class BerujuEntry extends Model
     protected $table = 'brj_beruju_entries';
 
     protected $fillable = [
-
+        'name',
         'fiscal_year_id',
         'audit_type',
         'entry_date',
@@ -48,6 +48,7 @@ class BerujuEntry extends Model
     ];
 
     protected $casts = [
+        'name' => 'string',
         'fiscal_year_id' => 'string',
         'audit_type' => BerujuAduitTypeEnum::class,
         'entry_date' => 'string',

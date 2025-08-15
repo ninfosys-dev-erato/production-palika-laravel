@@ -17,6 +17,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Src\Employees\Models\Branch;
 use Src\Beruju\Models\SubCategory;
+use Illuminate\Support\Facades\Session;
 
 class BerujuEntryForm extends Component
 {
@@ -35,6 +36,7 @@ class BerujuEntryForm extends Component
     {
         return [
             // Form fields from form.blade.php
+            'berujuEntry.name' => ['nullable', 'string'],
             'berujuEntry.fiscal_year_id' => ['nullable', 'string'],
             'berujuEntry.audit_type' => ['nullable', 'string'],
             'berujuEntry.entry_date' => ['nullable', 'string'],
@@ -50,8 +52,8 @@ class BerujuEntryForm extends Component
             'berujuEntry.description' => ['nullable', 'string'],
             'berujuEntry.notes' => ['nullable', 'string'],
             // Additional fields
-            'berujuEntry.status' => ['required', 'string'],
-            'berujuEntry.submission_status' => ['required', 'string'],
+            'berujuEntry.status' => ['nullable', 'string'],
+            'berujuEntry.submission_status' => ['nullable', 'string'],
         ];
     }
 
@@ -95,35 +97,48 @@ class BerujuEntryForm extends Component
     {
         $this->berujuEntry->status = BerujuStatusEnum::SUBMITTED;
         $this->berujuEntry->submission_status = BerujuSubmissionStatusEnum::SUBMITTED;
+
         try {
+            $this->validate();
             $dto = BerujuEntryDto::fromLiveWireModel($this->berujuEntry);
             $service = new BerujuEntryService();
-            $this->validate();
+
             DB::beginTransaction();
+
             switch ($this->action) {
                 case Action::CREATE:
-                    $service->store($dto);
+                    $berujuEntry = $service->store($dto);
+
+                    // Dispatch event to save documents BEFORE committing transaction
+                    $this->dispatch('saveAllDocuments', $berujuEntry->id);
+
                     DB::commit();
+
                     $this->successFlash(__('beruju::beruju.beruju_created_successfully'));
                     return redirect()->route('admin.beruju.registration.index');
                     break;
 
                 case Action::UPDATE:
                     $service->update($this->berujuEntry, $dto);
+
+                    // Dispatch event to save documents BEFORE committing transaction
+                    $this->dispatch('saveAllDocuments', $this->berujuEntry->id);
+
                     DB::commit();
+
                     $this->successFlash(__('beruju::beruju.beruju_updated_successfully'));
                     return redirect()->route('admin.beruju.registration.index');
                     break;
 
                 default:
+                    DB::rollBack();
                     return $this->redirect(url()->previous());
                     break;
             }
         } catch (\Exception $e) {
             logger($e);
             DB::rollBack();
-            dd($e->getMessage());
-            $this->errorFlash(__('beruju::beruju.something_went_wrong_while_saving'));
+            $this->errorFlash(__('beruju::beruju.something_went_wrong_while_saving') . ': ' . $e->getMessage());
         }
     }
 }

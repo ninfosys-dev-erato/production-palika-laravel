@@ -211,6 +211,17 @@ return [
     'beruju_registration_form' => 'बेरुजु प्रविष्टि फार्म',
 
     // Evidence Document Upload
+    'evidence_document_upload' => 'प्रमाण कागजात अपलोड',
+    'add_document' => 'कागजात थप्नुहोस्',
+    'document_name' => 'कागजातको नाम',
+    'upload_file' => 'फाइल अपलोड गर्नुहोस्',
+    'description' => 'विवरण',
+    'file_preview' => 'फाइल पूर्वावलोकन',
+    'view_uploaded_file' => 'अपलोड गरिएको फाइल हेर्नुहोस्',
+    'save_all_documents' => 'सबै कागजातहरू सुरक्षित गर्नुहोस्',
+    'file_name' => 'फाइल नाम',
+    'file_size' => 'फाइल साइज',
+    'uploading' => 'अपलोड गर्दैछ...',
     'add_evidence' => 'प्रमाण थप्नुहोस्',
     'add_new_evidence' => 'नयाँ प्रमाण थप्नुहोस्',
     'evidence_name' => 'प्रमाणको नाम',
@@ -396,7 +407,7 @@ return [
     'name_eng_required' => 'अंग्रेजी नाम आवश्यक छ।',
     'enter_sub_category_name_eng' => 'अंग्रेजीमा उप-श्रेणी नाम प्रविष्ट गर्नुहोस्',
     'enter_sub_category_name_nep' => 'नेपालीमा उप-श्रेणी नाम प्रविष्ट गर्नुहोस्',
-    
+
     // Enum Labels
     'internal_audit' => 'आन्तरिक लेखा परीक्षण',
     'external_audit' => 'बाह्य लेखा परीक्षण',
@@ -417,7 +428,7 @@ return [
     'inr' => 'भारतीय रुपैयाँ',
     'pound' => 'पाउन्ड',
     'dollar' => 'डलर',
-    
+
     // Currency Symbols
     'npr_symbol' => 'रु',
     'inr_symbol' => '₹',

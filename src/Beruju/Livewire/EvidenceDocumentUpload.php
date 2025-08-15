@@ -2,6 +2,7 @@
 
 namespace Src\Beruju\Livewire;
 
+use App\Facades\FileFacade;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -19,18 +20,23 @@ class EvidenceDocumentUpload extends Component
 
     public Evidence $evidence;
 
+    public $evidenceDocuments = [];
+    public $evidenceData = [];
+    public $uploadedFiles = [];
+    public $uploadedFileUrls = [];
+    public $savedDocuments = [];
+
+    protected $listeners = ['saveAllDocuments' => 'saveAllDocuments'];
+
     protected $rules = [
-        'evidence.beruju_entry_id' => 'required|string',
-        'evidence.name' => 'required|string|max:255',
-        'evidence.file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
-        'evidence.description' => 'nullable|string|max:1000',
+        'evidenceData.*.name' => 'required|string|max:255',
+        'evidenceData.*.description' => 'nullable|string',
+        'uploadedFiles.*' => 'required',
     ];
 
     protected $messages = [
-        'evidence.name.required' => 'Evidence name is required.',
-        'evidence.file.required' => 'Please select a file.',
-        'evidence.file.mimes' => 'File must be PDF, DOC, DOCX, JPG, JPEG, or PNG.',
-        'evidence.file.max' => 'File size must not exceed 10MB.',
+        'evidenceData.*.name.required' => 'Document name is required.',
+        'uploadedFiles.*.required' => 'Please select a file.',
     ];
 
     public function mount(Evidence $evidence = null, $berujuEntryId = null)
@@ -45,45 +51,126 @@ class EvidenceDocumentUpload extends Component
             $this->berujuEntryId = $berujuEntryId;
             $this->evidence->beruju_entry_id = $berujuEntryId;
         }
+
+        // Initialize with one empty document
+        $this->addDocument();
     }
 
-    public function saveEvidence()
+    public function addDocument()
+    {
+        $index = count($this->evidenceDocuments);
+        $this->evidenceDocuments[] = $index;
+        $this->evidenceData[$index] = [
+            'name' => '',
+            'description' => ''
+        ];
+        $this->uploadedFiles[$index] = null;
+        $this->uploadedFileUrls[$index] = null;
+    }
+
+    public function removeDocuments($index)
+    {
+        unset($this->evidenceDocuments[$index]);
+        unset($this->evidenceData[$index]);
+        unset($this->uploadedFiles[$index]);
+        unset($this->uploadedFileUrls[$index]);
+
+        // Reindex arrays
+        $this->evidenceDocuments = array_values($this->evidenceDocuments);
+        $this->evidenceData = array_values($this->evidenceData);
+        $this->uploadedFiles = array_values($this->uploadedFiles);
+        $this->uploadedFileUrls = array_values($this->uploadedFileUrls);
+    }
+
+    private function handleFileUploadForDocument($file)
+    {
+        $savedFileName = FileFacade::saveFile(
+            path: config('src.Beruju.beruju.uploads'),
+            file: $file,
+            disk: "local",
+            filename: ""
+        );
+
+        $tempUrl = FileFacade::getTemporaryUrl(
+            path: config('src.Beruju.beruju.uploads'),
+            filename: $savedFileName,
+            disk: 'local'
+        );
+
+        return [$savedFileName, $tempUrl];
+    }
+
+    public function saveDocuments($index)
     {
         $this->validate();
 
         try {
-            // Handle file upload if file is present
-            if ($this->evidence->file) {
-                $fileName = time() . '_' . uniqid() . '.' . $this->evidence->file->getClientOriginalExtension();
-                $filePath = $this->evidence->file->storeAs('beruju/evidences', $fileName, 'public');
+            $file = $this->uploadedFiles[$index] ?? null;
 
-                $this->evidence->file_name = $this->evidence->file->getClientOriginalName();
-                $this->evidence->file_path = $filePath;
-                $this->evidence->file_size = $this->evidence->file->getSize();
-                $this->evidence->file_type = $this->evidence->file->getClientMimeType();
+            if ($file) {
+
+                [$savedFileName, $tempUrl] = $this->handleFileUploadForDocument($file);
+
+                $this->savedDocuments[$index] = [
+                    'name' => $this->evidenceData[$index]['name'] ?? '',
+                    'description' => $this->evidenceData[$index]['description'] ?? '',
+                    'evidence_document_name' => $savedFileName,
+                ];
+
+                $this->uploadedFileUrls[$index] = $tempUrl;
+
+                $this->successToast(__('beruju::beruju.evidence_added_successfully'));
             }
-
-            $this->evidence->created_by = Auth::id();
-            $this->evidence->save();
-
-            $this->showSuccessMessage(__('beruju::beruju.evidence_added_successfully'));
-            $this->resetForm();
         } catch (\Exception $e) {
-            $this->showErrorMessage(__('beruju::beruju.failed_to_add_evidence'));
+            $this->errorToast(__('beruju::beruju.failed_to_add_evidence'));
         }
     }
-
-    public function resetForm()
-    {
-        $this->evidence = new Evidence();
-    }
-
-
-
-
 
     public function render()
     {
         return view('Beruju::livewire.evidence-document-upload');
+    }
+
+    public function saveAllDocuments($berujuEntryId = null)
+    {
+        if (empty($this->savedDocuments)) {
+            return; // No documents to save
+        }
+
+        if (!$berujuEntryId) {
+            $this->errorToast(__('beruju::beruju.beruju_id_is_required'));
+            return;
+        }
+
+        try {
+            $evidenceService = new EvidenceService();
+
+            foreach ($this->savedDocuments as $document) {
+                $evidenceDto = EvidenceDto::fromArray([
+                    'beruju_entry_id' => $berujuEntryId, // Use the passed parameter
+                    'name' => $document['name'] ?? null,
+                    'description' => $document['description'] ?? null,
+                    'evidence_document_name' => $document['evidence_document_name'] ?? null,
+                ]);
+
+                $evidenceService->store($evidenceDto);
+            }
+
+            $this->successToast(__('beruju::beruju.evidence_added_successfully'));
+            $this->resetDocuments();
+        } catch (\Exception $e) {
+            logger('Evidence save error: ' . $e->getMessage());
+            $this->errorToast(__('beruju::beruju.failed_to_add_evidence') . ': ' . $e->getMessage());
+        }
+    }
+
+    public function resetDocuments()
+    {
+        $this->evidenceDocuments = [];
+        $this->evidenceData = [];
+        $this->uploadedFiles = [];
+        $this->uploadedFileUrls = [];
+        $this->savedDocuments = [];
+        $this->addDocument(); // Add one empty document
     }
 }

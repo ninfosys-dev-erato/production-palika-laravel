@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
 
             // Form fields from form.blade.php
+            $table->string('name')->nullable();
             $table->string('fiscal_year_id')->nullable();
             $table->string('audit_type')->nullable();
             $table->string('entry_date')->nullable();

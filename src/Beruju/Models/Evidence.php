@@ -18,7 +18,7 @@ class Evidence extends Model
     protected $fillable = [
         'beruju_entry_id',
         'name',
-        'file_name',
+        'evidence_document_name',
         'description',
         'action_id',
         'created_by',
@@ -30,7 +30,7 @@ class Evidence extends Model
         'beruju_entry_id' => 'string',
         'name' => 'string',
 
-        'file_name' => 'string',
+        'evidence_document_name' => 'string',
 
         'action_id' => 'integer',
 
