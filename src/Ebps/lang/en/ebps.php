@@ -695,4 +695,11 @@ return [
     'this_action_will_approve_the_first_three_consultant_supervisor_building_registration_steps_at_once' => 'This action will approve the first three consultant supervisor building registration steps at once.',
     'this_action_will_approve_the_first_three_consultant_supervisor_map_applies_steps_at_once' => 'This action will approve the first three consultant supervisor map applies steps at once.',
     'map_applies_steps_approved_successfully' => ':count map applies steps approved successfully!',
+    'pending_steps_approved_successfully' => ':count pending steps approved successfully!',
+    'review_comments' => 'Review Comments',
+    'file_deleted_successfully' => 'File deleted successfully!',
+    'something_went_wrong_while_deleting_file' => 'Something went wrong while deleting the file.',
+    'are_you_sure_you_want_to_delete_this_file' => 'Are you sure you want to delete this file?',
+    'delete' => 'Delete',
+    'actions' => 'Actions',
 ];

@@ -664,7 +664,7 @@
                                         <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
                                         <input wire:model="uploadedFiles.{{ $index }}" type="file"
                                             class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
-                                            accept="image/*">
+                                            accept="image/*,application/pdf">
                                         <div>
                                             @error("uploadedFiles.$index")
                                                 <small class='text-danger'>{{ $message }}</small>
@@ -733,7 +733,8 @@
                                                     <label
                                                         class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
                                                     <input type="file" class="form-control-file"
-                                                        wire:model.defer="documents.{{ $key }}.file">
+                                                        wire:model.defer="documents.{{ $key }}.file"
+                                                        accept="image/*,application/pdf">
 
                                                     <div wire:loading
                                                         wire:target="documents.{{ $key }}.file">

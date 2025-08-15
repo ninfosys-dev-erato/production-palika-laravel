@@ -4,12 +4,13 @@ namespace Src\Ebps\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class BuildingRegistrationDocument extends Model
 {
-    use HasFactory,LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $table = 'ebps_building_registration_apply_step';
 
@@ -19,7 +20,8 @@ class BuildingRegistrationDocument extends Model
         'map_apply_id',
         'file',
         'status',
-      
+        'deleted_at',
+        'deleted_by',
     ];
 
     public function casts():array{
