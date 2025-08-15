@@ -6,27 +6,23 @@ use App\Traits\HelperDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use App\Models\User;
 
-class SubCategory extends Model
+class ActionType extends Model
 {
     use HasFactory, LogsActivity, HelperDate, SoftDeletes;
 
-    protected $table = 'brj_sub_categories';
+    protected $table = 'brj_action_types';
 
     protected $fillable = [
         'name_eng',
         'name_nep',
-        'slug',
-        'parent_id',
-        'parent_name_eng',
-        'parent_name_nep',
-        'parent_slug',
+        'sub_category_id',
         'remarks',
+        'form_id',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -35,12 +31,9 @@ class SubCategory extends Model
     protected $casts = [
         'name_eng' => 'string',
         'name_nep' => 'string',
-        'slug' => 'string',
-        'parent_id' => 'integer',
-        'parent_name_eng' => 'string',
-        'parent_name_nep' => 'string',
-        'parent_slug' => 'string',
+        'sub_category_id' => 'integer',
         'remarks' => 'string',
+        'form_id' => 'integer',
         'created_by' => 'integer',
         'updated_by' => 'integer',
         'deleted_by' => 'integer',
@@ -55,38 +48,20 @@ class SubCategory extends Model
             ->logOnly([
                 'name_eng',
                 'name_nep',
-                'slug',
-                'parent_id',
-                'parent_name_eng',
-                'parent_name_nep',
-                'parent_slug',
+                'sub_category_id',
                 'remarks',
+                'form_id',
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->setDescriptionForEvent(fn(string $eventName) => "Sub Category {$eventName}")
-            ->useLogName('sub_category');
+            ->setDescriptionForEvent(fn(string $eventName) => "Action Type {$eventName}")
+            ->useLogName('action_type');
     }
 
     // Relationships
-    public function parent(): BelongsTo
+    public function subCategory(): BelongsTo
     {
-        return $this->belongsTo(SubCategory::class, 'parent_id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(SubCategory::class, 'parent_id');
-    }
-
-    public function descendants(): HasMany
-    {
-        return $this->children()->with('descendants');
-    }
-
-    public function ancestors(): BelongsTo
-    {
-        return $this->parent()->with('ancestors');
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
 
     public function creator(): BelongsTo
@@ -105,19 +80,14 @@ class SubCategory extends Model
     }
 
     // Scopes
-    public function scopeRoot($query)
+    public function scopeWithSubCategory($query)
     {
-        return $query->whereNull('parent_id');
+        return $query->with('subCategory');
     }
 
-    public function scopeWithChildren($query)
+    public function scopeBySubCategory($query, $subCategoryId)
     {
-        return $query->with('children');
-    }
-
-    public function scopeWithParent($query)
-    {
-        return $query->with('parent');
+        return $query->where('sub_category_id', $subCategoryId);
     }
 
     // Accessors
@@ -126,9 +96,9 @@ class SubCategory extends Model
         $currentLocale = app()->getLocale();
         $name = $currentLocale === 'ne' ? $this->name_nep : $this->name_eng;
         
-        if ($this->parent) {
-            $parentName = $currentLocale === 'ne' ? $this->parent->name_nep : $this->parent->name_eng;
-            return $parentName . ' > ' . $name;
+        if ($this->subCategory) {
+            $subCategoryName = $currentLocale === 'ne' ? $this->subCategory->name_nep : $this->subCategory->name_eng;
+            return $subCategoryName . ' > ' . $name;
         }
         return $name;
     }
@@ -139,18 +109,8 @@ class SubCategory extends Model
         return $currentLocale === 'ne' ? $this->name_nep : $this->name_eng;
     }
 
-    public function getChildrenCountAttribute(): int
+    public function getHasSubCategoryAttribute(): bool
     {
-        return $this->children()->count();
-    }
-
-    public function getIsRootAttribute(): bool
-    {
-        return is_null($this->parent_id);
-    }
-
-    public function getHasChildrenAttribute(): bool
-    {
-        return $this->children()->exists();
+        return !is_null($this->sub_category_id);
     }
 }

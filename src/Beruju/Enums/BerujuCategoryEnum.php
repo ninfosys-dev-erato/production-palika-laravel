@@ -15,8 +15,8 @@ enum BerujuCategoryEnum: string
     public static function getLabel(self $value): string
     {
         return match ($value) {
-            self::THEORETICAL_BERUJU => __('Theoretical Beruju'),
-            self::MONETARY_BERUJU => __('Monetary Beruju'),
+            self::THEORETICAL_BERUJU => __('beruju::beruju.theoretical_beruju'),
+            self::MONETARY_BERUJU => __('beruju::beruju.monetary_beruju'),
         };
     }
 

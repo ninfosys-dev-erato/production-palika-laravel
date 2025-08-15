@@ -55,11 +55,12 @@ class SubCategoryTable extends DataTableComponent
     public function columns(): array
     {
         $columns = [
-            Column::make(__('beruju::beruju.name'), "name")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('beruju::beruju.name_eng'), "name_eng")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('beruju::beruju.name_nep'), "name_nep")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('beruju::beruju.slug'), "slug")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('beruju::beruju.parent_category'), "parent_id")->sortable()->searchable()->collapseOnTablet()
                 ->format(function ($value, $row, $column) {
-                    return $row->parent ? $row->parent->name : __('beruju::beruju.root_category');
+                    return $row->parent ? $row->parent->name_eng : __('beruju::beruju.root_category');
                 }),
             Column::make(__('beruju::beruju.child_categories'), "id")->sortable()->searchable()->collapseOnTablet()
                 ->format(function ($value, $row, $column) {

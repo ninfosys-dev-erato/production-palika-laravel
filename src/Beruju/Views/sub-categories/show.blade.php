@@ -28,8 +28,12 @@
                         <div class="col-md-6">
                             <table class="table table-borderless">
                                 <tr>
-                                    <th width="30%">{{ __('beruju::beruju.name') }}:</th>
-                                    <td><strong>{{ $subCategory->name }}</strong></td>
+                                    <th width="30%">{{ __('beruju::beruju.name_eng') }}:</th>
+                                    <td><strong>{{ $subCategory->name_eng }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th width="30%">{{ __('beruju::beruju.name_nep') }}:</th>
+                                    <td><strong>{{ $subCategory->name_nep }}</strong></td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('beruju::beruju.slug') }}:</th>
@@ -39,7 +43,7 @@
                                     <th>{{ __('beruju::beruju.parent_category') }}:</th>
                                     <td>
                                         @if($subCategory->parent)
-                                            <span class="badge bg-info">{{ $subCategory->parent->name }}</span>
+                                            <span class="badge bg-info">{{ $subCategory->parent->name_eng }}</span>
                                         @else
                                             <span class="badge bg-secondary">{{ __('beruju::beruju.root_category') }}</span>
                                         @endif
@@ -89,7 +93,7 @@
                                     <tbody>
                                         @foreach($subCategory->children as $child)
                                             <tr>
-                                                <td>{{ $child->name }}</td>
+                                                <td>{{ $child->name_eng }}</td>
                                                 <td><code>{{ $child->slug }}</code></td>
                                                 <td>{{ $child->created_at ? $child->created_at->format('Y-m-d H:i') : 'N/A' }}</td>
                                                 <td>

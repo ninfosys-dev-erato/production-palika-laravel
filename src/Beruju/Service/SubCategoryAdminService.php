@@ -10,10 +10,12 @@ class SubCategoryAdminService
 {
     public function store(SubCategoryAdminDto $subCategoryAdminDto){
         return SubCategory::create([
-            'name' => $subCategoryAdminDto->name,
+            'name_eng' => $subCategoryAdminDto->name_eng,
+            'name_nep' => $subCategoryAdminDto->name_nep,
             'slug' => $subCategoryAdminDto->slug,
             'parent_id' => $subCategoryAdminDto->parent_id,
-            'parent_name' => $subCategoryAdminDto->parent_name,
+            'parent_name_eng' => $subCategoryAdminDto->parent_name_eng,
+            'parent_name_nep' => $subCategoryAdminDto->parent_name_nep,
             'parent_slug' => $subCategoryAdminDto->parent_slug,
             'remarks' => $subCategoryAdminDto->remarks,
             'created_at' => date('Y-m-d H:i:s'),
@@ -23,10 +25,12 @@ class SubCategoryAdminService
 
     public function update(SubCategory $subCategory, SubCategoryAdminDto $subCategoryAdminDto){
         return tap($subCategory)->update([
-            'name' => $subCategoryAdminDto->name,
+            'name_eng' => $subCategoryAdminDto->name_eng,
+            'name_nep' => $subCategoryAdminDto->name_nep,
             'slug' => $subCategoryAdminDto->slug,
             'parent_id' => $subCategoryAdminDto->parent_id,
-            'parent_name' => $subCategoryAdminDto->parent_name,
+            'parent_name_eng' => $subCategoryAdminDto->parent_name_eng,
+            'parent_name_nep' => $subCategoryAdminDto->parent_name_nep,
             'parent_slug' => $subCategoryAdminDto->parent_slug,
             'remarks' => $subCategoryAdminDto->remarks,
             'updated_at' => date('Y-m-d H:i:s'),

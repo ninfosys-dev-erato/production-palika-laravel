@@ -18,11 +18,11 @@ enum BerujuSubmissionStatusEnum: string
     public static function getLabel(self $value): string
     {
         return match ($value) {
-            self::DRAFT => __('Draft'),
-            self::SUBMITTED => __('Submitted'),
-            self::UNDER_REVIEW => __('Under Review'),
-            self::APPROVED => __('Approved'),
-            self::REJECTED => __('Rejected'),
+            self::DRAFT => __('beruju::beruju.draft'),
+            self::SUBMITTED => __('beruju::beruju.submitted'),
+            self::UNDER_REVIEW => __('beruju::beruju.under_review'),
+            self::APPROVED => __('beruju::beruju.approved'),
+            self::REJECTED => __('beruju::beruju.rejected'),
         };
     }
 
@@ -65,11 +65,11 @@ enum BerujuSubmissionStatusEnum: string
     public function color(): string
     {
         return match ($this) {
-            self::DRAFT => 'secondary',
-            self::SUBMITTED => 'info',
-            self::UNDER_REVIEW => 'warning',
-            self::APPROVED => 'success',
-            self::REJECTED => 'danger',
+            self::DRAFT => '#6c757d',
+            self::SUBMITTED => '#17a2b8',
+            self::UNDER_REVIEW => '#ffc107',
+            self::APPROVED => '#28a745',
+            self::REJECTED => '#dc3545',
         };
     }
 

@@ -146,7 +146,9 @@
                         <select wire:model="berujuEntry.sub_category_id"
                             class="form-select rounded-0 @error('berujuEntry.sub_category_id') is-invalid @enderror">
                             <option value="">{{ __('beruju::beruju.select_sub_category') }}</option>
-                            <!-- Options will be added later -->
+                            @foreach ($subCategories as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
                         </select>
                         @error('berujuEntry.sub_category_id')
                             <div class="invalid-feedback">{{ $message }}</div>

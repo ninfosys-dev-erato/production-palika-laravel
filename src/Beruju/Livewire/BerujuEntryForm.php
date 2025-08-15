@@ -8,14 +8,15 @@ use Livewire\Component;
 use Src\Beruju\DTO\BerujuEntryDto;
 use Src\Beruju\Models\BerujuEntry;
 use Src\Beruju\Service\BerujuEntryService;
-use Src\Beruju\Enums\BerujuStatusEnum;
-use Src\Beruju\Enums\BerujuSubmissionStatusEnum;
 use Src\Beruju\Enums\BerujuAduitTypeEnum;
 use Src\Beruju\Enums\BerujuCategoryEnum;
 use Src\Beruju\Enums\BerujuCurrencyTypeEnum;
+use Src\Beruju\Enums\BerujuStatusEnum;
+use Src\Beruju\Enums\BerujuSubmissionStatusEnum;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Src\Employees\Models\Branch;
+use Src\Beruju\Models\SubCategory;
 
 class BerujuEntryForm extends Component
 {
@@ -23,11 +24,12 @@ class BerujuEntryForm extends Component
 
     public ?BerujuEntry $berujuEntry;
     public ?Action $action;
+    public array $subCategories = [];
     public $fiscalYears = [];
     public $branches = [];
-    public array $auditTypeOptions = [];
-    public array $berujuCategoryOptions = [];
-    public array $currencyTypeOptions = [];
+    public $auditTypeOptions;
+    public $berujuCategoryOptions;
+    public $currencyTypeOptions;
 
     public function rules(): array
     {
@@ -74,6 +76,7 @@ class BerujuEntryForm extends Component
         $this->loadEnumOptions();
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
         $this->branches = Branch::whereNull('deleted_at')->pluck('title', 'id')->toArray();
+        $this->subCategories = SubCategory::whereNull('deleted_at')->pluck('name_nep', 'id')->toArray();
     }
 
     private function loadEnumOptions()
@@ -90,26 +93,26 @@ class BerujuEntryForm extends Component
 
     public function save()
     {
-        $this->validate();
-
-        $dto = BerujuEntryDto::fromLiveWireModel($this->berujuEntry);
-        $service = new BerujuEntryService();
-
-        DB::beginTransaction();
+        $this->berujuEntry->status = BerujuStatusEnum::SUBMITTED;
+        $this->berujuEntry->submission_status = BerujuSubmissionStatusEnum::SUBMITTED;
         try {
+            $dto = BerujuEntryDto::fromLiveWireModel($this->berujuEntry);
+            $service = new BerujuEntryService();
+            $this->validate();
+            DB::beginTransaction();
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
                     DB::commit();
                     $this->successFlash(__('beruju::beruju.beruju_created_successfully'));
-                    return redirect()->route('admin.beruju.index');
+                    return redirect()->route('admin.beruju.registration.index');
                     break;
 
                 case Action::UPDATE:
                     $service->update($this->berujuEntry, $dto);
                     DB::commit();
                     $this->successFlash(__('beruju::beruju.beruju_updated_successfully'));
-                    return redirect()->route('admin.beruju.index');
+                    return redirect()->route('admin.beruju.registration.index');
                     break;
 
                 default:
@@ -119,6 +122,7 @@ class BerujuEntryForm extends Component
         } catch (\Exception $e) {
             logger($e);
             DB::rollBack();
+            dd($e->getMessage());
             $this->errorFlash(__('beruju::beruju.something_went_wrong_while_saving'));
         }
     }

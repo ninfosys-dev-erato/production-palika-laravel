@@ -8,7 +8,9 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Src\Beruju\Models\BerujuEntry;
 use Src\Beruju\Enums\BerujuStatusEnum;
-use Src\Beruju\Enums\BerujuPriorityEnum;
+use Src\Beruju\Enums\BerujuSubmissionStatusEnum;
+use Src\Beruju\Enums\BerujuAduitTypeEnum;
+use Src\Beruju\Enums\BerujuCategoryEnum;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,85 +40,136 @@ class BerujuEntryTable extends DataTableComponent
             ->orderBy('created_at', 'DESC');
     }
 
-
-
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+            Column::make(__('beruju::beruju.id'), 'id')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Title', 'title')
+            Column::make(__('beruju::beruju.reference_number'), 'reference_number')
                 ->sortable()
                 ->searchable()
+                ->format(function ($value) {
+                    return $value ?: __('beruju::beruju.not_available');
+                }),
+
+            Column::make(__('beruju::beruju.entry_date'), 'entry_date')
+                ->sortable()
+                ->format(function ($value) {
+                    return $value ?: __('beruju::beruju.not_available');
+                }),
+
+            Column::make(__('beruju::beruju.audit_type'), 'audit_type')
+                ->sortable()
+                ->format(function ($value) {
+                    if (!$value) return __('beruju::beruju.not_available');
+                    try {
+                        // Check if value is already an enum instance
+                        if ($value instanceof BerujuAduitTypeEnum) {
+                            return $value->label();
+                        }
+                        // If it's a string/int, convert to enum
+                        $auditType = BerujuAduitTypeEnum::from($value);
+                        return $auditType->label();
+                    } catch (\Exception $e) {
+                        return $value;
+                    }
+                }),
+
+            Column::make(__('beruju::beruju.beruju_category'), 'beruju_category')
+                ->sortable()
+                ->format(function ($value) {
+                    if (!$value) return __('beruju::beruju.not_available');
+                    try {
+                        // Check if value is already an enum instance
+                        if ($value instanceof BerujuCategoryEnum) {
+                            return $value->label();
+                        }
+                        // If it's a string/int, convert to enum
+                        $category = BerujuCategoryEnum::from($value);
+                        return $category->label();
+                    } catch (\Exception $e) {
+                        return $value;
+                    }
+                }),
+
+            Column::make(__('beruju::beruju.amount'), 'amount')
+                ->sortable()
                 ->format(function ($value, $row) {
-                    return '<strong>' . $value . '</strong>';
+                    if (!$value) return __('beruju::beruju.not_available');
+                    $currency = $row->currency_type ?: 'NPR';
+                    return $currency . ' ' . number_format((float)$value, 2);
+                }),
+
+            Column::make(__('beruju::beruju.status'), 'status')
+                ->sortable()
+                ->format(function ($value) {
+                    if (!$value) return __('beruju::beruju.not_available');
+                    try {
+                        // Check if value is already an enum instance
+                        if ($value instanceof BerujuStatusEnum) {
+                            return '<div style="display: flex; align-items: center;">
+                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ' . $value->color() . '; margin-right: 8px;"></span>
+                                        <span>' . $value->label() . '</span>
+                                    </div>';
+                        }
+                        // If it's a string/int, convert to enum
+                        $status = BerujuStatusEnum::from($value);
+                        return '<div style="display: flex; align-items: center;">
+                                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ' . $status->color() . '; margin-right: 8px;"></span>
+                                    <span>' . $status->label() . '</span>
+                                </div>';
+                    } catch (\Exception $e) {
+                        return $value;
+                    }
                 })
                 ->html(),
 
-            Column::make('Reference Number', 'reference_number')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Entry Date', 'entry_date')
+            Column::make(__('beruju::beruju.submission_status'), 'submission_status')
                 ->sortable()
                 ->format(function ($value) {
-                    return $value ? $value->format('Y-m-d') : 'N/A';
-                }),
-
-            Column::make('Amount', 'amount')
-                ->sortable()
-                ->format(function ($value, $row) {
-                    return $value ? $row->currency_type . ' ' . number_format($value, 2) : 'N/A';
-                }),
-
-            Column::make('Status', 'status')
-                ->sortable()
-                ->format(function ($value) {
-                    $status = BerujuStatusEnum::from($value);
-                    return '<span class="badge bg-' . $status->color() . '">' . $status->label() . '</span>';
+                    if (!$value) return __('beruju::beruju.not_available');
+                    try {
+                        // Check if value is already an enum instance
+                        if ($value instanceof BerujuSubmissionStatusEnum) {
+                            return '<div style="display: flex; align-items: center;">
+                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ' . $value->color() . '; margin-right: 8px;"></span>
+                                        <span>' . $value->label() . '</span>
+                                    </div>';
+                        }
+                        // If it's a string/int, convert to enum
+                        $submissionStatus = BerujuSubmissionStatusEnum::from($value);
+                        return '<div style="display: flex; align-items: center;">
+                                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ' . $submissionStatus->color() . '; margin-right: 8px;"></span>
+                                    <span>' . $submissionStatus->label() . '</span>
+                                </div>';
+                    } catch (\Exception $e) {
+                        return $value;
+                    }
                 })
                 ->html(),
 
-            Column::make('Priority', 'priority')
+            Column::make(__('beruju::beruju.created_at'), 'created_at')
                 ->sortable()
                 ->format(function ($value) {
-                    $priority = BerujuPriorityEnum::from($value);
-                    return '<span class="badge bg-' . $priority->color() . '">' . $priority->label() . '</span>';
-                })
-                ->html(),
-
-            Column::make('Assigned To', 'assigned_to')
-                ->format(function ($value, $row) {
-                    return $row->assignedTo ? $row->assignedTo->name : 'Not Assigned';
+                    return $value ? $value->format('Y-m-d H:i') : __('beruju::beruju.not_available');
                 }),
 
-            Column::make('Submitted By', 'submitted_by')
+            Column::make(__('beruju::beruju.actions'), 'id')
                 ->format(function ($value, $row) {
-                    return $row->submittedBy ? $row->submittedBy->name : 'N/A';
-                }),
-
-            Column::make('Submitted At', 'submitted_at')
-                ->sortable()
-                ->format(function ($value) {
-                    return $value ? $value->format('Y-m-d H:i') : 'N/A';
-                }),
-
-            Column::make('Actions', 'id')
-                ->format(function ($value, $row) {
-                    $actions = '';
+                    $actions = '<div class="btn-group">';
 
                     if (Auth::user()->can('beruju view')) {
-                        $actions .= '<a href="' . route('admin.beruju.show', $value) . '" class="btn btn-sm btn-info me-1"><i class="bx bx-show"></i></a>';
+                        $actions .= '<a href="' . route('admin.beruju.registration.show', $value) . '" class="btn btn-sm  me-1"><i class="bx bx-show"></i></a>';
                     }
 
                     if (Auth::user()->can('beruju edit')) {
-                        $actions .= '<a href="' . route('admin.beruju.edit', $value) . '" class="btn btn-sm btn-warning me-1"><i class="bx bx-edit"></i></a>';
+                        $actions .= '<a href="' . route('admin.beruju.registration.edit', $value) . '" class="btn btn-sm me-1"><i class="bx bx-edit"></i></a>';
                     }
 
                     if (Auth::user()->can('beruju delete')) {
-                        $actions .= '<button wire:click="delete(' . $value . ')" class="btn btn-sm btn-danger"><i class="bx bx-trash"></i></button>';
+                        $actions .= '<button wire:click="delete(' . $value . ')" class="btn btn-sm btn"><i class="bx bx-trash"></i></button>';
                     }
 
                     return $actions;
@@ -135,5 +188,6 @@ class BerujuEntryTable extends DataTableComponent
             $this->errorFlash(__('beruju::beruju.something_went_wrong'));
         }
     }
+
     public function refresh() {}
 }

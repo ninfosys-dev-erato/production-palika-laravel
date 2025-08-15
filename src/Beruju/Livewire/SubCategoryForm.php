@@ -21,7 +21,8 @@ class SubCategoryForm extends Component
     public function rules(): array
     {
         return [
-            'subCategory.name' => ['required'],
+            'subCategory.name_eng' => ['required'],
+            'subCategory.name_nep' => ['required'],
             'subCategory.slug' => ['required'],
             'subCategory.parent_id' => ['nullable'],
             'subCategory.remarks' => ['nullable'],
@@ -31,9 +32,10 @@ class SubCategoryForm extends Component
     public function messages(): array
     {
         return [
-            'subCategory.name.required' => __('beruju::beruju.name_required'),
+            'subCategory.name_eng.required' => __('beruju::beruju.name_eng_required'),
+            'subCategory.name_nep.required' => __('beruju::beruju.name_nep_required'),
             'subCategory.slug.required' => __('beruju::beruju.slug_required'),
-            'subCategory.parent_id.nullable' => __('beruju::beruju.parent_id_exists'),
+            'parent_id.nullable' => __('beruju::beruju.parent_id_exists'),
             'subCategory.remarks.nullable' => __('beruju::beruju.no_remarks'),
         ];
     }
@@ -47,7 +49,7 @@ class SubCategoryForm extends Component
     {
         $this->subCategory = $subCategory ?? new SubCategory();
         $this->action = $action;
-        $this->parentCategories = SubCategory::whereNull('deleted_at')->pluck('name', 'id');
+        $this->parentCategories = SubCategory::whereNull('deleted_at')->pluck('name_eng', 'id');
     }
 
     public function save()

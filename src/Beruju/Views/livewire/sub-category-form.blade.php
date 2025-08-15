@@ -3,11 +3,23 @@
         <div class="row">
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
-                    <label class="form-label" for='name'>{{ __('beruju::beruju.name') }}</label>
-                    <input wire:model='subCategory.name' name='name' type='text' class='form-control'
-                        placeholder="{{ __('beruju::beruju.enter_sub_category_name') }}">
+                    <label class="form-label" for='name_eng'>{{ __('beruju::beruju.name_eng') }}</label>
+                    <input wire:model='subCategory.name_eng' name='name_eng' type='text' class='form-control'
+                        placeholder="{{ __('beruju::beruju.enter_sub_category_name_eng') }}">
                     <div>
-                        @error('subCategory.name')
+                        @error('subCategory.name_eng')
+                            <small class='text-danger'>{{ __($message) }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6 mb-3'>
+                <div class='form-group'>
+                    <label class="form-label" for='name_nep'>{{ __('beruju::beruju.name_nep') }}</label>
+                    <input wire:model='subCategory.name_nep' name='name_nep' type='text' class='form-control'
+                        placeholder="{{ __('beruju::beruju.enter_sub_category_name_nep') }}">
+                    <div>
+                        @error('subCategory.name_nep')
                             <small class='text-danger'>{{ __($message) }}</small>
                         @enderror
                     </div>

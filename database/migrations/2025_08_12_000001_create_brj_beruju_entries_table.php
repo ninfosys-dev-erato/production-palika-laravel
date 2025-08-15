@@ -25,9 +25,9 @@ return new class extends Migration
             $table->string('sub_category_id')->nullable();
             $table->string('amount')->nullable();
             $table->string('currency_type')->nullable();
-            $table->text('legal_provision')->nullable();
-            $table->string('action_deadline')->nullable();
             $table->text('description')->nullable();
+            $table->string('action_deadline')->nullable();
+            $table->text('legal_provision')->nullable();
             $table->text('notes')->nullable();
 
             // Additional fields
