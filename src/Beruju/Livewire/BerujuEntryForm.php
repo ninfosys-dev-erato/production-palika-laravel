@@ -108,11 +108,12 @@ class BerujuEntryForm extends Component
             switch ($this->action) {
                 case Action::CREATE:
                     $berujuEntry = $service->store($dto);
-
-                    // Dispatch event to save documents BEFORE committing transaction
-                    $this->dispatch('saveAllDocuments', $berujuEntry->id);
-
                     DB::commit();
+
+
+                    $this->dispatch('saveAllDocumentsfunction', $berujuEntry->id);
+
+
 
                     $this->successFlash(__('beruju::beruju.beruju_created_successfully'));
                     return redirect()->route('admin.beruju.registration.index');
@@ -120,11 +121,10 @@ class BerujuEntryForm extends Component
 
                 case Action::UPDATE:
                     $service->update($this->berujuEntry, $dto);
-
-                    // Dispatch event to save documents BEFORE committing transaction
-                    $this->dispatch('saveAllDocuments', $this->berujuEntry->id);
-
                     DB::commit();
+
+                    $this->dispatch('saveAllDocumentsfunction', $this->berujuEntry->id);
+
 
                     $this->successFlash(__('beruju::beruju.beruju_updated_successfully'));
                     return redirect()->route('admin.beruju.registration.index');

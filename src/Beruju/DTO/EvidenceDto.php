@@ -7,7 +7,7 @@ use Src\Beruju\Models\Evidence;
 class EvidenceDto
 {
     public function __construct(
-        public ?string $beruju_entry_id,
+        public ?int $beruju_entry_id,
         public ?string $name,
         public ?string $description,
         public ?string $evidence_document_name,
