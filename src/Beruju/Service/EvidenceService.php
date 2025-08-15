@@ -39,7 +39,7 @@ class EvidenceService
 
     public function delete(Evidence $evidence): bool
     {
-        return tap($evidence)->update([
+        return $evidence->update([
             'deleted_at' => now(),
             'deleted_by' => Auth::id(),
         ]);

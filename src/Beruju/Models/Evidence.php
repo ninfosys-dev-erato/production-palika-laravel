@@ -24,6 +24,7 @@ class Evidence extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'deleted_at',
     ];
 
     protected $casts = [
@@ -38,6 +39,7 @@ class Evidence extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
+        'deleted_by' => 'integer',
     ];
 
     // Relationships

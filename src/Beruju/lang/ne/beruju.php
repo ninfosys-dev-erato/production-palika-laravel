@@ -248,6 +248,10 @@ return [
     'failed_to_add_evidence' => 'प्रमाण थप्न असफल',
     'failed_to_delete_evidence' => 'प्रमाण मेटाउन असफल',
     'file_not_found' => 'फाइल फेला परेनन्',
+    'existing_document' => 'अवस्थित कागजात',
+    'existing_file_upload_new_to_replace' => 'अवस्थित फाइल प्रतिस्थापन गर्न नयाँ फाइल अपलोड गर्नुहोस्।',
+    'evidence_deleted_successfully' => 'फाइल सफलतापूर्वक मेटाइयो',
+    'failed_to_delete_evidence' => 'फाइल मेटाउन असफल',
 
     // Dashboard
     'beruju_dashboard' => 'बेरुजु ड्यासबोर्ड',

@@ -59,7 +59,7 @@ class EvidenceDocumentUpload extends Component
     }
     private function loadExistingDocuments($berujuEntryId)
     {
-        $existingEvidences = Evidence::where('beruju_entry_id', $berujuEntryId)->get();
+        $existingEvidences = Evidence::where('beruju_entry_id', $berujuEntryId)->whereNull('deleted_at')->get();
 
 
         if ($existingEvidences->isEmpty()) {
@@ -115,16 +115,38 @@ class EvidenceDocumentUpload extends Component
 
     public function removeDocuments($index)
     {
+        // Check if this is an existing document that needs to be deleted from database
+        if (
+            isset($this->savedDocuments[$index]['is_existing']) &&
+            $this->savedDocuments[$index]['is_existing'] &&
+            isset($this->savedDocuments[$index]['evidence_id'])
+        ) {
+
+            try {
+                $evidenceService = new EvidenceService();
+                $existingEvidence = Evidence::find($this->savedDocuments[$index]['evidence_id']);
+
+                if ($existingEvidence) {
+                    $evidenceService->delete($existingEvidence);
+                    $this->successToast(__('beruju::beruju.evidence_deleted_successfully'));
+                }
+            } catch (\Exception $e) {
+                $this->errorToast(__('beruju::beruju.failed_to_delete_evidence'));
+            }
+        }
+
         unset($this->evidenceDocuments[$index]);
         unset($this->evidenceData[$index]);
         unset($this->uploadedFiles[$index]);
         unset($this->uploadedFileUrls[$index]);
+        unset($this->savedDocuments[$index]);
 
         // Reindex arrays
         $this->evidenceDocuments = array_values($this->evidenceDocuments);
         $this->evidenceData = array_values($this->evidenceData);
         $this->uploadedFiles = array_values($this->uploadedFiles);
         $this->uploadedFileUrls = array_values($this->uploadedFileUrls);
+        $this->savedDocuments = array_values($this->savedDocuments);
     }
 
     private function handleFileUploadForDocument($file)
@@ -208,11 +230,9 @@ class EvidenceDocumentUpload extends Component
                     $existingEvidence = Evidence::find($document['evidence_id']);
                     if ($existingEvidence) {
                         $evidenceService->update($existingEvidence, $evidenceDto);
-                        logger('savedDocuments', $this->savedDocuments, 'update');
                     }
                 } else {
                     $evidenceService->store($evidenceDto);
-                    logger('savedDocuments', $this->savedDocuments, 'store');
                 }
             }
 

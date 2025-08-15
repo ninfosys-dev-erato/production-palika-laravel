@@ -250,6 +250,10 @@ return [
     'failed_to_delete_evidence' => 'Failed to delete evidence',
     'beruju_id_is_required' => 'Beruju Entry ID is required to save documents',
     'file_not_found' => 'File not found',
+    'existing_document' => 'Existing Document',
+    'existing_file_upload_new_to_replace' => 'Existing file. Upload new file to replace.',
+    'evidence_deleted_successfully' => 'Evidence deleted successfully',
+    'failed_to_delete_evidence' => 'Failed to delete evidence',
 
     // Dashboard
     'beruju_dashboard' => 'Beruju Dashboard',
