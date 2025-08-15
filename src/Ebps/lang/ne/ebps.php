@@ -1821,4 +1821,12 @@ return [
     'enter_form_id' => 'फारम ID प्रविष्ट गर्नुहोस्',
     'active' => 'सक्रिय',
     'cancel' => 'रद्द गर्नुहोस्',
+    'name' => 'नाम',
+    'form' => 'फारम',
+    'additional_form_setting' => 'अतिरिक्त फारम सेटिङ',
+    'additional_form_setting_list' => 'अतिरिक्त फारम सेटिङ सूची',
+    'additional_form_setting_created_successfully' => 'अतिरिक्त फारम सेटिङ सफलतापूर्वक सिर्जना गरियो',
+    'additional_form_setting_updated_successfully' => 'अतिरिक्त फारम सेटिङ सफलतापूर्वक अपडेट गरियो',
+    'additional_form_setting_deleted_successfully' => 'अतिरिक्त फारम सेटिङ सफलतापूर्वक मेटाइयो',
+    'additional_form_setting_not_found' => 'अतिरिक्त फारम सेटिङ फेला परेनन्',
 ];
