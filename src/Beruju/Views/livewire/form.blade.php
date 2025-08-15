@@ -256,20 +256,12 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Group 5: Evidences -->
-            <div class="divider divider-primary text-start text-primary mb-4">
-                <div class="divider-text fw-bold fs-6">
-                    {{ __('beruju::beruju.evidences') }}
-                </div>
-            </div>
-            <div class="row g-4">
-                <livewire:beruju.evidence_document_upload :$berujuEntry />
-            </div>
-
         </div>
 
     </div>
+
+    <livewire:beruju.evidence_document_upload :$berujuEntry />
+
 
 
 

@@ -101,4 +101,10 @@ class BerujuEntry extends Model
     {
         return $this->belongsTo(FiscalYear::class, 'fiscal_year_id');
     }
+    // Relationships
+    public function evidences()
+    {
+        return $this->hasMany(Evidence::class, 'beruju_entry_id');
+    }
+
 }

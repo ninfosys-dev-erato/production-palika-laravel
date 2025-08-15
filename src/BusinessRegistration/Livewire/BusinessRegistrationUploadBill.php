@@ -53,8 +53,10 @@ class BusinessRegistrationUploadBill extends Component
             $service->uploadBill($this->businessRegistration, $dto, !$this->isCustomer);
             $this->successFlash(__('businessregistration::businessregistration.bill_uploaded_successfully'));
             return redirect()->route(
-                $this->isCustomer ? 'customer.business-registration.business-registration.show' : 'admin.business-registration.business-registration.show',
-                $this->businessRegistration->id
+                $this->isCustomer
+                    ? 'customer.business-registration.business-registration.show'
+                    : 'admin.business-registration.business-registration.show',
+                ['id' => $this->businessRegistration->id, 'type' => $this->businessRegistration->registration_type]
             );
         } catch (\Exception $e) {
             logger()->error($e);
