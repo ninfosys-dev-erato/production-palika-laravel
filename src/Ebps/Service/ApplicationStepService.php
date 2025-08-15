@@ -32,7 +32,6 @@ class ApplicationStepService
     {
         // Get the first step (before_filling_application) for the specified application type
         $firstStep = MapStep::whereNull('deleted_by')
-            ->where('form_position', FormPositionEnum::BEFORE_FILLING_APPLICATION)
             ->where('application_type', $applicationType)
             ->orderBy('id')
             ->first();
