@@ -478,8 +478,11 @@
             </div>
 
             <div class=" d-flex justify-content-between mb-4">
-                <label class="form-label" for="form-label">{{ __('ebps::ebps.four_boundaries') }}</label>
-                <button type="button" class="btn btn-primary" wire:click='addFourBoundaries'>
+                <label class="form-label" for="form-label">
+                    {{ __('ebps::ebps.four_boundaries') }}
+                </label>
+                <button type="button" class="btn btn-primary" wire:click='addFourBoundaries' 
+                        {{ count($fourBoundaries) >= 4 ? 'disabled' : '' }}>
                     + {{ __('ebps::ebps.add_four_boundaries') }}
                 </button>
             </div>
@@ -513,7 +516,7 @@
                                                 class='form-control'>
                                                 <option value="">
                                                     {{ __('ebps::ebps.select_direction') }}</option>
-                                                @foreach (\Src\Ebps\Enums\DirectionEnum::cases() as $direction)
+                                                @foreach ($this->getAvailableDirections($index) as $direction)
                                                     <option value="{{ $direction->value }}">
                                                         {{ $direction->label() }}
                                                     </option>

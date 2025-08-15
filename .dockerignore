@@ -18,6 +18,8 @@ phpunit.xml
 .phpcs.xml
 .phpunit.xml
 storage/app/*
+!storage/app/oauth-private.key
+!storage/app/oauth-public.key
 storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*

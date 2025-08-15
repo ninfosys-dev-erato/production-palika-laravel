@@ -107,7 +107,7 @@ class BuildingRegistrationApproveAllSteps extends Component
                 }
             }
 
-            $this->successFlash(__('ebps::ebps.consultant_supervisor_steps_approved_successfully', ['count' => $approvedCount]));
+            $this->successFlash(__('ebps::ebps.consultancy_steps_approved_successfully', ['count' => $approvedCount]));
             $this->hideConfirmation();
             
             // Redirect to refresh the page
@@ -134,27 +134,26 @@ class BuildingRegistrationApproveAllSteps extends Component
             return false;
         }
 
-        // Check if all 3 steps are pending (not accepted) and have consultant_supervisor as submitter
+        // Check if all 3 steps are pending (not accepted) and have consultancy as submitter
         $pendingCount = 0;
-        $consultantSupervisorCount = 0;
+        $consultancyCount = 0;
         
         foreach ($buildingSteps as $mapStep) {
-            $mapApplyStep = MapApplyStep::where('map_step_id', $mapStep->id)
-                ->where('map_apply_id', $this->mapApply->id)
-                ->first();
+            // Use the same logic as the view to determine status
+            $appliedStep = $this->mapApply->mapApplySteps->where('map_step_id', $mapStep->id)->first();
+            $status = $appliedStep ? $appliedStep->status : 'not_applied';
 
-            // If step doesn't exist or is not accepted, count it as pending
-            if (!$mapApplyStep || $mapApplyStep->status !== 'accepted') {
+            if ($appliedStep && $appliedStep->status === 'pending') {
                 $pendingCount++;
             }
-            
-            // Check if submitter is consultant_supervisor
-            if ($mapStep->form_submitter === FormSubmitterEnum::CONSULTANT_SUPERVISOR->value) {
-                $consultantSupervisorCount++;
+
+            // Check if submitter is consultancy
+            if (strtolower($mapStep->form_submitter) === FormSubmitterEnum::CONSULTANT_SUPERVISOR->value) {
+                $consultancyCount++;
             }
         }
 
-        // Only show button if exactly 3 steps are pending AND all 3 have consultant_supervisor as submitter
-        return $pendingCount === 3 && $consultantSupervisorCount === 3;
+        // Only show button if exactly 3 steps are pending AND all 3 have consultancy as submitter
+        return $pendingCount === 3 && $consultancyCount === 3;
     }
 } 

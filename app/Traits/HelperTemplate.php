@@ -17,11 +17,11 @@ trait HelperTemplate
     function getLetterHeader(
         ?int $ward_no = null,
         string $date = '',     // default inside function if empty
-        string $reg_no = '1',
+        string|null $reg_no = '',
         bool $is_darta = true,
         string|null $fiscal_year = ''
     ): string {
-        $date = $date ?: date('Y-m-d');
+        $date = $date ?: getFormattedBsDate() ?? '';
         $fiscal_year = $fiscal_year ?: (getSetting('fiscal-year') ?? self::EMPTY_LINES);
 
 
@@ -376,33 +376,41 @@ trait HelperTemplate
             '{{customer.email}}' => $customer->email ?? self::EMPTY_LINES,
             '{{customer.mobile_no}}' => $customer->mobile_no ?? self::EMPTY_LINES,
             '{{customer.gender}}' => $customer->gender?->label() ?? self::EMPTY_LINES,
-            '{{customer.nepali_date_of_birth}}' => $customer->kyc?->nepali_date_of_birth ?? self::EMPTY_LINES,
-            '{{customer.english_date_of_birth}}' => $customer->kyc?->english_date_of_birth ?? self::EMPTY_LINES,
-            '{{customer.grandfather_name}}' => $customer->kyc?->grandfather_name ?? self::EMPTY_LINES,
-            '{{customer.father_name}}' => $customer->kyc?->father_name ?? self::EMPTY_LINES,
-            '{{customer.mother_name}}' => $customer->kyc?->mother_name ?? self::EMPTY_LINES,
-            '{{customer.spouse_name}}' => $customer->kyc?->spouse_name ?? self::EMPTY_LINES,
-            '{{customer.permanent_province_id}}' => $customer->kyc?->permanentProvince?->title ?? self::EMPTY_LINES,
-            '{{customer.permanent_district_id}}' => $customer->kyc?->permanentDistrict?->title ?? self::EMPTY_LINES,
-            '{{customer.permanent_local_body_id}}' => $customer->kyc?->permanentLocalBody?->title ?? self::EMPTY_LINES,
-            '{{customer.permanent_ward}}' => $customer->kyc?->permanent_ward ?? self::EMPTY_LINES,
-            '{{customer.permanent_tole}}' => $customer->kyc?->permanent_tole ?? self::EMPTY_LINES,
-            '{{customer.temporary_province_id}}' => $customer->kyc?->temporaryProvince?->title ?? self::EMPTY_LINES,
-            '{{customer.temporary_district_id}}' => $customer->kyc?->temporaryDistrict?->title ?? self::EMPTY_LINES,
-            '{{customer.temporary_local_body_id}}' => $customer->kyc?->temporaryLocalBody?->title ?? self::EMPTY_LINES,
-            '{{customer.temporary_ward}}' => $customer->kyc?->temporary_ward ?? self::EMPTY_LINES,
-            '{{customer.temporary_tole}}' => $customer->kyc?->temporary_tole ?? self::EMPTY_LINES,
-            '{{customer.document_issued_date_nepali}}' => $customer->kyc?->document_issued_date_nepali ?? self::EMPTY_LINES,
-            '{{customer.document_issued_date_english}}' => $customer->kyc?->document_issued_date_english ?? self::EMPTY_LINES,
-            '{{customer.document_number}}' => $customer->kyc?->document_number ?? self::EMPTY_LINES,
+            '{{customer.gender_ne}}' => match ($customer->gender?->value ?? null) {
+                'female' => 'महिला',
+                'male' => 'पुरुष',
+                default => self::EMPTY_LINES,
+            },
+            '{{customer.nepali_date_of_birth}}' => replaceNumbers($customer->kyc->nepali_date_of_birth, true) ?? self::EMPTY_LINES,
+            '{{customer.english_date_of_birth}}' => $customer->kyc->english_date_of_birth ?? self::EMPTY_LINES,
+            '{{customer.grandfather_name}}' => $customer->kyc->grandfather_name ?? self::EMPTY_LINES,
+            '{{customer.father_name}}' => $customer->kyc->father_name ?? self::EMPTY_LINES,
+            '{{customer.mother_name}}' => $customer->kyc->mother_name ?? self::EMPTY_LINES,
+            '{{customer.spouse_name}}' => $customer->kyc->spouse_name ?? self::EMPTY_LINES,
+            '{{customer.permanent_province_id}}' => $customer->kyc->permanentProvince?->title ?? self::EMPTY_LINES,
+            '{{customer.permanent_district_id}}' => $customer->kyc->permanentDistrict?->title ?? self::EMPTY_LINES,
+            '{{customer.permanent_local_body_id}}' => $customer->kyc->permanentLocalBody?->title ?? self::EMPTY_LINES,
+            '{{customer.permanent_district_id_en}}' => $customer->kyc->permanentDistrict?->title_en ?? self::EMPTY_LINES,
+            '{{customer.permanent_local_body_id_en}}' => $customer->kyc->permanentLocalBody?->title_en ?? self::EMPTY_LINES,
+            '{{customer.permanent_ward}}' => replaceNumbers($customer->kyc->permanent_ward, true) ?? self::EMPTY_LINES,
+            '{{customer.permanent_ward_en}}' => $customer->kyc->permanent_ward ?? self::EMPTY_LINES,
+            '{{customer.permanent_tole}}' => $customer->kyc->permanent_tole ?? self::EMPTY_LINES,
+            '{{customer.temporary_province_id}}' => $customer->kyc->temporaryProvince?->title ?? self::EMPTY_LINES,
+            '{{customer.temporary_district_id}}' => $customer->kyc->temporaryDistrict?->title ?? self::EMPTY_LINES,
+            '{{customer.temporary_local_body_id}}' => $customer->kyc->temporaryLocalBody?->title ?? self::EMPTY_LINES,
+            '{{customer.temporary_ward}}' => replaceNumbers($customer->kyc->temporary_ward, true) ?? self::EMPTY_LINES,
+            '{{customer.temporary_tole}}' => $customer->kyc->temporary_tole ?? self::EMPTY_LINES,
+            '{{customer.document_issued_date_nepali}}' => replaceNumbers($customer->kyc->document_issued_date_nepali) ?? self::EMPTY_LINES,
+            '{{customer.document_issued_date_english}}' => $customer->kyc->document_issued_date_english ?? self::EMPTY_LINES,
+            '{{customer.document_number}}' => $customer->kyc->document_number ?? self::EMPTY_LINES,
             '{{customer.document_image1}}' => 'data:image/jpeg;base64,' . base64_encode(
                 FileFacade::getFile($imagePath, (string) $customer->kyc?->document_image1)
             ),
             '{{customer.document_image2}}' => 'data:image/jpeg;base64,' . base64_encode(
                 FileFacade::getFile($imagePath, (string) $customer->kyc?->document_image2)
             ),
-            '{{customer.expiry_date_nepali}}' => $customer->kyc?->expiry_date_nepali ?? self::EMPTY_LINES,
-            '{{customer.expiry_date_english}}' => $customer->kyc?->expiry_date_english ?? self::EMPTY_LINES
+            '{{customer.expiry_date_nepali}}' => $customer->kyc->expiry_date_nepali ?? self::EMPTY_LINES,
+            '{{customer.expiry_date_english}}' => $customer->kyc->expiry_date_english ?? self::EMPTY_LINES
         ];
     }
 

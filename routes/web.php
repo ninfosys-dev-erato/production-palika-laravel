@@ -45,3 +45,8 @@ Route::prefix('organization')->name('organization.')->middleware('auth:organizat
     Route::get('/change-password',[OrganizationController::class,'changeOrganizationPassword'])->name('change-password');
     Route::any('/logout', [OrganizationController::class, 'organizationLogout'])->name('logout');
 });
+
+// Health check endpoint for Docker container
+Route::get('/health', function () {
+    return response('healthy', 200)->header('Content-Type', 'text/plain');
+});

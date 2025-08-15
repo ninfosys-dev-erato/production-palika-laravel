@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   laravel-app:
     build:
@@ -6,6 +5,7 @@ services:
       dockerfile: docker/8.3-prod/Dockerfile
       args:
         WWWGROUP: "1000"
+        WWWUSER: "1000"
     image: "laravel-prod:latest"
     container_name: "${APP_ABBREVIATION:-laravel-app}-${APP_PORT:-3000}"
     restart: unless-stopped
@@ -87,13 +87,13 @@ services:
       # Memcached Settings
       MEMCACHED_HOST: "${MEMCACHED_HOST:-127.0.0.1}"
     volumes:
-      # Bind mount to specific host paths for persistent storage
-      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/app:/var/www/html/storage/app"
-      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/logs:/var/www/html/storage/logs"
-      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/framework:/var/www/html/storage/framework"
+      # Mount entire storage directory to maintain Laravel's structure
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage:/var/www/html/storage"
+      # Mount bootstrap cache for performance
       - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/bootstrap/cache:/var/www/html/bootstrap/cache"
-      # For publicly accessible uploaded files/images
-      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/storage/app/public:/var/www/html/public/storage"
+      # Mount logs directory for external access
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/logs/nginx:/tmp/nginx-logs"
+      - "/mnt/data/digital-epalika/${APP_ABBREVIATION}/logs/php-fpm:/tmp/php-fpm-logs"
     networks:
       - laravel-network
     extra_hosts:
@@ -109,6 +109,26 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - NET_BIND_SERVICE
+    read_only: false
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+      - /var/tmp:noexec,nosuid,size=100m
+    ulimits:
+      nofile:
+        soft: 131072
+        hard: 131072
+      nproc:
+        soft: 65536
+        hard: 65536
 
 networks:
   laravel-network:

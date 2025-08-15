@@ -57,8 +57,8 @@
                             <option value="">{{ __('filetracking::filetracking.select_a_department') }}
                             </option>
                             @foreach ($recepientDepartment as $receipent)
-                                <option value="{{ get_class($receipent) . '_' . $receipent->id }}">
-                                    {{ $receipent->display_name }}</option>
+                                <option value="{{ $receipent['type'] . '_' . $receipent['model']->id }}">
+                                    {{ $receipent['name'] }}</option>
                             @endforeach
                         </select>
 
@@ -176,8 +176,8 @@
                             wire:change="signeeDepartmentUser" required>
                             <option value="">{{ __('filetracking::filetracking.select_a_signee') }}</option>
                             @foreach ($signeesDepartment as $signee)
-                                <option value="{{ get_class($signee) . '_' . $signee->id }}">
-                                    {{ $signee->display_name }}</option>
+                                <option value="{{ $signee['type'] . '_' . $signee['model']->id }}">
+                                    {{ $signee['name'] }}</option>
                             @endforeach
                         </select>
 

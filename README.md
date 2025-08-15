@@ -115,3 +115,21 @@ For open source projects, say how it is licensed.
 ## Project status
 
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+
+# Manaul Fixing
+
+```
+# Stop the container first
+docker-compose -f docker-compose.prod.yml down
+
+# Fix host permissions
+sudo chown -R 1000:1000 /mnt/data/digital-epalika/devpalika
+sudo find /mnt/data/digital-epalika/devpalika -type d -exec chmod 755 {} \;
+sudo find /mnt/data/digital-epalika/devpalika -type f -exec chmod 644 {} \;
+sudo chmod -R 775 /mnt/data/digital-epalika/devpalika/storage
+sudo chmod -R 755 /mnt/data/digital-epalika/devpalika/storage/app/private/fileTracking
+
+# Start the container again
+docker-compose -f docker-compose.prod.yml up
+```

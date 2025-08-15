@@ -20,12 +20,11 @@ class WebsiteHandler extends Controller
 
     public function getData()
     {
-
-        [$sliders, $notices, $galleries] = Concurrency::run([
-            fn () => $this->websiteService->parseSliders(),
-            fn () => $this->websiteService->parseNotices(),
-            fn () => $this->websiteService->parseGallery(),
-        ]);
+        // Execute service calls sequentially instead of using Concurrency::run()
+        $sliders = $this->websiteService->parseSliders();
+        $notices = $this->websiteService->parseNotices();
+        $galleries = $this->websiteService->parseGallery();
+        
         return $this->generalSuccess([
             'data' => [
                 'sliders' =>  $sliders,

@@ -167,9 +167,28 @@ class BuildingRegistrationForm extends Component
 
     public function addFourBoundaries()
     {
+        // Limit to 4 boundaries (matching DirectionEnum cases)
+        if (count($this->fourBoundaries) >= 4) {
+            $this->errorToast(__('ebps::ebps.maximum_four_boundaries_allowed'));
+            return;
+        }
+        
+        // Get the next available direction
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $availableDirections = collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections) {
+                return !in_array($direction->value, $usedDirections);
+            });
+        
+        $nextDirection = $availableDirections->first();
+        
         $this->fourBoundaries[] = [
             'title' => '',
-            'direction' => '',
+            'direction' => $nextDirection ? $nextDirection->value : '',
             'distance' => '',
             'lot_no' => ''
         ];
@@ -181,6 +200,26 @@ class BuildingRegistrationForm extends Component
         $this->fourBoundaries = array_values($this->fourBoundaries);
 
       
+    }
+
+    public function getAvailableDirections($currentIndex)
+    {
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $currentDirection = $this->fourBoundaries[$currentIndex]['direction'] ?? '';
+        
+        return collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections, $currentDirection) {
+                // Allow current direction to remain selected
+                if ($direction->value === $currentDirection) {
+                    return true;
+                }
+                // Filter out already used directions
+                return !in_array($direction->value, $usedDirections);
+            });
     }
 
     public function loadFourBoundaries($customerLandDetail)
