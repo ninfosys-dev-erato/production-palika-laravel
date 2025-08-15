@@ -14,6 +14,7 @@ use Src\Ebps\Exports\MapAppliesExport;
 use Src\Ebps\Models\MapApply;
 use Src\Ebps\Models\MapApplyDetail;
 use Src\Ebps\Service\MapApplyAdminService;
+use Src\Ebps\Service\ApplicationStepService;
 use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class BuildingRegistrationTable extends DataTableComponent
@@ -24,6 +25,14 @@ class BuildingRegistrationTable extends DataTableComponent
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+    
+    protected ApplicationStepService $applicationStepService;
+    
+    public function boot(): void
+    {
+        $this->applicationStepService = new ApplicationStepService();
+    }
+    
     public function configure(): void
     {
         $this->setPrimaryKey('ebps_map_applies.id')
@@ -82,11 +91,16 @@ class BuildingRegistrationTable extends DataTableComponent
                 $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                 $buttons .= $view;
            
-                $edit = '<button type="button" class="btn btn-primary btn-sm"  wire:click="edit(' . $row->id . ')"><i class="bx bx-edit"></i></button>';
-                $buttons .= $edit;
-           
-                // $delete = '<button type="button" class="btn btn-danger btn-sm"  wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
-                // $buttons .= $delete;
+                // Check if first step has been approved using the service
+                $firstStepApproved = $this->applicationStepService->isFirstStepApprovedForBuildingRegistration($row->id);
+                
+                // Only show edit and delete buttons if first step is not approved
+                if (!$firstStepApproved) {
+                    $edit = '<button type="button" class="btn btn-primary btn-sm"  wire:click="edit(' . $row->id . ')"><i class="bx bx-edit"></i></button>&nbsp;';
+                    $buttons .= $edit;
+                    $delete = '<button type="button" class="btn btn-danger btn-sm"  wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
+                    $buttons .= $delete;
+                }
            
             $moveForward = '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
             $buttons .= $moveForward;
