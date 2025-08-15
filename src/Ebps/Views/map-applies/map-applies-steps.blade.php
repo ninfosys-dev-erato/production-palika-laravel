@@ -73,7 +73,7 @@
                         </div>
 
                         <!-- Approve All Steps Button -->
-                        <livewire:ebps.approve_all_steps :mapApply="$mapApply" />
+                        <livewire:ebps.map_applies_approve_all_steps :mapApply="$mapApply" />
                     </div>
 
                     @php
@@ -188,10 +188,12 @@
                                                     @endphp
 
                                                     @if ($canUserAccessStep && ($status != 'accepted' || isSuperAdmin()))
-                                                        <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
-                                                            class="btn btn-primary btn-sm me-2">
-                                                            <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
-                                                        </a>
+                                                        @if ($mapStep->form && $mapStep->form->isNotEmpty())
+                                                            <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
+                                                                class="btn btn-primary btn-sm me-2">
+                                                                <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
+                                                            </a>
+                                                        @endif
                                                     @endif
 
                                                     @if ($mapApplyStep)
@@ -201,7 +203,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($canUserAccessStep && $status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    @if ($canUserAccessStep && $status != 'accepted')
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"

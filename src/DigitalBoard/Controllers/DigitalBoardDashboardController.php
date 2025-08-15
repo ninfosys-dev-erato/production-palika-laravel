@@ -32,13 +32,14 @@ class DigitalBoardDashboardController extends Controller implements HasMiddlewar
                 $citizenCharterCount,
                
             ] = Cache::remember('digital_board_dashboard_data', now()->addMinutes(5), function () {
-                return Concurrency::run([
-                    fn() => Notice::whereNull('deleted_at')->count() ?? 0,
-                    fn() => Video::whereNull('deleted_at')->count() ?? 0,
-                    fn() => Program::whereNull('deleted_at')->count() ?? 0,
-                    fn() => PopUp::whereNull('deleted_at')->count() ?? 0,
-                    fn() => CitizenCharter::whereNull('deleted_at')->count() ?? 0,
-                ]);
+                // Execute queries sequentially instead of using Concurrency::run()
+                $noticeCount = Notice::whereNull('deleted_at')->count() ?? 0;
+                $videoCount = Video::whereNull('deleted_at')->count() ?? 0;
+                $programCount = Program::whereNull('deleted_at')->count() ?? 0;
+                $popUpCount = PopUp::whereNull('deleted_at')->count() ?? 0;
+                $citizenCharterCount = CitizenCharter::whereNull('deleted_at')->count() ?? 0;
+                
+                return [$noticeCount, $videoCount, $programCount, $popUpCount, $citizenCharterCount];
             });
         } catch (\Exception $e) {
             Cache::forget('digital_board_dashboard_data');

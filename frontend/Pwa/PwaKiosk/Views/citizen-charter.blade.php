@@ -20,6 +20,7 @@
         }
     </style>
     @livewireStyles
+    <link rel="stylesheet" href="{{ asset('vendor/rappasoft/livewire-tables/css/laravel-livewire-tables.min.css') }}" />
 </head>
 <body class="container">
 

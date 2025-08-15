@@ -22,18 +22,18 @@ class BusinessRegistrationDashboardController extends Controller
                 $renewedBusinessCount,
 
             ] = Cache::remember('business-registration-dashboard-data', now()->addMinutes(5), function () {
-                return Concurrency::run([
-                    fn() => BusinessRegistration::whereNull('deleted_at')->count() ?? 0,
-                    fn() => BusinessRenewal::whereNull('deleted_at')->count() ?? 0,
-                    fn() => BusinessRegistration::whereNotNull('registration_date')
-                        ->whereNotNull('registration_number')
-                        ->whereNull('deleted_at')
-                        ->count() ?? 0,
-                    fn() => BusinessRenewal::whereNotNull('renew_date')
-                        ->whereNull('deleted_at')
-                        ->count() ?? 0,
+                // Execute queries sequentially instead of using Concurrency::run()
+                $registrationApplicationCount = BusinessRegistration::whereNull('deleted_at')->count() ?? 0;
+                $renewalApplicationCount = BusinessRenewal::whereNull('deleted_at')->count() ?? 0;
+                $registeredBusinessCount = BusinessRegistration::whereNotNull('registration_date')
+                    ->whereNotNull('registration_number')
+                    ->whereNull('deleted_at')
+                    ->count() ?? 0;
+                $renewedBusinessCount = BusinessRenewal::whereNotNull('renew_date')
+                    ->whereNull('deleted_at')
+                    ->count() ?? 0;
 
-                ]);
+                return [$registrationApplicationCount, $renewalApplicationCount, $registeredBusinessCount, $renewedBusinessCount];
             });
         } catch (\Exception $e) {
             Cache::forget('business-registration-dashboard-data');

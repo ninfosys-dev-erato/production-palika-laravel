@@ -77,6 +77,7 @@
                                         </th>
                                         <th class="text-center">{{ __('ebps::ebps.file_name') }}</th>
                                         <th class="text-center">{{ __('ebps::ebps.फइल') }}</th>
+                                        <th class="text-center">{{ __('ebps::ebps.actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -94,6 +95,13 @@
                                                 @else
                                                     <span class="text-muted">{{ __('ebps::ebps.no_file') }}</span>
                                                 @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                    wire:click="deleteFile({{ $file->id }})"
+                                                    wire:confirm="{{ __('ebps::ebps.are_you_sure_you_want_to_delete_this_file') }}">
+                                                    <i class="bx bx-trash"></i> {{ __('ebps::ebps.delete') }}
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach

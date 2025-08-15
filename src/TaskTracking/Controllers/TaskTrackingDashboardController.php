@@ -31,23 +31,23 @@ class TaskTrackingDashboardController extends Controller implements HasMiddlewar
                 $totalTaskType,
                 $projectChart
             ] = Cache::remember('task_dashboard_data', now()->addMinutes(5), function () {
-                return Concurrency::run([
-                    fn () => Task::whereNull('deleted_at')->count() ?? 0,
-                    fn () => Task::where('status', TaskStatus::TODO)->count() ?? 0,
-                    fn () => Task::where('status', TaskStatus::INPROGRESS)->count() ?? 0,
-                    fn () => Task::where('status', TaskStatus::COMPLETED)->count() ?? 0,
-                    fn () => Project::whereNull('deleted_at')->count() ?? 0,
-                    fn () => TaskType::whereNull('deleted_at')->count() ?? 0,
-                    fn () => Project::withCount('tasks')
-                        ->whereNull('deleted_at')
-                        ->get()
-                        ->mapWithKeys(function ($project) {
-                            $projectTitle = trim($project->title) ?: 'Unnamed Project';
+                // Execute queries sequentially instead of using Concurrency::run()
+                $totalTask = Task::whereNull('deleted_at')->count() ?? 0;
+                $totalTodoTask = Task::where('status', TaskStatus::TODO)->count() ?? 0;
+                $totalInProgressTask = Task::where('status', TaskStatus::INPROGRESS)->count() ?? 0;
+                $totalCompletedTask = Task::where('status', TaskStatus::COMPLETED)->count() ?? 0;
+                $totalProjectCount = Project::whereNull('deleted_at')->count() ?? 0;
+                $totalTaskType = TaskType::whereNull('deleted_at')->count() ?? 0;
+                $projectChart = Project::withCount('tasks')
+                    ->whereNull('deleted_at')
+                    ->get()
+                    ->mapWithKeys(function ($project) {
+                        $projectTitle = trim($project->title) ?: 'Unnamed Project';
 
-                            return [$projectTitle => $project->tasks_count];
-                        }),
+                        return [$projectTitle => $project->tasks_count];
+                    });
 
-                ]);
+                return [$totalTask, $totalTodoTask, $totalInProgressTask, $totalCompletedTask, $totalProjectCount, $totalTaskType, $projectChart];
             });
 
         } catch (\Exception $e) {

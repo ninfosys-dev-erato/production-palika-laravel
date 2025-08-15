@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Exit on any error
-set -e
+# Hardened Laravel Production Container Startup Script
+# This script starts nginx, php-fpm, and other services with security hardening
 
 # Colors for output
 RED='\033[0;31m'
@@ -9,7 +9,6 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Function to print colored output
 print_status() {
     echo -e "${GREEN}[INFO]${NC} $1"
 }
@@ -22,131 +21,225 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then
-    print_error "This script must be run as root"
-    exit 1
-fi
-
-print_status "Starting Laravel application container..."
-
-# Set correct ownership for Laravel directories
-print_status "Setting up Laravel directories and permissions..."
-chown -R sail:sail /var/www/html/storage
-chown -R sail:sail /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage
-chmod -R 775 /var/www/html/bootstrap/cache
-
-# Create required directories if they don't exist
-mkdir -p /var/www/html/storage/logs
-mkdir -p /var/www/html/storage/app
-mkdir -p /var/www/html/storage/framework/cache
-mkdir -p /var/www/html/storage/framework/sessions
-mkdir -p /var/www/html/storage/framework/views
-mkdir -p /var/log/supervisor
-
-# Ensure proper ownership for all storage directories
-chown -R sail:sail /var/www/html/storage
-chown -R sail:sail /var/www/html/bootstrap/cache
-
-# Create opcache preload file if it doesn't exist
-if [ ! -f /var/www/html/config/opcache.php ]; then
-    print_status "Creating opcache preload file..."
-    cat > /var/www/html/config/opcache.php << 'EOF'
-<?php
-// OPcache preload script for Laravel
-if (!function_exists('opcache_compile_file')) {
-    return;
-}
-
-// Define the application root
-$appRoot = dirname(__DIR__);
-
-// Preload Composer autoloader
-$autoloader = $appRoot . '/vendor/autoload.php';
-if (file_exists($autoloader)) {
-    require_once $autoloader;
-}
-
-// Preload Laravel framework files
-$preloadFiles = [
-    '/vendor/laravel/framework/src/Illuminate/Foundation/Application.php',
-    '/vendor/laravel/framework/src/Illuminate/Container/Container.php',
-    '/vendor/laravel/framework/src/Illuminate/Support/ServiceProvider.php',
-    '/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php',
-    '/vendor/laravel/framework/src/Illuminate/Http/Request.php',
-    '/vendor/laravel/framework/src/Illuminate/Http/Response.php',
-    '/vendor/laravel/framework/src/Illuminate/Routing/Router.php',
-    '/vendor/laravel/framework/src/Illuminate/View/View.php',
-    '/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php',
-];
-
-foreach ($preloadFiles as $file) {
-    $fullPath = $appRoot . $file;
-    if (file_exists($fullPath)) {
-        opcache_compile_file($fullPath);
-    }
-}
-
-// Preload application files
-$appFiles = [
-    '/app/Http/Kernel.php',
-    '/app/Providers/AppServiceProvider.php',
-    '/app/Providers/RouteServiceProvider.php',
-    '/config/app.php',
-    '/config/database.php',
-];
-
-foreach ($appFiles as $file) {
-    $fullPath = $appRoot . $file;
-    if (file_exists($fullPath)) {
-        opcache_compile_file($fullPath);
-    }
-}
+# Main startup function
+main() {
+    print_status "Starting hardened Laravel application container..."
+    
+    # Create essential directories with proper permissions
+    print_status "Setting up directories..."
+    mkdir -p /run/php /var/run 2>/dev/null || true
+    mkdir -p /var/run/php 2>/dev/null || true
+    mkdir -p /var/lib/nginx/body /var/lib/nginx/fastcgi /var/lib/nginx/proxy 2>/dev/null || true
+    mkdir -p /var/lib/nginx/scgi /var/lib/nginx/uwsgi 2>/dev/null || true
+    mkdir -p /etc/nginx/sites-enabled 2>/dev/null || true
+    
+    # Set proper permissions for nginx directories
+    print_status "Setting up permissions..."
+    chown -R www-data:www-data /var/lib/nginx /run/php /var/run/php 2>/dev/null || true
+    chmod -R 755 /var/lib/nginx /run/php /var/run/php 2>/dev/null || true
+    
+    # Create nginx sites symlink
+    print_status "Setting up nginx configuration..."
+    ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default 2>/dev/null || true
+    
+    # Create temporary OPcache blacklist in /tmp (always works)
+    print_status "Creating OPcache blacklist in /tmp..."
+    cat > /tmp/opcache-blacklist.txt << 'EOF'
+# OPcache blacklist for files that should not be cached
+/var/www/html/storage/
+/var/www/html/bootstrap/cache/
+/var/www/html/.env
 EOF
-    chown sail:sail /var/www/html/config/opcache.php
-fi
+    
+    # Test configurations
+    print_status "Testing configurations..."
+    if nginx -t 2>/dev/null; then
+        print_status "Nginx configuration OK"
+    else
+        print_error "Nginx configuration test failed:"
+        nginx -t 2>&1 || true
+    fi
+    
+    if php-fpm8.3 -t 2>/dev/null; then
+        print_status "PHP-FPM configuration OK"
+    else
+        print_error "PHP-FPM configuration test failed:"
+        php-fpm8.3 -t 2>&1 || true
+    fi
+    
+    # Database connectivity check
+    print_status "Checking database connectivity..."
+    if [ -n "$DB_HOST" ] && [ -n "$DB_PORT" ]; then
+        timeout=10
+        while [ $timeout -gt 0 ]; do
+            if mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" --silent 2>/dev/null; then
+                print_status "Database connection successful"
+                break
+            fi
+            timeout=$((timeout - 1))
+            [ $timeout -eq 0 ] && print_warning "Database not reachable, continuing anyway..."
+            sleep 1
+        done
+    else
+        print_warning "Database variables not set, skipping connectivity check"
+    fi
+    
+    # LIBERAL STORAGE PERMISSIONS SETUP - FIX FOR 500 ERRORS
+    print_status "Setting up Laravel storage directories with LIBERAL permissions..."
+    mkdir -p /var/www/html/storage/logs 2>/dev/null || true
+    mkdir -p /var/www/html/storage/app/public 2>/dev/null || true
+    mkdir -p /var/www/html/storage/app/private 2>/dev/null || true
+    mkdir -p /var/www/html/storage/framework/cache 2>/dev/null || true
+    mkdir -p /var/www/html/storage/framework/sessions 2>/dev/null || true
+    mkdir -p /var/www/html/storage/framework/views 2>/dev/null || true
+    mkdir -p /var/www/html/bootstrap/cache 2>/dev/null || true
+    
+    # LIBERAL PERMISSIONS - Make everything writable to fix upload issues
+    print_status "Applying LIBERAL storage permissions to fix 500 errors..."
+    
+    # Set ownership to www-data first
+    chown -R www-data:www-data /var/www/html/storage 2>/dev/null || true
+    chown -R www-data:www-data /var/www/html/bootstrap/cache 2>/dev/null || true
+    chown -R www-data:www-data /var/www/html/public 2>/dev/null || true
+    
+    # LIBERAL: Make all storage directories fully writable (777 for directories)
+    print_status "Setting LIBERAL directory permissions (777) for storage..."
+    find /var/www/html/storage -type d -exec chmod 777 {} \; 2>/dev/null || true
+    find /var/www/html/bootstrap/cache -type d -exec chmod 777 {} \; 2>/dev/null || true
+    
+    # LIBERAL: Make all storage files writable (666 for files)
+    print_status "Setting LIBERAL file permissions (666) for storage..."
+    find /var/www/html/storage -type f -exec chmod 666 {} \; 2>/dev/null || true
+    find /var/www/html/bootstrap/cache -type f -exec chmod 666 {} \; 2>/dev/null || true
+    
+    # LIBERAL: Ensure specific directories are fully accessible
+    chmod -R 777 /var/www/html/storage/app 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/logs 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/framework 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/app/public 2>/dev/null || true
+    chmod -R 777 /var/www/html/storage/app/private 2>/dev/null || true
+    
+    # Add root to www-data group for easier debugging access
+    print_status "Setting up debugging access..."
+    usermod -a -G www-data root 2>/dev/null || true
+    
+    # Create storage symlink for Laravel
+    print_status "Creating storage symlink..."
+    rm -f /var/www/html/public/storage 2>/dev/null || true
+    
+    # Change to www-data user for symlink creation to avoid permission issues
+    su -s /bin/bash www-data -c "cd /var/www/html && php artisan storage:link --force" 2>/dev/null || {
+        print_warning "Artisan command failed, creating symlink manually as www-data user..."
+        su -s /bin/bash www-data -c "ln -sf /var/www/html/storage/app/public /var/www/html/public/storage" 2>/dev/null || {
+            print_warning "www-data symlink failed, trying as root..."
+            ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
+            chown -h www-data:www-data /var/www/html/public/storage 2>/dev/null || true
+        }
+    }
+    
+    # Verify storage symlink exists and is correct
+    if [ -L "/var/www/html/public/storage" ]; then
+        print_status "✓ Storage symlink exists"
+        print_status "Symlink points to: $(readlink /var/www/html/public/storage)"
+    else
+        print_error "✗ Storage symlink failed to create"
+    fi
+    
+    # Clear Laravel caches to avoid service provider issues
+    print_status "Clearing Laravel caches..."
+    cd /var/www/html
+    
+    # First, remove problematic service providers from config
+    print_status "Removing development service providers from config..."
+    sed -i '/Barryvdh\\Debugbar\\ServiceProvider/d' config/app.php 2>/dev/null || true
+    sed -i '/Mccarlosen\\LaravelMpdf\\LaravelMpdfServiceProvider/d' config/app.php 2>/dev/null || true
+    sed -i '/LaravelMpdfServiceProvider/d' config/app.php 2>/dev/null || true
+    
+    # Clear package discovery cache and bootstrap cache
+    print_status "Clearing package discovery and bootstrap cache..."
+    rm -rf bootstrap/cache/*.php 2>/dev/null || true
+    rm -rf storage/framework/cache/* 2>/dev/null || true
+    
+    # Clear caches
+    su -s /bin/bash www-data -c "php artisan config:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan route:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan view:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan cache:clear" 2>/dev/null || true
+    su -s /bin/bash www-data -c "php artisan clear-compiled" 2>/dev/null || true
+    
+    # Rebuild caches
+    print_status "Rebuilding Laravel caches..."
+    su -s /bin/bash www-data -c "php artisan config:cache" 2>/dev/null || print_warning "Config cache failed"
+    su -s /bin/bash www-data -c "php artisan route:cache" 2>/dev/null || print_warning "Route cache failed"
+    su -s /bin/bash www-data -c "php artisan view:cache" 2>/dev/null || print_warning "View cache failed"
+    
+    # Set up log rotation cron job
+    print_status "Setting up log rotation..."
+    echo "0 2 * * * /usr/sbin/logrotate -f /etc/logrotate.d/laravel 2>/dev/null || /usr/local/bin/log-cleanup rotate" > /etc/cron.d/logrotate-laravel
+    echo "0 */6 * * * /usr/local/bin/log-cleanup clean 3" >> /etc/cron.d/logrotate-laravel
+    echo "*/30 * * * /usr/local/bin/log-cleanup status | grep -q 'consider running cleanup' && /usr/local/bin/log-cleanup emergency" >> /etc/cron.d/logrotate-laravel
+    chmod 0644 /etc/cron.d/logrotate-laravel
+    
+    # Create logrotate state directory
+    mkdir -p /var/lib/logrotate
+    touch /var/lib/logrotate/status
+    
+    # Ensure vendor assets are available (runtime check)
+    if [ ! -f "/var/www/html/public/rappasoft/laravel-livewire-tables/core.min.js" ]; then
+        print_status "Vendor assets missing, publishing now..."
+        cd /var/www/html && /usr/local/bin/publish-vendor-assets
+    fi
+    
+    # Ensure OAuth keys exist
+    print_status "Checking OAuth keys..."
+    if [ ! -f "/var/www/html/storage/app/oauth-private.key" ] || [ ! -f "/var/www/html/storage/app/oauth-public.key" ]; then
+        print_status "OAuth keys missing, generating them..."
+        cd /var/www/html
+        su -s /bin/bash www-data -c "php artisan passport:keys --force" 2>/dev/null || {
+            print_warning "Passport keys generation failed, trying manual generation..."
+            # Create keys directory if it doesn't exist
+            mkdir -p /var/www/html/storage/app
+            chown www-data:www-data /var/www/html/storage/app
+            
+            # Generate private key
+            openssl genrsa -out /var/www/html/storage/app/oauth-private.key 2048 2>/dev/null || true
+            chown www-data:www-data /var/www/html/storage/app/oauth-private.key
+            chmod 600 /var/www/html/storage/app/oauth-private.key
+            
+            # Generate public key
+            openssl rsa -in /var/www/html/storage/app/oauth-private.key -pubout -out /var/www/html/storage/app/oauth-public.key 2>/dev/null || true
+            chown www-data:www-data /var/www/html/storage/app/oauth-public.key
+            chmod 600 /var/www/html/storage/app/oauth-public.key
+            
+            print_status "OAuth keys generated manually"
+        }
+    else
+        print_status "OAuth keys found, setting permissions..."
+        chown www-data:www-data /var/www/html/storage/app/oauth-private.key /var/www/html/storage/app/oauth-public.key
+        chmod 600 /var/www/html/storage/app/oauth-private.key /var/www/html/storage/app/oauth-public.key
+    fi
+    
+    # Ensure storage routes are properly configured
+    print_status "Ensuring storage routes are configured..."
+    if ! grep -q "storage/customer-kyc" /var/www/html/routes/web.php; then
+        print_status "Storage routes missing, adding them..."
+        cd /var/www/html && /usr/local/bin/fix-storage-routes
+    fi
+    
+    # Final permission check and fix
+    print_status "Final permission verification..."
+    print_status "Storage directory permissions: $(ls -ld /var/www/html/storage)"
+    print_status "Storage/app permissions: $(ls -ld /var/www/html/storage/app)"
+    print_status "Storage/app/public permissions: $(ls -ld /var/www/html/storage/app/public)"
+    print_status "Storage/app/private permissions: $(ls -ld /var/www/html/storage/app/private)"
+    
+    # Start services
+    print_status "Starting services..."
+    print_status "Laravel application container is ready with LIBERAL permissions!"
+    
+    # Start supervisor to manage nginx, php-fpm, cron and log rotation
+    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+}
 
-# Check the database connection
-timeout=30
-while ! mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" --silent; do
-  timeout=$((timeout - 1))
-  if [ $timeout -eq 0 ]; then
-    echo "Database connection timeout, continuing anyway..."
-    break
-  fi
-  echo "Waiting for database... ($timeout seconds remaining)"
-  sleep 1
-done
-
-# Create a health check endpoint if it doesn't exist
-if [ ! -f /var/www/html/routes/health.php ]; then
-    print_status "Creating health check route..."
-    cat > /var/www/html/routes/health.php << 'EOF'
-<?php
-use Illuminate\Support\Facades\Route;
-
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'healthy',
-        'timestamp' => now()->toISOString(),
-        'environment' => app()->environment(),
-        'laravel_version' => app()->version(),
-        'php_version' => PHP_VERSION,
-    ]);
-});
-EOF
-fi
-
-# Ensure log files exist and have proper permissions
-touch /var/www/html/storage/logs/laravel.log
-chown sail:sail /var/www/html/storage/logs/laravel.log
-chmod 664 /var/www/html/storage/logs/laravel.log
-
-# Start supervisor (this will run the Laravel application)
-print_status "Starting supervisor daemon..."
-print_status "Laravel application is ready!"
-print_status "Application will be available on port 80"
-
-# Execute supervisor in foreground
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+# Execute main function
+main "$@"

@@ -162,7 +162,7 @@
 
                                                 <div class="d-flex justify-content-end mt-3 gap-2 flex-wrap">
                                                     
-                                                    @if ($status !== 'accepted' && $canApply && $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::CONSULTANT_SUPERVISOR->value)
+                                                    @if ($status !== 'accepted' && $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::CONSULTANT_SUPERVISOR->value)
                                                         @if ($mapStep->form && $mapStep->form->isNotEmpty())
                                                             <a href="{{ route('organization.ebps.building-registrations.apply-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                                 class="btn btn-primary btn-sm d-flex align-items-center">

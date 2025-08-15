@@ -25,20 +25,13 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $grievanceData = Cache::remember('grievance_dashboard_data', now()->addMinutes(5), function () {
-            return Concurrency::run([
-                function () {
-                    return GrievanceDetail::whereNull('deleted_at')->count();
-                },
-                function () {
-                    return GrievanceDetail::where('status', GrievanceStatusEnum::INVESTIGATING)->count();
-                },
-                function () {
-                    return GrievanceDetail::where('status', GrievanceStatusEnum::CLOSED)->count();
-                },
-                function () {
-                    return Page::where('slug', 'service')->value('content');
-                },
-            ]);
+            // Execute queries sequentially instead of using Concurrency::run()
+            $grievanceCount = GrievanceDetail::whereNull('deleted_at')->count();
+            $grievancesInvestigatingCount = GrievanceDetail::where('status', GrievanceStatusEnum::INVESTIGATING)->count();
+            $grievancesClosedCount = GrievanceDetail::where('status', GrievanceStatusEnum::CLOSED)->count();
+            $services = Page::where('slug', 'service')->value('content');
+            
+            return [$grievanceCount, $grievancesInvestigatingCount, $grievancesClosedCount, $services];
         });
 
         [$grievanceCount, $grievancesInvestigatingCount, $grievancesClosedCount, $services] = $grievanceData;

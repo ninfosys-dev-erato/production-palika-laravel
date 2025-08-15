@@ -101,8 +101,27 @@ class ChalaniForm extends Component
             $this->fileRecord->document_level = 'palika';
         }
 
-        $this->recepientDepartment = $wards->merge($branches);
-        $this->signeesDepartment = $wards->merge($branches);
+        // Convert model collections to arrays with consistent structure
+        $wardsArray = $wards->map(function ($ward) {
+            return [
+                'id' => 'Ward_' . $ward->id,
+                'name' => $ward->ward_name_ne ?? $ward->ward_name_en,
+                'type' => 'Ward',
+                'model' => $ward
+            ];
+        });
+
+        $branchesArray = $branches->map(function ($branch) {
+            return [
+                'id' => 'Branch_' . $branch->id,
+                'name' => $branch->title,
+                'type' => 'Branch',
+                'model' => $branch
+            ];
+        });
+
+        $this->recepientDepartment = $wardsArray->merge($branchesArray);
+        $this->signeesDepartment = $wardsArray->merge($branchesArray);
 
         $user = auth()->user()->fresh();
 
@@ -125,17 +144,26 @@ class ChalaniForm extends Component
         if ($this->action == Action::CREATE) {
             [$recipientType, $recipientId] = explode('_', $recipientDepartment);
 
-            $model = $recipientType::find($recipientId);
-
-            if ($model  === "Src\Branch\Models\Branch") {
-                $this->recipientDepartmentUsers = Branch::find($recipientId)?->users->map(function ($user) {
-                    return [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                    ];
-                });
+            if ($recipientType === "Branch") {
+                $model = \Src\Employees\Models\Branch::find($recipientId);
+                if ($model) {
+                    $this->recipientDepartmentUsers = $model->users->map(function ($user) {
+                        return [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                        ];
+                    });
+                }
             } else {
-                $this->recipientDepartmentUsers = $model->users;
+                $model = \Src\Wards\Models\Ward::find($recipientId);
+                if ($model) {
+                    $this->recipientDepartmentUsers = $model->users->map(function ($user) {
+                        return [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                        ];
+                    });
+                }
             }
             return $this->recipientDepartmentUsers ?? collect();
         }
@@ -156,19 +184,29 @@ class ChalaniForm extends Component
         if ($this->action == Action::CREATE) {
             [$signeeType, $signeeId] = explode('_', $signeeDepartment);
 
-            $model = $signeeType::find($signeeId);
-            if ($model === "Src\Branch\Models\Branch") {
-                $this->signeeDepartmentUsers = Branch::find($signeeId)?->users->map(function ($user) {
-                    return [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                    ];
-                });
+            if ($signeeType === "Branch") {
+                $model = \Src\Employees\Models\Branch::find($signeeId);
+                if ($model) {
+                    $this->signeeDepartmentUsers = $model->users->map(function ($user) {
+                        return [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                        ];
+                    });
+                }
             } else {
-                $this->signeeDepartmentUsers = $model->users;
+                $model = \Src\Wards\Models\Ward::find($signeeId);
+                if ($model) {
+                    $this->signeeDepartmentUsers = $model->users->map(function ($user) {
+                        return [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                        ];
+                    });
+                }
             }
 
-            return $this->recipientDepartmentUsers ?? collect();
+            return $this->signeeDepartmentUsers ?? collect();
         }
     }
 
@@ -199,7 +237,12 @@ class ChalaniForm extends Component
 
                 $this->fileRecord['recipient_type'] = $recipientType;
                 $this->fileRecord['recipient_id']   = $recipientId;
-                $model = $recipientType::find($recipientId);
+                
+                if ($recipientType === "Branch") {
+                    $model = \Src\Employees\Models\Branch::find($recipientId);
+                } else {
+                    $model = \Src\Wards\Models\Ward::find($recipientId);
+                }
 
                 if ($model) {
                     $this->setDetails($model);

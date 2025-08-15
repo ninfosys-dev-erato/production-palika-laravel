@@ -213,7 +213,8 @@
 
             <div class=" d-flex justify-content-between mb-4">
                 <label class="form-label" for="form-label">{{ __('ebps::ebps.four_boundaries') }}</label>
-                <button type="button" class="btn btn-info" wire:click='addFourBoundaries'>
+                <button type="button" class="btn btn-info" wire:click='addFourBoundaries' 
+                        {{ count($fourBoundaries) >= 4 ? 'disabled' : '' }}>
                     + {{ __('Add Four Boundaries') }}
                 </button>
             </div>
@@ -247,7 +248,7 @@
                                                 class='form-control'>
                                                 <option value="">
                                                     {{ __('ebps::ebps.select_direction') }}</option>
-                                                @foreach (\Src\Ebps\Enums\DirectionEnum::cases() as $direction)
+                                                @foreach ($this->getAvailableDirections($index) as $direction)
                                                     <option value="{{ $direction->value }}">
                                                         {{ $direction->label() }}
                                                     </option>
@@ -266,7 +267,7 @@
                                         <div class='form-group'>
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
-                                                name='fourBoundaries.{{ $index }}.distance' type='number'
+                                                name='fourBoundaries.{{ $index }}.distance' type='text'
                                                 class='form-control'
                                                 placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>
@@ -371,7 +372,7 @@
                                 <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
                                 <input wire:model="uploadedFiles.{{ $index }}" type="file"
                                     class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
-                                    accept="image/*">
+                                    accept="image/*,application/pdf">
                                 <div>
                                     @error("uploadedFiles.$index")
                                         <small class='text-danger'>{{ $message }}</small>
@@ -446,7 +447,8 @@
                                             <label
                                                 class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
                                             <input type="file" class="form-control-file"
-                                                wire:model.defer="documents.{{ $key }}.file">
+                                                wire:model.defer="documents.{{ $key }}.file"
+                                                accept="image/*,application/pdf">
 
                                             <div wire:loading wire:target="documents.{{ $key }}.file">
                                                 <span class="spinner-border spinner-border-sm" role="status"
