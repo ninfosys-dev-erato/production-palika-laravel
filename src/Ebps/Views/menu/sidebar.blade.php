@@ -151,6 +151,14 @@
                 <div data-i18n="Tasks">{{ __('ebps::ebps.ebps_document') }}</div>
             </a>
         </li>
+
+        <li
+            class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.ebps.additional_form_settings.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.ebps.additional_form_settings.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-buildings"></i>
+                <div data-i18n="Tasks">{{ __('ebps::ebps.additional_form_settings') }}</div>
+            </a>
+        </li>
         <li
             class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.ebps.filter-settings.*') ? 'active' : '' }}">
             <a href="{{ route('admin.ebps.filter-settings') }}" class="menu-link">
