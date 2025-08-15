@@ -12,6 +12,10 @@ use Src\Beruju\Enums\BerujuCategoryEnum;
 use Src\Beruju\Enums\BerujuStatusEnum;
 use Src\Beruju\Enums\BerujuSubmissionStatusEnum;
 use Src\Beruju\Enums\BerujuCurrencyTypeEnum;
+use Src\FiscalYears\Models\FiscalYear;
+use Src\Employees\Models\Branch;
+use Src\Beruju\Models\SubCategory;
+use Src\Yojana\Models\Project;
 
 class BerujuEntry extends Model
 {
@@ -68,5 +72,39 @@ class BerujuEntry extends Model
     ];
 
     // Relationships
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function fiscalYear()
+    {
+        return $this->belongsTo(FiscalYear::class, 'fiscal_year_id');
+    }
+    // Relationships
+    public function evidences()
+    {
+        return $this->hasMany(Evidence::class, 'beruju_entry_id');
+    }
 
 }

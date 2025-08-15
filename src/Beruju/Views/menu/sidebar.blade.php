@@ -15,3 +15,24 @@
         <div data-i18n="BerujuList">{{ __('beruju::beruju.beruju_registration') }}</div>
     </a>
 </li>
+
+<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.beruju.sub-categories.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.beruju.sub-categories.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-category"></i>
+        <div data-i18n="SubCategories">{{ __('beruju::beruju.sub_categories') }}</div>
+    </a>
+</li>
+
+<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.beruju.action-types.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.beruju.action-types.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-task"></i>
+        <div data-i18n="ActionTypes">{{ __('beruju::beruju.action_types') }}</div>
+    </a>
+</li>
+
+<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.beruju.document-types.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.beruju.document-types.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-file"></i>
+        <div data-i18n="DocumentTypes">{{ __('beruju::beruju.document_types') }}</div>
+    </a>
+</li>

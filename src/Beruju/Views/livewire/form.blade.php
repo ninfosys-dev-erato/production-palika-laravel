@@ -146,7 +146,9 @@
                         <select wire:model="berujuEntry.sub_category_id"
                             class="form-select rounded-0 @error('berujuEntry.sub_category_id') is-invalid @enderror">
                             <option value="">{{ __('beruju::beruju.select_sub_category') }}</option>
-                            <!-- Options will be added later -->
+                            @foreach ($subCategories as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
                         </select>
                         @error('berujuEntry.sub_category_id')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -254,20 +256,12 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Group 5: Evidences -->
-            <div class="divider divider-primary text-start text-primary mb-4">
-                <div class="divider-text fw-bold fs-6">
-                    {{ __('beruju::beruju.evidences') }}
-                </div>
-            </div>
-            <div class="row g-4">
-                <livewire:beruju.evidence_document_upload :$berujuEntry />
-            </div>
-
         </div>
 
     </div>
+
+    <livewire:beruju.evidence_document_upload :$berujuEntry />
+
 
 
 

@@ -22,15 +22,15 @@ enum BerujuStatusEnum: string
     public static function getLabel(self $value): string
     {
         return match ($value) {
-            self::DRAFT => __('Draft'),
-            self::SUBMITTED => __('Submitted'),
-            self::ASSIGNED => __('Assigned'),
-            self::ACTION_TAKEN => __('Action Taken'),
-            self::UNDER_REVIEW => __('Under Review'),
-            self::RESOLVED => __('Resolved'),
-            self::PARTIALLY_RESOLVED => __('Partially Resolved'),
-            self::REJECTED_NOT_RESOLVED => __('Rejected / Not Resolved'),
-            self::ARCHIVED => __('Archived'),
+            self::DRAFT => __('beruju::beruju.draft'),
+            self::SUBMITTED => __('beruju::beruju.submitted'),
+            self::ASSIGNED => __('beruju::beruju.assigned'),
+            self::ACTION_TAKEN => __('beruju::beruju.action_taken'),
+            self::UNDER_REVIEW => __('beruju::beruju.under_review'),
+            self::RESOLVED => __('beruju::beruju.resolved'),
+            self::PARTIALLY_RESOLVED => __('beruju::beruju.partially_resolved'),
+            self::REJECTED_NOT_RESOLVED => __('beruju::beruju.rejected_not_resolved'),
+            self::ARCHIVED => __('beruju::beruju.archived'),
         };
     }
 
@@ -77,15 +77,15 @@ enum BerujuStatusEnum: string
     public function color(): string
     {
         return match ($this) {
-            self::DRAFT => 'secondary',
-            self::SUBMITTED => 'info',
-            self::ASSIGNED => 'primary',
-            self::ACTION_TAKEN => 'warning',
-            self::UNDER_REVIEW => 'info',
-            self::RESOLVED => 'success',
-            self::PARTIALLY_RESOLVED => 'warning',
-            self::REJECTED_NOT_RESOLVED => 'danger',
-            self::ARCHIVED => 'dark',
+            self::DRAFT => '#6c757d',
+            self::SUBMITTED => '#17a2b8',
+            self::ASSIGNED => '#007bff',
+            self::ACTION_TAKEN => '#ffc107',
+            self::UNDER_REVIEW => '#17a2b8',
+            self::RESOLVED => '#28a745',
+            self::PARTIALLY_RESOLVED => '#ffc107',
+            self::REJECTED_NOT_RESOLVED => '#dc3545',
+            self::ARCHIVED => '#343a40',
         };
     }
 

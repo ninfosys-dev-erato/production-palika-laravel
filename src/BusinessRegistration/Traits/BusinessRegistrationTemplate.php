@@ -105,6 +105,7 @@ trait BusinessRegistrationTemplate
 
             // Business details (relationships)
             '{{business.business_nature}}' => $businessRegistration->business_nature ?? ' ',
+            '{{business.business_category}}' => $businessRegistration->business_category ?? ' ',
             '{{business.business_purpose}}' => $businessRegistration->purpose ?? ' ',
             '{{business.main_service_or_goods}}' => $businessRegistration->main_service_or_goods ?? ' ',
             '{{business.total_capital}}' => $businessRegistration->total_capital ?? ' ',

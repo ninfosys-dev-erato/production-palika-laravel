@@ -80,6 +80,9 @@ class BusinessRegistrationTable extends DataTableComponent
                         ->orWhere('email', $user->email);
                 });
             })
+            ->when($this->type == BusinessRegistrationType::ARCHIVING, function ($query) {
+                $query->where('registration_type', BusinessRegistrationType::ARCHIVING);
+            })
             ->whereNull(['brs_business_registration_data.deleted_at'])
             ->orderBy('brs_business_registration_data.created_at', 'desc');
     }
@@ -236,8 +239,10 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function view($id)
     {
-
-        return redirect()->route('admin.business-registration.business-registration.show', ['id' => $id]);
+        return redirect()->route('admin.business-registration.business-registration.show', [
+            'id' => $id,
+            'type' => $this->type
+        ]);
     }
 
     public function edit($id)
@@ -304,7 +309,10 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function preview($id)
     {
-        return redirect()->route('admin.business-registration.business-registration.preview', ['id' => $id]);
+        return redirect()->route('admin.business-registration.business-registration.preview', [
+            'id' => $id,
+            'type' => $this->type
+        ]);
     }
 
     // Customer Portal Functions for Action buttons

@@ -3,28 +3,33 @@
 namespace Src\Beruju\DTO;
 
 use Src\Beruju\Models\BerujuEntry;
+use Src\Beruju\Enums\BerujuAduitTypeEnum;
+use Src\Beruju\Enums\BerujuCategoryEnum;
+use Src\Beruju\Enums\BerujuStatusEnum;
+use Src\Beruju\Enums\BerujuSubmissionStatusEnum;
+use Src\Beruju\Enums\BerujuCurrencyTypeEnum;
 
 class BerujuEntryDto
 {
     public function __construct(
         // Form fields from form.blade.php
         public ?int $fiscal_year_id,
-        public ?string $audit_type,
+        public ?BerujuAduitTypeEnum $audit_type,
         public ?string $entry_date,
         public ?string $reference_number,
         public ?int $branch_id,
         public ?int $project_id,
-        public ?string $beruju_category,
+        public ?BerujuCategoryEnum $beruju_category,
         public ?int $sub_category_id,
         public ?float $amount,
-        public ?string $currency_type,
+        public ?BerujuCurrencyTypeEnum $currency_type,
         public ?string $legal_provision,
         public ?string $action_deadline,
         public ?string $description,
         public ?string $notes,
         // Additional fields
-        public string $status,
-        public string $submission_status,
+        public ?BerujuStatusEnum $status,
+        public ?BerujuSubmissionStatusEnum $submission_status,
     ) {}
 
     public static function fromLiveWireModel(BerujuEntry $berujuEntry): BerujuEntryDto
@@ -46,8 +51,8 @@ class BerujuEntryDto
             description: $berujuEntry->description ?? null,
             notes: $berujuEntry->notes ?? null,
             // Additional fields
-            status: $berujuEntry->status ?? 'pending',
-            submission_status: $berujuEntry->submission_status ?? 'draft',
+            status: $berujuEntry->status ?? null,
+            submission_status: $berujuEntry->submission_status ?? null,
         );
     }
 }

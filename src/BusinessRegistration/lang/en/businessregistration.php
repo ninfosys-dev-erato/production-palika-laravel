@@ -76,6 +76,12 @@ return [
     'payment_date' => 'Payment Date',
     'approve_renewal_request' => 'Approve renewal request',
     'business_nature' => 'Business Nature',
+    'business_category' => 'Business Category',
+    'business_organization_industry_firm_category_or_type' => 'Business/Organization/Industry/Firm Category or Type',
+    'kardata_number' => 'Taxpayer Number',
+    'kardata_miti' => 'Taxpayer Date',
+    'placeholder_kardata_number' => 'Enter taxpayer number',
+    'placeholder_kardata_miti' => 'Enter taxpayer date',
     'primary_detail' => 'Primary Detail',
     'select_fiscal_year' => 'Select Fiscal Year',
     'select_date' => 'Select Date',
@@ -520,6 +526,8 @@ return [
     'application_letter_reset_successfully' => 'Application letter reset successfully!',
     'please_save_changes_before_printing' => 'Please save your changes before printing!',
     'application_letter_uploaded_successfully' => 'Application letter uploaded successfully!',
+    'certificate_letter_written_successfully' => 'Certificate letter written successfully!',
+    'certificate_letter_reset_successfully' => 'Certificate letter reset successfully!',
 
     // Document Labels
     'business_application_letter' => 'Business Application Letter',
@@ -532,4 +540,21 @@ return [
     'industry_application_letter_ne' => 'उद्योग निवेदन पत्र',
     'application_letter_ne' => 'निवेदन पत्र',
     'submitting' => 'Submitting...',
+    'business_area' => 'Business Area',
+    'business_organization_industry_firm_nature' => 'Business/Organization/Industry/Firm Nature',
+    'business_organization_industry_firm_category_or_type' => 'Business/Organization/Industry/Firm Category or Type',
+
+    // Quick Actions
+    'quick_actions' => 'Quick Actions',
+    'new_registration' => 'New Registration',
+    'create_new_business_registration' => 'Create new business registration',
+    'new_deregistration' => 'New Deregistration',
+    'create_new_business_deregistration' => 'Create new business deregistration',
+    'business_renewal' => 'Business Renewal',
+    'manage_business_renewals' => 'Manage business renewals',
+    'business_report' => 'Business Report',
+    'view_business_reports' => 'View business reports',
+    'summarized_records' => 'Summarized Records',
+    'archiving' => 'Archiving',
+    'business_archiving' => 'Business Archiving',
 ];

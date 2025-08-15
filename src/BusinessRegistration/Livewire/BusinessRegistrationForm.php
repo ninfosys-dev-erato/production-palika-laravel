@@ -156,6 +156,9 @@ class BusinessRegistrationForm extends Component
             'businessRegistration.entity_name' => ['required'],
 
             'businessRegistration.business_nature' => ['nullable'],
+            'businessRegistration.business_category' => ['nullable'],
+            'businessRegistration.kardata_number' => ['nullable'],
+            'businessRegistration.kardata_miti' => ['nullable'],
             'businessRegistration.main_service_or_goods' => ['nullable'],
             'businessRegistration.total_capital' => ['nullable'],
             'businessRegistration.business_province' => ['nullable'],
@@ -272,11 +275,20 @@ class BusinessRegistrationForm extends Component
         $this->businessRegistration = $businessRegistration;
         $this->businessRegistrationType = $businessRegistrationType;
 
+
         $this->action = $action;
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
         $this->provinces = getProvinces()->pluck('title', 'id')->toArray();
 
-        $this->registrationTypes = RegistrationType::whereNull('deleted_at')->where('action', $businessRegistrationType)->where('status', true)->pluck('title', 'id');
+        $action = match ($businessRegistrationType) {
+            BusinessRegistrationType::ARCHIVING => BusinessRegistrationType::REGISTRATION->value,
+            default => $businessRegistrationType->value,
+        };
+
+        $this->registrationTypes = RegistrationType::whereNull('deleted_at')
+            ->where('action', $action)
+            ->where('status', true)
+            ->pluck('title', 'id');
 
         if (Auth::guard('customer')->user()) {
             $this->isCustomer = true;
@@ -628,6 +640,7 @@ class BusinessRegistrationForm extends Component
 
         // Dispatch event to initialize date pickers when conditional fields are shown
         if ((int) $value === 1) {
+
             $this->dispatch('init-registration-date');
         }
     }
@@ -795,6 +808,7 @@ class BusinessRegistrationForm extends Component
 
             switch ($this->action) {
                 case Action::CREATE:
+                    $this->businessRegistration['registration_type'] = $this->businessRegistrationType->value;
                     $dto = BusinessRegistrationAdminDto::fromLiveWireModel(businessRegistration: $this->businessRegistration, admin: true);
 
 
@@ -997,6 +1011,7 @@ class BusinessRegistrationForm extends Component
             return;
         }
         $registrationType = RegistrationType::with('form')->find($registrationTypeId);
+        $this->dispatch('init-registration-date');
 
         $this->registrationTypeEnum = $registrationType->registration_category_enum;
         $this->businessRegistration['registration_category'] = $registrationType->registration_category_enum;

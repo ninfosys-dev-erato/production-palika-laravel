@@ -1,33 +1,10 @@
 <x-layout.app header="{{ __('beruju::beruju.beruju_management') }}">
     <div class="container-fluid">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h3 class="page-title">{{ __('beruju::beruju.beruju_dashboard') }}</h3>
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
-                        </li>
-                        <li class="breadcrumb-item active">{{ __('beruju::beruju.beruju') }}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
         <!-- Dashboard Content -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title mb-0">
-                            <i class="fas fa-home me-2"></i>
-                            {{ __('beruju::beruju.welcome_to_beruju') }}
-                        </h4>
-                    </div>
                     <div class="card-body">
-
-
                         <!-- Quick Actions -->
                         <div class="row mt-4">
                             <div class="col-12">

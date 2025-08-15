@@ -15,8 +15,8 @@ enum BerujuAduitTypeEnum: string
     public static function getLabel(self $value): string
     {
         return match ($value) {
-            self::INTERNAL_AUDIT => __('Internal Audit'),
-            self::EXTERNAL_AUDIT => __('External Audit'),
+            self::INTERNAL_AUDIT => __('beruju::beruju.internal_audit'),
+            self::EXTERNAL_AUDIT => __('beruju::beruju.external_audit'),
         };
     }
 

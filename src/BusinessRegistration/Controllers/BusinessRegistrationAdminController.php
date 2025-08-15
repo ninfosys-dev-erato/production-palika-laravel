@@ -72,16 +72,28 @@ class BusinessRegistrationAdminController extends Controller implements HasMiddl
             'requiredBusinessDocs',
         ])->findOrFail($request->route('id'));
 
-
-
+        $type = $request->query('type');
+        try {
+            $type = BusinessRegistrationType::from($type);
+        } catch (\ValueError $e) {
+            $type = BusinessRegistrationType::REGISTRATION;
+        }
 
         $template = $this->resolveTemplate($businessRegistration);
-        return view('BusinessRegistration::business-registration.show')->with(compact('businessRegistration', 'template'));
+        return view('BusinessRegistration::business-registration.show')->with(compact('businessRegistration', 'template', 'type'));
     }
 
-    public function preview($id)
+    public function preview(Request $request)
     {
-        $businessRegistration = BusinessRegistration::where('id', $id)->first();
-        return view('BusinessRegistration::business-registration.preview')->with(compact('businessRegistration'));
+        $businessRegistration = BusinessRegistration::where('id', $request->route('id'))->first();
+
+        $type = $request->query('type');
+        try {
+            $type = BusinessRegistrationType::from($type);
+        } catch (\ValueError $e) {
+            $type = BusinessRegistrationType::REGISTRATION;
+        }
+
+        return view('BusinessRegistration::business-registration.preview')->with(compact('businessRegistration', 'type'));
     }
 }

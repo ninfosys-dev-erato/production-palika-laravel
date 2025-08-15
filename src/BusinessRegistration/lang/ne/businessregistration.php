@@ -452,6 +452,10 @@ return [
     'start_date' => 'सुरु मिति',
     'end_date' => 'अन्त्य मिति',
     'business_category' => 'व्यवसाय वर्ग',
+    'kardata_number' => 'करदाता नम्बर',
+    'kardata_miti' => 'करदाता मिति',
+    'placeholder_kardata_number' => 'करदाता नम्बर भर्नुहोस्',
+    'placeholder_kardata_miti' => 'करदाता मिति भर्नुहोस्',
     'business_nature' => 'व्यवसाय प्रकृति',
     'business_type' => 'व्यवसाय प्रकार',
     'application_status' => 'आवेदन स्थिति',
@@ -545,6 +549,8 @@ return [
     'application_letter_reset_successfully' => 'निवेदन पत्र सफलतापूर्वक रिसेट गरिएको छ!',
     'please_save_changes_before_printing' => 'कृपया प्रिन्ट गर्नु अघि परिवर्तनहरू सेभ गर्नुहोस्!',
     'application_letter_uploaded_successfully' => 'निवेदन पत्र सफलतापूर्वक अपलोड गरिएको छ!',
+    'certificate_letter_written_successfully' => 'प्रमाणपत्र पत्र सफलतापूर्वक लेखिएको छ!',
+    'certificate_letter_reset_successfully' => 'प्रमाणपत्र पत्र सफलतापूर्वक रिसेट गरिएको छ!',
 
     // Document Labels
     'business_application_letter' => 'व्यवसाय निवेदन पत्र',
@@ -558,4 +564,21 @@ return [
     'application_letter_ne' => 'निवेदन पत्र',
     'registration_application' => 'दर्ता निवेदन',
     'submitting' => 'पेश गर्दै...',
+    'business_area' => 'परिचय पाटीको सइज',
+    'business_organization_industry_firm_category_or_type' => 'व्यवसाय/संस्था/उद्योग/फर्मको वर्ग वा प्रकार',
+    'business_organization_industry_firm_nature' => 'व्यवसाय/संस्था/उद्योग/फर्मको प्रकृति',
+
+    // Quick Actions
+    'quick_actions' => 'द्रुत कार्यहरू',
+    'new_registration' => 'नयाँ दर्ता',
+    'create_new_business_registration' => 'नयाँ व्यवसाय दर्ता सिर्जना गर्नुहोस्',
+    'new_deregistration' => 'नयाँ खारेजी',
+    'create_new_business_deregistration' => 'नयाँ व्यवसाय खारेजी सिर्जना गर्नुहोस्',
+    'business_renewal' => 'व्यवसाय नविकरण',
+    'manage_business_renewals' => 'व्यवसाय नविकरणहरू गर्नुहोस्',
+    'business_report' => 'व्यवसाय रिपोर्ट',
+    'view_business_reports' => 'व्यवसाय रिपोर्टहरू हेर्नुहोस्',
+    'summarized_records' => 'संक्षेपित रिपोर्ट',
+    'archiving' => 'अभिलेखिकरण',
+    'business_archiving' => 'व्यवसाय अभिलेखिकरण',
 ];

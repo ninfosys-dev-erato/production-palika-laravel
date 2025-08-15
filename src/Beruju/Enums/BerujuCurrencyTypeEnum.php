@@ -17,10 +17,10 @@ enum BerujuCurrencyTypeEnum: string
     public static function getLabel(self $value): string
     {
         return match ($value) {
-            self::NPR => __('NPR'),
-            self::INR => __('INR'),
-            self::POUND => __('Pound'),
-            self::DOLLAR => __('Dollar'),
+            self::NPR => __('beruju::beruju.npr'),
+            self::INR => __('beruju::beruju.inr'),
+            self::POUND => __('beruju::beruju.pound'),
+            self::DOLLAR => __('beruju::beruju.dollar'),
         };
     }
 
@@ -74,5 +74,15 @@ enum BerujuCurrencyTypeEnum: string
         return collect(self::cases())->mapWithKeys(function ($currency) {
             return [$currency->value => $currency->label()];
         })->toArray();
+    }
+
+    public static function symbol(self $value): string
+    {
+        return match ($value) {
+            self::NPR => __('beruju::beruju.npr_symbol'),
+            self::INR => __('beruju::beruju.inr_symbol'),
+            self::POUND => __('beruju::beruju.pound_symbol'),
+            self::DOLLAR => __('beruju::beruju.dollar_symbol'),
+        };
     }
 }
