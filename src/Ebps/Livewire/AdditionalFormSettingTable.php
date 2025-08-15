@@ -60,7 +60,7 @@ class AdditionalFormSettingTable extends DataTableComponent
 
             Column::make(__('ebps::ebps.status'), 'status')
                 ->label(function ($row) {
-                    $checked = $row->status ? 'checked' : '';
+                    $checked = (bool) $row->status ? 'checked' : '';
 
                     return <<<HTML
                     <div class="form-check form-switch">

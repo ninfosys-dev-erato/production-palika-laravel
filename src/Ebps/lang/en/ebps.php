@@ -717,5 +717,14 @@ return [
     'enter_name' => 'Enter name',
     'enter_form_id' => 'Enter form ID',
     'active' => 'Active',
-    'cancel' => 'Cancel',
+
+    'add_additional_form_setting' => 'Add Additional Form Setting',
+
+    'additional_form_setting' => 'Additional Form Setting',
+    'additional_form_setting_list' => 'Additional Form Setting List',
+
+    'additional_form_setting_created_successfully' => 'Additional Form Setting Created Successfully',
+    'additional_form_setting_updated_successfully' => 'Additional Form Setting Updated Successfully',
+    'additional_form_setting_deleted_successfully' => 'Additional Form Setting Deleted Successfully',
+
 ];
