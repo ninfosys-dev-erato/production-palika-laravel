@@ -26,7 +26,7 @@ class BerujuSubCategorySeeder extends Seeder
         $subCategories = [
             [
                 'name_eng' => 'Recoverable',
-                'name_nep' => 'असलु गर्नुपर्नुर्ने',
+                'name_nep' => 'असुल गर्नुपर्नुर्ने',
                 'slug' => 'recoverable',
                 'remarks' => 'Beruju entries that can be recovered or resolved',
             ],
@@ -38,7 +38,7 @@ class BerujuSubCategorySeeder extends Seeder
             ],
             [
                 'name_eng' => 'Unverified',
-                'name_nep' => 'प्रमाण नपगु ेको',
+                'name_nep' => 'प्रमाण नापुगेको',
                 'slug' => 'unverified',
                 'remarks' => 'Beruju entries that require verification',
             ],

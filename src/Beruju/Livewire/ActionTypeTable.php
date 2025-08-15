@@ -105,16 +105,16 @@ class ActionTypeTable extends DataTableComponent
 
             Column::make(__('beruju::beruju.actions'), 'id')
                 ->format(function ($value) {
-                    $actions = '';
+                    $actions = '<div class="btn-group">';
                     
                     if (can('beruju edit')) {
-                        $actions .= '<button class="btn btn-sm btn-primary me-1" onclick="editActionType(' . $value . ')">
+                        $actions .= '<button class="btn btn-sm  me-1" onclick="editActionType(' . $value . ')">
                             <i class="bx bx-edit"></i>
                         </button>';
                     }
                     
                     if (can('beruju delete')) {
-                        $actions .= '<button class="btn btn-sm btn-danger" onclick="deleteActionType(' . $value . ')">
+                        $actions .= '<button class="btn btn-sm " onclick="deleteActionType(' . $value . ')">
                             <i class="bx bx-trash"></i>
                         </button>';
                     }
