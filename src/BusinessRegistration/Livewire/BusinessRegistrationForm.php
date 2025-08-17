@@ -15,6 +15,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use PDO;
+use Src\Address\Models\Province;
 use Src\BusinessRegistration\DTO\BusinessRegistrationAdminDto;
 use Src\BusinessRegistration\DTO\BusinessRegistrationApplicantDto;
 use Src\BusinessRegistration\Enums\BusinessRegistrationType;
@@ -277,8 +278,8 @@ class BusinessRegistrationForm extends Component
 
 
         $this->action = $action;
-        $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
-        $this->provinces = getProvinces()->pluck('title', 'id')->toArray();
+        $this->fiscalYears = FiscalYear::whereNull('deleted_at')->pluck('year', 'id')->toArray();
+        $this->provinces = Province::whereNull('deleted_at')->pluck('title', 'id')->toArray();
 
         $action = match ($businessRegistrationType) {
             BusinessRegistrationType::ARCHIVING => BusinessRegistrationType::REGISTRATION->value,
