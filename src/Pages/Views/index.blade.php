@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     {{ __('pages::pages.list') }}
-                    @perm('page_create')
+                    @perm('page create')
                         <div>
                             <a href="{{ route('admin.pages.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('pages::pages.add_page') }}</a>

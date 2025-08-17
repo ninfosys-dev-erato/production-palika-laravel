@@ -67,16 +67,16 @@ class VehicleTable extends DataTableComponent
             Column::make("Driver Contact No", "driver_contact_no")->sortable()->searchable()->collapseOnTablet(),
             Column::make("Vehicle Detail", "vehicle_detail")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('vehicles edit') || can('vehicles delete')) {
+        if (can('fms_vehicles edit') || can('fms_vehicles delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('vehicles edit')) {
+                if (can('fms_vehicles edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('vehicles delete')) {
+                if (can('fms_vehicles delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -92,7 +92,7 @@ class VehicleTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('vehicles edit')) {
+        if (!can('fms_vehicles edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -100,7 +100,7 @@ class VehicleTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('vehicles delete')) {
+        if (!can('fms_vehicles delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -110,7 +110,7 @@ class VehicleTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('vehicles delete')) {
+        if (!can('fms_vehicles delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

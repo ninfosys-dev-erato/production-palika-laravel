@@ -1,4 +1,4 @@
-@aware([ 'tableName'])
+@aware(['component', 'tableName'])
 
 <x-livewire-tables::table.tr.plain
     :customAttributes="$this->getSecondaryHeaderTrAttributes($this->getRows)"
@@ -19,7 +19,7 @@
         <x-livewire-tables::table.td.plain :column="$column" :displayMinimisedOnReorder="true" wire:key="{{ $tableName .'-secondary-header-show-'.$column->getSlug() }}"  :customAttributes="$this->getSecondaryHeaderTdAttributes($column, $this->getRows, $colIndex)">
             @if($column->hasSecondaryHeader() && $column->hasSecondaryHeaderCallback())
                 @if( $column->secondaryHeaderCallbackIsFilter())
-                    {{ $column->getSecondaryHeaderFilter($column->getSecondaryHeaderCallback(), $this->getFilterGenericData) }}    
+                    {{ $column->getSecondaryHeaderFilter($column->getSecondaryHeaderCallback(), $this->getFilterGenericData) }}
                 @elseif($column->secondaryHeaderCallbackIsString())
                     {{ $column->getSecondaryHeaderFilter($this->getFilterByKey($column->getSecondaryHeaderCallback()), $this->getFilterGenericData) }}
                 @else

@@ -2,7 +2,7 @@
     <nav aria-label="breadcrumb" class="d-flex justify-content-end">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('organization.dashboard') }}"><i class="bx bx-home-alt"></i></a>
-            <li class="breadcrumb-item"><a href="#">{{ __('Building Registration') }}</a>
+            <li class="breadcrumb-item"><a href="#">{{ __('ebps::ebps.building_registration') }}</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ __('List') }}</li>
         </ol>
@@ -36,7 +36,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="unitModalLabel">
-                          {{ __('ebps::ebps.choose_oraganization') }}
+                        {{ __('ebps::ebps.choose_oraganization') }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closeModal()"
                         aria-label="Close"></button>

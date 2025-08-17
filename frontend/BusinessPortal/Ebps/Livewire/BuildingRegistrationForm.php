@@ -94,6 +94,8 @@ class BuildingRegistrationForm extends Component
     public $usageOptions;
     public $documents = [];
     public $options = [];
+    public $formerLocalBodies;
+    public $formerWards;
 
     
 
@@ -130,6 +132,8 @@ class BuildingRegistrationForm extends Component
             'mapApply.ward_no' => ['required'],
             'mapApply.application_date' => ['nullable'],
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['nullable'],
+            'customerLandDetail.former_ward_no' => ['nullable'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],
@@ -163,9 +167,28 @@ class BuildingRegistrationForm extends Component
 
     public function addFourBoundaries()
     {
+        // Limit to 4 boundaries (matching DirectionEnum cases)
+        if (count($this->fourBoundaries) >= 4) {
+            $this->errorToast(__('ebps::ebps.maximum_four_boundaries_allowed'));
+            return;
+        }
+        
+        // Get the next available direction
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $availableDirections = collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections) {
+                return !in_array($direction->value, $usedDirections);
+            });
+        
+        $nextDirection = $availableDirections->first();
+        
         $this->fourBoundaries[] = [
             'title' => '',
-            'direction' => '',
+            'direction' => $nextDirection ? $nextDirection->value : '',
             'distance' => '',
             'lot_no' => ''
         ];
@@ -177,6 +200,26 @@ class BuildingRegistrationForm extends Component
         $this->fourBoundaries = array_values($this->fourBoundaries);
 
       
+    }
+
+    public function getAvailableDirections($currentIndex)
+    {
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $currentDirection = $this->fourBoundaries[$currentIndex]['direction'] ?? '';
+        
+        return collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections, $currentDirection) {
+                // Allow current direction to remain selected
+                if ($direction->value === $currentDirection) {
+                    return true;
+                }
+                // Filter out already used directions
+                return !in_array($direction->value, $usedDirections);
+            });
     }
 
     public function loadFourBoundaries($customerLandDetail)
@@ -274,6 +317,18 @@ class BuildingRegistrationForm extends Component
         $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
     }
 
+
+    public function loadFormerWards(): void
+    {
+        $localBody = LocalBody::find($this->customerLandDetail->former_local_body);
+
+        if ($localBody) {
+            $this->formerWards = getWards($localBody->wards);
+        } else {
+            $this->formerWards = [];
+        }
+    }
+
     public function mount(MapApply $mapApply,Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail, MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
     {
         
@@ -291,16 +346,18 @@ class BuildingRegistrationForm extends Component
         $this->landOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
         $this->houseOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
         $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
-          
+        $this->formerLocalBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
 
         $this->wards = [];
+        $this->formerWards = [];
         $this->uploadedFiles = $this->uploadedFiles ?? [];
         $this->buildingStructures = BuildingStructureEnum::cases();
         $this->mapProcessTypes = MapProcessTypeEnum::cases();
         $this->applicantTypes = ApplicantTypeEnum::cases();
         $this->ownerships = LandOwernshipEnum::cases();
-        $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::MAP_APPLIES)->get();
+        $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)->get();
         $this->options=DocumentStatusEnum::getForWeb();
         $this->documents = [];
 
@@ -321,6 +378,8 @@ class BuildingRegistrationForm extends Component
             $this->getApplicantDistricts();
             $this->getApplicantLocalBodies();
             $this->getApplicantWards();
+            $this->loadFormerWards();
+            $this->loadWards();
 
             $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->whereNotNull('map_document_id')->get();
             $this->documents = DocumentFile::where(
@@ -416,7 +475,7 @@ class BuildingRegistrationForm extends Component
             }
             if($this->landOwnerDetail['local_body_id'])
             {
-                $this->geLandOwnerWards();          
+                $this->getLandOwnerWards();          
             }
                    
         }else{

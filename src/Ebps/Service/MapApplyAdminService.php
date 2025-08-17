@@ -65,7 +65,7 @@ public function update(MapApply $mapApply, MapApplyAdminDto $mapApplyAdminDto){
         'signature' => $mapApplyAdminDto->signature,
         'ownership_type' => $mapApplyAdminDto->ownership_type,
         'updated_at' => date('Y-m-d H:i:s'),
-        'updated_by' => Auth::user()->id,
+        // 'updated_by' => Auth::user()->id,
     ]);
 }
 public function delete(MapApply $mapApply){

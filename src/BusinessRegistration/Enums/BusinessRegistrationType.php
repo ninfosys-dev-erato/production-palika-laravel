@@ -6,8 +6,10 @@ enum BusinessRegistrationType: string
 {
     case REGISTRATION = 'registration';
     case DEREGISTRATION = 'de-registration';
+    case Application = 'application';
     case RENEWAL = 'renewal';
     case CAPITAL_GROWTH = 'capital-growth';
+    case ARCHIVING = 'archiving';
 
     public function label(): string
     {
@@ -19,8 +21,10 @@ enum BusinessRegistrationType: string
         return match ($value) {
             self::REGISTRATION => __('Registration'),
             self::DEREGISTRATION => __('Deregistration'),
+            self::Application => __('Application'),
             self::RENEWAL => __('Renewal'),
             self::CAPITAL_GROWTH => __('Capital Growth'),
+            self::ARCHIVING => __('Archiving'),
         };
     }
 
@@ -29,8 +33,10 @@ enum BusinessRegistrationType: string
         return match ($value) {
             self::REGISTRATION => 'दर्ता',
             self::DEREGISTRATION => 'खारेज',
+            self::Application => 'निवेदन',
             self::RENEWAL => 'नवीकरण',
             self::CAPITAL_GROWTH => 'पूँजी वृद्धि',
+            self::ARCHIVING => 'अभिलेखिकरण',
         };
     }
 

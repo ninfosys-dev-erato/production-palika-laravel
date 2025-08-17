@@ -6,7 +6,7 @@
                 <div class='form-group'>
                     <label class="form-label" for='applied_date'>{{ __('Applied Date') }}</label>
                     <input wire:model='mapApply.applied_date' id="applied_date" name='applied_date' type='text'
-                        class='form-control' placeholder="{{__('ebps::ebps.enter_applied_date')}}">
+                        class='form-control nepali-date' placeholder="{{ __('ebps::ebps.enter_applied_date') }}">
                     <div>
                         @error('mapApply.applied_date')
                             <small class='text-danger'>{{ $message }}</small>
@@ -36,10 +36,11 @@
 
             <div class='col-md-4 mb-3'>
                 <div class='form-group'>
-                    <label class="form-label" for='area_of_building_plinth'>{{ __('Area Of Building Plinth') }}</label>
+                    <label class="form-label"
+                        for='area_of_building_plinth'>{{ __('ebps::ebps.area_of_building_plinth') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.area_of_building_plinth' name='area_of_building_plinth' type='text'
-                        class='form-control' placeholder='Enter Area Of Building Plinth'>
+                        class='form-control' placeholder="{{ __('ebps::ebps.enter_area_of_building_plinth') }}">
                     <div>
                         @error('mapApply.area_of_building_plinth')
                             <small class='text-danger'>{{ $message }}</small>
@@ -49,10 +50,10 @@
             </div>
             <div class='col-md-4 mb-3'>
                 <div class='form-group'>
-                    <label class="form-label" for='no_of_rooms'>{{ __('Number of rooms') }}</label>
+                    <label class="form-label" for='no_of_rooms'>{{ __('ebps::ebps.number_of_rooms') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.no_of_rooms' name='no_of_rooms' type='text' class='form-control'
-                        placeholder='Number of rooms'>
+                        placeholder="{{ __('ebps::ebps.enter_area_number_of_rooms') }}">
                     <div>
                         @error('mapApply.no_of_rooms')
                             <small class='text-danger'>{{ $message }}</small>
@@ -66,7 +67,7 @@
                     <label class="form-label" for='storey_no'>{{ __('ebps::ebps.floor_number') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.storey_no' name='storey_no' type='text' class='form-control'
-                        placeholder="{{ __('ebps::ebps.floor_number') }}">
+                        placeholder="{{ __('ebps::ebps.enter_floor_number') }}">
                     <div>
                         @error('mapApply.storey_no')
                             <small class='text-danger'>{{ $message }}</small>
@@ -76,10 +77,11 @@
             </div>
             <div class='col-md-4 mb-3'>
                 <div class='form-group'>
-                    <label class="form-label" for='year_of_house_built'>{{ __('ebps::ebps.year_the_house_was_built') }}</label>
+                    <label class="form-label"
+                        for='year_of_house_built'>{{ __('ebps::ebps.year_the_house_was_built') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.year_of_house_built' name='year_of_house_built' type='text'
-                        class='form-control' placeholder="{{ __('ebps::ebps.year_the_house_was_built') }}">
+                        class='form-control' placeholder="{{ __('ebps::ebps.enter_year_the_house_was_built') }}">
                     <div>
                         @error('mapApply.year_of_house_built')
                             <small class='text-danger'>{{ $message }}</small>
@@ -137,6 +139,39 @@
                 <div class="divider-text ">{{ __('ebps::ebps.land_details') }}</div>
             </div>
 
+
+            <div class="col-md-6 mb-4">
+                <label for="former_local_body">{{ __('ebps::ebps.former_local_body') }}</label>
+                <select id="former_local_body" wire:model="customerLandDetail.former_local_body"
+                    name="customerLandDetail.former_local_body" class="form-control" wire:change="loadFormerWards">
+
+                    <option value="">{{ __('ebps::ebps.choose_former_local_body') }}</option>
+
+                    @foreach ($formerLocalBodies as $id => $title)
+                        <option value="{{ $id }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_local_body')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label for="former_ward_no">{{ __('ebps::ebps.former_ward_no') }}</label>
+                <select id="former_ward_no" name="customerLandDetail.former_ward_no" class="form-control"
+                    wire:model="customerLandDetail.former_ward_no">
+                    <option value="">{{ __('ebps::ebps.choose_former_ward_no') }}</option>
+                    @foreach ($formerWards as $id => $title)
+                        <option value="{{ $title }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_ward_no')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <label for="local_body_id">{{ __('ebps::ebps.local_body') }}</label>
@@ -186,7 +221,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='area_sqm'>{{ __('Area Sqm') }}</label>
-                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='number'
+                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_area_sqm') }}">
                         <div>
                             @error('customerLandDetail.area_sqm')
@@ -198,7 +233,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='lot_no'>{{ __('Lot No') }}</label>
-                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='number'
+                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='text'
                             class='form-control' placeholder="{{ __('Enter Lot No') }}">
                         <div>
                             @error('customerLandDetail.lot_no')
@@ -210,7 +245,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='seat_no'>{{ __('Seat No') }}</label>
-                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='number'
+                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_seat_no') }}">
                         <div>
                             @error('customerLandDetail.seat_no')
@@ -241,8 +276,9 @@
 
             <div class=" d-flex justify-content-between mb-4">
                 <label class="form-label" for="form-label">{{ __('ebps::ebps.four_boundaries') }}</label>
-                <button type="button" class="btn btn-info" wire:click='addFourBoundaries'>
-                    + "{{ __('ebps::ebps.four_boundaries') }}"
+                <button type="button" class="btn btn-info" wire:click='addFourBoundaries'
+                        {{ count($fourBoundaries) >= 4 ? 'disabled' : '' }}>
+                    + {{ __('ebps::ebps.add_four_boundaries') }}
                 </button>
             </div>
 
@@ -274,7 +310,7 @@
                                                 class='form-control'>
                                                 <option value="">
                                                     {{ __('ebps::ebps.select_direction') }}</option>
-                                                @foreach (\Src\Ebps\Enums\DirectionEnum::cases() as $direction)
+                                                @foreach ($this->getAvailableDirections($index) as $direction)
                                                     <option value="{{ $direction->value }}">
                                                         {{ $direction->label() }}
                                                     </option>
@@ -293,8 +329,9 @@
                                         <div class='form-group'>
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
-                                                name='fourBoundaries.{{ $index }}.distance' type='number'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_distance') }}">
+                                                name='fourBoundaries.{{ $index }}.distance' type='text'
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.distance')
@@ -308,7 +345,8 @@
                                             <label for='lot_no'>{{ __('ebps::ebps.lot_no') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.lot_no'
                                                 name='fourBoundaries.{{ $index }}.lot_no' type='text'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.lot_no')
@@ -379,7 +417,8 @@
 
                 <div class='col-md-4 mb-3'>
                     <div class='form-group'>
-                        <label class="form-label" for='grandfather_name'>{{ __('ebps::ebps.grandfather_name') }}</label>
+                        <label class="form-label"
+                            for='grandfather_name'>{{ __('ebps::ebps.grandfather_name') }}</label>
                         <span class="text-danger">*</span>
                         <input wire:model.defer='landOwnerDetail.grandfather_name' id="grandfather_name"
                             name='grandfather_name' type='text' class='form-control'
@@ -418,7 +457,8 @@
 
                 <div class='col-md-4 mb-3'>
                     <div class='form-group'>
-                        <label class="form-label" for='citizenship_no'>{{ __('ebps::ebps.citizenship_number') }}</label>
+                        <label class="form-label"
+                            for='citizenship_no'>{{ __('ebps::ebps.citizenship_number') }}</label>
                         <span class="text-danger">*</span>
                         <input wire:model.defer='landOwnerDetail.citizenship_no' id="citizenship_no"
                             name='citizenship_no' type='text' class='form-control' placeholder='नागरिकता नम्बर'>
@@ -436,7 +476,7 @@
                             for='citizenship_issued_date'>{{ __('ebps::ebps.citizenship_issue_date') }}</label>
                         <span class="text-danger">*</span>
                         <input wire:model.defer='landOwnerDetail.citizenship_issued_date' id="citizenship_issued_date"
-                            name='citizenship_issued_date' type='text' class='form-control'>
+                            name='citizenship_issued_date' type='text' class='form-control nepali-date'>
                         <div>
                             @error('landOwnerDetail.citizenship_issued_date')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -545,7 +585,7 @@
                         <input wire:model="landOwnerPhoto" name="landOwnerPhoto" type="file"
                             class="form-control {{ $errors->has('landOwnerPhoto') ? 'is-invalid' : '' }}"
                             style="{{ $errors->has('landOwnerPhoto2') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
-                            accept="image/*">
+                            accept="image/*,.pdf">
                         <div>
                             @error('landOwnerPhoto')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -554,11 +594,17 @@
                                 ($landOwnerPhoto && $landOwnerPhoto instanceof \Livewire\TemporaryUploadedFile) ||
                                     $landOwnerPhoto instanceof \Illuminate\Http\File ||
                                     $landOwnerPhoto instanceof \Illuminate\Http\UploadedFile)
-                                <img src="{{ $landOwnerPhoto->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
-                                    class="img-thumbnail mt-2" style="height: 300px;">
+                                <a href="{{ $landOwnerPhoto->temporaryUrl() }}" target="_blank"
+                                    class="btn btn-outline-primary btn-sm">
+                                    <i class="bx bx-file"></i>
+                                    {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
                             @elseif (!empty(trim($landOwnerPhoto)))
-                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $landOwnerPhoto, 'local', 'tempUrl') }}"
-                                    alt="Existing Image 2" class="img-thumbnail mt-2" style="height: 300px;">
+                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $landOwnerPhoto, 'local', 'tempUrl') }}"
+                                    target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="bx bx-file"></i>
+                                    {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
                             @endif
                         </div>
                     </div>
@@ -570,7 +616,7 @@
                 <div class="divider-text ">{{ __('ebps::ebps.house_owner_details') }}</div>
             </div>
 
-             @if ($action === App\Enums\Action::CREATE)
+            @if ($action === App\Enums\Action::CREATE)
                 <div class="col-12 text-center mb-4">
                     <div class="form-check d-inline-block">
                         <input class="form-check-input" type="checkbox" id="isSame"
@@ -631,7 +677,8 @@
 
                     <div class='col-md-4 mb-3'>
                         <div class='form-group'>
-                            <label class="form-label" for='grandfather_name'>{{ __('ebps::ebps.grandfather_name') }}</label>
+                            <label class="form-label"
+                                for='grandfather_name'>{{ __('ebps::ebps.grandfather_name') }}</label>
                             <span class="text-danger">*</span>
                             <input wire:model.defer='houseOwnerDetail.grandfather_name' id="grandfather_name"
                                 name='grandfather_name' type='text' class='form-control'
@@ -670,7 +717,8 @@
 
                     <div class='col-md-4 mb-3'>
                         <div class='form-group'>
-                            <label class="form-label" for='citizenship_no'>{{ __('ebps::ebps.citizenship_number') }}</label>
+                            <label class="form-label"
+                                for='citizenship_no'>{{ __('ebps::ebps.citizenship_number') }}</label>
                             <span class="text-danger">*</span>
                             <input wire:model.defer='houseOwnerDetail.citizenship_no' id="citizenship_no"
                                 name='citizenship_no' type='text' class='form-control'
@@ -712,7 +760,8 @@
                                 class="form-control {{ $errors->has('houseOwnerDetail.province_id') ? 'is-invalid' : '' }}"
                                 style="{{ $errors->has('houseOwnerDetail.province_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
                                 >
-                                <option value="" selected hidden>{{ __('ebps::ebps.select_province') }}</option>
+                                <option value="" selected hidden>{{ __('ebps::ebps.select_province') }}
+                                </option>
                                 <!-- Placeholder -->
                                 @foreach ($houseOwnerProvinces as $id => $title)
                                     <option value="{{ $id }}">{{ $title }}</option>
@@ -736,7 +785,8 @@
                                 class="form-control {{ $errors->has('houseOwnerDetail.local_body_id') ? 'is-invalid' : '' }}"
                                 style="{{ $errors->has('houseOwnerDetail.local_body_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
 
-                                <option value="" selected hidden>{{ __('ebps::ebps.select_district') }}</option>
+                                <option value="" selected hidden>{{ __('ebps::ebps.select_district') }}
+                                </option>
                                 @foreach ($houseOwnerDistricts as $id => $title)
                                     <option value="{{ $id }}">{{ $title }}</option>
                                 @endforeach
@@ -759,7 +809,8 @@
                                 class="form-control {{ $errors->has('houseOwnerDetail.local_body_id') ? 'is-invalid' : '' }}"
                                 style="{{ $errors->has('houseOwnerDetail.local_body_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                                 wire:change="getHouseOwnerWards">
-                                <option value="" selected hidden>{{ __('ebps::ebps.select_local_body') }}</option>
+                                <option value="" selected hidden>{{ __('ebps::ebps.select_local_body') }}
+                                </option>
                                 @foreach ($houseOwnerLocalBodies as $id => $title)
                                     <option value="{{ $id }}">{{ $title }}</option>
                                 @endforeach
@@ -794,7 +845,8 @@
 
                     <div class='col-md-12 mb-3'>
                         <div class='form-group'>
-                            <label class="form-label" for='signature'>{{ __('ebps::ebps.house_owner_photo') }}</label>
+                            <label class="form-label"
+                                for='signature'>{{ __('ebps::ebps.house_owner_photo') }}</label>
                             <span class="text-danger">*</span>
                             <input wire:model="houseOwnerPhoto" name="houseOwnerPhoto" type="file"
                                 class="form-control {{ $errors->has('houseOwnerPhoto') ? 'is-invalid' : '' }}"
@@ -831,7 +883,6 @@
                     <label for="applicant_type" class="form-label">{{ __('ebps::ebps.applicant_type') }}</label>
                     <span class="text-danger">*</span>
                     <select wire:model="mapApply.applicant_type" name="applicant_type"
-                        wire:change='updateApplicantForm'
                         class="form-control {{ $errors->has('mapApply.applicant_type') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('mapApply.applicant_type') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
                         <option value="" selected hidden>{{ __('ebps::ebps.select_applicant_type') }}</option>
@@ -853,8 +904,7 @@
                     <label class="form-label" for='full_name'>{{ __('ebps::ebps.full_name') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model.defer='mapApply.full_name' id="full_name" name='full_name' type='text'
-                        class='form-control' placeholder='निवेदकको नाम'
-                        @if ($showNameAndNumber) readonly @endif>
+                        class='form-control' placeholder='निवेदकको नाम'>
                     <div>
                         @error('mapApply.full_name')
                             <small class='text-danger'>{{ $message }}</small>
@@ -868,7 +918,7 @@
                     <label class="form-label" for='mobile_no'>{{ __('ebps::ebps.phone_number') }}</label>
                     <span class="text-danger">*</span>
                     <input wire:model='mapApply.mobile_no' id="mobile_no" name='mobile_no' type='number'
-                        class='form-control' placeholder='फोन नं.' @if ($showNameAndNumber) readonly @endif>
+                        class='form-control' placeholder='फोन नं.'>
                     <div>
                         @error('mapApply.mobile_no')
                             <small class='text-danger'>{{ $message }}</small>
@@ -957,7 +1007,7 @@
                     <select wire:model="mapApply.ward_no" name="ward_no"
                         class="form-control {{ $errors->has('mapApply.ward_no') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('mapApply.ward_no') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
-                        <option value="" selected hidden>{{ __('eps::ebps.select_ward') }}</option>
+                        <option value="" selected hidden>{{ __('ebps::ebps.select_ward') }}</option>
                         @foreach ($applicantWards as $id => $title)
                             <option value="{{ $title }}">{{ $title }}</option>
                         @endforeach
@@ -997,7 +1047,7 @@
                         <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
                         <input wire:model="uploadedFiles.{{ $index }}" type="file"
                             class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
-                            accept="image/*">
+                            accept="image/*,application/pdf">
                         <div>
                             @error("uploadedFiles.$index")
                                 <small class='text-danger'>{{ $message }}</small>
@@ -1036,8 +1086,7 @@
                             <div class="row align-items-center">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label
-                                            class="font-weight-bold">{{ __('ebps::ebps.document_name') }}</label>
+                                        <label class="font-weight-bold">{{ __('ebps::ebps.document_name') }}</label>
                                         <input dusk="businessregistration-documents.{{ $key }}.title-field"
                                             type="text" class="form-control"
                                             wire:model="documents.{{ $key }}.title"
@@ -1050,7 +1099,8 @@
                                         <label
                                             class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
                                         <input type="file" class="form-control-file"
-                                            wire:model.defer="documents.{{ $key }}.file">
+                                            wire:model.defer="documents.{{ $key }}.file"
+                                            accept="image/*,application/pdf">
 
                                         <div wire:loading wire:target="documents.{{ $key }}.file">
                                             <span class="spinner-border spinner-border-sm" role="status"
@@ -1097,9 +1147,7 @@
     </div>
     <div class="card-footer">
         <button type="submit" class="btn btn-primary">{{ __('ebps::ebps.save') }}</button>
-        <a href="{{ route('customer.ebps.old_applications.index') }}" wire:loading.attr="disabled"
-            class="btn btn-danger">{{ __('ebps::ebps.back') }}</a>
-        <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
+
         <a href="{{ route('customer.ebps.building-registrations.index') }}" wire:loading.attr="disabled"
             class="btn btn-danger">{{ __('Back') }}</a>
     </div>

@@ -17,9 +17,9 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('affiliations create')
+                        @perm('gms_settings create')
                             <!-- <a href="{{ route('admin.affiliations.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
-                                                {{ __('grantmanagement::grantmanagement.add_affiliation') }}</a> -->
+                                                    {{ __('grantmanagement::grantmanagement.add_affiliation') }}</a> -->
 
                             <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                                 data-bs-target="#indexModal">

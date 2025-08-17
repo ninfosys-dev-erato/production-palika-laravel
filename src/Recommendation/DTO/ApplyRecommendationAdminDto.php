@@ -23,7 +23,6 @@ class ApplyRecommendationAdminDto
         public ?string $fiscal_year_id,
         public ?string $ward_id,
         public ?string $local_body_id,
-        public ?string $created_by,
     ){}
 
     public static function fromLiveWireModel(ApplyRecommendation $applyRecommendation):ApplyRecommendationAdminDto{
@@ -36,22 +35,18 @@ class ApplyRecommendationAdminDto
             $recommendation_medium = RecommendationMediumEnum::WEB;
             $ward = $customer->kyc->ward_id ?? null;
             $localBody = $customer->kyc->permanent_local_body_id ?? null;
-            $created_by = Auth::guard('customer')->id();
         } elseif (Auth::guard('api-customer')->check()) {
             $recommendation_medium = RecommendationMediumEnum::MOBILE;
             $ward = $customer->kyc->ward_id ?? null;
             $localBody = $customer->kyc->permanent_local_body_id ?? null;
-            $created_by = Auth::guard('api-customer')->id();
         } elseif (Auth::guard('web')->check()) {
             $recommendation_medium = RecommendationMediumEnum::SYSTEM;
             $ward = GlobalFacade::ward() ?? null;
             $localBody = key(getSettingWithKey('palika-local-body')) ?? null;
-            $created_by = Auth::id(); // Defaults to 'web' guard
         } else {
             $recommendation_medium = null;
             $ward = null;
             $localBody = null;
-            $created_by = null;
         }
         return new self(
             customer_id: $applyRecommendation->customer_id,
@@ -66,7 +61,6 @@ class ApplyRecommendationAdminDto
             fiscal_year_id: $applyRecommendation->fiscal_year_id ?? null,
             ward_id: $ward ?? null,
             local_body_id: $localBody ?? null,
-            created_by: $created_by ?? null,
 
         );
     }

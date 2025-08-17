@@ -11,7 +11,7 @@
         <div class="card mb-4">
             <div class="card-header text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0 fw-bold text-primary">
-                    {{ __('businessregistration::businessregistration.business_deregistration_details') }}
+                    {{ __('businessregistration::businessregistration.deregistration_details') }}
 
                 </h4>
 
@@ -92,9 +92,17 @@
                         <dt class="col-sm-4">{{ __('businessregistration::businessregistration.rentagreement') }}
                         </dt>
                         <dd class="col-sm-8">
+
+
                             @if ($businessDeRegistration->businessRegistration->rentagreement)
-                                <a href="{{ asset('storage/' . $businessDeRegistration->businessRegistration->rentagreement) }}"
-                                    target="_blank">{{ __('businessregistration::businessregistration.view_uploaded_file') }}</a>
+                                <a href="{{ App\Facades\FileFacade::getTemporaryUrl(
+                                    path: config('src.BusinessRegistration.businessRegistration.registration'),
+                                    filename: $businessDeRegistration->businessRegistration->rentagreement,
+                                    disk: 'local',
+                                ) }}"
+                                    target="_blank">
+                                    {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                </a>
                             @else
                                 -
                             @endif
@@ -200,7 +208,7 @@
         <div class="card">
             <div class="card-header bg-success text-white">
                 <h4 class="fw-bold">
-                    {{ __('businessregistration::businessregistration.business_registration_files') }}</h4>
+                    {{ __('businessregistration::businessregistration.files') }}</h4>
             </div>
             <div class="card-body">
                 <div class="row g-3">

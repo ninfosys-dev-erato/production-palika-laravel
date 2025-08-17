@@ -60,7 +60,6 @@ class GrantReleaseTable extends DataTableComponent
                 ->label(function ($row) {
                     return optional($row->grantProgram)->program_name
                         . ' (' . optional($row->grantProgram->fiscalYear)->year . ')';
-
                 }),
             Column::make(__('grantmanagement::grantmanagement.grantee_name'))
                 ->label(function ($row) {
@@ -75,7 +74,6 @@ class GrantReleaseTable extends DataTableComponent
                                     ->filter()
                                     ->join(' ');
                             }
-
                         }
                     } catch (\Throwable $e) {
                         return 'Error: ' . $e->getMessage();
@@ -86,27 +84,28 @@ class GrantReleaseTable extends DataTableComponent
             Column::make(__('grantmanagement::grantmanagement.newcontinuous'), 'is_new_or_ongoing')->sortable()->collapseOnTablet(),
             Column::make(__('grantmanagement::grantmanagement.planning_site'), 'last_year_investment')->sortable()->collapseOnTablet(),
             Column::make(__('grantmanagement::grantmanagement.contact_number'), 'location')->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.grant_expenses'), 'grant_expenses')->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.private_expenses'), 'private_expenses')->sortable()->searchable()->collapseOnTablet(),
         ];
 
-        if (can('grant_releases edit') || can('grant_releases delete')) {
-            $actionsColumn = Column::make(__('grantmanagement::grantmanagement.actions'))->label(function ($row) {
+        if (can('gms_activity edit') || can('gms_activity delete')) {
+            $actionsColumn = Column::make(__('grantmanagement::grantmanagement.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('grant_releases edit')) {
-                    $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')"><i class="bx bx-edit"></i></button>&nbsp;';
+                if (can('gms_activity edit')) {
+                    $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
-
-                if (can('grant_releases view')) {
-                    $view = '<button class="btn btn-primary btn-sm" wire:click="show(' . $row->id . ')"><i class="bx bx-show"></i></button>&nbsp;';
+                if (can('gms_activity view')) {
+                    $view = '<button class="btn btn-primary btn-sm" wire:click="show(' . $row->id . ')"><i 
+                    class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
                 }
 
-                if (can('grant_releases delete')) {
+                if (can('gms_activity delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
-
 
                 return $buttons;
             })->html();
@@ -117,13 +116,11 @@ class GrantReleaseTable extends DataTableComponent
         return $columns;
     }
 
-    public function refresh()
-    {
-    }
+    public function refresh() {}
 
     public function edit($id)
     {
-        if (!can('grant_releases edit')) {
+        if (!can('gms_activity edit')) {
             SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
             return false;
         }
@@ -133,18 +130,17 @@ class GrantReleaseTable extends DataTableComponent
 
     public function show($id)
     {
-        if (!can('grant_releases view')) {
+        if (!can('gms_activity view')) {
             SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
             return false;
         }
 
         return redirect()->route('admin.grant_release.show', ['id' => $id]);
-
     }
 
     public function delete($id)
     {
-        if (!can('grant_releases delete')) {
+        if (!can('gms_activity delete')) {
             SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
             return false;
         }
@@ -157,7 +153,7 @@ class GrantReleaseTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('grant_releases delete')) {
+        if (!can('gms_activity delete')) {
             SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
             return false;
         }

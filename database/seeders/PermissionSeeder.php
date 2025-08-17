@@ -14,226 +14,484 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            // Customer Management
-            ['name' => 'customer_access', 'guard' => 'web'],
-            ['name' => 'customer_kyc_update', 'guard' => 'web'],
+            // -------------------
+            // ACTIVITY LOGS MODULE
+            // -------------------
+            ['name' => 'activity_logs access', 'guard' => 'web'],
+            ['name' => 'activity_logs create', 'guard' => 'web'],
+            ['name' => 'activity_logs delete', 'guard' => 'web'],
+            ['name' => 'activity_logs edit', 'guard' => 'web'],
 
-            // Page
-            ['name' => 'page_access', 'guard' => 'web'],
-            ['name' => 'page_create', 'guard' => 'web'],
-            ['name' => 'page_update', 'guard' => 'web'],
-            ['name' => 'page_delete', 'guard' => 'web'],
+            // -------------------
+            // ADDRESS MODULE
+            // -------------------
+            // (No explicit permissions found)
 
-            // System Setting
-            ['name' => 'system_setting_access', 'guard' => 'web'],
-
-            // Fiscal Year
-            ['name' => 'fiscal_year_access', 'guard' => 'web'],
-            ['name' => 'fiscal_year_create', 'guard' => 'web'],
-            ['name' => 'fiscal_year_update', 'guard' => 'web'],
-            ['name' => 'fiscal_year_delete', 'guard' => 'web'],
-
-            // Form
-            ['name' => 'form_access', 'guard' => 'web'],
-            ['name' => 'form_create', 'guard' => 'web'],
-            ['name' => 'form_update', 'guard' => 'web'],
-            ['name' => 'form_delete', 'guard' => 'web'],
-
-            // Human Resource
-            ['name' => 'human_resource_access', 'guard' => 'web'],
-
-            // Employee
-            ['name' => 'employee_access', 'guard' => 'web'],
-            ['name' => 'employee_create', 'guard' => 'web'],
-            ['name' => 'employee_update', 'guard' => 'web'],
-            ['name' => 'employee_delete', 'guard' => 'web'],
-
-            // Designation
-            ['name' => 'designation_access', 'guard' => 'web'],
-            ['name' => 'designation_create', 'guard' => 'web'],
-            ['name' => 'designation_update', 'guard' => 'web'],
-            ['name' => 'designation_delete', 'guard' => 'web'],
-
-            // Department
-            ['name' => 'branch_access', 'guard' => 'web'],
-            ['name' => 'branch_create', 'guard' => 'web'],
-            ['name' => 'branch_update', 'guard' => 'web'],
-            ['name' => 'branch_delete', 'guard' => 'web'],
-
-            // Office Setting
-            ['name' => 'office_setting_access', 'guard' => 'web'],
-
-            // Admin Setting - Setting
-            ['name' => 'setting_access', 'guard' => 'web'],
+            // -------------------
+            // ADMIN SETTINGS MODULE
+            // -------------------
+            ['name' => 'group_access', 'guard' => 'web'],
+            ['name' => 'group_create', 'guard' => 'web'],
+            ['name' => 'group_delete', 'guard' => 'web'],
+            ['name' => 'group_update', 'guard' => 'web'],
+            ['name' => 'setting access', 'guard' => 'web'],
             ['name' => 'setting_create', 'guard' => 'web'],
-            ['name' => 'setting_update', 'guard' => 'web'],
             ['name' => 'setting_delete', 'guard' => 'web'],
+            ['name' => 'setting_update', 'guard' => 'web'],
 
-            // App Setting
-            ['name' => 'app_setting_access', 'guard' => 'web'],
-            ['name' => 'app_setting_update', 'guard' => 'web'],
+            // -------------------
+            // AUTOMATION MODULE
+            // -------------------
+            // (No explicit permissions found)
 
-            // Grievance Management
-            ['name' => 'grievance_access', 'guard' => 'web'],
+            // -------------------
+            // BUSINESS REGISTRATION MODULE
+            // -------------------
+            ['name' => 'business_registration access', 'guard' => 'web'],
+            ['name' => 'business_registration create', 'guard' => 'web'],
+            ['name' => 'business_registration delete', 'guard' => 'web'],
+            ['name' => 'business_registration edit', 'guard' => 'web'],
+            ['name' => 'business_renewals access', 'guard' => 'web'],
+            ['name' => 'business_renewals create', 'guard' => 'web'],
+            ['name' => 'business_renewals delete', 'guard' => 'web'],
+            ['name' => 'business_renewals edit', 'guard' => 'web'],
+            ['name' => 'business_settings access', 'guard' => 'web'],
+            ['name' => 'business_settings create', 'guard' => 'web'],
+            ['name' => 'business_settings delete', 'guard' => 'web'],
+            ['name' => 'business_settings edit', 'guard' => 'web'],
 
-            // Grievance Type
-            ['name' => 'grievance_type_access', 'guard' => 'web'],
-            ['name' => 'grievance_type_create', 'guard' => 'web'],
-            ['name' => 'grievance_type_update', 'guard' => 'web'],
-            ['name' => 'grievance_type_delete', 'guard' => 'web'],
-
-            // Grievance Detail
-            ['name' => 'grievance_detail_access', 'guard' => 'web'],
-            ['name' => 'grievance_detail_update', 'guard' => 'web'],
-
-            // Grievance Setting
-            ['name' => 'grievance_setting_access', 'guard' => 'web'],
-            ['name' => 'grievance_setting_update', 'guard' => 'web'],
-
-            // Meeting Management
-           
-
-            // Committee Type
-            ['name' => 'committee_type_access', 'guard' => 'web'],
-            ['name' => 'committee_type_create', 'guard' => 'web'],
-            ['name' => 'committee_type_update', 'guard' => 'web'],
-            ['name' => 'committee_type_delete', 'guard' => 'web'],
-
-            // Committee
+            // -------------------
+            // COMMITTEES MODULE
+            // -------------------
             ['name' => 'committee_access', 'guard' => 'web'],
             ['name' => 'committee_create', 'guard' => 'web'],
-            ['name' => 'committee_update', 'guard' => 'web'],
             ['name' => 'committee_delete', 'guard' => 'web'],
-
-            // Committee Member
+            ['name' => 'committee_update', 'guard' => 'web'],
             ['name' => 'committee_member_access', 'guard' => 'web'],
             ['name' => 'committee_member_create', 'guard' => 'web'],
-            ['name' => 'committee_member_update', 'guard' => 'web'],
             ['name' => 'committee_member_delete', 'guard' => 'web'],
+            ['name' => 'committee_member_update', 'guard' => 'web'],
+            ['name' => 'committee_type_access', 'guard' => 'web'],
+            ['name' => 'committee_type_create', 'guard' => 'web'],
+            ['name' => 'committee_type_delete', 'guard' => 'web'],
+            ['name' => 'committee_type_update', 'guard' => 'web'],
 
-            // Meeting
+            // -------------------
+            // CUSTOMERS MODULE
+            // -------------------
+            ['name' => 'customer access', 'guard' => 'web'],
+
+            // -------------------
+            // DIGITAL BOARD MODULE
+            // -------------------
+            ['name' => 'digital_board access', 'guard' => 'web'],
+            ['name' => 'digital_board create', 'guard' => 'web'],
+            ['name' => 'digital_board delete', 'guard' => 'web'],
+            ['name' => 'digital_board edit', 'guard' => 'web'],
+
+            // -------------------
+            // DISTRICTS MODULE
+            // -------------------
+            ['name' => 'districts create', 'guard' => 'web'],
+            ['name' => 'districts delete', 'guard' => 'web'],
+            ['name' => 'districts edit', 'guard' => 'web'],
+
+            // -------------------
+            // DOWNLOADS MODULE
+            // -------------------
+            ['name' => 'downloads access', 'guard' => 'web'],
+            ['name' => 'downloads create', 'guard' => 'web'],
+            ['name' => 'downloads delete', 'guard' => 'web'],
+            ['name' => 'downloads edit', 'guard' => 'web'],
+
+            // -------------------
+            // EBPS MODULE
+            // -------------------
+            ['name' => 'ebps access', 'guard' => 'web'],
+            ['name' => 'ebps_settings create', 'guard' => 'web'],
+            ['name' => 'ebps_settings delete', 'guard' => 'web'],
+            ['name' => 'ebps_settings edit', 'guard' => 'web'],
+            ['name' => 'ebps_map_applies access', 'guard' => 'web'],
+            ['name' => 'ebps_map_applies edit', 'guard' => 'web'],
+            ['name' => 'ebps_map_applies delete', 'guard' => 'web'],
+            ['name' => 'ebps_organizations access', 'guard' => 'web'],
+            ['name' => 'ebps_organizations edit', 'guard' => 'web'],
+            ['name' => 'ebps_organizations delete', 'guard' => 'web'],
+
+            // -------------------
+            // EMERGENCY CONTACTS MODULE
+            // -------------------
+            ['name' => 'emergency_contact access', 'guard' => 'web'],
+            ['name' => 'emergency_contact create', 'guard' => 'web'],
+            ['name' => 'emergency_contact delete', 'guard' => 'web'],
+            ['name' => 'emergency_contact update', 'guard' => 'web'],
+
+            // -------------------
+            // BRANCH MODULE
+            // -------------------
+            ['name' => 'branch access', 'guard' => 'web'],
+            ['name' => 'branch create', 'guard' => 'web'],
+            ['name' => 'branch edit', 'guard' => 'web'],
+            ['name' => 'branch delete', 'guard' => 'web'],
+
+            // -------------------
+            // EMPLOYEES MODULE
+            // -------------------
+            ['name' => 'employee access', 'guard' => 'web'],
+            ['name' => 'employee create', 'guard' => 'web'],
+            ['name' => 'employee delete', 'guard' => 'web'],
+            ['name' => 'employee update', 'guard' => 'web'],
+            ['name' => 'designation access', 'guard' => 'web'],
+            ['name' => 'designation create', 'guard' => 'web'],
+            ['name' => 'designation edit', 'guard' => 'web'],
+            ['name' => 'designation delete', 'guard' => 'web'],
+
+            // -------------------
+            // FISCAL YEARS MODULE
+            // -------------------
+            ['name' => 'fiscal_year access', 'guard' => 'web'],
+            ['name' => 'fiscal_year create', 'guard' => 'web'],
+            ['name' => 'fiscal_year delete', 'guard' => 'web'],
+            ['name' => 'fiscal_year edit', 'guard' => 'web'],
+
+            // -------------------
+            // FORM MODULE
+            // -------------------
+            ['name' => 'form access', 'guard' => 'web'],
+            ['name' => 'form create', 'guard' => 'web'],
+            ['name' => 'form delete', 'guard' => 'web'],
+            ['name' => 'form edit', 'guard' => 'web'],
+
+            // -------------------
+            // GRANT MANAGEMENT MODULE
+            // -------------------
+            ['name' => 'gms_settings access', 'guard' => 'web'],
+            ['name' => 'gms_settings create', 'guard' => 'web'],
+            ['name' => 'gms_settings edit', 'guard' => 'web'],
+            ['name' => 'gms_settings delete', 'guard' => 'web'],
+
+            ['name' => 'gms_report access', 'guard' => 'web'],
+
+            ['name' => 'gms_activity access', 'guard' => 'web'],
+            ['name' => 'gms_activity create', 'guard' => 'web'],
+            ['name' => 'gms_activity edit', 'guard' => 'web'],
+            ['name' => 'gms_activity delete', 'guard' => 'web'],
+            ['name' => 'gms_activity view', 'guard' => 'web'],
+
+            // -------------------
+            // FUEL SETTINGS MODULE
+            // -------------------
+            ['name' => 'fms_vehicles create', 'guard' => 'web'],
+            ['name' => 'fms_vehicles edit', 'guard' => 'web'],
+            ['name' => 'fms_vehicles delete', 'guard' => 'web'],
+            ['name' => 'fuel_settings create', 'guard' => 'web'],
+            ['name' => 'fuel_settings edit', 'guard' => 'web'],
+            ['name' => 'fuel_settings delete', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories create', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories edit', 'guard' => 'web'],
+            ['name' => 'fms_vehicle_categories delete', 'guard' => 'web'],
+            ['name' => 'fms_tokens create', 'guard' => 'web'],
+            ['name' => 'fms_tokens edit', 'guard' => 'web'],
+            ['name' => 'fms_tokens delete', 'guard' => 'web'],
+
+            // -------------------
+            // GRIEVANCE MODULE
+            // -------------------
+            ['name' => 'grievance access', 'guard' => 'web'],
+            ['name' => 'grievance create', 'guard' => 'web'],
+            ['name' => 'grievance_setting access', 'guard' => 'web'],
+            ['name' => 'grievance_setting create', 'guard' => 'web'],
+            ['name' => 'grievance_setting delete', 'guard' => 'web'],
+            ['name' => 'grievance_setting edit', 'guard' => 'web'],
+            ['name' => 'grievance_setting edit', 'guard' => 'web'],
+
+            // -------------------
+            // LOCAL BODIES MODULE
+            // -------------------
+            ['name' => 'local_bodies create', 'guard' => 'web'],
+            ['name' => 'local_bodies delete', 'guard' => 'web'],
+            ['name' => 'local_bodies edit', 'guard' => 'web'],
+            // ['name' => 'local_levels create', 'guard' => 'web'],
+            // ['name' => 'local_levels view', 'guard' => 'web'],
+
+            // -------------------
+            // MEETINGS MODULE
+            // -------------------
             ['name' => 'meeting_access', 'guard' => 'web'],
-            ['name' => 'meeting_create', 'guard' => 'web'],
-            ['name' => 'meeting_update', 'guard' => 'web'],
-            ['name' => 'meeting_delete', 'guard' => 'web'],
-
-            // Meeting Invited Member
-            ['name' => 'meeting_invited_member_access', 'guard' => 'web'],
-            ['name' => 'meeting_invited_member_create', 'guard' => 'web'],
-            ['name' => 'meeting_invited_member_update', 'guard' => 'web'],
-            ['name' => 'meeting_invited_member_delete', 'guard' => 'web'],
-
-            // Meeting Agenda
             ['name' => 'meeting_agenda_access', 'guard' => 'web'],
             ['name' => 'meeting_agenda_create', 'guard' => 'web'],
-            ['name' => 'meeting_agenda_update', 'guard' => 'web'],
             ['name' => 'meeting_agenda_delete', 'guard' => 'web'],
-
-            // Meeting Participants
-            ['name' => 'meeting_participants_access', 'guard' => 'web'],
-            ['name' => 'meeting_participants_create', 'guard' => 'web'],
-            ['name' => 'meeting_participants_update', 'guard' => 'web'],
-            ['name' => 'meeting_participants_delete', 'guard' => 'web'],
-
-            // Meeting Decision
+            ['name' => 'meeting_agenda_update', 'guard' => 'web'],
+            ['name' => 'meeting_create', 'guard' => 'web'],
+            ['name' => 'meeting_delete', 'guard' => 'web'],
             ['name' => 'meeting_decision_access', 'guard' => 'web'],
             ['name' => 'meeting_decision_create', 'guard' => 'web'],
-            ['name' => 'meeting_decision_update', 'guard' => 'web'],
             ['name' => 'meeting_decision_delete', 'guard' => 'web'],
-
-            // Meeting Minute
+            ['name' => 'meeting_decision_update', 'guard' => 'web'],
+            ['name' => 'meeting_invited_member_access', 'guard' => 'web'],
+            ['name' => 'meeting_invited_member_create', 'guard' => 'web'],
+            ['name' => 'meeting_invited_member_delete', 'guard' => 'web'],
+            ['name' => 'meeting_invited_member_update', 'guard' => 'web'],
             ['name' => 'meeting_minute_access', 'guard' => 'web'],
             ['name' => 'meeting_minute_update', 'guard' => 'web'],
+            ['name' => 'meeting_participants_access', 'guard' => 'web'],
+            ['name' => 'meeting_participants_create', 'guard' => 'web'],
+            ['name' => 'meeting_participants_delete', 'guard' => 'web'],
+            ['name' => 'meeting_participants_update', 'guard' => 'web'],
+            ['name' => 'meeting_update', 'guard' => 'web'],
 
-            // Recommendation Management
-            ['name' => 'recommendation_access', 'guard' => 'web'],
+            // -------------------
+            // PAGES MODULE
+            // -------------------
+            ['name' => 'page access', 'guard' => 'web'],
+            ['name' => 'page create', 'guard' => 'web'],
+            ['name' => 'page delete', 'guard' => 'web'],
+            ['name' => 'page edit', 'guard' => 'web'],
 
-            // Recommendation Category
-            ['name' => 'recommendation_category_access', 'guard' => 'web'],
-            ['name' => 'recommendation_category_create', 'guard' => 'web'],
-            ['name' => 'recommendation_category_update', 'guard' => 'web'],
-            ['name' => 'recommendation_category_delete', 'guard' => 'web'],
+            // -------------------
+            // PERMISSIONS MODULE
+            // -------------------
+            ['name' => 'permissions access', 'guard' => 'web'],
+            ['name' => 'permissions create', 'guard' => 'web'],
+            ['name' => 'permissions delete', 'guard' => 'web'],
+            ['name' => 'permissions edit', 'guard' => 'web'],
 
-            // Recommendation User Group
-            ['name' => 'recommendation_user_group_access', 'guard' => 'web'],
-            ['name' => 'recommendation_user_group_create', 'guard' => 'web'],
-            ['name' => 'recommendation_user_group_update', 'guard' => 'web'],
-            ['name' => 'recommendation_user_group_delete', 'guard' => 'web'],
+            // -------------------
+            // PROFILE MODULE
+            // -------------------
+            // (No explicit permissions found)
 
-            // Recommendation
-            ['name' => 'recommendation_access', 'guard' => 'web'],
-            ['name' => 'recommendation_create', 'guard' => 'web'],
-            ['name' => 'recommendation_update', 'guard' => 'web'],
-            ['name' => 'recommendation_delete', 'guard' => 'web'],
-            ['name' => 'recommendation_approve', 'guard' => 'web'],
+            // -------------------
+            // PROVINCES MODULE
+            // -------------------
+            ['name' => 'provinces create', 'guard' => 'web'],
 
-            // Apply Recommendation
-            ['name' => 'recommendation_apply_access', 'guard' => 'web'],
-            ['name' => 'recommendation_apply_update', 'guard' => 'web'],
-            ['name' => 'recommendation_apply_create', 'guard' => 'web'],
+            // -------------------
+            // RECOMMENDATION MODULE
+            // -------------------        
+            ['name' => 'recommendation access', 'guard' => 'web'],
+            ['name' => 'recommendation_apply access', 'guard' => 'web'],
+            ['name' => 'recommendation_apply create', 'guard' => 'web'],
+            ['name' => 'recommendation_apply delete', 'guard' => 'web'],
+            ['name' => 'recommendation_apply update', 'guard' => 'web'],
+            ['name' => 'recommendation_apply status', 'guard' => 'web'],
+            ['name' => 'recommendation_settings access', 'guard' => 'web'],
+            ['name' => 'recommendation_settings create', 'guard' => 'web'],
+            ['name' => 'recommendation_settings delete', 'guard' => 'web'],
+            ['name' => 'recommendation_settings update', 'guard' => 'web'],
 
-            // Downloads
-            ['name' => 'downloads_access', 'guard' => 'web'],
-            ['name' => 'downloads_create', 'guard' => 'web'],
-            ['name' => 'downloads_update', 'guard' => 'web'],
-            ['name' => 'downloads_delete', 'guard' => 'web'],
+            // -------------------
+            // ROLES MODULE
+            // -------------------
+            ['name' => 'roles access', 'guard' => 'web'],
+            ['name' => 'roles create', 'guard' => 'web'],
+            ['name' => 'roles delete', 'guard' => 'web'],
+            ['name' => 'roles manage', 'guard' => 'web'],
+            ['name' => 'roles update', 'guard' => 'web'],
+          
 
-            // Emergency Contact
-            ['name' => 'emergency_contact_access', 'guard' => 'web'],
-            ['name' => 'emergency_contact_create', 'guard' => 'web'],
-            ['name' => 'emergency_contact_update', 'guard' => 'web'],
-            ['name' => 'emergency_contact_delete', 'guard' => 'web'],
+            // -------------------
+            // SETTINGS MODULE
+            // -------------------
+            ['name' => 'app_setting_access', 'guard' => 'web'],
+            ['name' => 'app_setting_update', 'guard' => 'web'],
+            ['name' => 'setting_access', 'guard' => 'web'],
+            ['name' => 'setting_create', 'guard' => 'web'],
+            ['name' => 'setting_delete', 'guard' => 'web'],
+            ['name' => 'setting_update', 'guard' => 'web'],
 
-            // Roles
-            ['name' => 'roles_access', 'guard' => 'web'],
-            ['name' => 'roles_create', 'guard' => 'web'],
-            ['name' => 'roles_update', 'guard' => 'web'],
-            ['name' => 'roles_delete', 'guard' => 'web'],
-            ['name' => 'roles_manage', 'guard' => 'web'],
+            // -------------------
+            // SETTING MODULE
+            // -------------------
+            ['name' => 'general_setting access', 'guard' => 'web'],
+            ['name' => 'office_setting access', 'guard' => 'web'],
 
-            // Permissions
-            ['name' => 'permissions_access', 'guard' => 'web'],
-            ['name' => 'permissions_create', 'guard' => 'web'],
-            ['name' => 'permissions_update', 'guard' => 'web'],
-            ['name' => 'permissions_delete', 'guard' => 'web'],
-
-            ['name' => 'apply_recommendation_access', 'guard' => 'web'],
-            ['name' => 'apply_recommendation_create', 'guard' => 'web'],
-            ['name' => 'apply_recommendation_update', 'guard' => 'web'],
-            ['name' => 'apply_recommendation_delete', 'guard' => 'web'],
-
-            ['name' => 'task_access', 'guard' => 'web'],
-            ['name' => 'task_create', 'guard' => 'web'],
-            ['name' => 'task_update', 'guard' => 'web'],
-            ['name' => 'task_delete', 'guard' => 'web'],
-            ['name' => 'task_view', 'guard' => 'web'],
-
-            ['name' => 'task_type_access', 'guard' => 'web'],
-            ['name' => 'task_type_create', 'guard' => 'web'],
-            ['name' => 'task_type_update', 'guard' => 'web'],
-            ['name' => 'task_type_delete', 'guard' => 'web'],
-
+            // -------------------
+            // TASK TRACKING MODULE
+            // -------------------
             ['name' => 'project_access', 'guard' => 'web'],
             ['name' => 'project_create', 'guard' => 'web'],
-            ['name' => 'project_update', 'guard' => 'web'],
             ['name' => 'project_delete', 'guard' => 'web'],
+            ['name' => 'project_update', 'guard' => 'web'],
+            ['name' => 'task_access', 'guard' => 'web'],
+            ['name' => 'task_create', 'guard' => 'web'],
+            ['name' => 'task_delete', 'guard' => 'web'],
+            ['name' => 'task_types access', 'guard' => 'web'],
+            ['name' => 'task_types create', 'guard' => 'web'],
+            ['name' => 'task_types delete', 'guard' => 'web'],
+            ['name' => 'task_types update', 'guard' => 'web'],
+            ['name' => 'task_update', 'guard' => 'web'],
+            ['name' => 'task_view', 'guard' => 'web'],
 
-            ['name' => 'registration_type_access', 'guard' => 'web'],
-            ['name' => 'registration_type_create', 'guard' => 'web'],
-            ['name' => 'registration_type_update', 'guard' => 'web'],
-            ['name' => 'registration_type_delete', 'guard' => 'web'],
-            
-            ['name' => 'chalani_access', 'guard' => 'web'],
-            ['name' => 'chalani_create', 'guard' => 'web'],
-            ['name' => 'chalani_update', 'guard' => 'web'],
-            ['name' => 'chalani_delete', 'guard' => 'web'],
+            // -------------------
+            // TOKEN TRACKING MODULE
+            // -------------------
+            ['name' => 'register_token_logs create', 'guard' => 'web'],
+            ['name' => 'register_token_logs delete', 'guard' => 'web'],
+            ['name' => 'register_token_logs edit', 'guard' => 'web'],
+            ['name' => 'register_tokens access', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens create', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens delete', 'guard' => 'web'],
+            ['name' => 'register_fms_tokens edit', 'guard' => 'web'],
+            ['name' => 'register_tokens exitTime', 'guard' => 'web'],
+            ['name' => 'token_holders create', 'guard' => 'web'],
+            ['name' => 'token_holders delete', 'guard' => 'web'],
+            ['name' => 'token_holders edit', 'guard' => 'web'],
+            ['name' => 'token_logs create', 'guard' => 'web'],
+            ['name' => 'token_logs delete', 'guard' => 'web'],
+            ['name' => 'token_logs edit', 'guard' => 'web'],
 
-            ['name' => 'darta_access', 'guard' => 'web'],
-            ['name' => 'darta_create', 'guard' => 'web'],
-            ['name' => 'darta_update', 'guard' => 'web'],
-            ['name' => 'darta_delete', 'guard' => 'web'],
+            // -------------------
+            // USERS MODULE
+            // -------------------
+            ['name' => 'users access', 'guard' => 'web'],
+            ['name' => 'users create', 'guard' => 'web'],
+            ['name' => 'users delete', 'guard' => 'web'],
+            ['name' => 'users edit', 'guard' => 'web'],
+            ['name' => 'users manage', 'guard' => 'web'],
 
+            // -------------------
+            // WARDS MODULE
+            // -------------------
+            // ['name' => 'wards access', 'guard' => 'web'],  // Not used in Wards module code
+            ['name' => 'wards create', 'guard' => 'web'],
+            ['name' => 'wards delete', 'guard' => 'web'],
+            ['name' => 'wards edit', 'guard' => 'web'],
+
+            // -------------------
+            // JMS Ejalas Module
+            // -------------------
+            ['name' => 'jms_settings create', 'guard' => 'web'],
+            ['name' => 'jms_settings access', 'guard' => 'web'],
+            ['name' => 'jms_settings edit', 'guard' => 'web'],
+            ['name' => 'jms_settings delete', 'guard' => 'web'],
+
+            ['name' => 'jms_judicial_management create', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management access', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management edit', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management delete', 'guard' => 'web'],
+            ['name' => 'jms_judicial_management print', 'guard' => 'web'],
+
+            ['name' => 'jms_reconciliation_center access', 'guard' => 'web'],
+            ['name' => 'jms_reconciliation_center create', 'guard' => 'web'],
+            ['name' => 'jms_report access', 'guard' => 'web'],
+
+            // -------------------
+            // TOK Token Management Module
+            // -------------------
+            ['name' => 'tok_token access', 'guard' => 'web'],
+            ['name' => 'tok_token_feedback access', 'guard' => 'web'],
+            ['name' => 'tok_token_report access', 'guard' => 'web'],
+            ['name' => 'tok_token action', 'guard' => 'web'],
+            ['name' => 'tok_token_feedback action', 'guard' => 'web'],
+
+            // -------------------
+            // TSK Task Tracking Module
+            // -------------------
+            ['name' => 'tsk_setting access', 'guard' => 'web'],
+            ['name' => 'tsk_setting create', 'guard' => 'web'],
+            ['name' => 'tsk_setting edit', 'guard' => 'web'],
+            ['name' => 'tsk_setting delete', 'guard' => 'web'],
+            ['name' => 'tsk_management access', 'guard' => 'web'],
+            ['name' => 'tsk_management create', 'guard' => 'web'],
+            ['name' => 'tsk_management edit', 'guard' => 'web'],
+            ['name' => 'tsk_management delete', 'guard' => 'web'],
+            ['name' => 'tsk_management print', 'guard' => 'web'],
+            ['name' => 'tsk_management view', 'guard' => 'web'],
+
+            // -------------------
+            // YOJANA MODULE
+            // -------------------
+            // Plan Permissions
+            ['name' => 'plan create', 'guard' => 'web'],
+            ['name' => 'plan edit', 'guard' => 'web'],
+            ['name' => 'plan delete', 'guard' => 'web'],
+            ['name' => 'plan show', 'guard' => 'web'],
+            ['name' => 'plan print', 'guard' => 'web'],
+            ['name' => 'plan settings', 'guard' => 'web'],
+
+            // Plan Basic Settings Permissions
+            ['name' => 'plan_basic_settings create', 'guard' => 'web'],
+            ['name' => 'plan_basic_settings edit', 'guard' => 'web'],
+            ['name' => 'plan_basic_settings delete', 'guard' => 'web'],
+
+            // Plan Committee Settings Permissions
+            ['name' => 'plan_committee_settings create', 'guard' => 'web'],
+            ['name' => 'plan_committee_settings edit', 'guard' => 'web'],
+            ['name' => 'plan_committee_settings delete', 'guard' => 'web'],
+
+            // Plan Log Books Permissions
+            ['name' => 'plan_log_books create', 'guard' => 'web'],
+            ['name' => 'plan_log_books edit', 'guard' => 'web'],
+            ['name' => 'plan_log_books delete', 'guard' => 'web'],
+
+            // -------------------
+            // DARTA MODULE
+            // -------------------
+            ['name' => 'darta access', 'guard' => 'web'],
+            ['name' => 'darta update', 'guard' => 'web'],
+            ['name' => 'darta delete', 'guard' => 'web'],
+            ['name' => 'darta create', 'guard' => 'web'],
+
+            // -------------------
+            // CHALANI MODULE
+            // -------------------
+            ['name' => 'chalani create', 'guard' => 'web'],
+            ['name' => 'chalani access', 'guard' => 'web'],
+            ['name' => 'chalani update', 'guard' => 'web'],
+            ['name' => 'chalani delete', 'guard' => 'web'],
+
+            // -------------------
+            // FILE TRACKING MODULE
+            // -------------------
+            ['name' => 'file_records create', 'guard' => 'web'],
+            ['name' => 'file_records edit', 'guard' => 'web'],
+            ['name' => 'file_records delete', 'guard' => 'web'],
+            ['name' => 'file_records view', 'guard' => 'web'],
+            ['name' => 'file_record_logs create', 'guard' => 'web'],
+            ['name' => 'file_record_logs edit', 'guard' => 'web'],
+            ['name' => 'file_record_logs delete', 'guard' => 'web'],
+            ['name' => 'file_record_notifiees create', 'guard' => 'web'],
+            ['name' => 'file_record_notifiees edit', 'guard' => 'web'],
+            ['name' => 'file_record_notifiees delete', 'guard' => 'web'],
+
+            // -------------------
+            // GENERAL/OTHER MODULE
+            // -------------------
+            ['name' => 'human_resource access', 'guard' => 'web'],
+            ['name' => 'office_setting access', 'guard' => 'web'],
+            ['name' => 'letter_head access', 'guard' => 'web'],
+            ['name' => 'letter_head create', 'guard' => 'web'],
+
+            // -------------------
+            // SETTINGS MODULE
+            // -------------------
+            // Settings Permissions
+            ['name' => 'settings edit', 'guard' => 'web'],
+            ['name' => 'settings delete', 'guard' => 'web'],
+            ['name' => 'settings create', 'guard' => 'web'],
+
+            // Setting Groups Permissions
+            ['name' => 'setting_groups edit', 'guard' => 'web'],
+            ['name' => 'setting_groups delete', 'guard' => 'web'],
+            ['name' => 'setting_groups create', 'guard' => 'web'],
+
+            // Letter Head Additional Permissions
+            ['name' => 'letter_head_manage', 'guard' => 'web'],
+            ['name' => 'letter_head_update', 'guard' => 'web'],
+            ['name' => 'letter_head_delete', 'guard' => 'web'],
+            ['name' => 'letter_head_access', 'guard' => 'web'],
+
+            // Form Permissions
+            ['name' => 'form edit', 'guard' => 'web'],
+            ['name' => 'form delete', 'guard' => 'web'],
+            ['name' => 'form create', 'guard' => 'web'],
+            ['name' => 'form access', 'guard' => 'web'],
+
+            // App Setting Permissions
+            ['name' => 'app_setting_access', 'guard' => 'web'],
         ];
+
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(
                 ['name' => $permission['name']], // Find by name

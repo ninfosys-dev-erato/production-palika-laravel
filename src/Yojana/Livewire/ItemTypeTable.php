@@ -53,15 +53,15 @@ class ItemTypeTable extends DataTableComponent
 Column::make(__('yojana::yojana.code'), "code") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('yojana::yojana.group'), "group") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('item_types edit') || can('item_types delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('item_types edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('item_types delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -78,7 +78,7 @@ Column::make(__('yojana::yojana.group'), "group") ->sortable()->searchable()->co
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('item_types edit')){
+        if(!can('plan_basic_settings edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -87,7 +87,7 @@ Column::make(__('yojana::yojana.group'), "group") ->sortable()->searchable()->co
     }
     public function delete($id)
     {
-        if(!can('item_types delete')){
+        if(!can('plan_basic_settings delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -96,7 +96,7 @@ Column::make(__('yojana::yojana.group'), "group") ->sortable()->searchable()->co
         $this->successFlash(__('yojana::yojana.item_type_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('item_types delete')){
+        if(!can('plan_basic_settings delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

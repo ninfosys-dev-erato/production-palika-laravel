@@ -5,7 +5,6 @@
     $suffix = $filter->hasConfig('suffix') ? '--suffix:"'. $filter->getConfig('suffix') .'";' : '';
     $prefix = $filter->hasConfig('prefix') ? '--prefix:"'.$filter->getConfig('prefix').'";' : '';
 @endphp
-
 <div id="{{ $tableName }}-numberRange-{{ $filterKey }}" x-data="numberRangeFilter($wire,'{{ $filterKey }}', '{{ $tableName }}-numberRange-{{ $filterKey }}-wrapper', @js($filter->getConfigs()), '{{ $tableName }}-numberRange-{{ $filterKey }}')" x-on:mousedown.away.throttle.2000ms="updateWireable" x-on:touchstart.away.throttle.2000ms="updateWireable" x-on:mouseleave.throttle.2000ms="updateWireable">
     <x-livewire-tables::tools.filter-label for="{{ $tableName.'-numberRange-'.$filterKey.'-min' }}" :$filter :$filterLayout :$tableName :$isTailwind :$isBootstrap4 :$isBootstrap5 :$isBootstrap />
     <div

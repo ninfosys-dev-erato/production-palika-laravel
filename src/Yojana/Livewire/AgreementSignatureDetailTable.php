@@ -59,15 +59,15 @@ Column::make(__('yojana::yojana.address'), "address") ->sortable()->searchable()
 Column::make(__('yojana::yojana.contact_number'), "contact_number") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('yojana::yojana.date'), "date") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('agreement_signature_details edit') || can('agreement_signature_details delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('agreement_signature_details edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('agreement_signature_details delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -84,7 +84,7 @@ Column::make(__('yojana::yojana.date'), "date") ->sortable()->searchable()->coll
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('agreement_signature_details edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -92,7 +92,7 @@ Column::make(__('yojana::yojana.date'), "date") ->sortable()->searchable()->coll
     }
     public function delete($id)
     {
-        if(!can('agreement_signature_details delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -101,7 +101,7 @@ Column::make(__('yojana::yojana.date'), "date") ->sortable()->searchable()->coll
         $this->successFlash(__('yojana::yojana.agreement_signature_detail_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('agreement_signature_details delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

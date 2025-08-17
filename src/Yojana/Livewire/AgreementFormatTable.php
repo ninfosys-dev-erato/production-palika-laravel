@@ -56,15 +56,15 @@ class AgreementFormatTable extends DataTableComponent
                     return $row->implementationMethod ? $row->implementationMethod->title : "N/A";
                 }),
         ];
-        if (can('agreement_formats edit') || can('agreement_formats delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('agreement_formats edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('agreement_formats delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -80,7 +80,7 @@ class AgreementFormatTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('agreement_formats edit')) {
+        if (!can('plan_basic_settings edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
@@ -88,7 +88,7 @@ class AgreementFormatTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('agreement_formats delete')) {
+        if (!can('plan_basic_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -98,7 +98,7 @@ class AgreementFormatTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('agreement_formats delete')) {
+        if (!can('plan_basic_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

@@ -17,7 +17,7 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('cooperatives create')
+                        @perm('gms_activity create')
                             <a href="{{ route('admin.cooperative.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('grantmanagement::grantmanagement.add_cooperative') }}</a>

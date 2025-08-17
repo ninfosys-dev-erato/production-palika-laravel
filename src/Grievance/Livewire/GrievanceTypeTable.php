@@ -58,21 +58,21 @@ class GrievanceTypeTable extends DataTableComponent
             )->html(),
             BooleanColumn::make(__('grievance::grievance.is_for_ward'), "is_ward")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('grievance_type_update') || can('grievance_type_delete')) {
+        if (can('grievance_setting edit') || can('grievance_setting delete')) {
             $actionsColumn = Column::make(__('grievance::grievance.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('grievance_type_update')) {
+                if (can('grievance_setting edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-pencil"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('grievance_type_delete')) {
+                if (can('grievance_setting delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
-                if (can('grievance_type_access')) {
+                if (can('grievance_setting access')) {
                     $manage = '&nbsp;<button type="button" class="btn btn-success btn-sm ml-2" wire:click="manage(' . $row->id . ')"><i class="bx bx-cog"></i></button>';
                     $buttons .= $manage;
                 }
@@ -90,7 +90,7 @@ class GrievanceTypeTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('grievance_type_update')) {
+        if (!can('grievance_setting edit')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -99,18 +99,18 @@ class GrievanceTypeTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('grievance_type_delete')) {
+        if (!can('grievance_setting delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
         $service = new GrievanceTypeAdminService();
         $service->delete(GrievanceType::findOrFail($id));
-        $this->successFlash(__('grievance::grievance.grievance_type_deleted_successfully'));
+        $this->successFlash(__('grievance::grievance.grievance_setting deleted_successfully'));
     }
 
     public function deleteSelected()
     {
-        if (!can('grievance_type_delete')) {
+        if (!can('grievance_setting delete')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

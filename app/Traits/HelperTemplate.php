@@ -3,8 +3,12 @@
 namespace App\Traits;
 
 use App\Facades\FileFacade;
+use App\Facades\GlobalFacade;
 use Illuminate\Database\Eloquent\Model;
+use Src\Settings\Models\LetterHeadSample;
 use Src\Wards\Models\Ward;
+use Illuminate\Support\Str;
+use Src\Settings\Enums\TemplateEnum;
 
 trait HelperTemplate
 {
@@ -13,11 +17,11 @@ trait HelperTemplate
     function getLetterHeader(
         ?int $ward_no = null,
         string $date = '',     // default inside function if empty
-        string $reg_no = '1',
+        string|null $reg_no = '',
         bool $is_darta = true,
         string|null $fiscal_year = ''
     ): string {
-        $date = $date ?: date('Y-m-d');
+        $date = $date ?: getFormattedBsDate() ?? '';
         $fiscal_year = $fiscal_year ?: (getSetting('fiscal-year') ?? self::EMPTY_LINES);
 
 
@@ -83,7 +87,133 @@ trait HelperTemplate
     HTML;
     }
 
+    function getRecommendationLetterHead(string $regNo, string $fiscalYear, bool $is_darta = true): string
+    {
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Recommendation)->whereNull('deleted_at')->first();
+        if (!$letterHeadSample) {
+            return '';
+        }
+        $label = $is_darta ? 'दर्ता नं.' : 'चलानी नं.';
+        $ward_no = GlobalFacade::ward();
+        $office_name = null;
+        $office_name_en = null;
+        $ward_name = null;
+        $ward_name_en = null;
+        $ward_location = null;
+        if ($ward_no) {
+            $office_name = Ward::where('id', $ward_no)->value('ward_name_ne');
+            $office_name_en = Ward::where('id', $ward_no)->value('ward_name_en');
+            $ward_name = Ward::where('id', $ward_no)->value('address_ne');
+            $ward_name_en = Ward::where('id', $ward_no)->value('address_en');
+            $ward_location = Ward::where('id', $ward_no)->value('plus_code_location');
+        }
+        $office_name = $office_name ?: getSetting('office-name') ?: self::EMPTY_LINES;
+        $office_name_en = $office_name_en ?: getSetting('office-name-en') ?: self::EMPTY_LINES;
 
+        $additionalData = [
+            '{{rec.reg_no}}' => $regNo ?? '',
+            '{{rec.fiscal_year}}' => $fiscalYear ?? '',
+            '{{rec.label}}' => $label ?? '',
+            '{{rec.date}}' => getFormattedBsDate() ?? '',
+            '{{rec.office_name}}' => $office_name ?? '',
+            '{{rec.office_name_en}}' => $office_name_en ?? '',
+            '{{rec.ward_name}}' => $ward_name ?? '',
+            '{{rec.ward_name_en}}' => $ward_name_en ?? '',
+            '{{rec.ward_location}}' => $ward_location ?? '',
+        ];
+        $globalData = $this->getGlobalData(null);
+        $replacements = array_merge(
+            $additionalData,
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
+
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
+    function getBusinessLetterHeaderFromSample(): string
+    {
+        // Fetch the letter head sample by slug
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Business)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$letterHeadSample) {
+            return '';
+        }
+
+
+        $district = getSetting('palika-district') ?: self::EMPTY_LINES;
+        $province = getSetting('palika-province') ?: self::EMPTY_LINES;
+        $address = trim("{$district}, {$province}, नेपाल", ', ');
+
+
+        $globalData = $this->getGlobalData(null);
+
+
+        $replacements = array_merge(
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+
+        // Add style if available
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
+
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
+    function getFooter(): string
+    {
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Footer)->whereNull('deleted_at')->first();
+        if (!$letterHeadSample) {
+            return '';
+        }
+
+        $ward_no = GlobalFacade::ward();
+
+        $ward = $ward_no ? Ward::find($ward_no) : null;
+
+        $additionalData = [
+            '{{rec.ward_email}}' => $ward?->email ?? '',
+            '{{rec.ward_chairperson_no}}' => $ward?->ward_chairperson_no ?? '',
+            '{{rec.ward_secretary_no}}' => $ward?->ward_secretary_no ?? '',
+            '{{rec.ward_social}}' => $ward?->ward_social ?? '',
+        ];
+
+        $globalData = $this->getGlobalData(null);
+
+        $replacements = array_merge(
+            $additionalData,
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
+    private function sanitizeReplacements(array $replacements): array
+    {
+        return array_map(function ($value) {
+            if (is_null($value) || $value === '') {
+                return ' ';
+            }
+            return $value;
+        }, $replacements);
+    }
     //     function getLetterFooter(
     //         string $document_date = '',
     //         string $copy_no = '1',
@@ -208,20 +338,26 @@ trait HelperTemplate
         $acceptorName = $signee ?? self::EMPTY_LINES;
         return [
             '{{global.province}}' => getSetting('palika-province') ?? self::EMPTY_LINES,
+            '{{global.province_en}}' => getSetting('palika-province-eng') ?? self::EMPTY_LINES,
             '{{global.district}}' => getSetting('palika-district') ?? self::EMPTY_LINES,
+            '{{global.district_en}}' => getSetting('district-english') ?? self::EMPTY_LINES,
             '{{global.local-body}}' => getSetting('palika-local-body') ?? self::EMPTY_LINES,
             '{{global.ward}}' => getSetting('palika-ward') ?? self::EMPTY_LINES,
             '{{global.today_date_ad}}' => today()->toDateString() ?? self::EMPTY_LINES,
             '{{global.today_date_bs}}' => getFormattedBsDate() ?? self::EMPTY_LINES,
             '{{global.acceptor_sign}}' => '{{global.acceptor_sign}}',
             '{{global.acceptor_name}}' => $acceptorName,
-            '{{global.signee_name}}' => '',
+            '{{global.signee_name}}' => $acceptorName,
             '{{global.palika_name}}' => getSetting('palika-name') ?? self::EMPTY_LINES,
+            '{{global.palika_name_en}}' => getSetting('palika-name-english') ?: self::EMPTY_LINES,
             '{{global.office_name}}' => getSetting('office-name') ?? self::EMPTY_LINES,
+            '{{global.office_name_en}}' => getSetting('office-name-eng') ?: self::EMPTY_LINES,
             '{{global.fiscal_year}}' => getSetting('fiscal-year') ?? self::EMPTY_LINES,
             '{{global.palika_address}}' => getSetting('palika-address') ?? self::EMPTY_LINES,
             '{{global.palika_email}}' => getSetting('office_email') ?? self::EMPTY_LINES,
             '{{global.palika_phone}}' => getSetting('office_phone') ?? self::EMPTY_LINES,
+            '{{global.palika_logo}}' => getSetting('palika-logo') ?? '',
+            '{{global.palika_campaign_logo}}' => getSetting('palika-campaign-logo') ?? '',
         ];
     }
 
@@ -240,33 +376,41 @@ trait HelperTemplate
             '{{customer.email}}' => $customer->email ?? self::EMPTY_LINES,
             '{{customer.mobile_no}}' => $customer->mobile_no ?? self::EMPTY_LINES,
             '{{customer.gender}}' => $customer->gender?->label() ?? self::EMPTY_LINES,
-            '{{customer.nepali_date_of_birth}}' => $customer->kyc?->nepali_date_of_birth ?? self::EMPTY_LINES,
-            '{{customer.english_date_of_birth}}' => $customer->kyc?->english_date_of_birth ?? self::EMPTY_LINES,
-            '{{customer.grandfather_name}}' => $customer->kyc?->grandfather_name ?? self::EMPTY_LINES,
-            '{{customer.father_name}}' => $customer->kyc?->father_name ?? self::EMPTY_LINES,
-            '{{customer.mother_name}}' => $customer->kyc?->mother_name ?? self::EMPTY_LINES,
-            '{{customer.spouse_name}}' => $customer->kyc?->spouse_name ?? self::EMPTY_LINES,
-            '{{customer.permanent_province_id}}' => $customer->kyc?->permanentProvince?->title ?? self::EMPTY_LINES,
-            '{{customer.permanent_district_id}}' => $customer->kyc?->permanentDistrict?->title ?? self::EMPTY_LINES,
-            '{{customer.permanent_local_body_id}}' => $customer->kyc?->permanentLocalBody?->title ?? self::EMPTY_LINES,
-            '{{customer.permanent_ward}}' => $customer->kyc?->permanent_ward ?? self::EMPTY_LINES,
-            '{{customer.permanent_tole}}' => $customer->kyc?->permanent_tole ?? self::EMPTY_LINES,
-            '{{customer.temporary_province_id}}' => $customer->kyc?->temporaryProvince?->title ?? self::EMPTY_LINES,
-            '{{customer.temporary_district_id}}' => $customer->kyc?->temporaryDistrict?->title ?? self::EMPTY_LINES,
-            '{{customer.temporary_local_body_id}}' => $customer->kyc?->temporaryLocalBody?->title ?? self::EMPTY_LINES,
-            '{{customer.temporary_ward}}' => $customer->kyc?->temporary_ward ?? self::EMPTY_LINES,
-            '{{customer.temporary_tole}}' => $customer->kyc?->temporary_tole ?? self::EMPTY_LINES,
-            '{{customer.document_issued_date_nepali}}' => $customer->kyc?->document_issued_date_nepali ?? self::EMPTY_LINES,
-            '{{customer.document_issued_date_english}}' => $customer->kyc?->document_issued_date_english ?? self::EMPTY_LINES,
-            '{{customer.document_number}}' => $customer->kyc?->document_number ?? self::EMPTY_LINES,
+            '{{customer.gender_ne}}' => match ($customer->gender?->value ?? null) {
+                'female' => 'महिला',
+                'male' => 'पुरुष',
+                default => self::EMPTY_LINES,
+            },
+            '{{customer.nepali_date_of_birth}}' => replaceNumbers($customer->kyc->nepali_date_of_birth, true) ?? self::EMPTY_LINES,
+            '{{customer.english_date_of_birth}}' => $customer->kyc->english_date_of_birth ?? self::EMPTY_LINES,
+            '{{customer.grandfather_name}}' => $customer->kyc->grandfather_name ?? self::EMPTY_LINES,
+            '{{customer.father_name}}' => $customer->kyc->father_name ?? self::EMPTY_LINES,
+            '{{customer.mother_name}}' => $customer->kyc->mother_name ?? self::EMPTY_LINES,
+            '{{customer.spouse_name}}' => $customer->kyc->spouse_name ?? self::EMPTY_LINES,
+            '{{customer.permanent_province_id}}' => $customer->kyc->permanentProvince?->title ?? self::EMPTY_LINES,
+            '{{customer.permanent_district_id}}' => $customer->kyc->permanentDistrict?->title ?? self::EMPTY_LINES,
+            '{{customer.permanent_local_body_id}}' => $customer->kyc->permanentLocalBody?->title ?? self::EMPTY_LINES,
+            '{{customer.permanent_district_id_en}}' => $customer->kyc->permanentDistrict?->title_en ?? self::EMPTY_LINES,
+            '{{customer.permanent_local_body_id_en}}' => $customer->kyc->permanentLocalBody?->title_en ?? self::EMPTY_LINES,
+            '{{customer.permanent_ward}}' => replaceNumbers($customer->kyc->permanent_ward, true) ?? self::EMPTY_LINES,
+            '{{customer.permanent_ward_en}}' => $customer->kyc->permanent_ward ?? self::EMPTY_LINES,
+            '{{customer.permanent_tole}}' => $customer->kyc->permanent_tole ?? self::EMPTY_LINES,
+            '{{customer.temporary_province_id}}' => $customer->kyc->temporaryProvince?->title ?? self::EMPTY_LINES,
+            '{{customer.temporary_district_id}}' => $customer->kyc->temporaryDistrict?->title ?? self::EMPTY_LINES,
+            '{{customer.temporary_local_body_id}}' => $customer->kyc->temporaryLocalBody?->title ?? self::EMPTY_LINES,
+            '{{customer.temporary_ward}}' => replaceNumbers($customer->kyc->temporary_ward, true) ?? self::EMPTY_LINES,
+            '{{customer.temporary_tole}}' => $customer->kyc->temporary_tole ?? self::EMPTY_LINES,
+            '{{customer.document_issued_date_nepali}}' => replaceNumbers($customer->kyc->document_issued_date_nepali) ?? self::EMPTY_LINES,
+            '{{customer.document_issued_date_english}}' => $customer->kyc->document_issued_date_english ?? self::EMPTY_LINES,
+            '{{customer.document_number}}' => $customer->kyc->document_number ?? self::EMPTY_LINES,
             '{{customer.document_image1}}' => 'data:image/jpeg;base64,' . base64_encode(
                 FileFacade::getFile($imagePath, (string) $customer->kyc?->document_image1)
             ),
             '{{customer.document_image2}}' => 'data:image/jpeg;base64,' . base64_encode(
                 FileFacade::getFile($imagePath, (string) $customer->kyc?->document_image2)
             ),
-            '{{customer.expiry_date_nepali}}' => $customer->kyc?->expiry_date_nepali ?? self::EMPTY_LINES,
-            '{{customer.expiry_date_english}}' => $customer->kyc?->expiry_date_english ?? self::EMPTY_LINES
+            '{{customer.expiry_date_nepali}}' => $customer->kyc->expiry_date_nepali ?? self::EMPTY_LINES,
+            '{{customer.expiry_date_english}}' => $customer->kyc->expiry_date_english ?? self::EMPTY_LINES
         ];
     }
 
@@ -327,11 +471,11 @@ trait HelperTemplate
 ">
                     {$palika_name}
                 </div>
-                <div style="font-size: 24pt; font-weight: 600;">
+                <div style="font-size: 22pt; font-weight: 600;">
                     {$office_name}
                 </div>
                 <div style="font-size: 14pt;">
-                    {$address}
+                  {$address}
                 </div>
             </div>
         </td>

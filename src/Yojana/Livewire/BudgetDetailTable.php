@@ -57,15 +57,15 @@ class BudgetDetailTable extends DataTableComponent
          Column::make(__('yojana::yojana.remaining_amount'))
              ->label(fn($row) => __('yojana::yojana.rs').replaceNumbersWithLocale($row->remaining_amount, true))->sortable()->searchable()->collapseOnTablet()
      ];
-        if (can('budget_details edit') || can('budget_details delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('budget_details edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('budget_details delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -82,7 +82,7 @@ class BudgetDetailTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('budget_details edit')){
+        if(!can('plan_basic_settings edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -92,7 +92,7 @@ class BudgetDetailTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('budget_details delete')){
+        if(!can('plan_basic_settings delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -101,7 +101,7 @@ class BudgetDetailTable extends DataTableComponent
         $this->successFlash(__('yojana::yojana.budget_detail_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('budget_details delete')){
+        if(!can('plan_basic_settings delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

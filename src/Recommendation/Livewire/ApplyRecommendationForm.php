@@ -83,7 +83,7 @@ class ApplyRecommendationForm extends Component
 
     public function mount(ApplyRecommendation $applyRecommendation, Action $action, $recommendation = null)
     {
-        if($applyRecommendation->status == RecommendationStatusEnum::ACCEPTED){
+        if ($applyRecommendation->status == RecommendationStatusEnum::ACCEPTED) {
             $this->successFlash(__('recommendation::recommendation.recommendation_has_been_accepted'));
             return redirect()->route('admin.recommendations.apply-recommendation.index');
         }
@@ -93,13 +93,13 @@ class ApplyRecommendationForm extends Component
         $this->customer_id = $applyRecommendation->customer_id ?? null;
         $this->recommendation_id = $applyRecommendation->recommendation_id ?? $recommendation->id ?? null;
         $this->data = $applyRecommendation->data ?? [];
-        if($action !== Action::CREATE){
+        if ($action !== Action::CREATE) {
             $recommendation = $applyRecommendation->recommendation;
         }
         $this->fiscalYears = FiscalYear::whereNull('deleted_at')->whereNull('deleted_by')->get();
-        if($recommendation->id){
+        if ($recommendation->id) {
 
-            ($this->data === [])? $this->setFields($recommendation->id):false;
+            ($this->data === []) ? $this->setFields($recommendation->id) : false;
             $this->recommendation = $recommendation;
             $this->showCategory = false;
             $this->recommendation_category_id = $recommendation->recommendation_category_id;
@@ -111,8 +111,8 @@ class ApplyRecommendationForm extends Component
     public function loadRecommendation($categoryId)
     {
         if ($categoryId) {
-            $this->recommendations = Recommendation::where('recommendation_category_id', $categoryId)->whereNull('deleted_at')->whereNull('deleted_by')->pluck('title','id')->toArray();
-        } elseif(!is_numeric($categoryId)) {
+            $this->recommendations = Recommendation::where('recommendation_category_id', $categoryId)->whereNull('deleted_at')->whereNull('deleted_by')->pluck('title', 'id')->toArray();
+        } elseif (!is_numeric($categoryId)) {
             $this->recommendations = [];
             $this->data = [];
             return;
@@ -124,7 +124,7 @@ class ApplyRecommendationForm extends Component
         $this->data = [];
         $recommendation = Recommendation::with('form')->find($recommendationId);
 
-        $this->data = collect(json_decode($recommendation->form->fields, true))
+        $this->data = collect(json_decode($recommendation->form?->fields, true))
             ->filter(function ($field) {
                 return isset($field['type']);
             })
@@ -169,7 +169,7 @@ class ApplyRecommendationForm extends Component
         };
     }
 
-    
+
     #[On('signee-selected')]
     public function setSignee(User $signee)
     {
@@ -217,7 +217,7 @@ class ApplyRecommendationForm extends Component
         $this->applyRecommendation->fiscal_year_id = $this->fiscal_year_id;
         $this->applyRecommendation->recommendation_id = $this->recommendation_id;
         $this->applyRecommendation->signee_id = $this->selectedSignee ? $this->selectedSignee->id : null;
-        $this->applyRecommendation->signee_type = $this->selectedSignee ?  get_class($this->selectedSignee) : get_class(auth()->user());
+        $this->applyRecommendation->signee_type = $this->selectedSignee ?  get_class($this->selectedSignee) : null;
 
         $customer = $this->applyRecommendation->customer;
         $dto = ApplyRecommendationAdminDto::fromLiveWireModel($this->applyRecommendation);

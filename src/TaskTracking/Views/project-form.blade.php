@@ -22,7 +22,7 @@
                     </h5>
 
                     <div>
-                        @perm('project_access')
+                        @perm('tsk_setting edit')
                             <a href="{{ route('admin.task.projects.index') }}" class="btn btn-info"><i
                                     class="bx bx-list-ol"></i>{{ __('tasktracking::tasktracking.project_list') }}</a>
                         @endperm

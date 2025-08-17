@@ -34,6 +34,7 @@
     </style>
 
     @livewireStyles
+    <link rel="stylesheet" href="{{ asset('vendor/rappasoft/livewire-tables/css/laravel-livewire-tables.min.css') }}" />
 </head>
 
 <body class="d-flex flex-column min-vh-100 bg-light w-100">

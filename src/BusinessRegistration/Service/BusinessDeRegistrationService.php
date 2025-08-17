@@ -106,12 +106,17 @@ class BusinessDeRegistrationService
     }
     public function generateBusinessDeRegistrationNumber()
     {
+
+        $fiscalYearKey = key(getSettingWithKey('fiscal-year'));
         $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
 
-        $lastRegistration = BusinessDeRegistration::latest('id')->first();
+        $lastRegistration = BusinessDeRegistration::latest('id')
+            ->where('fiscal_year', $fiscalYearKey)
+            ->first();
 
-        $newNumber = str_pad($lastRegistration->id + 1, 6, '0', STR_PAD_LEFT);
+        $lastId = $lastRegistration ? $lastRegistration->id : 0;
 
+        $newNumber = str_pad($lastId + 1, 6, '0', STR_PAD_LEFT);
         $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
 
         return $newRegistrationNumber;
@@ -119,6 +124,7 @@ class BusinessDeRegistrationService
 
     public function accept(BusinessDeRegistration $businessDeRegistration, array $data): BusinessDeRegistration
     {
+        $businessDeRegistration->load('businessRegistration');
         FileTrackingFacade::recordFile($businessDeRegistration);
         tap($businessDeRegistration)->update([
             'application_status' => ApplicationStatusEnum::ACCEPTED->value,
@@ -133,6 +139,13 @@ class BusinessDeRegistrationService
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
         ]);
+        $businessRegistration = $businessDeRegistration->businessRegistration;
+        if ($businessRegistration) {
+            $businessRegistration->update([
+                'business_status' => BusinessStatusEnum::INACTIVE->value,
+                'application_status' => ApplicationStatusEnum::DEREGISTERED->value,
+            ]);
+        }
         return $businessDeRegistration;
     }
 

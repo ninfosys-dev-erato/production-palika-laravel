@@ -107,9 +107,9 @@
             <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
         </a>
 
-        <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
+        {{-- <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
             <i class="bx bx-printer"></i> Download PDF
-        </button>
+        </button> --}}
 
     </div>
 
@@ -130,7 +130,7 @@
             <div>
 
                 <div class="section-subheader">
-                    <i class="fas fa-user me-2"></i> {{ __('ebps::ebps.personal_information') }}
+                    <i class="fas fa-user me-2"></i> {{ __('आवेदकको विवरण') }}
                 </div>
                 <div>
                     <div class="data-row">
@@ -171,6 +171,74 @@
                         <div class="data-value">{{ $mapApply->constructionType->title ?? 'N/A' }}</div>
                     </div>
                 </div>
+
+
+                <div class="mb-4">
+                    <div class="section-subheader mb-3">
+                        <i class="fas fa-building me-2"></i>घर धनी विवरण
+                    </div>
+                    <div class="px-3 mb-4">
+                        <div class="data-row">
+                            <div class="data-label">नाम:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->owner_name ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">फोन नं:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->mobile_no ?? 'Not Provided' }}</div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">नागरिकता नं:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->citizenship_no ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">जारी मिति:</div>
+                            <div class="data-value">
+                                {{ $mapApply->houseOwner->citizenship_issued_date ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">जारी जिल्ला:</div>
+                            <div class="data-value">
+                                {{ $mapApply->houseOwner->citizenship_issued_at ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">प्रदेश:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->province->title ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">पालिका:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->localBody->title ?? 'Not Provided' }}
+                            </div>
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">टोल:</div>
+                            <div class="data-value">{{ $mapApply->houseOwner->tole ?? '-' }}</div>
+
+                        </div>
+
+                        <div class="data-row">
+                            <div class="data-label">फोटो:</div>
+                            <div class="data-value">
+                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $mapApply?->houseOwner?->photo, 'local', 'tempUrl') }}"
+                                    target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
 
                 <!-- 3. Land Details -->
                 <div class="section-subheader mt-4">
@@ -251,6 +319,30 @@
                     @endif
                 </div>
 
+                <div class="section-subheader">
+                    <i class="fas fa-user me-2"></i> {{ __('संस्था/परामर्शदाताहरु') }}
+                </div>
+                <div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('परामर्शदाता') }}:</div>
+                        <div class="data-value">{{ $organization->org_name_ne ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('इमेल') }}:</div>
+                        <div class="data-value">{{ $organization->org_email ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('फोन नम्बर') }}:</div>
+                        <div class="data-value">{{ $organization->org_contact ?? 'N/A' }}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">{{ __('ठेगाना') }}:</div>
+                        <div class="data-value">
+                            {{ $organization->localBody->title . ', ' . $organization->district->title ?? 'N/A' }}
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 5. Signature -->
                 <div class="section-subheader mt-5 d-flex align-items-center">
                     <i class="fas fa-signature me-2 fs-4 text-primary"></i>
@@ -312,7 +404,7 @@
                     @empty
                         <div class="col-12 text-center text-muted fst-italic">
                             <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps._no_documents_uploaded') }}.
+                            {{ __('ebps::ebps.no_documents_uploaded') }}.
                         </div>
                     @endforelse
                 </div>

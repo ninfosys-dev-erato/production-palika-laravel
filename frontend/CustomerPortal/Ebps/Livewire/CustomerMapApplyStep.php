@@ -25,6 +25,7 @@ class CustomerMapApplyStep extends Component
     public array $data = [];
     public bool $edit = false;
     public bool $generate = false;
+    public string $activeTab = 'preview';
 
     public function mount(MapStep $mapStep, MapApply $mapApply)
     {
@@ -99,14 +100,28 @@ class CustomerMapApplyStep extends Component
         $formId = $form->id;
         if (isset($this->letters[$formId])) {
             $this->letters[$formId] = $this->resolveMapStepTemplate($this->mapApply, $this->mapStep, $form);
-            $this->dispatch('update-editor', ['letter' => $this->letters[$formId]]);
-            $this->successToast(__('ebps::ebps.reset_successfully.'));
+            $this->dispatch('update-editor-' . $formId, ['content' => $this->letters[$formId]]);
+            $this->successToast(__('ebps::ebps.reset_successfully'));
         }
     }
 
+    public function updateLetter($formId, $content)
+    {
+        $this->letters[(int)$formId] = $content;
+    }
+    
     public function togglePreview()
     {
         $this->preview = !$this->preview;
+        // Switch to preview tab when toggling preview mode
+        if ($this->preview) {
+            $this->activeTab = 'preview';
+        }
+    }
+
+    public function switchTab($tab)
+    {
+        $this->activeTab = $tab;
     }
 
     public function save($formId, $data = null)
@@ -116,7 +131,7 @@ class CustomerMapApplyStep extends Component
             $dto = MapApplyStepAdminDto::fromLiveWireModel($formId, $this->letters[$formId], $this->mapApply, $this->mapStep);
             $service->saveOrUpdate($dto, $data);
 
-            $this->successToast(__('ebps::ebps.saved_successfully.'));
+            $this->successToast(__('ebps::ebps.saved_successfully'));
             return redirect()->route('customer.ebps.apply.step', ['id'=>$this->mapApply->id]);
         }catch (\Throwable $e){
             logger($e->getMessage());
@@ -141,7 +156,7 @@ class CustomerMapApplyStep extends Component
             'data' => json_encode($data),
             'template' => $this->letters[$formId]
         ]);
-        $this->successToast(__('ebps::ebps.saved_successfully.'));
+        $this->successToast(__('ebps::ebps.saved_successfully'));
         }else{
             $this->save($formId, $data);
         }

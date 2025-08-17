@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.process_indicator_list') }}</h5>
                     </div>
                     <div>
-                        @perm('process_indicators create')
+                        @perm('plan_basic_settings create')
                             <a data-bs-toggle="modal" data-bs-target="#indexModal" class="btn btn-info"
                                 onclick="resetForm()"><i class="bx bx-plus"></i>
                                 {{ __('yojana::yojana.add_process_indicator') }}</a>

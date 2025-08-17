@@ -3,6 +3,7 @@
 namespace Src\BusinessRegistration\DTO;
 
 use Src\BusinessRegistration\Models\BusinessDeregistration;
+use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 
 class BusinessDeRegistrationDto
 {
@@ -16,7 +17,7 @@ class BusinessDeRegistrationDto
         public ?string $application_rejection_reason = null,
         public ?string $bill_no = null,
         public ?string $registration_number = null,
-        public ?string $application_status = null,
+        public ApplicationStatusEnum|string|null $application_status = null,
         public ?int $created_by = null,
         public ?int $updated_by = null,
         public ?string $deleted_at = null,

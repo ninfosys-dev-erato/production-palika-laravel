@@ -64,15 +64,15 @@ Column::make(__('yojana::yojana.visit_type'), "visit_type") ->sortable()->search
 Column::make(__('yojana::yojana.visit_purpose'), "visit_purpose") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('yojana::yojana.description'), "description") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('log_books edit') || can('log_books delete')) {
+        if (can('plan_log_books edit') || can('plan_log_books delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('log_books edit')) {
+                if (can('plan_log_books edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('log_books delete')) {
+                if (can('plan_log_books delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -89,7 +89,7 @@ Column::make(__('yojana::yojana.description'), "description") ->sortable()->sear
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('log_books edit')){
+        if(!can('plan_log_books edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -97,7 +97,7 @@ Column::make(__('yojana::yojana.description'), "description") ->sortable()->sear
     }
     public function delete($id)
     {
-        if(!can('log_books delete')){
+        if(!can('plan_log_books delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -106,7 +106,7 @@ Column::make(__('yojana::yojana.description'), "description") ->sortable()->sear
         $this->successFlash(__('yojana::yojana.log_book_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('log_books delete')){
+        if(!can('plan_log_books delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

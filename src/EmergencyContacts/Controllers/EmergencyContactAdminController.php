@@ -15,9 +15,9 @@ class EmergencyContactAdminController extends Controller implements HasMiddlewar
     public static function middleware()
     {
         return [
-            new Middleware('permission:emergency_contact_access', only: ['index']),
-            new Middleware('permission:emergency_contact_create', only: ['create']),
-            new Middleware('permission:emergency_contact_update', only: ['edit']),
+            new Middleware('permission:emergency_contact access', only: ['index']),
+            new Middleware('permission:emergency_contact create', only: ['create']),
+            new Middleware('permission:emergency_contact update', only: ['edit']),
         ];
     }
 

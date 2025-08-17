@@ -27,21 +27,21 @@
                     @endif
                 @endforeach
 
-                @perm('page_access')
+                @perm('page access')
                     <a href="{{ route('admin.pages.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-file text-primary"></i>
                         {{ __('Pages') }}
                     </a>
                 @endperm
 
-                @perm('downloads_access')
+                @perm('downloads access')
                     <a href="{{ route('admin.downloads.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-download text-info"></i>
                         {{ __('Downloads') }}
                     </a>
                 @endperm
 
-                @perm('emergency_contact_access')
+                @perm('emergency_contact access')
                     <a href="{{ route('admin.emergency-contacts.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-user-voice text-danger"></i>
                         {{ __('Emergency Contacts') }}
@@ -49,7 +49,7 @@
                 @endperm
 
 
-                @perm('office_setting_access')
+                @perm('office_setting access')
                     <a href="{{ route('admin.setting.index') }}" class="list-group-item list-group-item-action">
                         <i class="menu-icon tf-icons bx bx-table text-primary"></i>
                         {{ __('General Setting') }}

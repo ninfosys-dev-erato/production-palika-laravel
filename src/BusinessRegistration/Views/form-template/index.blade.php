@@ -21,7 +21,7 @@
                         <h5 class="text-primary fw-bold mb-0">
                             {{ __('businessregistration::businessregistration.form_template_list') }}</h5>
                     </div>
-                    @perm('form_create')
+                    @perm('form create')
                         <div>
                             <a href="{{ route('admin.business-registration.form.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>

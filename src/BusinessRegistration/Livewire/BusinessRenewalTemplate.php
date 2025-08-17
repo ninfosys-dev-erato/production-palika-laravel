@@ -15,17 +15,21 @@ class BusinessRenewalTemplate extends Component
 {
     use HelperDate, BusinessRegistrationTemplate;
     public BusinessRenewal $renewal;
+    public $renewalCertificate;
 
     public function mount(BusinessRenewal $businessRenewal)
     {
         $this->renewal = $businessRenewal;
+        $businessRegistration = $businessRenewal->registration;
+
+        $this->renewalCertificate = $this->renderRenewalTemplateWithData($businessRegistration);
     }
 
     public function render()
     {
         return view("BusinessRegistration::livewire.renewal.template", [
             'registrationCertificate' => $this->resolveTemplate($this->renewal->registration),
-            'renewalCertificate' => $this->getTemplate(),
+            // 'renewalCertificate' => $this->getTemplate(),
         ]);
     }
 

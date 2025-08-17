@@ -9,6 +9,7 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Src\Employees\Models\Branch;
 use Src\Settings\Models\FiscalYear;
+use Src\GrantManagement\Enums\DecisionTypeEnum;
 
 /**
  * @property string $title
@@ -21,6 +22,8 @@ use Src\Settings\Models\FiscalYear;
  * @property int|null $type_of_grant_id
  * @property int|null $granting_organization_id
  * @property int|null $branch_id
+ * @property string|null $decision_type
+ * @property string|null $decision_date
  * @property string|null $created_at
  * @property string|null $created_by
  * @property string|null $deleted_at
@@ -55,6 +58,8 @@ class GrantProgram extends Model
         'branch_id',
         'grant_amount',
         'condition',
+        'decision_type',
+        'decision_date',
     ];
 
     protected $casts = [
@@ -69,6 +74,8 @@ class GrantProgram extends Model
         'grant_provided_type' => 'string',
         'grant_provided' => 'string',
         'grant_provided_quantity' => 'string',
+        'decision_type' => DecisionTypeEnum::class,
+        'decision_date' => 'string',
         'created_at' => 'datetime',
         'created_by' => 'string',
         'deleted_at' => 'datetime',
@@ -84,7 +91,8 @@ class GrantProgram extends Model
         return $this->belongsTo(FiscalYear::class);
     }
 
-    public function grantProgram(){
+    public function grantProgram()
+    {
         return $this->belongsTo(GrantProgram::class);
     }
 
@@ -110,6 +118,4 @@ class GrantProgram extends Model
             ->logOnlyDirty()
             ->setDescriptionForEvent(fn(string $eventName) => "This GrantProgram has been {$eventName}");
     }
-
-
 }

@@ -17,6 +17,7 @@ use Src\GrantManagement\Models\GrantOffice;
 use Src\GrantManagement\Models\GrantType;
 use Src\Settings\Models\FiscalYear;
 use Src\GrantManagement\Enums\MaritalStatus;
+use Src\GrantManagement\Enums\DecisionTypeEnum;
 use Illuminate\Support\Facades\DB;
 
 class GrantProgramForm extends Component
@@ -32,6 +33,7 @@ class GrantProgramForm extends Component
     public $forGrants = [];
     public $grantGiven;
     public $HoldTempForGrant = [];
+    public $decisionTypes = [];
 
     public $toggleGrantSection;
 
@@ -49,7 +51,9 @@ class GrantProgramForm extends Component
             'HoldTempForGrant' => ['nullable'],
             'grantProgram.grant_provided_quantity' => ['nullable'],
             'grantProgram.grant_provided' => ['nullable'],
-            'grantProgram.grant_provided_type' => ['required']
+            'grantProgram.grant_provided_type' => ['required'],
+            'grantProgram.decision_type' => ['required'],
+            'grantProgram.decision_date' => ['required'],
 
         ];
     }
@@ -66,6 +70,8 @@ class GrantProgramForm extends Component
             'grantProgram.condition.required' => __('grantmanagement::grantmanagement.condition_is_required'),
             'grantGiven.required' => __('grantmanagement::grantmanagement.condition_is_required'),
             'grantProgram.grant_provided_type' => __('grantmanagement::grantmanagement.grant_provided_type_is_required'),
+            'grantProgram.decision_type.required' => __('grantmanagement::grantmanagement.decision_type_is_required'),
+            'grantProgram.decision_date.date' => __('grantmanagement::grantmanagement.decision_date_is_required'),
         ];
     }
 
@@ -89,15 +95,14 @@ class GrantProgramForm extends Component
         $this->GrantTypes = GrantType::whereNull('deleted_by')->get()->pluck('title', 'id')->toArray();
         $this->GrantingOrganizations = GrantOffice::whereNull('deleted_by')->get()->pluck('office_name', 'id')->toArray();
         $this->forGrants = ForGrantsEnum::getValuesWithLabels();
+        $this->decisionTypes = DecisionTypeEnum::getValuesWithLabels();
         // $this->branches = Branch::all();
         $this->branches = Branch::whereNull('deleted_by')->get()->pluck('title', 'id')->toArray();
-
     }
 
     public function updateSelectedForGrant($value)
     {
         $this->HoldTempForGrant = $value;
-
     }
 
     public function save()
@@ -130,6 +135,5 @@ class GrantProgramForm extends Component
             DB::rollBack();
             $this->errorFlash(__('grantmanagement::grantmanagement.an_error_occurred_during_operation_please_try_again_later'));
         }
-
     }
 }

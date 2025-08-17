@@ -1,30 +1,34 @@
-@aware([ 'tableName','isTailwind','isBootstrap','isBootstrap4','isBootstrap5', 'localisationPath'])
+@aware(['component', 'tableName','isTailwind','isBootstrap','isBootstrap4','isBootstrap5'])
 
-<div {{ $attributes->merge([
+@if ($this->filtersAreEnabled() && $this->filterPillsAreEnabled() && $this->hasAppliedVisibleFiltersForPills())
+    <div>
+        <div @class([
+            'mb-4 px-4 md:p-0' => $isTailwind,
+            'mb-3' => $isBootstrap,
+        ]) x-cloak x-show="!currentlyReorderingStatus">
+            <small @class([
+                'text-gray-700 dark:text-white' => $isTailwind,
+                '' =>  $isBootstrap,
+            ])>
+                {{ __('livewire-tables::core.Applied Filters') }}:
+            </small>
 
-    'wire:loading.class' => $this->displayFilterPillsWhileLoading ? '' : 'invisible',
-    'x-cloak',
-])
-->class([
-    'mb-4 px-4 md:p-0' => $isTailwind,
-    'mb-3' => $isBootstrap,
-])
+            @foreach($this->getAppliedFiltersWithValues() as $filterSelectName => $value)
+                @php($filter = $this->getFilterByKey($filterSelectName))
+                @continue(is_null($filter) || $filter->isHiddenFromPills())
+                @php( $filterPillTitle = $filter->getFilterPillTitle())
+                @php( $filterPillValue = $filter->getFilterPillValue($value))
+                @php( $separator = method_exists($filter, 'getPillsSeparator') ? $filter->getPillsSeparator() : ', ')
+                @continue((is_array($filterPillValue) && empty($filterPillValue)))
 
-}}>
-    <small @class([
-        'text-gray-700 dark:text-white' => $isTailwind,
-        '' =>  $isBootstrap,
-    ])>
-        {{ __($localisationPath.'Applied Filters') }}:
-    </small>
-    @tableloop($this->getPillDataForFilter() as $filterKey => $filterPillData)
+                @if ($filter->hasCustomPillBlade())
+                    @include($filter->getCustomPillBlade(), ['filter' => $filter])
+                @else
+                    <x-livewire-tables::tools.filter-pills.item :$filterPillTitle :$filterPillValue :$filterSelectName :$separator/>
+                @endif
+            @endforeach
+            <x-livewire-tables::tools.filter-pills.buttons.reset-all />
+        </div>
+    </div>
+@endif
 
-        @if ($filterPillData->hasCustomPillBlade)
-            @include($filterPillData->getCustomPillBlade(), ['filter' => $this->getFilterByKey($filterKey), 'filterPillData' => $filterPillData])
-        @else
-            <x-livewire-tables::filter-pill :$filterKey :$filterPillData />
-        @endif
-    @endtableloop
-
-    <x-livewire-tables::tools.filter-pills.buttons.reset-all />
-</div>

@@ -14,6 +14,7 @@ use Src\BusinessRegistration\Enums\BusinessRegistrationType;
 use Src\BusinessRegistration\Enums\BusinessStatusEnum;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Traits\BusinessRegistrationTemplate;
+use Src\Settings\Models\FiscalYear;
 use Src\Settings\Models\Setting;
 
 class BusinessRegistrationAdminService
@@ -25,6 +26,9 @@ class BusinessRegistrationAdminService
         $businessRegistration = BusinessRegistration::create([
             // Business Info
             'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'business_category'            => $businessRegistrationAdminDto->business_category,
+            'kardata_number'               => $businessRegistrationAdminDto->kardata_number,
+            'kardata_miti'                 => $businessRegistrationAdminDto->kardata_miti,
             'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
             'total_capital'                => $businessRegistrationAdminDto->total_capital,
             'business_province'            => $businessRegistrationAdminDto->business_province,
@@ -34,8 +38,10 @@ class BusinessRegistrationAdminService
             'business_tole'                => $businessRegistrationAdminDto->business_tole,
             'business_street'              => $businessRegistrationAdminDto->business_street,
             'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
+            'purpose'                      => $businessRegistrationAdminDto->purpose,
             'entity_name'                  => $businessRegistrationAdminDto->entity_name,
             'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
+            'registration_date'            => $businessRegistrationAdminDto->registration_date,
             'registration_date_en'         => $businessRegistrationAdminDto->registration_date_en,
             'application_date'             => $businessRegistrationAdminDto->application_date,
             'application_date_en'         => $businessRegistrationAdminDto->application_date_en,
@@ -43,7 +49,7 @@ class BusinessRegistrationAdminService
             'created_at'                    => date('Y-m-d H:i:s'),
             'created_by'                     => $businessRegistrationAdminDto->created_by,
             'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
-            'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
+
             'registration_number' => $businessRegistrationAdminDto->registration_number,
             'certificate_number' => $businessRegistrationAdminDto->certificate_number,
             'application_status' => ApplicationStatusEnum::PENDING->value,
@@ -59,7 +65,7 @@ class BusinessRegistrationAdminService
             'operation_date'               => $businessRegistrationAdminDto->operation_date,
             'others'                       => $businessRegistrationAdminDto->others,
             'houseownername' => $businessRegistrationAdminDto->houseownername,
-            'phone' => $businessRegistrationAdminDto->phone,
+            'house_owner_phone' => $businessRegistrationAdminDto->house_owner_phone,
             'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
             'rentagreement' => $businessRegistrationAdminDto->rentagreement,
             'east' => $businessRegistrationAdminDto->east,
@@ -72,6 +78,7 @@ class BusinessRegistrationAdminService
             'total_running_day' => $businessRegistrationAdminDto->total_running_day,
             'registration_category' => $businessRegistrationAdminDto->registration_category,
             'business_status' => BusinessStatusEnum::ACTIVE->value,
+            'application_letter' => $businessRegistrationAdminDto->application_letter,
         ]);
 
         return $businessRegistration;
@@ -82,6 +89,9 @@ class BusinessRegistrationAdminService
         $registration = tap($businessRegistration)->update([
             // Business Info
             'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'business_category'            => $businessRegistrationAdminDto->business_category,
+            'kardata_number'               => $businessRegistrationAdminDto->kardata_number,
+            'kardata_miti'                 => $businessRegistrationAdminDto->kardata_miti,
             'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
             'total_capital'                => $businessRegistrationAdminDto->total_capital,
             'business_province'            => $businessRegistrationAdminDto->business_province,
@@ -90,6 +100,7 @@ class BusinessRegistrationAdminService
             'business_ward'                => $businessRegistrationAdminDto->business_ward,
             'business_tole'                => $businessRegistrationAdminDto->business_tole,
             'business_street'              => $businessRegistrationAdminDto->business_street,
+            'purpose'                      => $businessRegistrationAdminDto->purpose,
             'registration_type_id'         => $businessRegistrationAdminDto->registration_type_id,
             'entity_name'                  => $businessRegistrationAdminDto->entity_name,
             'fiscal_year'                  => $businessRegistrationAdminDto->fiscal_year,
@@ -101,7 +112,6 @@ class BusinessRegistrationAdminService
             'created_at'                    => date('Y-m-d H:i:s'),
             'created_by'                     => $businessRegistrationAdminDto->created_by,
             'registration_type' => $businessRegistrationAdminDto->registrationType ?? BusinessRegistrationType::REGISTRATION,
-            'registration_id' => $businessRegistrationAdminDto->registration_id ?? null,
             'registration_number' => $businessRegistrationAdminDto->registration_number,
             'certificate_number' => $businessRegistrationAdminDto->certificate_number,
             'application_status' => ApplicationStatusEnum::PENDING->value,
@@ -117,7 +127,7 @@ class BusinessRegistrationAdminService
             'operation_date'               => $businessRegistrationAdminDto->operation_date,
             'others'                       => $businessRegistrationAdminDto->others,
             'houseownername' => $businessRegistrationAdminDto->houseownername,
-            'phone' => $businessRegistrationAdminDto->phone,
+            'house_owner_phone' => $businessRegistrationAdminDto->house_owner_phone,
             'monthly_rent' => $businessRegistrationAdminDto->monthly_rent,
             'rentagreement' => $businessRegistrationAdminDto->rentagreement,
             'east' => $businessRegistrationAdminDto->east,
@@ -129,17 +139,18 @@ class BusinessRegistrationAdminService
             'is_rented' => $businessRegistrationAdminDto->is_rented,
             'total_running_day' => $businessRegistrationAdminDto->total_running_day,
             'registration_category' => $businessRegistrationAdminDto->registration_category,
+            'application_letter' => $businessRegistrationAdminDto->application_letter,
         ]);
 
         return $registration;
     }
 
-    public function delete(BusinessRegistration $businessRegistration): bool|BusinessRegistration
+    public function delete(BusinessRegistration $businessRegistration, bool $admin = true): bool|BusinessRegistration
     {
 
         $businessRegistration = tap($businessRegistration)->update([
             'deleted_at' => date('Y-m-d H:i:s'),
-            'deleted_by' => Auth::user()->id
+            'deleted_by' => $admin ? Auth::user()->id : Auth::guard('customer')->user()->id,
         ]);
 
         return $businessRegistration;
@@ -191,14 +202,13 @@ class BusinessRegistrationAdminService
             'application_rejection_reason' => null,
             'rejected_at' => null,
             'registration_number' => $data['registration_number'],
-            'registration_date' => replaceNumbers($this->adToBs(date('Y-m-d')), true),
-            'registration_date_en' => date('Y-m-d'),
+            'registration_date' => $data['registration_date'] ?? replaceNumbers($this->adToBs(date('Y-m-d')), true),
+            'registration_date_en' => $data['registration_date_en'] ?? date('Y-m-d'),
             'certificate_number' => $data['certificate_number'],
             'bill_no' => $data['bill_no'],
             'business_status' => BusinessStatusEnum::ACTIVE->value,
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
-            'business_status' => BusinessStatusEnum::ACTIVE->value,
         ]);
 
         return $businessRegistration;
@@ -219,18 +229,23 @@ class BusinessRegistrationAdminService
         return $businessRegistration;
     }
 
-    public function generateBusinessRegistrationNumber()
+    public function generateBusinessRegistrationNumber($fiscalYearId)
     {
-        $fiscalYear = $this->convertNepaliToEnglish(getSetting('fiscal-year'));
+        $fiscalYearName = FiscalYear::findOrFail($fiscalYearId);
+        $fiscalYear = $this->convertNepaliToEnglish($fiscalYearName->year);
 
-        $lastRegistration = BusinessRegistration::latest('id')->first();
+        // Get the max registration number (only the numeric part before '/')
+        $maxNumber = BusinessRegistration::where('fiscal_year', $fiscalYearId)
+            ->whereNotNull('registration_number')
+            ->selectRaw("MAX(CAST(SUBSTRING_INDEX(registration_number, '/', 1) AS UNSIGNED)) as max_num")
+            ->value('max_num');
 
-        $newNumber = str_pad($lastRegistration->id + 1, 6, '0', STR_PAD_LEFT);
+        // If no records yet, start from 1
+        $newSerial = $maxNumber ? $maxNumber + 1 : 1;
 
-        $newRegistrationNumber = $newNumber . '/' . $fiscalYear;
-
-        return $newRegistrationNumber;
+        return $newSerial . '/' . $fiscalYear;
     }
+
 
     public function getLetter(BusinessRegistration $businessRegistration, $request = 'web')
     {

@@ -68,17 +68,31 @@ class RegistrationTypeTable extends DataTableComponent
                 ->sortable()
                 ->searchable()
                 ->collapseOnTablet(),
+            Column::make(__('businessregistration::businessregistration.status'), 'status')
+                ->label(function ($row) {
+                    $checked = $row->status ? 'checked' : '';
+                    $label = $row->status ? 'Active' : 'Inactive';
+                    return <<<HTML
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" $checked wire:click="toggleStatus({$row->id})">
+                            <!-- <label class="form-check-label">$label</label> -->
+                        </div>
+                    HTML;
+                })
+                ->html()
+                ->collapseOnTablet(),
+
 
         ];
-        if (can('business_type edit') || can('business_type delete')) {
+        if (can('business_settings edit') || can('business_settings delete')) {
             $actionsColumn = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('business_type edit')) {
+                if (can('business_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('business_type delete')) {
+                if (can('business_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -94,7 +108,7 @@ class RegistrationTypeTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('business_type edit')) {
+        if (!can('business_settings edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -104,7 +118,7 @@ class RegistrationTypeTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('business_type delete')) {
+        if (!can('business_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -115,7 +129,7 @@ class RegistrationTypeTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('business_type delete')) {
+        if (!can('business_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -129,5 +143,13 @@ class RegistrationTypeTable extends DataTableComponent
         $records = $this->getSelected();
         $this->clearSelected();
         return Excel::download(new RegistrationTypeExport($records), 'registration-types.xlsx');
+    }
+    public function toggleStatus($id)
+    {
+        $registrationType = RegistrationType::findOrFail($id);
+        $registrationType->status = !$registrationType->status;
+        $registrationType->save();
+
+        $this->successFlash("Status updated successfully.");
     }
 }

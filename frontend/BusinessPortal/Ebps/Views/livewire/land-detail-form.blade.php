@@ -32,6 +32,24 @@
                 @enderror
             </div>
 
+            <div class="col-md-6 mb-4">
+                <label for="former_local_body">{{ __('Former Local Body') }}</label>
+                <input wire:model="customerLandDetail.former_local_body" name="former_local_body" type="text" 
+                    class="form-control" placeholder="{{ __('Enter Former Local Body') }}">
+                @error('customerLandDetail.former_local_body')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label for="former_ward_no">{{ __('Former Ward No') }}</label>
+                <input wire:model="customerLandDetail.former_ward_no" name="former_ward_no" type="text" 
+                    class="form-control" placeholder="{{ __('Enter Former Ward No') }}">
+                @error('customerLandDetail.former_ward_no')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
             <div class='col-md-6 mb-4'>
                 <div class='form-group'>
                     <label for='tole'>{{ __('Tole') }}</label>

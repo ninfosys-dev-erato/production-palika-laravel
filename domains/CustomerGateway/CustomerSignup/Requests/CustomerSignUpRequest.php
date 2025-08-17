@@ -36,7 +36,7 @@ class CustomerSignUpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile_no' => ['required', 'numeric', 'digits:10', 'unique:tbl_customers,mobile_no', new MobileNumberIdentifierRule()],
+            'mobile_no' => ['required', 'numeric', 'digits:10', 'unique:tbl_customers,mobile_no'],
         ];
     }
     

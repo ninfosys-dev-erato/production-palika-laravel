@@ -11,9 +11,9 @@ class TargetEntryAdminController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('permission:target_entries view')->only('index');
-        //$this->middleware('permission:target_entries edit')->only('edit');
-        //$this->middleware('permission:target_entries create')->only('create');
+        //$this->middleware('permission:plan view')->only('index');
+        //$this->middleware('permission:plan edit')->only('edit');
+        //$this->middleware('permission:plan create')->only('create');
     }
 
     function index(Request $request){

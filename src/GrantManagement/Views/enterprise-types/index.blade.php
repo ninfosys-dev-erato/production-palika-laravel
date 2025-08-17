@@ -16,9 +16,9 @@
                             {{ __('grantmanagement::grantmanagement.enterprise_type_list') }}</h5>
                     </div>
                     <div>
-                        @perm('enterprise_types create')
+                        @perm('gms_settings create')
                             <!-- <a href="{{ route('admin.enterprise_types.create') }}" class="btn btn-info"><i
-                                                            class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_enterprise_type') }}</a> -->
+                                                                class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_enterprise_type') }}</a> -->
 
                             <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"
                                 data-bs-target="#indexModal">

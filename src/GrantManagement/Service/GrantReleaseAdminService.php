@@ -23,6 +23,8 @@ class GrantReleaseAdminService
             'contact_no' => $dto->contact_no,
             'condition' => $dto->condition,
             'grant_program' => $dto->grant_program,
+            'grant_expenses' => $dto->grant_expenses,
+            'private_expenses' => $dto->private_expenses,
             'created_at' => now(),
             'created_by' => Auth::id(),
         ]);
@@ -46,6 +48,8 @@ class GrantReleaseAdminService
             'contact_no' => $dto->contact_no,
             'condition' => $dto->condition,
             'grant_program' => $dto->grant_program,
+            'grant_expenses' => $dto->grant_expenses,
+            'private_expenses' => $dto->private_expenses,
             'updated_at' => now(),
             'updated_by' => Auth::id(),
         ]);

@@ -14,6 +14,7 @@ class UserAdminDto
         public string $remember_token,
         public bool $active,
         public string $mobile_no,
+        public ?string $signature = null,
     ) {}
 
     public static function fromLiveWireModel(User $user): UserAdminDto
@@ -25,7 +26,8 @@ class UserAdminDto
             mobile_no: $user->mobile_no ?? '',
             password: $user->password ?: "",
             remember_token: $user->remember_token ?? '',
-            active: true
+            active: true,
+            signature: $user->signature ?? null,
         );
     }
 

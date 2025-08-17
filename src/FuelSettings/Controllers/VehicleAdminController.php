@@ -12,8 +12,8 @@ class VehicleAdminController extends Controller
     public function __construct()
     {
         //$this->middleware('permission:vehicles view')->only('index');
-        //$this->middleware('permission:vehicles edit')->only('edit');
-        //$this->middleware('permission:vehicles create')->only('create');
+        //$this->middleware('permission:fms_vehicles edit')->only('edit');
+        //$this->middleware('permission:fms_vehicles create')->only('create');
     }
 
     function index(Request $request)

@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.work_order_list') }}</h5>
                     </div>
                     <div>
-                        @perm('work_orders create')
+                        @perm('plan create')
                             <a href="{{ route('admin.plans.work_orders.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_work_order') }}</a>
                         @endperm

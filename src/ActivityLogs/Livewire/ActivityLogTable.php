@@ -87,7 +87,7 @@ class ActivityLogTable extends DataTableComponent
         if (can('activity_logs edit') || can('activity_logs delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '';
-                if (can('activity_logs view')) {
+                if (can('activity_logs access')) {
                     $delete = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $delete;
                 }

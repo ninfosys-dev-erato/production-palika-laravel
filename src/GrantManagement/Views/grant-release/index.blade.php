@@ -17,7 +17,7 @@
                             {{ __('grantmanagement::grantmanagement.grant_release_list') }}</h5>
                     </div>
                     <div>
-                        @perm('grant_release create')
+                        @perm('gms_activity create')
                             <a href="{{ route('admin.grant_release.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>
                                 {{ __('grantmanagement::grantmanagement.add_grant_release') }}</a>

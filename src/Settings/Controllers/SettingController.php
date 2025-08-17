@@ -16,7 +16,7 @@ class SettingController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:office_setting_access', only: ['index'])
+            new Middleware('permission:office_setting access', only: ['index'])
         ];
     }
 

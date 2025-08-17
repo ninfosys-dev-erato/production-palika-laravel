@@ -95,7 +95,6 @@ class BusinessRegistrationTable extends DataTableComponent
 
 
         ];
-        
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 

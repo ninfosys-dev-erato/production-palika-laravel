@@ -92,16 +92,16 @@ class CitizenCharterTable extends DataTableComponent
                 ->searchable()
                 ->collapseOnTablet(),
         ];
-        if (can('citizencharter_edit') || can('citizencharter_delete')) {
+        if (can('digital_board edit') || can('digital_board delete')) {
             $actionsColumn = Column::make(__('digitalboard::digitalboard.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('citizen_charters edit')) {
+                if (can('digital_board edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('citizen_charters delete')) {
+                if (can('digital_board delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -117,7 +117,7 @@ class CitizenCharterTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('citizencharter_edit')) {
+        if (!can('digital_board edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -125,7 +125,7 @@ class CitizenCharterTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('citizencharter_delete')) {
+        if (!can('digital_board delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -135,7 +135,7 @@ class CitizenCharterTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('citizencharter_delete')) {
+        if (!can('digital_board delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

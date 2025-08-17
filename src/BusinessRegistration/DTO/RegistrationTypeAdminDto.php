@@ -10,7 +10,7 @@ class RegistrationTypeAdminDto
     public function __construct(
         public string  $title,
         public ?string $form_id,
-        public string  $registration_category_id,
+        public ?string  $registration_category_id,
         public ?string $department_id,
         public ?BusinessRegistrationType $action,
         public ?string $registration_category_enum = null,

@@ -62,7 +62,7 @@
                     <label for='registration_date'
                         class="form-label">{{ __('ejalas::ejalas.registration_date') }}</label>
                     <input wire:model='writtenResponseRegistration.registration_date' id="registration_date"
-                        name='registration_date' type='string' class='form-control'>
+                        name='registration_date' type='string' class='form-control nepali-date'>
                     <div>
                         @error('writtenResponseRegistration.registration_date')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -101,7 +101,7 @@
                 <div class='form-group'>
                     <label for='fee_paid_date' class="form-label">{{ __('ejalas::ejalas.fee_paid_date') }}</label>
                     <input wire:model='writtenResponseRegistration.fee_paid_date' id="fee_paid_date"
-                        name='fee_paid_date' type='string' class='form-control'>
+                        name='fee_paid_date' type='string' class='form-control nepali-date'>
                     <div>
                         @error('writtenResponseRegistration.fee_paid_date')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -206,20 +206,6 @@
             wire:loading.attr="disabled">{{ __('ejalas::ejalas.back') }}</a>
     </div>
 
-    {{-- <style>
-        .select2-selection {
-            height: calc(2.25rem + 2px) !important;
-            /* Matches the default height of a Bootstrap input */
-            padding: 0.375rem 0.75rem;
-            /* Matches the padding */
-            font-size: 1rem;
-            /* Matches the font size */
-            border-radius: 0.375rem;
-            /* Matches the border radius */
-            border: 1px solid #ced4da;
-            /* Matches the border color */
-        }
-    </style> --}}
 </form>
 
 
@@ -232,19 +218,5 @@
             @this.call('getComplaintRegistration'); // Call livewire function to get party details
         });
 
-        $('#fee_paid_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('writtenResponseRegistration.fee_paid_date', nepaliDate);
-        });
-        $('#registration_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('writtenResponseRegistration.registration_date', nepaliDate);
-        });
     })
 </script>

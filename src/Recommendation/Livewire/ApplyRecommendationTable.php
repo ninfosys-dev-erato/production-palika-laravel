@@ -53,10 +53,10 @@ class ApplyRecommendationTable extends DataTableComponent
 
         $userWardIds = is_array($userWardIds) ? $userWardIds : [$userWardIds];
 
-        if (empty(array_filter($userWardIds))) {
-            $query->where('rec_apply_recommendations.created_by', $user->id);
-            return $query;
-        }
+        // if (empty(array_filter($userWardIds))) {
+        //     $query->where('rec_apply_recommendations.created_by', $user->id);
+        //     return $query;
+        // }
 
         $query->where(function ($subQuery) use ($userDepartmentIds, $userWardIds, $userRoleIds) {
             $subQuery->where(function ($q) use ($userWardIds, $userDepartmentIds) {
@@ -127,22 +127,22 @@ class ApplyRecommendationTable extends DataTableComponent
         ];
 
 
-        if (can('recommendation_apply_update') || can('recommendation_apply_delete')) {
+        if (can('recommendation_apply update') || can('recommendation_apply delete')) {
             $columns[] = Column::make(__('recommendation::recommendation.actions'))
                 ->label(function ($row) {
                     $buttons = '';
 
-                    if (can('recommendation_apply_access')) {
+                    if (can('recommendation_apply access')) {
                         $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                         $buttons .= $view;
                     }
 
-                    if (can('recommendation_apply_update') && $row->status !== RecommendationStatusEnum::ACCEPTED) {
+                    if (can('recommendation_apply update') && $row->status !== RecommendationStatusEnum::ACCEPTED) {
                         $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                         $buttons .= $edit;
                     }
 
-                    if (can('recommendation_apply_delete') && $row->status !== RecommendationStatusEnum::ACCEPTED) {
+                    if (can('recommendation_apply delete') && $row->status !== RecommendationStatusEnum::ACCEPTED) {
                         $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                         $buttons .= $delete;
                     }
@@ -164,7 +164,7 @@ class ApplyRecommendationTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('recommendation_apply_update')) {
+        if (!can('recommendation_apply update')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -173,7 +173,7 @@ class ApplyRecommendationTable extends DataTableComponent
 
     public function view($id)
     {
-        if (!can('recommendation_apply_access')) {
+        if (!can('recommendation_apply access')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -182,19 +182,19 @@ class ApplyRecommendationTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('recommendation_apply_delete')) {
+        if (!can('recommendation_apply delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
 
         $service = new RecommendationService();
         $service->delete(ApplyRecommendation::findOrFail($id));
-        $this->successFlash(__('recommendation::recommendation.recommendation_deleted_successfully'));
+        $this->successFlash(__('recommendation::recommendation.recommendation_settings deleted_successfully'));
     }
 
     public function deleteSelected()
     {
-        if (!can('recommendation_apply_delete')) {
+        if (!can('recommendation_apply delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

@@ -113,7 +113,7 @@
                         {{ __('ejalas::ejalas.decision_date') }}
                     </label>
                     <input wire:model="disputeRegistrationCourt.decision_date" id="decision_date" name="decision_date"
-                        class="form-control" type="text">
+                        class="form-control nepali-date" type="text">
                     </input>
                     @error('disputeRegistrationCourt.decision_date')
                         <small class="text-danger">{{ __($message) }}</small>
@@ -194,13 +194,7 @@
 @script
     <script>
         $(document).ready(function() {
-            $('#decision_date').nepaliDatePicker({
-                dateFormat: '%y-%m-%d',
-                closeOnDateSelect: true,
-            }).on('dateSelect', function() {
-                let nepaliDate = $(this).val();
-                @this.set('disputeRegistrationCourt.decision_date', nepaliDate);
-            });
+
 
 
             $('#complaint_registration_id').select2();

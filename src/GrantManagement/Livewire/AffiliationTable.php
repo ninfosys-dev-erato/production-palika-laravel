@@ -14,10 +14,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\GrantManagement\Exports\GrantManagementExport;
 use Src\GrantManagement\Models\Affiliation;
 use Src\GrantManagement\Service\AffiliationAdminService;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class AffiliationTable extends DataTableComponent
 {
-    use SessionFlash;
+    use SessionFlash, IsSearchable;
     protected $model = Affiliation::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',
@@ -51,20 +52,20 @@ class AffiliationTable extends DataTableComponent
     }
     public function columns(): array
     {
-     $columns = [
-            Column::make(__('grantmanagement::grantmanagement.title'), "title") ->sortable()->searchable()->collapseOnTablet(),
-Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en") ->sortable()->searchable()->collapseOnTablet(),
-     ];
-        if (can('affiliations edit') || can('affiliations delete')) {
+        $columns = [
+            Column::make(__('grantmanagement::grantmanagement.title'), "title")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
+        ];
+        if (can('gms_settings edit') || can('gms_settings delete')) {
             $actionsColumn = Column::make(__('grantmanagement::grantmanagement.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('affiliations edit')) {
+                if (can('gms_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('affiliations delete')) {
+                if (can('gms_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -76,38 +77,39 @@ Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en") ->sort
         }
 
         return $columns;
-
     }
-    public function refresh(){}
+    public function refresh() {}
     public function edit($id)
     {
-        if(!can('affiliations edit')){
-               SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
-               return false;
+        if (!can('gms_settings edit')) {
+            SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
+            return false;
         }
         return $this->dispatch('edit-affiliation-type', $id);
         // return redirect()->route('admin.affiliations.edit',['id'=>$id]);
     }
     public function delete($id)
     {
-        if(!can('affiliations delete')){
-                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
-                return false;
+        if (!can('gms_settings delete')) {
+            SessionFlash::WARNING_FLASH('You Cannot Perform this action');
+            return false;
         }
         $service = new AffiliationAdminService();
         $service->delete(Affiliation::findOrFail($id));
         $this->successFlash(__('grantmanagement::grantmanagement.affiliation_deleted_successfully'));
     }
-    public function deleteSelected(){
-        if(!can('affiliations delete')){
-                    SessionFlash::WARNING_FLASH('You Cannot Perform this action');
-                    return false;
+    public function deleteSelected()
+    {
+        if (!can('gms_settings delete')) {
+            SessionFlash::WARNING_FLASH('You Cannot Perform this action');
+            return false;
         }
         $service = new AffiliationAdminService();
         $service->collectionDelete($this->getSelected());
         $this->clearSelected();
     }
-    public function exportSelected(){
+    public function exportSelected()
+    {
         $records = $this->getSelected();
         $this->clearSelected();
         return Excel::download(new GrantManagementExport($records), 'affiliations.xlsx');

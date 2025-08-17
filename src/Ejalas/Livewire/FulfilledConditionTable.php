@@ -135,20 +135,20 @@ class FulfilledConditionTable extends DataTableComponent
                 ->collapseOnTablet(),
 
         ];
-        if (!$this->report && (can('fulfilled_conditions edit') || can('fulfilled_conditions delete'))) {
+        if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete'))) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('fulfilled_conditions edit')) {
+                if (can('jms_judicial_management edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('fulfilled_conditions delete')) {
+                if (can('jms_judicial_management delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
-                // if (can('fulfilled_conditions print')) {
+                // if (can('jms_judicial_management print')) {
                 //     $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                 //     $buttons .= $preview;
                 // }
@@ -163,7 +163,7 @@ class FulfilledConditionTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('fulfilled_conditions edit')) {
+        if (!can('jms_judicial_management edit')) {
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
@@ -171,7 +171,7 @@ class FulfilledConditionTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('fulfilled_conditions delete')) {
+        if (!can('jms_judicial_management delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -181,7 +181,7 @@ class FulfilledConditionTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('fulfilled_conditions delete')) {
+        if (!can('jms_judicial_management delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

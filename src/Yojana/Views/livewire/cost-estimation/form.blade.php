@@ -254,9 +254,9 @@
                                 <tr class="">
                                     <td>{{ replaceNumbersWithLocale($index + 1, true) }}</td>
                                     <td>{{ $configurations[$configRecord['configuration']] ?? '-'}}</td>
-                                    <td>{{ $configRecord['operation_type'] }}</td>
-                                    <td>{{ replaceNumbersWithLocale($configRecord['rate'] ?? '-', true) }}</td>
-                                    <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($configRecord['amount'] ?? 0), true) }}</td>
+                                    <td>{{ __($configRecord['operation_type']) }}</td>
+                                    <td>{{ replaceNumbersWithLocale($configRecord['rate'] ?? '-', true).' %' }}</td>
+                                    <td>{{ ($configRecord['operation_type'] == 'add' ? ' + ' : ' - ') . __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($configRecord['amount'] ?? 0), true) }}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-danger"
                                             wire:click="removeConfigRecord('{{ $index }}')">

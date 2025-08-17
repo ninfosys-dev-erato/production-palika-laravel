@@ -125,11 +125,11 @@ class CustomerTable extends DataTableComponent
                 ->html()
                 ->collapseOnTablet(),
         ];
-        if (can('customer_access')) {
+        if (can('customer access')) {
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('customer_access')) {
+                if (can('customer access')) {
                     $view = '<button class="btn btn-primary btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
                 }
@@ -160,7 +160,7 @@ class CustomerTable extends DataTableComponent
 
     public function view($id)
     {
-        if (!can('customer_access')) {
+        if (!can('customer access')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

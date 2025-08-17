@@ -22,9 +22,10 @@ return new class extends Migration {
             $table->string('contact_person')->nullable();
             $table->string('contact_no')->nullable();
             $table->text('condition')->nullable();
+            $table->string('grant_expenses')->nullable();
+            $table->string('private_expenses')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**

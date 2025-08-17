@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.organization_list') }}</h5>
                     </div>
                     <div>
-                        @perm('organizations create')
+                        @perm('plan_committee_settings create')
                             <a href="{{ route('admin.organizations.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_organization') }}</a>
                         @endperm

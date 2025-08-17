@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Src\Customers\Models\Customer;
+use Illuminate\Support\Facades\Session;
+
 
 class AuthController extends Controller
 {
@@ -73,6 +75,8 @@ class AuthController extends Controller
         ->event((ActivityEvents::USER_LOGOUT)->value)
         ->log('User log-out from Web Portal');
         auth('web')->logout();
+        Session::forget('ward');
+        Session::forget('department');
         session()->regenerate(true);
         return redirect()->route('login');
     }

@@ -118,12 +118,12 @@
                         <td>{{ replaceNumbers($row->third_quarter_financial_progress, true) }}</td>
 
                         <td rowspan="2">
-                            @if (can('target_entries edit'))
+                            @if (can('plan edit'))
                                 <button class="btn btn-primary btn-sm" wire:click="edit({{ $row->id }})">
                                     <i class="bx bx-edit"></i>
                                 </button>
                             @endif
-                            @if (can('target_entries delete'))
+                            @if (can('plan delete'))
                                 <button class="btn btn-danger btn-sm" wire:click="delete({{ $row->id }})">
                                     <i class="bx bx-trash"></i>
                                 </button>

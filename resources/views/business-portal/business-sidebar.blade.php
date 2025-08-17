@@ -7,7 +7,14 @@
         </a>
     </li>
 
-     <li class="menu-header small text-uppercase">
+    <li class="menu-item {{ \Illuminate\Support\Facades\Route::is('organization.profile') ? 'active' : '' }}">
+        <a href="{{ route('organization.profile') }}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+            <div data-i18n="Analytics">{{ __('Profile') }}</div>
+        </a>
+    </li>
+
+    <li class="menu-header small text-uppercase">
         <span class="menu-header-text">{{ __('ebps::ebps.map_applications') }}</span>
     </li>
 

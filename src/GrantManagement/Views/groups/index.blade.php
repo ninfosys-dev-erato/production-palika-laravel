@@ -16,7 +16,7 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('groups create')
+                        @perm('gms_activity create')
                             <a href="{{ route('admin.groups.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('grantmanagement::grantmanagement.add_group') }}</a>
                         @endperm

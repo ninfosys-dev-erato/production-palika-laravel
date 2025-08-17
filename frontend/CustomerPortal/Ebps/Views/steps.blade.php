@@ -135,13 +135,21 @@
                                                     {{ $submitterEnum ? $submitterEnum->label() : ucfirst($mapStep->form_submitter) }}
                                                 </p>
 
+                                                @if ($mapApplyStep && $mapApplyStep->reason)
+                                                    <div class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <small class="text-dark">{{ $mapApplyStep->reason }}</small>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if ($status != 'accepted' && $canApply && $mapStep->form_submitter === 'house_owner')
+                                                    {{-- @if ($status != 'accepted' && $mapStep->form_submitter === 'house_owner')
                                                         <a href="{{ route('customer.ebps.apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
                                                         </a>
-                                                    @endif
+                                                    @endif --}}
 
                                                     @if ($mapApplyStep)
                                                         <a href="{{ route('customer.ebps.apply.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
@@ -150,7 +158,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    {{-- @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -158,7 +166,7 @@
                                                             <i class="bx bx-upload me-1"></i>
                                                             {{ __('ebps::ebps.upload') }}
                                                         </button>
-                                                    @endif
+                                                    @endif --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -261,18 +269,34 @@
                                                     </span>
                                                 </div>
 
+                                                @php
+
+                                                    $submitterEnum = Src\Ebps\Enums\FormSubmitterEnum::tryFrom(
+                                                        $mapStep->form_submitter,
+                                                    );
+                                                @endphp
+
                                                 <p class="card-text text-muted small mb-3">
                                                     <i class="bx bx-user me-1"></i>
-                                                    {{ __('Submitter') }}: {{ ucfirst($mapStep->form_submitter) }}
+                                                    {{ __('ebps::ebps.submitter') }}:
+                                                    {{ $submitterEnum ? $submitterEnum->label() : ucfirst($mapStep->form_submitter) }}
                                                 </p>
 
+                                                @if ($mapApplyStep && $mapApplyStep->reason)
+                                                    <div class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <small class="text-dark">{{ $mapApplyStep->reason }}</small>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if (!$isDisabled && $status != 'accepted' && $canApply && $mapStep->form_submitter === 'municipality')
+                                                    {{-- @if (!$isDisabled && $status != 'accepted' && $canApply && $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::HOUSEOWNER)
                                                         <a href="{{ route('customer.ebps.apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
                                                         </a>
-                                                    @endif
+                                                    @endif --}}
 
                                                     @if ($mapApplyStep)
                                                         <a href="{{ route('customer.ebps.apply.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
@@ -280,7 +304,7 @@
                                                             <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
                                                         </a>
                                                     @endif
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    {{-- @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -288,7 +312,7 @@
                                                             <i class="bx bx-upload me-1"></i>
                                                             {{ __('ebps::ebps.upload') }}
                                                         </button>
-                                                    @endif
+                                                    @endif --}}
                                                 </div>
                                             </div>
                                         </div>

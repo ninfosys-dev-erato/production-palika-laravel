@@ -13,13 +13,29 @@
                 <div class='form-group'>
                     <label class="form-label" for='applied_date'>{{ __('Applied Date') }}</label>
                     <input wire:model='mapApply.applied_date' id="applied_date" name='applied_date' type='text'
-                        class='nepali-date form-control' placeholder='Enter Applied Date'>
+                        class='nepali-date form-control' placeholder='{{ __('ebps::ebps.enter_applied_date') }}'>
                     <div>
                         @error('mapApply.applied_date')
                             <small class='text-danger'>{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
+            </div>
+
+            <div class='col-md-6 mb-3'>
+                <div class='form-group'>
+                    <div class="form-group">
+                        <label class="form-label" for="organization">{{ __('Select Organization') }}</label>
+                        <select wire:model="mapApplyDetail.organization_id" class="form-control" id="organization">
+                            <option value="">{{ __('ebps::ebps.select_organization') }}</option>
+                            @foreach ($organizations as $organization)
+                                <option value="{{ $organization->id }}">{{ $organization->org_name_ne }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
             <div class="divider divider-primary text-start text-primary font-14">
@@ -32,7 +48,7 @@
                     <input wire:model="uploadedImage" name="uploadedImage" type="file"
                         class="form-control {{ $errors->has('uploadedImage') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('uploadedImage2') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
-                        accept="image/*">
+                        accept="image/*,.pdf">
                     <div>
                         @error('uploadedImage')
                             <small class='text-danger'>{{ $message }}</small>
@@ -41,11 +57,17 @@
                             ($uploadedImage && $uploadedImage instanceof \Livewire\TemporaryUploadedFile) ||
                                 $uploadedImage instanceof \Illuminate\Http\File ||
                                 $uploadedImage instanceof \Illuminate\Http\UploadedFile)
-                            <img src="{{ $uploadedImage->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
-                                class="img-thumbnail mt-2" style="height: 300px;">
+                            <a href="{{ $uploadedImage->temporaryUrl() }}" target="_blank"
+                                class="btn btn-outline-primary btn-sm">
+                                <i class="bx bx-file"></i>
+                                {{ __('yojana::yojana.view_uploaded_file') }}
+                            </a>
                         @elseif (!empty(trim($uploadedImage)))
-                            <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $uploadedImage, 'local', 'tempUrl') }}"
-                                alt="Existing Image 2" class="img-thumbnail mt-2" style="height: 300px;">
+                            <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $uploadedImage, 'local', 'tempUrl') }}"
+                                target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bx bx-file"></i>
+                                {{ __('yojana::yojana.view_uploaded_file') }}
+                            </a>
                         @endif
                     </div>
                 </div>
@@ -53,6 +75,38 @@
 
             <div class="divider divider-primary text-start text-primary font-14">
                 <div class="divider-text ">{{ __('ebps::ebps.land_details') }}</div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label for="former_local_body">{{ __('ebps::ebps.former_local_body') }}</label>
+                <select id="former_local_body" wire:model="customerLandDetail.former_local_body"
+                    name="customerLandDetail.former_local_body" class="form-control" wire:change="loadFormerWards">
+
+                    <option value="">{{ __('ebps::ebps.choose_former_local_body') }}</option>
+
+                    @foreach ($formerLocalBodies as $id => $title)
+                        <option value="{{ $id }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_local_body')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label for="former_ward_no">{{ __('ebps::ebps.former_ward_no') }}</label>
+                <select id="former_ward_no" name="customerLandDetail.former_ward_no" class="form-control"
+                    wire:model="customerLandDetail.former_ward_no">
+                    <option value="">{{ __('ebps::ebps.choose_former_ward_no') }}</option>
+                    @foreach ($formerWards as $id => $title)
+                        <option value="{{ $title }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_ward_no')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="row">
@@ -103,9 +157,9 @@
                 </div>
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
-                        <label for='area_sqm'>{{ __('ebps::ebps.area_Sqm') }}</label>
-                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='number'
-                            class='form-control' placeholder="{{ __('ebps::ebps.enter_area_Sqm') }}">
+                        <label for='area_sqm'>{{ __('ebps::ebps.area_sqm') }}</label>
+                        <input wire:model='customerLandDetail.area_sqm' name='area_sqm' type='text'
+                            class='form-control' placeholder="{{ __('ebps::ebps.enter_area_sqm') }}">
                         <div>
                             @error('customerLandDetail.area_sqm')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -116,8 +170,8 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='lot_no'>{{ __('ebps::ebps.lot_no') }}</label>
-                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='number' class='form-control'
-                            placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
+                        <input wire:model='customerLandDetail.lot_no' name='lot_no' type='text'
+                            class='form-control' placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
                         <div>
                             @error('customerLandDetail.lot_no')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -128,7 +182,7 @@
                 <div class='col-md-6 mb-4'>
                     <div class='form-group'>
                         <label for='seat_no'>{{ __('ebps::ebps.seat_no') }}</label>
-                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='number'
+                        <input wire:model='customerLandDetail.seat_no' name='seat_no' type='text'
                             class='form-control' placeholder="{{ __('ebps::ebps.enter_seat_no') }}">
                         <div>
                             @error('customerLandDetail.seat_no')
@@ -159,7 +213,8 @@
 
             <div class=" d-flex justify-content-between mb-4">
                 <label class="form-label" for="form-label">{{ __('ebps::ebps.four_boundaries') }}</label>
-                <button type="button" class="btn btn-info" wire:click='addFourBoundaries'>
+                <button type="button" class="btn btn-info" wire:click='addFourBoundaries'
+                        {{ count($fourBoundaries) >= 4 ? 'disabled' : '' }}>
                     + {{ __('Add Four Boundaries') }}
                 </button>
             </div>
@@ -175,7 +230,8 @@
                                             <label for='title'>{{ __('ebps::ebps.title') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.title'
                                                 name='fourBoundaries.{{ $index }}.title' type='text'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_title') }}">
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_title') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.title')
@@ -192,7 +248,7 @@
                                                 class='form-control'>
                                                 <option value="">
                                                     {{ __('ebps::ebps.select_direction') }}</option>
-                                                @foreach (\Src\Ebps\Enums\DirectionEnum::cases() as $direction)
+                                                @foreach ($this->getAvailableDirections($index) as $direction)
                                                     <option value="{{ $direction->value }}">
                                                         {{ $direction->label() }}
                                                     </option>
@@ -211,8 +267,9 @@
                                         <div class='form-group'>
                                             <label for='distance'>{{ __('ebps::ebps.distance') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.distance'
-                                                name='fourBoundaries.{{ $index }}.distance' type='number'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_distance') }}">
+                                                name='fourBoundaries.{{ $index }}.distance' type='text'
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_distance') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.distance')
@@ -226,7 +283,8 @@
                                             <label for='lot_no'>{{ __('ebps::ebps.lot_no') }}</label>
                                             <input wire:model='fourBoundaries.{{ $index }}.lot_no'
                                                 name='fourBoundaries.{{ $index }}.lot_no' type='text'
-                                                class='form-control' placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
+                                                class='form-control'
+                                                placeholder="{{ __('ebps::ebps.enter_lot_no') }}">
                                         </div>
                                         <div>
                                             @error('fourBoundaries.{{ $index }}.lot_no')
@@ -327,7 +385,7 @@
                                         style="height: 300px;">
                                 @elseif (!empty($filePath))
                                     {{-- Show existing file if no new file is uploaded --}}
-                                    <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tempUrl') }}"
+                                    <img src="{{ customAsset(config('src.Ebps.ebps.path'), $filePath) }}"
                                         alt="Existing Document Preview" class="img-thumbnail mt-2"
                                         style="height: 300px;">
                                 @endif
@@ -427,7 +485,6 @@
                         @endforeach
                     </div>
                 </div>
-            @endif
             @endif
         </div>
     </div>

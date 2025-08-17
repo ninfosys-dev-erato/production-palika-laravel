@@ -67,10 +67,11 @@ class RegistrationTypeForm extends Component
         $this->isBusiness = false;
         $this->forms = Form::where('module', 'business-registration')->whereNull('deleted_by')->pluck('id', 'title')->toArray();
         // Use RegistrationCategoryEnum for registration categories
-        $this->registration_category_enums = RegistrationCategoryEnum::getForWeb();
-        $this->departments = Branch::whereNull('deleted_at')->whereNull('deleted_by')->pluck('id', 'title')->toArray();
-
         $this->businessActions = BusinessRegistrationType::cases();
+        $this->registration_category_enums = RegistrationCategoryEnum::getForWeb();
+
+
+        $this->departments = Branch::whereNull('deleted_at')->whereNull('deleted_by')->pluck('id', 'title')->toArray();
     }
 
     public function render(): View

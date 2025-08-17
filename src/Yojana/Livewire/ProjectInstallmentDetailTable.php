@@ -56,16 +56,16 @@ Column::make("Amount", "amount") ->sortable()->searchable()->collapseOnTablet(),
 Column::make("Construction Material Quantity", "construction_material_quantity") ->sortable()->searchable()->collapseOnTablet(),
 Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('project_installment_details edit') || can('project_installment_details delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('project_installment_details edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="fa fa-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('project_installment_details delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="fa fa-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -82,7 +82,7 @@ Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('project_installment_details edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -90,7 +90,7 @@ Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(
     }
     public function delete($id)
     {
-        if(!can('project_installment_details delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -99,7 +99,7 @@ Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(
         $this->successFlash("Project Installment Detail Deleted Successfully");
     }
     public function deleteSelected(){
-        if(!can('project_installment_details delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

@@ -46,7 +46,7 @@ return [
     'recepient_information' => 'Recepient Information',
     'select_available_recepient' => 'Select available Recepient?',
     'recepient' => 'Recepient',
-    'select_a_departmentaaaa' => 'Select a Departmentaaaa',
+    'select_a_department' => 'Select a Department',
     'recipient' => 'Recipient',
     'select_a_user' => 'Select a User',
     'recipient_position' => 'Recipient Position',

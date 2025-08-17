@@ -15,9 +15,10 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.fulfilled_condition_list') }}</h5>
                     </div>
                     <div>
-                        @perm('fulfilled_conditions create')
-                            <a href="{{ route('admin.ejalas.fulfilled_conditions.create') }}" class="btn btn-info"><i
-                                    class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_fulfilled_condition') }}</a>
+                        @perm('jms_reconciliation_center create')
+                            <a href="{{ route('admin.ejalas.fulfilled_conditions.create', ['from' => $from]) }}"
+                                class="btn btn-info"><i class="bx bx-plus"></i>
+                                {{ __('ejalas::ejalas.add_fulfilled_condition') }}</a>
                         @endperm
                     </div>
                 </div>

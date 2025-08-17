@@ -23,7 +23,7 @@
                         {{ !isset($taskType) ? __('tasktracking::tasktracking.create') . ' ' . __('tasktracking::tasktracking.task_type') : __('tasktracking::tasktracking.update') . ' ' . __('tasktracking::tasktracking.task_type') }}
                     </h5>
                     <div>
-                        @perm('task_type access')
+                        @perm('tsk_setting edit')
                             <a href="{{ route('admin.task-types.index') }}" class="btn btn-info">
                                 <i class="bx bx-list-ol"></i>{{ __('tasktracking::tasktracking.task_type_list') }}
                             </a>

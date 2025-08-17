@@ -17,7 +17,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.measurement_unit') }}</h5>
                     </div>
                     <div>
-                        @perm('measurement_units create')
+                        @perm('plan_basic_settings create')
                             <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#indexModal">
                                 <i class="bx bx-plus"></i> {{ __('yojana::yojana.add_measurement_unit') }}
                             </button>

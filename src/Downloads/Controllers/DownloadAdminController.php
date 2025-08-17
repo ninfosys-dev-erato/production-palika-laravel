@@ -14,9 +14,9 @@ class DownloadAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:downloads_access', only: ['index']),
-            new Middleware('permission:downloads_create', only: ['create']),
-            new Middleware('permission:downloads_update', only: ['edit']),
+            new Middleware('permission:downloads access', only: ['index']),
+            new Middleware('permission:downloads create', only: ['create']),
+            new Middleware('permission:downloads edit', only: ['edit']),
         ];
     }
 

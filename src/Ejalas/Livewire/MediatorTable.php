@@ -81,16 +81,16 @@ class MediatorTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.training_detail'), "training_detail")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.municipal_approval_date'), "municipal_approval_date")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('mediators edit') || can('mediators delete')) {
+        if (can('jms_settings edit') || can('jms_settings delete')) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('mediators edit')) {
+                if (can('jms_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('mediators delete')) {
+                if (can('jms_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -103,12 +103,10 @@ class MediatorTable extends DataTableComponent
 
         return $columns;
     }
-    public function refresh()
-    {
-    }
+    public function refresh() {}
     public function edit($id)
     {
-        if (!can('mediators edit')) {
+        if (!can('jms_settings edit')) {
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
@@ -117,7 +115,7 @@ class MediatorTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('mediators delete')) {
+        if (!can('jms_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -127,7 +125,7 @@ class MediatorTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('mediators delete')) {
+        if (!can('jms_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

@@ -17,7 +17,7 @@ class CommitteeMemberAdminController extends Controller implements HasMiddleware
         return [
             new Middleware('permission:committee_member_access', only: ['index']),
             new Middleware('permission:committee_member_create', only: ['create']),
-            new Middleware('permission:committee_member_edit', only: ['update']),
+            new Middleware('permission:committee_member_update', only: ['update']),
         ];
     }
 

@@ -157,10 +157,10 @@ class ReportGrievanceReport extends DataTableComponent
             )->html(),
             Column::make(__('grievance::grievance.suggestions'), "suggestions")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('grievance_detail_access')) {
+        if (can('grievance access')) {
             $actionsColumn = Column::make(__('grievance::grievance.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
-                if (can('grievance_detail_access')) {
+                if (can('grievance access')) {
                     $view = '<button class="btn btn-primary btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
                 }
@@ -178,7 +178,7 @@ class ReportGrievanceReport extends DataTableComponent
 
     public function view($id)
     {
-        if (!can('grievance_detail_access')) {
+        if (!can('grievance access')) {
             self::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

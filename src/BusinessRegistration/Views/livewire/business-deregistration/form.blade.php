@@ -676,6 +676,23 @@
                                                 @foreach ($data as $key => $field)
                                                     <div class="col-md-6">
                                                         <x-form.field :field="$field" />
+
+                                                        @if ($field['type'] === 'file' && !empty($field['url']))
+                                                            <a href="{{ $field['url'] }}" target="_blank"
+                                                                class="btn btn-sm btn-outline-primary mt-2">
+                                                                <i class="bx bx-file"></i>
+                                                                {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                            </a>
+                                                        @endif
+                                                        @if ($field['type'] === 'file' && !empty($field['urls']) && is_array($field['urls']))
+                                                            @foreach ($field['urls'] as $url)
+                                                                <a href="{{ $url }}" target="_blank"
+                                                                    class="btn btn-sm btn-outline-primary mt-2">
+                                                                    <i class="bx bx-file"></i>
+                                                                    {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                                </a>
+                                                            @endforeach
+                                                        @endif
                                                     </div>
                                                 @endforeach
                                             @endif

@@ -15,7 +15,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('filetracking::filetracking.registered_files') }}
                     </h5>
-                    @perm('darta_create')
+                    @perm('darta create')
                         <div>
                             <a href="{{ route('admin.register_files.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>

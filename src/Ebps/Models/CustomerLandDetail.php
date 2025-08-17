@@ -21,6 +21,8 @@ class CustomerLandDetail extends Model
         'id',
         'customer_id',
         'local_body_id',
+        'former_local_body',
+        'former_ward_no',
         'ward',
         'tole',
         'area_sqm',
@@ -41,6 +43,8 @@ class CustomerLandDetail extends Model
             'id' => 'int',
             'customer_id' => 'string',
             'local_body_id' => 'string',
+            'former_local_body' => 'string',
+            'former_ward_no' => 'string',
             'ward' => 'string',
             'tole' => 'string',
             'area_sqm' => 'string',
@@ -72,6 +76,11 @@ class CustomerLandDetail extends Model
 
 
     public function localBody(): BelongsTo
+    {
+        return $this->belongsTo(LocalBody::class, 'local_body_id');
+    }
+
+    public function formerLocalBody(): BelongsTo
     {
         return $this->belongsTo(LocalBody::class, 'local_body_id');
     }

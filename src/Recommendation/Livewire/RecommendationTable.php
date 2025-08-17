@@ -77,24 +77,24 @@ class RecommendationTable extends DataTableComponent
         ];
 
 
-        if (can('recommendation_update') || can('recommendation_delete')) {
+        if (can('recommendation_settings update') || can('recommendation_settings delete')) {
             $columns[] = Column::make(__('recommendation::recommendation.actions'))
                 ->label(function ($row) {
                     $buttons = '';
 
 
-                    if (can('recommendation_update')) {
+                    if (can('recommendation_settings update')) {
                         $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                         $buttons .= $edit;
                     }
 
 
-                    if (can('recommendation_delete')) {
+                    if (can('recommendation_settings delete')) {
                         $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                         $buttons .= $delete;
                     }
 
-                    if (can('recommendation_access')) {
+                    if (can('recommendation_settings access')) {
                         $manage = '&nbsp;<button type="button" class="btn btn-success btn-sm ml-2" wire:click="manage(' . $row->id . ')"><i class="bx bx-cog"></i></button>';
                         $buttons .= $manage;
                     }
@@ -113,7 +113,7 @@ class RecommendationTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('recommendation_update')) {
+        if (!can('recommendation_settings update')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -122,19 +122,19 @@ class RecommendationTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('recommendation_delete')) {
+        if (!can('recommendation_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
 
         $service = new RecommendationAdminService();
         $service->delete(Recommendation::findOrFail($id));
-        $this->successFlash(__('recommendation::recommendation.recommendation_deleted_successfully'));
+        $this->successFlash(__('recommendation::recommendation.recommendation_settings deleted_successfully'));
     }
 
     public function deleteSelected()
     {
-        if (!can('recommendation_delete')) {
+        if (!can('recommendation_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

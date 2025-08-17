@@ -12,7 +12,7 @@
                     <i class="bi bi-pencil-square me-2"></i> {{ __('filetracking::filetracking.edit_record') }}
                 </a>
 
-                @if (can('darta_delete'))
+                @if (can('darta delete'))
                     <button type="button"
                         onclick="return confirm('Are you sure you want to delete this record?') || event.stopImmediatePropagation()"
                         wire:click="delete({{ $record->id }})"
@@ -52,7 +52,7 @@
                         <div class="p-3 bg-white rounded-3 shadow-sm h-100">
                             <div class="d-flex align-items-center mb-2">
                                 <i class="bi bi-card-heading text-primary me-2"></i>
-                                <h6 class="fw-bold mb-0">{{ __('filetracking::filetracking.title') }}</h6>
+                                <h6 class="fw-bold mb-0"darta-show>{{ __('filetracking::filetracking.title') }}</h6>
                             </div>
                             <p class="mb-0 fs-5">{{ $record->title ?? 'N/A' }}</p>
                         </div>

@@ -55,7 +55,7 @@ class CustomerForm extends Component
         $rules = [
             'customer.name' => ['required'],
             'customer.email' => ['nullable'],
-            'customer.mobile_no' => ['required', 'numeric', 'digits:10', Rule::unique('tbl_customers', 'mobile_no')->ignore($this->customer->id), new MobileNumberIdentifierRule()],
+            'customer.mobile_no' => ['required', 'numeric', 'digits:10', Rule::unique('tbl_customers', 'mobile_no')->ignore($this->customer->id)],
             'customer.gender' => ['required', Rule::in(GenderEnum::cases())],
             'kyc.nepali_date_of_birth' => ['required', 'string'],
             'kyc.grandfather_name' => ['required', 'string'],

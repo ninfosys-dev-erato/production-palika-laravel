@@ -19,7 +19,9 @@ class GrievanceDetailController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:grievance_detail_access', only: ['index'])
+            new Middleware('permission:grievance access', only: ['index']),
+            new Middleware('permission:grievance create', only: ['create']),
+            new Middleware('permission:grievance access', only: ['show']),
         ];
     }
 

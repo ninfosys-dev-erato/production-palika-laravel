@@ -75,22 +75,22 @@ class AdvancePaymentTable extends DataTableComponent
             Column::make(__('yojana::yojana.paid_amount'), "paid_amount")->sortable()->searchable()->collapseOnTablet()
             ->format( fn ($value) => __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($value ?? 0), true)),
         ];
-        if (can('advance_payments edit') || can('advance_payments delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
 
-                if (can('advance_payments edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('advance_payments edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-info btn-sm" wire:click="printLetter(' . $row->id . ')" ><i class="bx bx-printer"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('advance_payments delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -106,16 +106,16 @@ class AdvancePaymentTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('advance_payments edit')) {
+        if (!can('plan edit')) {
             SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
             return false;
         }
         //        return redirect()->route('admin.advance_payments.edit',['id'=>$id]);
-        $this->dispatch('edit-advance-payment', $id);
+        $this->dispatch('load-advance-payment', $id);
     }
     public function delete($id)
     {
-        if (!can('advance_payments delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -125,7 +125,7 @@ class AdvancePaymentTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('advance_payments delete')) {
+        if (!can('plan delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

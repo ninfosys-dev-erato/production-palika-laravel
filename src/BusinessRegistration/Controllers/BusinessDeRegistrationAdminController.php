@@ -21,14 +21,21 @@ class BusinessDeRegistrationAdminController extends Controller implements HasMid
         return [
             new Middleware('permission:business_registration access', only: ['index']),
             new Middleware('permission:business_registration create', only: ['create']),
-            new Middleware('permission:business_registration update', only: ['edit']),
+            new Middleware('permission:business_registration edit', only: ['edit']),
         ];
     }
 
     public function index(Request $request)
     {
         // $type = $request->query('type');
-        $type = $request->query('type') ?? BusinessRegistrationType::DEREGISTRATION->value;
+
+        $type = $request->query('type');
+        try {
+            $type = BusinessRegistrationType::from($type);
+        } catch (\ValueError $e) {
+            $type = BusinessRegistrationType::DEREGISTRATION->value;
+        }
+
 
 
         return view('BusinessRegistration::business-deregistration.index')->with(compact('type'));

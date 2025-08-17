@@ -1,4 +1,4 @@
-@aware([ 'tableName','isTailwind','isBootstrap'])
+@aware(['component', 'tableName','isTailwind','isBootstrap'])
 
 @php
     $customAttributes = [
@@ -13,9 +13,7 @@
     <div
         wire:key="{{ $tableName }}-twrap"
         {{ $attributes->merge($customAttributes['wrapper'])
-            ->class([
-                'shadow overflow-y-auto border-b border-gray-200 dark:border-gray-700 sm:rounded-lg' => $customAttributes['wrapper']['default'] ?? true
-            ])
+            ->class(['shadow overflow-y-auto border-b border-gray-200 dark:border-gray-700 sm:rounded-lg' => $customAttributes['wrapper']['default'] ?? true])
             ->except(['default','default-styling','default-colors']) }}
     >
         <table
@@ -27,9 +25,7 @@
         >
             <thead wire:key="{{ $tableName }}-thead"
                 {{ $attributes->merge($customAttributes['thead'])
-                    ->class([
-                        'bg-gray-50 dark:bg-gray-800' => $customAttributes['thead']['default'] ?? true
-                    ])
+                    ->class(['bg-gray-50 dark:bg-gray-800' => $customAttributes['thead']['default'] ?? true])
                     ->except(['default','default-styling','default-colors']) }}
             >
                 <tr>
@@ -41,19 +37,17 @@
                 wire:key="{{ $tableName }}-tbody"
                 id="{{ $tableName }}-tbody"
                 {{ $attributes->merge($customAttributes['tbody'])
-                        ->class([
-                            'bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-none' => $customAttributes['tbody']['default'] ?? true
-                        ])
+                        ->class(['bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-none' => $customAttributes['tbody']['default'] ?? true])
                         ->except(['default','default-styling','default-colors']) }}
             >
                 {{ $slot }}
             </tbody>
 
-            @isset($tfoot)
+            @if (isset($tfoot))
                 <tfoot wire:key="{{ $tableName }}-tfoot">
                     {{ $tfoot }}
                 </tfoot>
-            @endisset
+            @endif
         </table>
     </div>
 @elseif ($isBootstrap)
@@ -90,11 +84,11 @@
                 {{ $slot }}
             </tbody>
 
-            @isset($tfoot)
+            @if (isset($tfoot))
                 <tfoot wire:key="{{ $tableName }}-tfoot">
                     {{ $tfoot }}
                 </tfoot>
-            @endisset
+            @endif
         </table>
     </div>
 @endif

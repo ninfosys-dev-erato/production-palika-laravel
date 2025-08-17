@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('yojana::yojana.consumer_committee_list') }}</h5>
                     </div>
                     <div>
-                        @perm('consumer_committees create')
+                        @perm('plan_committee_settings create')
                             <a href="{{ route('admin.consumer_committees.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('yojana::yojana.add_consumer_committee') }}</a>
                         @endperm

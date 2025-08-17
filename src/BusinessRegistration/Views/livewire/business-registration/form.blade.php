@@ -3,6 +3,8 @@
 @endpush
 @php
     use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
+    use Src\BusinessRegistration\Enums\BusinessRegistrationType;
+    use App\Enums\Action;
 @endphp
 <form wire:submit.prevent="save" enctype="multipart/form-data">
     @csrf
@@ -49,7 +51,10 @@
                     <!-- Personal Details Tab -->
                     <div class="tab-pane fade {{ $activeTab === 'personal' ? 'show active' : '' }}" id="personal"
                         role="tabpanel">
-
+                        <!-- Phone Search for this personal detail -->
+                        @if ($action === App\Enums\Action::CREATE && !$isCustomer)
+                            <livewire:phone_search />
+                        @endif
                         @foreach ($personalDetails as $index => $detail)
                             <div wire:key="personal-detail-{{ $index }}">
                                 <!-- Personal Details Header -->
@@ -67,11 +72,11 @@
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.applicant_name"
                                             name="applicant_name" type="text"
-                                            class="form-control @error('businessRegistration.applicant_name') is-invalid @enderror"
+                                            class="form-control  @error('personalDetails.' . $index . '.applicant_name') is-invalid @enderror"
                                             id="applicant_name"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_full_name') }}">
-                                        @error('businessRegistration.applicant_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @error('personalDetails.' . $index . '.applicant_name')
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -82,7 +87,7 @@
                                         </label>
                                         <select wire:model="personalDetails.{{ $index }}.gender" name="gender"
                                             class="form-control @error('businessRegistration.gender') is-invalid @enderror"
-                                            id="gender" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="gender">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_gender') }}
                                             </option>
@@ -92,7 +97,7 @@
                                             @endforeach
                                         </select>
                                         @error('businessRegistration.gender')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -107,7 +112,7 @@
                                             id="father_name"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_father_name') }}">
                                         @error('businessRegistration.father_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -122,7 +127,7 @@
                                             id="grandfather_name"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_enter_grandfather_name') }}">
                                         @error('businessRegistration.grandfather_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -137,7 +142,7 @@
                                             id="phone"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_phone') }}">
                                         @error('businessRegistration.phone')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -147,12 +152,12 @@
                                             {{ __('businessregistration::businessregistration.email_address') }}
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.email" name="email"
-                                            type="email"
+                                            type="text"
                                             class="form-control @error('businessRegistration.email') is-invalid @enderror"
                                             id="email"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_email') }}">
                                         @error('businessRegistration.email')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
@@ -177,7 +182,7 @@
                                             id="citizenship_number"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_citizenship_number') }}">
                                         @error('businessRegistration.citizenship_number')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -193,7 +198,7 @@
                                             class="form-control nepali-date @error('businessRegistration.citizenship_issued_date') is-invalid @enderror"
                                             id="citizenship_issued_date_{{ $index }}">
                                         @error('businessRegistration.citizenship_issued_date')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -206,8 +211,7 @@
                                             wire:model="personalDetails.{{ $index }}.citizenship_issued_district"
                                             name="citizenship_issued_district"
                                             class="form-control @error('businessRegistration.citizenship_issued_district') is-invalid @enderror"
-                                            id="citizenship_issued_district"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="citizenship_issued_district">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.placeholder_issued_district') }}
                                             </option>
@@ -219,7 +223,7 @@
 
 
                                         @error('businessRegistration.citizenship_issued_district')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -231,8 +235,7 @@
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.citizenship_front"
                                             type="file" class="form-control"
-                                            id="citizenship_front_{{ $index }}" accept="image/*"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="citizenship_front_{{ $index }}" accept="image/*">
                                         <div wire:loading
                                             wire:target="personalDetails.{{ $index }}.citizenship_front">
                                             <span class="spinner-border spinner-border-sm" role="status"
@@ -256,8 +259,7 @@
                                         </label>
                                         <input wire:model="personalDetails.{{ $index }}.citizenship_rear"
                                             type="file" class="form-control"
-                                            id="citizenship_rear_{{ $index }}" accept="image/*"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            id="citizenship_rear_{{ $index }}" accept="image/*">
                                         <div wire:loading
                                             wire:target="personalDetails.{{ $index }}.citizenship_rear">
                                             <span class="spinner-border spinner-border-sm" role="status"
@@ -291,8 +293,7 @@
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_province"
                                             class="form-control" name="applicant_province"
-                                            wire:change="getApplicantDistricts({{ $index }})"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            wire:change="getApplicantDistricts({{ $index }})">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_province') }}
                                             </option>
@@ -309,9 +310,9 @@
                                         </label>
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_district"
+                                            wire:key="personalDetails-{{ $index }}-{{ $personalDetails[$index]['applicant_province'] ?? 'none' }}"
                                             class="form-control" name="applicant_district"
-                                            wire:change="getApplicantLocalBodies({{ $index }})"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            wire:change="getApplicantLocalBodies({{ $index }})">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_district') }}
                                             </option>
@@ -328,9 +329,9 @@
                                         </label>
                                         <select
                                             wire:model.live="personalDetails.{{ $index }}.applicant_local_body"
+                                            wire:key="personalDetails-{{ $index }}-{{ $personalDetails[$index]['applicant_district'] ?? 'none' }}"
                                             class="form-control" name="applicant_local_body"
-                                            wire:change="getApplicantWards({{ $index }})"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            wire:change="getApplicantWards({{ $index }})">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_local_body') }}
                                             </option>
@@ -347,13 +348,13 @@
                                             {{ __('businessregistration::businessregistration.ward') }}
                                         </label>
                                         <select wire:model.live="personalDetails.{{ $index }}.applicant_ward"
-                                            class="form-control" name="applicant_ward"
-                                            {{ $this->isReadonly ? 'disabled' : '' }}>
+                                            wire:key="personalDetails-{{ $index }}-{{ $personalDetails[$index]['applicant_local_body'] ?? 'none' }}"
+                                            class="form-control" name="applicant_ward">
                                             <option value="">
                                                 {{ __('businessregistration::businessregistration.select_ward') }}
                                             </option>
                                             @foreach ($applicantWards[$index] ?? [] as $id => $title)
-                                                <option value="{{ $id }}">
+                                                <option value="{{ $title }}">
                                                     {{ replaceNumbers($title, true) }}
                                                 </option>
                                             @endforeach
@@ -442,8 +443,9 @@
                                         {{ __('businessregistration::businessregistration.fiscal_year') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <select wire:model="businessRegistration.fiscal_year" class="form-control"
-                                        name="fiscal_year" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                    <select wire:model="businessRegistration.fiscal_year"
+                                        class="form-control @error('businessRegistration.fiscal_year') is-invalid @enderror"
+                                        name="fiscal_year" wire:change="fiscalYearChanged($event.target.value)">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.fiscal_year') }}
                                         </option>
@@ -452,6 +454,9 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('businessRegistration.fiscal_year')
+                                        <div class="invalid-message">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <!-- Registration Date -->
@@ -465,10 +470,77 @@
                                         class="nepali-date form-control @error('businessRegistration.application_date') is-invalid @enderror"
                                         id="application_date">
                                     @error('businessRegistration.application_date')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.application_date') }}</div>
                                     @enderror
                                 </div>
+
+
+                                {{-- @if ($action == Action::CREATE && !$isCustomer)
+                                    <div class="col-md-12">
+                                        <label class="form-label-peaceful d-block">
+                                            {{ __('businessregistration::businessregistration.do_you_want_to_enter_custom_registration_number?') }}
+                                        </label>
+                                        <div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                    id="is_previously_registered_yes" name="is_previouslyRegistered"
+                                                    wire:model="is_previouslyRegistered" value="1"
+                                                    wire:change="previouslyRegisteredChanged($event.target.value)">
+                                                <label class="form-check-label"
+                                                    for="is_previously_registered_yes">{{ __('businessregistration::businessregistration.yes') }}</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio"
+                                                    id="is_previously_registered_no" name="is_previouslyRegistered"
+                                                    wire:model="is_previouslyRegistered" value="0"
+                                                    wire:change="previouslyRegisteredChanged($event.target.value)">
+                                                <label class="form-check-label"
+                                                    for="is_previously_registered_no">{{ __('businessregistration::businessregistration.no') }}</label>
+                                            </div>
+                                        </div>
+                                        @error('businessRegistration.is_previouslyRegistered')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endif --}}
+                                @if (
+                                    $businessRegistrationType == BusinessRegistrationType::ARCHIVING ||
+                                        $businessRegistration->registration_type == BusinessRegistrationType::ARCHIVING)
+                                    <!-- Registration Date -->
+                                    <div class="col-md-6">
+                                        <label for="registration_date" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_date') }}
+                                        </label>
+                                        <input wire:model="businessRegistration.registration_date"
+                                            name="registration_date" type="text" class="form-control nepali-date"
+                                            id="registration_date"
+                                            placeholder="{{ __('businessregistration::businessregistration.enter_registration_date') }}">
+                                        @error('businessRegistration.registration_date')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <label for="registration_number" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.registration_number') }}
+                                        </label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input wire:model="businessRegistration.registration_number"
+                                                name="registration_number" type="number" class="form-control w-50"
+                                                id="registration_number" min="1">
+                                            <span>
+                                                <span class="fw-bold">/ {{ $selectedFiscalYearText }}</span>
+                                            </span>
+
+                                        </div>
+                                        @error('businessRegistration.registration_number')
+                                            <div class="invalid-message">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endif
+
 
                                 <!-- Entity Name -->
                                 <div class="col-12">
@@ -482,7 +554,7 @@
                                         id="entity_name"
                                         placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_name') }}">
                                     @error('businessRegistration.entity_name')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.entity_name') }}</div>
                                     @enderror
                                 </div>
@@ -490,15 +562,26 @@
                                 <!-- Business Nature -->
                                 <div class="col-md-6">
                                     <label for="business_nature" class="form-label-peaceful">
-                                        {{ __('businessregistration::businessregistration.business_organization_industry_firm_nature_or_category_or_type') }}
+                                        {{ __('businessregistration::businessregistration.business_organization_industry_firm_nature') }}
                                     </label>
-
 
                                     <input wire:model="businessRegistration.business_nature" name="business_nature"
                                         type="text"
                                         class="form-control @error('businessRegistration.business_nature') is-invalid @enderror"
                                         id="business_nature"
-                                        placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_nature_or_category_or_type') }}">
+                                        placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_nature') }}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="business_category" class="form-label-peaceful">
+                                        {{ __('businessregistration::businessregistration.business_organization_industry_firm_category_or_type') }}
+                                    </label>
+
+                                    <input wire:model="businessRegistration.business_category"
+                                        name="business_category" type="text"
+                                        class="form-control @error('businessRegistration.business_category') is-invalid @enderror"
+                                        id="business_category"
+                                        placeholder="{{ __('businessregistration::businessregistration.business_organization_industry_firm_category_or_type') }}">
                                 </div>
 
                                 <!-- Main Goods/Services -->
@@ -512,7 +595,7 @@
                                         id="main_service_or_goods"
                                         placeholder="{{ __('businessregistration::businessregistration.placeholder_main_goods_services') }}">
                                     @error('businessRegistration.main_service_or_goods')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.main_service_or_goods') }}</div>
                                     @enderror
                                 </div>
@@ -527,7 +610,7 @@
                                         id="purpose"
                                         placeholder="{{ __('businessregistration::businessregistration.placeholder_purpose') }}">
                                     @error('businessRegistration.purpose')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.purpose') }}</div>
                                     @enderror
                                 </div>
@@ -550,9 +633,9 @@
                                     <label for="business_province" class="form-label-peaceful">
                                         {{ __('businessregistration::businessregistration.business_organization_industry_firm_province') }}
                                     </label>
-                                    <select wire:model.live="businessRegistration.business_province"
+                                    <select wire:model.defer="businessRegistration.business_province"
                                         class="form-control" name="business_province"
-                                        wire:change="getBusinessDistricts" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        wire:change="getBusinessDistricts">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_province') }}
                                         </option>
@@ -568,10 +651,8 @@
                                     <label for="business_district" class="form-label-peaceful">
                                         {{ __('businessregistration::businessregistration.business_organization_industry_firm_district') }}
                                     </label>
-                                    <select wire:model.live="businessRegistration.business_district"
-                                        class="form-control" name="business_district"
-                                        wire:change="getBusinessLocalBodies"
-                                        {{ $this->isReadonly ? 'disabled' : '' }}>
+                                    <select wire:model="businessRegistration.business_district" class="form-control"
+                                        name="business_district" wire:change="getBusinessLocalBodies">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_district') }}
                                         </option>
@@ -589,7 +670,7 @@
                                     </label>
                                     <select wire:model.live="businessRegistration.business_local_body"
                                         class="form-control" name="business_local_body"
-                                        wire:change="getBusinessWards" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        wire:change="getBusinessWards">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_local_body') }}
                                         </option>
@@ -606,12 +687,12 @@
                                         {{ __('businessregistration::businessregistration.ward') }}
                                     </label>
                                     <select wire:model.live="businessRegistration.business_ward" class="form-control"
-                                        name="business_ward" {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        name="business_ward">
                                         <option value="">
                                             {{ __('businessregistration::businessregistration.select_ward') }}
                                         </option>
                                         @foreach ($businessWards as $id => $title)
-                                            <option value="{{ $id }}"> {{ replaceNumbers($title, true) }}
+                                            <option value="{{ $title }}"> {{ replaceNumbers($title, true) }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -683,7 +764,7 @@
                                         @endforeach
                                     </select>
                                     @error('businessRegistration.registration_type_id')
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-message">
                                             {{ $errors->first('businessRegistration.registration_type_id') }}</div>
                                     @enderror
                                 </div>
@@ -691,136 +772,180 @@
 
 
 
-                            <!-- Fiscal Year -->
-                            @if ($registrationTypeEnum == RegistrationCategoryEnum::BUSINESS->value)
+                            <div wire:key="registration-type-{{ $registrationTypeEnum }}">
+                                @if ($registrationTypeEnum == RegistrationCategoryEnum::BUSINESS->value)
 
 
-                                <div class="divider divider-primary text-start text-primary mb-4">
-                                    <div class="divider-text fw-bold fs-6">
-                                        {{ __('businessregistration::businessregistration.capital_details') }}
+                                    <div class="divider divider-primary text-start text-primary mb-4">
+                                        <div class="divider-text fw-bold fs-6">
+                                            {{ __('businessregistration::businessregistration.capital_details') }}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row g-4">
-                                    <!-- Capital Investment -->
-                                    <div class="col-md-6">
-                                        <label for="capital_investment" class="form-label-peaceful">
-                                            {{ __('businessregistration::businessregistration.capital_investment') }}
-                                        </label>
-                                        <input wire:model="businessRegistration.capital_investment"
-                                            name="capital_investment" type="text" class="form-control"
-                                            id="capital_investment"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}">
+                                    <div class="row g-4">
+                                        <!-- Capital Investment -->
+                                        <div class="col-md-6">
+                                            <label for="capital_investment" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.capital_investment') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.capital_investment"
+                                                name="capital_investment" type="text" class="form-control"
+                                                id="capital_investment"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_capital_investment') }}">
+                                        </div>
+                                        <!-- Working Capital -->
+                                        <div class="col-md-6">
+                                            <label for="working_capital" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.working_capital') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.working_capital"
+                                                name="working_capital" type="text" class="form-control"
+                                                id="working_capital"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}">
+                                        </div>
+                                        <!-- Fixed Capital -->
+                                        <div class="col-md-6">
+                                            <label for="fixed_capital" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.fixed_capital') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.fixed_capital"
+                                                name="fixed_capital" type="text" class="form-control"
+                                                id="fixed_capital"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}">
+                                        </div>
+                                        <!-- Operation Date -->
+                                        <div class="col-md-6">
+                                            <label for="operation_date" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.operation_date') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.operation_date"
+                                                name="operation_date" type="text" class="form-control nepali-date"
+                                                id="operation_date"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_operation_date') }}">
+                                        </div>
+                                        <!-- Area -->
+                                        <div class="col-md-6">
+                                            <label for="area" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.business_area') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.area" name="business_area"
+                                                type="text" class="form-control" id="business_area"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_area') }}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="kardata_number" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.kardata_number') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.kardata_number"
+                                                name="kardata_number" type="text" class="form-control"
+                                                id="kardata_number"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_kardata_number') }}">
+                                        </div>
+
+                                        <!-- Kardata Miti -->
+                                        <div class="col-md-6">
+                                            <label for="kardata_miti" class="form-label-peaceful">
+                                                {{ __('businessregistration::businessregistration.kardata_miti') }}
+                                            </label>
+                                            <input wire:model="businessRegistration.kardata_miti" name="kardata_miti"
+                                                type="text" class="form-control nepali-date" id="kardata_miti"
+                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_kardata_miti') }}">
+                                        </div>
+
                                     </div>
-                                    <!-- Working Capital -->
-                                    <div class="col-md-6">
-                                        <label for="working_capital" class="form-label-peaceful">
-                                            {{ __('businessregistration::businessregistration.working_capital') }}
-                                        </label>
-                                        <input wire:model="businessRegistration.working_capital"
-                                            name="working_capital" type="text" class="form-control"
-                                            id="working_capital"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_working_capital') }}">
+
+
+
+
+
+                                    <div class="divider divider-primary text-start text-primary mb-4 mt-4">
+                                        <div class="divider-text fw-bold fs-6">
+                                            {{ __('businessregistration::businessregistration.land/house_owner_details') }}
+                                        </div>
                                     </div>
-                                    <!-- Fixed Capital -->
-                                    <div class="col-md-6">
-                                        <label for="fixed_capital" class="form-label-peaceful">
-                                            {{ __('businessregistration::businessregistration.fixed_capital') }}
-                                        </label>
-                                        <input wire:model="businessRegistration.fixed_capital" name="fixed_capital"
-                                            type="text" class="form-control" id="fixed_capital"
-                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_fixed_capital') }}">
-                                    </div>
-                                </div>
-
-
-
-
-
-                                <div class="divider divider-primary text-start text-primary mb-4 mt-4">
-                                    <div class="divider-text fw-bold fs-6">
-                                        {{ __('businessregistration::businessregistration.land/house_owner_details') }}
-                                    </div>
-                                </div>
-                                <div class="row g-4">
-                                    <div class="col-md-12">
-                                        <label class="form-label-peaceful d-block">
-                                            {{ __('businessregistration::businessregistration.is_rented') }}
-                                        </label>
-                                        <div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" id="is_rented_yes"
-                                                    name="is_rented" wire:model="businessRegistration.is_rented"
-                                                    value="1"
-                                                    wire:change="rentStatusChanged($event.target.value)">
-                                                <label class="form-check-label"
-                                                    for="is_rented_yes">{{ __('businessregistration::businessregistration.yes') }}</label>
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <label class="form-label-peaceful d-block">
+                                                {{ __('businessregistration::businessregistration.is_rented') }}
+                                            </label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="is_rented_yes"
+                                                        name="is_rented" wire:model="businessRegistration.is_rented"
+                                                        value="1"
+                                                        wire:change="rentStatusChanged($event.target.value)">
+                                                    <label class="form-check-label"
+                                                        for="is_rented_yes">{{ __('businessregistration::businessregistration.yes') }}</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="is_rented_no"
+                                                        name="is_rented" wire:model="businessRegistration.is_rented"
+                                                        value="0"
+                                                        wire:change="rentStatusChanged($event.target.value)">
+                                                    <label class="form-check-label"
+                                                        for="is_rented_no">{{ __('businessregistration::businessregistration.no') }}</label>
+                                                </div>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" id="is_rented_no"
-                                                    name="is_rented" wire:model="businessRegistration.is_rented"
-                                                    value="0"
-                                                    wire:change="rentStatusChanged($event.target.value)">
-                                                <label class="form-check-label"
-                                                    for="is_rented_no">{{ __('businessregistration::businessregistration.no') }}</label>
-                                            </div>
                                         </div>
+                                        @if ($showRentFields)
+
+
+                                            <!-- House Owner Name -->
+                                            <div class="col-md-6">
+                                                <label for="houseownername" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.houseownername') }}
+                                                </label>
+                                                <input wire:model="businessRegistration.houseownername"
+                                                    name="houseownername" type="text" class="form-control"
+                                                    id="houseownername"
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}">
+                                            </div>
+                                            <!-- Phone -->
+                                            <div class="col-md-6">
+                                                <label for="business_phone" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.land/house_owner_phone') }}
+                                                </label>
+                                                <input wire:model="businessRegistration.house_owner_phone"
+                                                    name="text" type="text" class="form-control"
+                                                    id="business_phone"
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_land/house_owner_phone') }}">
+                                            </div>
+                                            <!-- Monthly Rent -->
+                                            <div class="col-md-6">
+                                                <label for="monthly_rent" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.monthly_rent') }}
+                                                </label>
+                                                <input wire:model="businessRegistration.monthly_rent"
+                                                    name="monthly_rent" type="text" class="form-control"
+                                                    id="monthly_rent"
+                                                    placeholder="{{ __('businessregistration::businessregistration.placeholder_monthly_rent') }}">
+                                            </div>
+                                            <!-- Rent Agreement File -->
+                                            <div class="col-md-6">
+                                                <label for="rentagreement" class="form-label-peaceful">
+                                                    {{ __('businessregistration::businessregistration.rentagreement') }}
+                                                </label>
+                                                <input wire:model="rentagreement" name="rentagreement" type="file"
+                                                    class="form-control" id="rentagreement">
+                                                <div wire:loading wire:target="rentagreement">
+                                                    <span class="spinner-border spinner-border-sm" role="status"
+                                                        aria-hidden="true"></span>
+                                                    Uploading...
+                                                </div>
+
+                                                @if ($rentagreement_url)
+                                                    <a href="{{ $rentagreement_url }}" target="_blank"
+                                                        class="btn btn-sm btn-outline-primary mt-2">
+                                                        <i class="bx bx-file"></i>
+                                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
-                                    @if ($showRentFields)
 
-
-                                        <!-- House Owner Name -->
-                                        <div class="col-md-6">
-                                            <label for="houseownername" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.houseownername') }}
-                                            </label>
-                                            <input wire:model="businessRegistration.houseownername"
-                                                name="houseownername" type="text" class="form-control"
-                                                id="houseownername"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_houseownername') }}">
-                                        </div>
-                                        <!-- Phone -->
-                                        <div class="col-md-6">
-                                            <label for="business_phone" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.land/house_owner_phone') }}
-                                            </label>
-                                            <input wire:model="businessRegistration.phone" name="text"
-                                                type="text" class="form-control" id="business_phone"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_land/house_owner_phone') }}">
-                                        </div>
-                                        <!-- Monthly Rent -->
-                                        <div class="col-md-6">
-                                            <label for="monthly_rent" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.monthly_rent') }}
-                                            </label>
-                                            <input wire:model="businessRegistration.monthly_rent" name="monthly_rent"
-                                                type="text" class="form-control" id="monthly_rent"
-                                                placeholder="{{ __('businessregistration::businessregistration.placeholder_monthly_rent') }}">
-                                        </div>
-                                        <!-- Rent Agreement File -->
-                                        <div class="col-md-6">
-                                            <label for="rentagreement" class="form-label-peaceful">
-                                                {{ __('businessregistration::businessregistration.rentagreement') }}
-                                            </label>
-                                            <input wire:model="businessRegistration.rentagreement"
-                                                name="rentagreement" type="file" class="form-control"
-                                                id="rentagreement" {{ $this->isReadonly ? 'disabled' : '' }}>
-                                            <div wire:loading wire:target="businessRegistration.rentagreement">
-                                                <span class="spinner-border spinner-border-sm" role="status"
-                                                    aria-hidden="true"></span>
-                                                Uploading...
-                                            </div>
-                                            @if (!empty($businessRegistration['rentagreement_url']))
-                                                <a href="{{ $businessRegistration['rentagreement_url'] }}"
-                                                    target="_blank" class="btn btn-sm btn-outline-primary mt-2">
-                                                    <i class="bx bx-file"></i>
-                                                    {{ __('businessregistration::businessregistration.view_uploaded_file') }}
-                                                </a>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-
-                            @endif
+                                @endif
+                            </div>
 
                             @if ($registrationTypeEnum == RegistrationCategoryEnum::FIRM->value)
                                 <div class="divider divider-primary text-start text-primary mb-4">
@@ -979,6 +1104,16 @@
                                             id="required_manpower"
                                             placeholder="{{ __('businessregistration::businessregistration.placeholder_required_manpower') }}">
                                     </div>
+                                    <!-- Required electric power -->
+                                    <div class="col-md-6">
+                                        <label for="required_electric_power" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.required_electric_power') }}
+                                        </label>
+                                        <input wire:model="businessRegistration.required_electric_power"
+                                            name="required_electric_power" type="text" class="form-control"
+                                            id="required_electric_power"
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_required_electric_power') }}">
+                                    </div>
                                     <!-- Number of Shifts for Industry Operation -->
                                     <div class="col-md-6">
                                         <label for="number_of_shifts" class="form-label-peaceful">
@@ -1007,6 +1142,14 @@
                                             name="total_running_day" type="text" class="form-control nepali-date"
                                             id="total_running_day"
                                             placeholder="{{ __('businessregistration::businessregistration.industry_total_running_day') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="others" class="form-label-peaceful">
+                                            {{ __('businessregistration::businessregistration.others') }}
+                                        </label>
+                                        <input wire:model="businessRegistration.others" name="others" type="text"
+                                            class="form-control nepali-date" id="others"
+                                            placeholder="{{ __('businessregistration::businessregistration.placeholder_others') }}">
                                     </div>
                                 </div>
                             @endif
@@ -1087,8 +1230,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label-peaceful">{{ $label['ne'] }}</label>
                                     <input type="file" wire:model="businessRequiredDoc.{{ $field }}"
-                                        class="form-control" id="{{ $field }}"
-                                        {{ $this->isReadonly ? 'disabled' : '' }}>
+                                        class="form-control" id="{{ $field }}">
                                     <div wire:loading wire:target="businessRequiredDoc.{{ $field }}">
                                         <span class="spinner-border spinner-border-sm" role="status"
                                             aria-hidden="true"></span>
@@ -1115,9 +1257,31 @@
                             <div id="dynamic-form">
                                 <div class="row">
                                     @if (!empty($data))
+                                        <div class="divider divider-primary text-start text-primary mb-4">
+                                            <div class="divider-text fw-bold fs-6">
+                                                {{ __('businessregistration::businessregistration.additional_information') }}
+                                            </div>
+                                        </div>
                                         @foreach ($data as $key => $field)
                                             <div class="col-md-6">
                                                 <x-form.field :field="$field" />
+
+                                                @if ($field['type'] === 'file' && !empty($field['url']))
+                                                    <a href="{{ $field['url'] }}" target="_blank"
+                                                        class="btn btn-sm btn-outline-primary mt-2">
+                                                        <i class="bx bx-file"></i>
+                                                        {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                    </a>
+                                                @endif
+                                                @if ($field['type'] === 'file' && !empty($field['urls']) && is_array($field['urls']))
+                                                    @foreach ($field['urls'] as $url)
+                                                        <a href="{{ $url }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-primary mt-2">
+                                                            <i class="bx bx-file"></i>
+                                                            {{ __('businessregistration::businessregistration.view_uploaded_file') }}
+                                                        </a>
+                                                    @endforeach
+                                                @endif
                                             </div>
                                         @endforeach
                                     @endif
@@ -1137,9 +1301,12 @@
                                     class="badge bg-light text-muted">{{ __('businessregistration::businessregistration.step_3_of_3') }}</span>
                             </div>
 
-                            <button type="submit" class="btn btn-success-peaceful" wire:click="save">
-                                <i
-                                    class="fas fa-check me-2"></i>{{ __('businessregistration::businessregistration.submit_registration') }}
+                            <button type="submit" class="btn btn-success-peaceful" wire:loading.attr="disabled">
+                                <i class="fas fa-check me-2"></i>
+                                <span
+                                    wire:loading.remove>{{ __('businessregistration::businessregistration.submit_registration') }}</span>
+                                <span
+                                    wire:loading>{{ __('businessregistration::businessregistration.submitting') }}</span>
                             </button>
                         </div>
                     </div>
@@ -1147,22 +1314,105 @@
             </div>
         </div>
     </div>
-
 </form>
+
+
+
 
 @script
     <script>
         $(document).ready(function() {
+
             const natureSelect = $('#business_nature');
             natureSelect.select2();
             natureSelect.on('change', function() {
                 @this.set('businessRegistration.business_nature', $(this).val());
-            })
+            });
+
             const departmentSelect = $('#department_id');
             departmentSelect.select2();
             departmentSelect.on('change', function() {
                 @this.set('businessRegistration.department_id', $(this).val());
-            })
-        })
+            });
+
+
+
+            // Function to initialize Nepali date pickers
+            function initNepaliDatePickers() {
+                console.log('Initializing Nepali date pickers...');
+                document.querySelectorAll('.nepali-date').forEach(input => {
+
+                    if (!input || typeof input.nepaliDatePicker !== 'function') return;
+
+                    // Preserve current value
+                    const currentValue = input.value;
+
+                    // Destroy existing picker if present
+                    if (input._nepaliDatePicker) {
+                        try {
+                            input._nepaliDatePicker.destroy();
+                        } catch (_) {}
+                    }
+
+                    // Initialize picker
+                    try {
+                        input.nepaliDatePicker({
+                            language: "ne",
+                            ndpYear: true,
+                            ndpMonth: true,
+                            unicodeDate: true,
+                            onChange: () => {
+                                input.dispatchEvent(new Event('input', {
+                                    bubbles: true
+                                }));
+                            }
+                        });
+
+                        // Restore previous value
+                        input.value = currentValue;
+
+                    } catch (error) {
+                        console.error('Nepali date picker init failed for', input.id || input.name, error);
+                    }
+                });
+            }
+
+            // Function to set up Livewire listeners
+            function setupLivewireListeners() {
+
+
+                initNepaliDatePickers();
+
+                if (typeof Livewire !== 'undefined') {
+                    Livewire.on('init-registration-date', () => {
+                        setTimeout(() => {
+                            initNepaliDatePickers();
+                        }, 100);
+                    });
+
+
+                    Livewire.hook('message.processed', () => {
+
+                        setTimeout(() => {
+                            initNepaliDatePickers();
+                        }, 100);
+                    });
+
+
+                } else {
+                    setTimeout(setupLivewireListeners, 500);
+                }
+            }
+
+            // Try to set up listeners immediately
+            setupLivewireListeners();
+
+            // Also try the event listener approach
+            document.addEventListener('livewire:initialized', () => {
+                setupLivewireListeners();
+            });
+
+
+        });
     </script>
 @endscript

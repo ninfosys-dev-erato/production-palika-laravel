@@ -14,10 +14,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\GrantManagement\Exports\GrantManagementExport;
 use Src\GrantManagement\Models\FarmerGroup;
 use Src\GrantManagement\Service\FarmerGroupAdminService;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class FarmerGroupTable extends DataTableComponent
 {
-    use SessionFlash;
+    use SessionFlash,IsSearchable;
     protected $model = FarmerGroup::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',
@@ -27,11 +28,11 @@ class FarmerGroupTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setTableAttributes([
-                'class' =>"table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline"
             ])
             ->setAdditionalSelects(['id'])
             ->setBulkActionsDisabled()
-            ->setPerPageAccepted([10, 25, 50, 100,500])
+            ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
             ->setRefreshMethod('refresh')
             ->setBulkActionConfirms([
@@ -41,9 +42,9 @@ class FarmerGroupTable extends DataTableComponent
     public function builder(): Builder
     {
         return FarmerGroup::query()
-            ->where('deleted_at',null)
-            ->where('deleted_by',null)
-           ->orderBy('created_at','DESC'); // Select some things
+            ->where('deleted_at', null)
+            ->where('deleted_by', null)
+            ->orderBy('created_at', 'DESC'); // Select some things
     }
     public function filters(): array
     {
@@ -51,20 +52,20 @@ class FarmerGroupTable extends DataTableComponent
     }
     public function columns(): array
     {
-     $columns = [
-            Column::make(__('grantmanagement::grantmanagement.farmer_id'), "farmer_id") ->sortable()->searchable()->collapseOnTablet(),
-Column::make(__('grantmanagement::grantmanagement.group_id'), "group_id") ->sortable()->searchable()->collapseOnTablet(),
-     ];
-        if (can('farmer_groups edit') || can('farmer_groups delete')) {
+        $columns = [
+            Column::make(__('grantmanagement::grantmanagement.farmer_id'), "farmer_id")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.group_id'), "group_id")->sortable()->searchable()->collapseOnTablet(),
+        ];
+        if (can('gms_activity edit') || can('gms_activity delete')) {
             $actionsColumn = Column::make(__('grantmanagement::grantmanagement.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('farmer_groups edit')) {
+                if (can('gms_activity edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('farmer_groups delete')) {
+                if (can('gms_activity delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -76,37 +77,38 @@ Column::make(__('grantmanagement::grantmanagement.group_id'), "group_id") ->sort
         }
 
         return $columns;
-
     }
-    public function refresh(){}
+    public function refresh() {}
     public function edit($id)
     {
-        if(!can('farmer_groups edit')){
-               SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
-               return false;
+        if (!can('gms_activity edit')) {
+            SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
+            return false;
         }
-        return redirect()->route('admin.farmer_groups.edit',['id'=>$id]);
+        return redirect()->route('admin.farmer_groups.edit', ['id' => $id]);
     }
     public function delete($id)
     {
-        if(!can('farmer_groups delete')){
-                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
-                return false;
+        if (!can('gms_activity delete')) {
+            SessionFlash::WARNING_FLASH('You Cannot Perform this action');
+            return false;
         }
         $service = new FarmerGroupAdminService();
         $service->delete(FarmerGroup::findOrFail($id));
         $this->successFlash(__('grantmanagement::grantmanagement.farmer_group_deleted_successfully'));
     }
-    public function deleteSelected(){
-        if(!can('farmer_groups delete')){
-                    SessionFlash::WARNING_FLASH('You Cannot Perform this action');
-                    return false;
+    public function deleteSelected()
+    {
+        if (!can('gms_activity delete')) {
+            SessionFlash::WARNING_FLASH('You Cannot Perform this action');
+            return false;
         }
         $service = new FarmerGroupAdminService();
         $service->collectionDelete($this->getSelected());
         $this->clearSelected();
     }
-    public function exportSelected(){
+    public function exportSelected()
+    {
         $records = $this->getSelected();
         $this->clearSelected();
         return Excel::download(new GrantManagementExport($records), 'farmer-groups.xlsx');

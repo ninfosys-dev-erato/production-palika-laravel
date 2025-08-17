@@ -56,7 +56,7 @@ class OrganizationMapApplyForm extends Component
 
     public ?MapApplyDetail $mapApplyDetail;
     public ?OrganizationDetail $organizationDetail;
-        public $buildingStructures;
+    public $buildingStructures;
     public $constructionTypes;
     public $landDetails = [];
     public $isSameCustomer = false;
@@ -72,7 +72,7 @@ class OrganizationMapApplyForm extends Component
     public $ownerships;
     public $fourBoundaries = [];
     public bool $is_boundary = false;
-    public $issuedDistricts= [];
+    public $issuedDistricts = [];
     public $houseOwnerProvinces = [];
     public $houseOwnerDistricts = [];
     public $houseOwnerLocalBodies = [];
@@ -81,6 +81,9 @@ class OrganizationMapApplyForm extends Component
     public $usageOptions;
     public $documents = [];
     public $options = [];
+    public $organizations;
+    public $formerLocalBodies;
+    public $formerWards;
 
 
     public function rules(): array
@@ -88,6 +91,8 @@ class OrganizationMapApplyForm extends Component
         if ($this->addLandForm) {
             return [
                 'customerLandDetail.local_body_id' => ['required'],
+                'customerLandDetail.former_local_body' => ['nullable'],
+                'customerLandDetail.former_ward_no' => ['nullable'],
                 'customerLandDetail.ward' => ['required'],
                 'customerLandDetail.tole' => ['required'],
                 'customerLandDetail.area_sqm' => ['required'],
@@ -119,6 +124,8 @@ class OrganizationMapApplyForm extends Component
             'houseOwnerDetail.local_body_id' => ['required'],
             'houseOwnerDetail.ward_no' => ['required'],
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['nullable'],
+            'customerLandDetail.former_ward_no' => ['nullable'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],
@@ -137,9 +144,8 @@ class OrganizationMapApplyForm extends Component
 
     public function render()
     {
-       
-        return view("BusinessPortal.Ebps::livewire.map-applies-form");
 
+        return view("BusinessPortal.Ebps::livewire.map-applies-form");
     }
 
     public function openCustomerKycModal()
@@ -149,17 +155,15 @@ class OrganizationMapApplyForm extends Component
 
     public function closeCustomerKycModal()
     {
-       $this->openModal = false;
-
+        $this->openModal = false;
     }
 
-     #[On('search-user')]
+    #[On('search-user')]
     public function restructureData(array $result)
-    {       
-        if($result['type'] === 'Customer')
-        {
+    {
+        if ($result['type'] === 'Customer') {
             $customer = Customer::with('kyc')->where('id', $result['id'])->first();
-            
+
             $this->houseOwnerDetail->owner_name = $customer->name;
             $this->houseOwnerDetail->mobile_no = $customer->mobile_no;
             $this->houseOwnerDetail->father_name = $customer->kyc->father_name;
@@ -172,31 +176,26 @@ class OrganizationMapApplyForm extends Component
             $this->houseOwnerDetail->local_body_id = $customer->kyc->permanent_local_body_id;
             $this->houseOwnerDetail->ward_no = $customer->kyc->permanent_ward;
             $this->houseOwnerDetail->tole = $customer->kyc->permanent_tole;
-            if($this->houseOwnerDetail->province_id)
-            {
+            if ($this->houseOwnerDetail->province_id) {
                 $this->getHouseOwnerDistricts();
             }
-             if($this->houseOwnerDetail->distrcit_id)
-            {
-                 $this->getHouseOwnerLocalBodies();
+            if ($this->houseOwnerDetail->district_id) {
+                $this->getHouseOwnerLocalBodies();
             }
-            if($this->houseOwnerDetail->local_body_id)
-            {
-                $this->getHouseOwnerWards();          
+            if ($this->houseOwnerDetail->local_body_id) {
+                $this->getHouseOwnerWards();
             }
+        } else {
 
-        }else{
-           
             $this->houseOwnerDetail->owner_name = $result['name'];
             $this->houseOwnerDetail->mobile_no = $result['mobile_no'];
         }
-
     }
 
     public function getHouseOwnerDistricts(): void
     {
         $this->houseOwnerDistricts = getDistricts($this->houseOwnerDetail['province_id'])->pluck('title', 'id')->toArray();
-     
+
         $this->houseOwnerLocalBodies = [];
         $this->houseOwnerWards = [];
     }
@@ -212,18 +211,54 @@ class OrganizationMapApplyForm extends Component
         $houseOwnerLocalBody = LocalBody::find($this->houseOwnerDetail['local_body_id']);
         $this->houseOwnerWards = $houseOwnerLocalBody ? getWards($houseOwnerLocalBody->wards) : [];
     }
-   
+
     public function loadWards(): void
     {
-        $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
+        $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
+
+        if ($localBody) {
+            $this->wards = getWards($localBody->wards);
+        } else {
+            $this->wards = [];
+        }
     }
 
-   
+    public function loadFormerWards(): void
+    {
+        $localBody = LocalBody::find($this->customerLandDetail->former_local_body);
+
+        if ($localBody) {
+            $this->formerWards = getWards($localBody->wards);
+        } else {
+            $this->formerWards = [];
+        }
+    }
+
+
     public function addFourBoundaries()
     {
+        // Limit to 4 boundaries (matching DirectionEnum cases)
+        if (count($this->fourBoundaries) >= 4) {
+            $this->errorToast(__('ebps::ebps.maximum_four_boundaries_allowed'));
+            return;
+        }
+
+        // Get the next available direction
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+
+        $availableDirections = collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections) {
+                return !in_array($direction->value, $usedDirections);
+            });
+
+        $nextDirection = $availableDirections->first();
+
         $this->fourBoundaries[] = [
             'title' => '',
-            'direction' => '',
+            'direction' => $nextDirection ? $nextDirection->value : '',
             'distance' => '',
             'lot_no' => ''
         ];
@@ -234,10 +269,29 @@ class OrganizationMapApplyForm extends Component
         unset($this->fourBoundaries[$index]);
         $this->fourBoundaries = array_values($this->fourBoundaries);
 
-        if($index == 0)
-        {
+        if ($index == 0) {
             $this->is_boundary = !$this->is_boundary;
         }
+    }
+
+    public function getAvailableDirections($currentIndex)
+    {
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+
+        $currentDirection = $this->fourBoundaries[$currentIndex]['direction'] ?? '';
+
+        return collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections, $currentDirection) {
+                // Allow current direction to remain selected
+                if ($direction->value === $currentDirection) {
+                    return true;
+                }
+                // Filter out already used directions
+                return !in_array($direction->value, $usedDirections);
+            });
     }
 
     public function loadLandDetails()
@@ -246,7 +300,7 @@ class OrganizationMapApplyForm extends Component
     }
 
 
-    public function mount(MapApply $mapApply,Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail, MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
+    public function mount(MapApply $mapApply, Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail, MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
     {
         $this->customerLandDetail = $customerLandDetail;
         $this->usageOptions = PurposeOfConstructionEnum::cases();
@@ -264,11 +318,13 @@ class OrganizationMapApplyForm extends Component
 
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
         $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerLocalBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
         $this->ownerships = LandOwernshipEnum::cases();
         $this->wards = [];
+        $this->formerWards = [];
         $this->uploadedFiles = $this->uploadedFiles ?? [];
         $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::MAP_APPLIES)->get();
-        $this->options=DocumentStatusEnum::getForWeb();
+        $this->options = DocumentStatusEnum::getForWeb();
         $this->documents = [];
 
         if ($this->action === Action::UPDATE) {
@@ -277,13 +333,15 @@ class OrganizationMapApplyForm extends Component
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
             $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->whereNotNull('map_document_id')->get();
             $this->documents = DocumentFile::where(
-            'map_apply_id', $this->mapApply->id)->whereNull('map_document_id')->get()->map(function ($document) {
-            return array_merge($document->toArray(), [
-                'url' => $document->url,
-            ]);
+                'map_apply_id',
+                $this->mapApply->id
+            )->whereNull('map_document_id')->get()->map(function ($document) {
+                return array_merge($document->toArray(), [
+                    'url' => $document->url,
+                ]);
             })
-            ->toArray();
-    
+                ->toArray();
+
 
             foreach ($storedDocuments as $index => $document) {
                 $this->uploadedFiles[$index] = $document->file;
@@ -292,23 +350,29 @@ class OrganizationMapApplyForm extends Component
 
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
             $this->loadFourBoundaries($this->customerLandDetail);
+            $this->loadWards();
+            $this->loadFormerWards();
             $this->houseOwnerDetail = HouseOwnerDetail::where('id', $this->mapApply->house_owner_id)->first();
             $this->houseOwnerPhoto = $this->houseOwnerDetail->photo;
             $this->mapApplyDetail = MapApplyDetail::where('map_apply_id', $this->mapApply->id)->first() ?? new MapApplyDetail();
             $this->getHouseOwnerDistricts();
-                $this->getHouseOwnerLocalBodies();
-                $this->getHouseOwnerWards();
+            $this->getHouseOwnerLocalBodies();
+            $this->getHouseOwnerWards();
         }
-
     }
 
-    public function updated($propertyName,$value)
+    public function updated($propertyName, $value)
     {
         // Check if the property being updated is a file input
         if (preg_match('/^documents\.\d+\.document$/', $propertyName)) {
             $index = (int) filter_var($propertyName, FILTER_SANITIZE_NUMBER_INT);
             // Call the fileUpload method with the relevant index
             $this->fileUpload($index);
+        }
+
+        // Handle former local body changes
+        if ($propertyName === 'customerLandDetail.former_local_body') {
+            $this->loadFormerWards();
         }
     }
 
@@ -328,29 +392,30 @@ class OrganizationMapApplyForm extends Component
             filename:$save,
             disk:getStorageDisk('private')
         );
-       
+
         $this->documents = array_values($this->documents);
     }
 
 
-      public function addDocument(): void
+    public function addDocument(): void
     {
-        $this->documents[]=[
-            'title'=>null,
-            'status'=>null,
-            'file'=>null,
+        $this->documents[] = [
+            'title' => null,
+            'status' => null,
+            'file' => null,
         ];
         $this->successToast(__('businessregistration::businessregistration.document_added_successfully'));
     }
 
-    public function removeDocument(int $index): void{
+    public function removeDocument(int $index): void
+    {
         unset($this->documents[$index]);
         $this->successToast(__('businessregistration::businessregistration.document_successfully_removed'));
     }
 
 
 
-     public function loadFourBoundaries($customerLandDetail)
+    public function loadFourBoundaries($customerLandDetail)
     {
         $fourBoundaries = FourBoundary::where('land_detail_id', $customerLandDetail->id)->get();
         $this->fourBoundaries = [];
@@ -367,19 +432,19 @@ class OrganizationMapApplyForm extends Component
 
     public function save()
     {
-//         try {
-//         // Define your validation rules
-//         $this->validate();
+        //         try {
+        //         // Define your validation rules
+        //         $this->validate();
 
-// } catch (\Illuminate\Validation\ValidationException $e) {
-//     // Catch validation exceptions and dd the errors
-//     dd($e->errors()); // Returns an array of validation error messages
-// } catch (\Exception $e) {
-//     // Catch any other exceptions and dd the message
-//     dd($e->getMessage());
-// }
+        // } catch (\Illuminate\Validation\ValidationException $e) {
+        //     // Catch validation exceptions and dd the errors
+        //     dd($e->errors()); // Returns an array of validation error messages
+        // } catch (\Exception $e) {
+        //     // Catch any other exceptions and dd the message
+        //     dd($e->getMessage());
+        // }
 
-     
+
         $this->validate();
         $this->prepareMapApplyData();
         $this->mapApply->application_type = ApplicationTypeEnum::MAP_APPLIES->value;
@@ -392,7 +457,7 @@ class OrganizationMapApplyForm extends Component
         $dto = MapApplyAdminDto::fromLiveWireModel($this->mapApply);
         $mapApplyService = new MapApplyAdminService();
         $landDto = CustomerLandDetailDto::fromLiveWireModel($this->customerLandDetail);
-        $mapApplyDetailDto = MapApplyDetailAdminDto::fromLiveWireModel($this->mapApplyDetail);      
+        $mapApplyDetailDto = MapApplyDetailAdminDto::fromLiveWireModel($this->mapApplyDetail);
         $houseOwnerDto = HouseOwnerDetailDto::fromLiveWireModel($this->houseOwnerDetail);
         $organizationDetailDto = OrganizationDetailDto::fromLiveWireModel($this->organizationDetail);
 
@@ -402,61 +467,60 @@ class OrganizationMapApplyForm extends Component
         $mapApplyDetailService = new MapApplyDetailAdminService();
         $organizationDetailService = new OrganizationDetailService();
         DB::beginTransaction();
-        try{
-        switch ($this->action){
-            case Action::CREATE:
-                $landDetail = $landService->store($landDto);
-               
+        try {
+            switch ($this->action) {
+                case Action::CREATE:
+                    $landDetail = $landService->store($landDto);
+
                     foreach ($this->fourBoundaries as $fourBoundary) {
                         $fourBoundary['land_detail_id'] = $landDetail->id;
                         $boundaryDto = FourBoundaryAdminDto::fromArray($fourBoundary);
                         $fourBoundaryService->store($boundaryDto);
                     }
 
-                $houseOwner = $ownerDetail->store( $houseOwnerDto);
-                $dto->house_owner_id = $houseOwner->id;
-                $dto->land_detail_id = $landDetail->id;
-                $dto->applicant_type = ApplicantTypeEnum::HOUSE_OWNER->value;
-                $mapApply = $mapApplyService->store($dto);
-             
-                $mapApplyDetailDto->map_apply_id = $mapApply->id;
-               
-                $mapApplyDetailDto->organization_id =  Auth::guard('organization')->user()?->organization_id;
-                $mapApplyDetailService->store($mapApplyDetailDto);
+                    $houseOwner = $ownerDetail->store($houseOwnerDto);
+                    $dto->house_owner_id = $houseOwner->id;
+                    $dto->land_detail_id = $landDetail->id;
+                    $dto->applicant_type = ApplicantTypeEnum::HOUSE_OWNER->value;
+                    $mapApply = $mapApplyService->store($dto);
 
-                $organizationDetailDto->map_apply_id = $mapApply->id;
-                $organizationDetailService->store($organizationDetailDto);
-                $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
-                DB::commit();
-                $this->successFlash(__("Map Apply Created Successfully"));
-                return redirect()->route('organization.ebps.map_apply.index');
-                break;
-            case Action::UPDATE:
-              $landService->update($this->customerLandDetail,$landDto);
+                    $mapApplyDetailDto->map_apply_id = $mapApply->id;
+
+                    $mapApplyDetailDto->organization_id =  Auth::guard('organization')->user()?->organization_id;
+                    $mapApplyDetailService->store($mapApplyDetailDto);
+
+                    $organizationDetailDto->map_apply_id = $mapApply->id;
+                    $organizationDetailService->store($organizationDetailDto);
+                    $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
+                    DB::commit();
+                    $this->successFlash(__("Map Apply Created Successfully"));
+                    return redirect()->route('organization.ebps.map_apply.index');
+                    break;
+                case Action::UPDATE:
+                    $landService->update($this->customerLandDetail, $landDto);
                     FourBoundary::where('land_detail_id', $this->customerLandDetail->id)->delete();
                     foreach ($this->fourBoundaries as $fourBoundary) {
                         $fourBoundary['land_detail_id'] = $this->customerLandDetail->id;
                         $boundaryDto = FourBoundaryAdminDto::fromArray($fourBoundary);
                         $fourBoundaryService->store($boundaryDto);
                     }
-                $houseOwner = $ownerDetail->update($this->mapApply->houseOwner, $houseOwnerDto);
-                $mapApply = $mapApplyService->update($this->mapApply,$dto);
-                $organizationDetailService->update($this->organizationDetail, $organizationDetailDto);
-                $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
-                DB::commit();
-                $this->successFlash(__("Map Apply Updated Successfully"));
-                return redirect()->route('organization.ebps.map_apply.index');
-                break;
-            default:
-                return redirect()->route('admin.ebps.map_applies.index');
-                break;
-        }
-        }  catch (\Exception $e) {
+                    $houseOwner = $ownerDetail->update($this->mapApply->houseOwner, $houseOwnerDto);
+                    $mapApply = $mapApplyService->update($this->mapApply, $dto);
+                    $organizationDetailService->update($this->organizationDetail, $organizationDetailDto);
+                    $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
+                    DB::commit();
+                    $this->successFlash(__("Map Apply Updated Successfully"));
+                    return redirect()->route('organization.ebps.map_apply.index');
+                    break;
+                default:
+                    return redirect()->route('admin.ebps.map_applies.index');
+                    break;
+            }
+        } catch (\Exception $e) {
             logger($e);
             DB::rollBack();
             $this->errorFlash(__("An error occurred during operation. Please try again later"));
         }
-
     }
 
     private function prepareMapApplyData(): void
@@ -474,9 +538,9 @@ class OrganizationMapApplyForm extends Component
 
         $this->houseOwnerDetail->photo = $this->processFiles($this->houseOwnerPhoto);
         $this->houseOwnerDetail->ownership_type = OwnershipTypeEnum::HOUSE_OWNER->value;
-        $this->mapApply->signature=  $this->uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ?
+        $this->mapApply->signature =  $this->uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ?
             $this->processFiles($this->uploadedImage)
-                :
+            :
             $this->uploadedImage;
 
         $this->mapApply->fiscal_year_id = FiscalYear::where('year', $this->mapApply->fiscal_year_id)
@@ -497,10 +561,10 @@ class OrganizationMapApplyForm extends Component
             }
         }
 
-        foreach($documents as $index => $document) {
+        foreach ($documents as $index => $document) {
             if ($document['file']) {
                 $storedPath = $this->processFiles($document['file']);
-            }else{
+            } else {
                 $storedPath = null;
             }
             DocumentFile::create([
@@ -514,10 +578,9 @@ class OrganizationMapApplyForm extends Component
 
     private function processFiles($file)
     {
-        if($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-        {
-           return FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, getStorageDisk('private'));
-        }else{
+        if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            return FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, 'local');
+        } else {
             return $file;
         }
     }
@@ -525,5 +588,4 @@ class OrganizationMapApplyForm extends Component
     {
         return ImageServiceFacade::compressAndStoreImage($file, config('src.Ebps.ebps.path'), getStorageDisk('public'));
     }
-
 }

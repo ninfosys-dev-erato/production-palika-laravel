@@ -1,7 +1,7 @@
 <form wire:submit.prevent="save">
     <div class="card-body">
         <div class="row">
-            <div class='col-md-6'>
+            <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='committees_title'>{{ __('ejalas::ejalas.judicialcommittee') }}</label>
                     <input wire:model='judicialCommittee.committees_title' name='committees_title' type='text'
@@ -13,7 +13,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
+            <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label"
                         for='short_title'>{{ __('ejalas::ejalas.judicialcommittee_surname') }}</label>
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
+            <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='title'>{{ __('ejalas::ejalas.title') }}</label>
                     <input wire:model='judicialCommittee.title' name='title' type='text' class='form-control'
@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
+            <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='subtitle'>{{ __('ejalas::ejalas.subtitle') }}</label>
                     <input wire:model='judicialCommittee.subtitle' name='subtitle' type='text' class='form-control'
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
+            <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label"
                         for='formation_date'>{{ __('ejalas::ejalas.judicialcommittee_committeeformationdate') }}</label>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
+            <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='phone_no'>{{ __('ejalas::ejalas.phone_no') }}</label>
                     <input wire:model='judicialCommittee.phone_no' name='phone_no' type='text' class='form-control'
@@ -75,7 +75,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
+            <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='email'>{{ __('ejalas::ejalas.email') }}</label>
                     <input wire:model='judicialCommittee.email' name='email' type='text' class='form-control'

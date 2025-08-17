@@ -48,8 +48,12 @@ trait RecommendationTemplate
             ?? "";
 
         $globalData = $this->getGlobalData($signeeName, $wardId, $applyRecommendation->id);
-        $letterHead = $this->getLetterHeader($wardId, getFormattedBsDate(), $regNo, true, $applyRecommendation?->fiscalYear?->year);
-        $letterFoot = '';
+        // $letterHead = $this->getLetterHeader($wardId, getFormattedBsDate(), $regNo, true, $applyRecommendation?->fiscalYear?->year);
+
+
+        $letterHead = $this->getRecommendationLetterHead($regNo, $applyRecommendation?->fiscalYear?->year ?? getSetting('fiscal-year)'), true);
+
+        $letterFoot = $this->getFooter();
 
         $formData = $this->getResolvedFormData(
             is_array($applyRecommendation->data)
@@ -123,7 +127,7 @@ trait RecommendationTemplate
             $globalData,
             $formData,
             $customerData,
-            // ['{{global.letter-foot}}' => $letterFoot]
+            ['{{global.letter-foot}}' => $letterFoot]
         );
 
         $replacements = $this->sanitizeReplacements($replacements);

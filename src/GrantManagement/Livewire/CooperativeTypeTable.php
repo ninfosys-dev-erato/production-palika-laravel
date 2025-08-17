@@ -14,10 +14,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\GrantManagement\Exports\GrantManagementExport;
 use Src\GrantManagement\Models\CooperativeType;
 use Src\GrantManagement\Service\CooperativeTypeAdminService;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class CooperativeTypeTable extends DataTableComponent
 {
-    use SessionFlash;
+    use SessionFlash, IsSearchable;
     protected $model = CooperativeType::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',
@@ -27,11 +28,11 @@ class CooperativeTypeTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setTableAttributes([
-                'class' =>"table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline"
             ])
             ->setAdditionalSelects(['id'])
             ->setBulkActionsDisabled()
-            ->setPerPageAccepted([10, 25, 50, 100,500])
+            ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
             ->setRefreshMethod('refresh')
             ->setBulkActionConfirms([
@@ -41,9 +42,9 @@ class CooperativeTypeTable extends DataTableComponent
     public function builder(): Builder
     {
         return CooperativeType::query()
-            ->where('deleted_at',null)
-            ->where('deleted_by',null)
-           ->orderBy('created_at','DESC'); // Select some things
+            ->where('deleted_at', null)
+            ->where('deleted_by', null)
+            ->orderBy('created_at', 'DESC'); // Select some things
     }
     public function filters(): array
     {
@@ -51,20 +52,20 @@ class CooperativeTypeTable extends DataTableComponent
     }
     public function columns(): array
     {
-     $columns = [
-            Column::make(__('grantmanagement::grantmanagement.title'), "title") ->sortable()->searchable()->collapseOnTablet(),
-Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en") ->sortable()->searchable()->collapseOnTablet(),
-     ];
-        if (can('cooperative_types edit') || can('cooperative_types delete')) {
+        $columns = [
+            Column::make(__('grantmanagement::grantmanagement.title'), "title")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
+        ];
+        if (can('gms_settings edit') || can('gms_settings delete')) {
             $actionsColumn = Column::make(__('grantmanagement::grantmanagement.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('cooperative_types edit')) {
+                if (can('gms_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('cooperative_types delete')) {
+                if (can('gms_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -76,39 +77,40 @@ Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en") ->sort
         }
 
         return $columns;
-
     }
-    public function refresh(){}
+    public function refresh() {}
     public function edit($id)
     {
-        if(!can('cooperative_types edit')){
-               SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
-               return false;
+        if (!can('gms_settings edit')) {
+            SessionFlash::WARNING_FLASH(__('grantmanagement::grantmanagement.you_cannot_perform_this_action'));
+            return false;
         }
-        
+
         $this->dispatch('edit-cooperative-type', $id);
         // return redirect()->route('admin.cooperative_types.edit',['id'=>$id]);
     }
     public function delete($id)
     {
-        if(!can('cooperative_types delete')){
-                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
-                return false;
+        if (!can('gms_settings delete')) {
+            SessionFlash::WARNING_FLASH('You Cannot Perform this action');
+            return false;
         }
         $service = new CooperativeTypeAdminService();
         $service->delete(CooperativeType::findOrFail($id));
         $this->successFlash(__('grantmanagement::grantmanagement.cooperative_type_deleted_successfully'));
     }
-    public function deleteSelected(){
-        if(!can('cooperative_types delete')){
-                    SessionFlash::WARNING_FLASH('You Cannot Perform this action');
-                    return false;
+    public function deleteSelected()
+    {
+        if (!can('gms_settings delete')) {
+            SessionFlash::WARNING_FLASH('You Cannot Perform this action');
+            return false;
         }
         $service = new CooperativeTypeAdminService();
         $service->collectionDelete($this->getSelected());
         $this->clearSelected();
     }
-    public function exportSelected(){
+    public function exportSelected()
+    {
         $records = $this->getSelected();
         $this->clearSelected();
         return Excel::download(new GrantManagementExport($records), 'cooperative-types.xlsx');

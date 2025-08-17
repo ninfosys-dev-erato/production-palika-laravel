@@ -20,7 +20,7 @@
         <div class="col-md-12">
             <div style="border-radius: 10px; text-align: center; padding: 20px;">
                 <div id="printContent" class="a4-container">
-                    {!! $registrationCertificate !!}
+                    {{-- {!! $registrationCertificate !!} --}}
                     {!! $renewalCertificate !!}
                 </div>
             </div>

@@ -16,7 +16,7 @@
                             {{ __('ejalas::ejalas.written_response_registration_list') }}</h5>
                     </div>
                     <div>
-                        @perm('written_response_registrations create')
+                        @perm('jms_judicial_management create')
                             <a href="{{ route('admin.ejalas.written_response_registrations.create') }}"
                                 class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('ejalas::ejalas.add_written_response_registration') }}</a>

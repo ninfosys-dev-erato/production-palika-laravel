@@ -24,7 +24,8 @@
                 <div class='form-group'>
                     <label for='meeting_date' class='form-label'>{{ __('ejalas::ejalas.meeting_date') }}</label>
                     <input wire:model='judicialMeeting.meeting_date' id="meeting_date" name='meeting_date'
-                        type='text' class='form-control' placeholder="{{ __('ejalas::ejalas.enter_meeting_date') }}">
+                        type='text' class='form-control nepali-date'
+                        placeholder="{{ __('ejalas::ejalas.enter_meeting_date') }}">
                     <div>
                         @error('judicialMeeting.meeting_date')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -72,7 +73,7 @@
             <div class='col-md-6 mb-2' wire:ignore>
                 <div class='form-group'>
                     <label for='invited_employee_id'
-                        class='form-label'>{{ __('ejalas::ejalas.invited_employee') }}</label>
+                        class='form-label'>{{ __('ejalas::ejalas.invited_member') }}</label>
                     <select wire:model="invited_employee_ids" id="invited_employee_id" class="form-control select2"
                         multiple>
                         <option value="" hidden>{{ __('ejalas::ejalas.select_a_option') }}</option>
@@ -96,7 +97,7 @@
                     <select wire:model="members_present_ids" id="members_present_id" class="form-control select2"
                         multiple>
                         <option value="" hidden>{{ __('ejalas::ejalas.select_a_option') }}</option>
-                        @foreach ($judicialEmployees as $id => $key)
+                        @foreach ($judicialMembers as $id => $key)
                             <option value="{{ $id }}">{{ $key }}</option>
                         @endforeach
                     </select>
@@ -150,14 +151,6 @@
 
 <script>
     $(document).ready(function() {
-
-        $('#meeting_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('judicialMeeting.meeting_date', nepaliDate);
-        });
 
         $('#invited_employee_id').select2().on('change', function() {
             let selected = $(this).val(); // array of selected values

@@ -16,9 +16,9 @@
                             {{ __('grantmanagement::grantmanagement.grant_office_list') }}</h5>
                     </div>
                     <div>
-                        @perm('grant_offices create')
+                        @perm('gms_settings create')
                             <!-- <a href="{{ route('admin.grant_offices.create') }}" class="btn btn-info"><i
-                                                        class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_grant_office') }}</a> -->
+                                                            class="bx bx-plus"></i> {{ __('grantmanagement::grantmanagement.add_grant_office') }}</a> -->
 
 
                             <button class="btn btn-info" data-bs-toggle="modal" onclick="resetForm()"

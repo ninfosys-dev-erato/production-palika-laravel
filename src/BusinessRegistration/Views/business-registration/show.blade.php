@@ -1,8 +1,15 @@
-<x-layout.app header="{{ __('businessregistration::businessregistration.business_registration_details') }}">
+@php
+    $isCustomer = Auth::guard('customer')->check();
+    $layoutComponent = $isCustomer ? 'layout.customer-app' : 'layout.app';
+    $header = $isCustomer
+        ? 'Business registration'
+        : __('businessregistration::businessregistration.business_registration_details');
+@endphp
+
+<x-dynamic-component :component="$layoutComponent" :header="$header">
     @push('styles')
         <link rel="stylesheet" href="{{ asset('home') }}/businessstyle.css">
     @endpush
-
     <div>
 
         <!-- Header Card -->
@@ -11,7 +18,7 @@
                 <h6>
                     <i class="bx bx-building me-2"></i>
 
-                    {{ __('businessregistration::businessregistration.business_registration_details') }}
+                    {{ __('businessregistration::businessregistration.business_organization_industry_firm_details') }}
 
                 </h6>
                 <a href="javascript:history.back()" class="btn-back">
@@ -31,6 +38,7 @@
                             {{ __('businessregistration::businessregistration.personal_details') }}
                         </h5>
                     </div>
+
                     @php
                         $firstApplicant = $businessRegistration->applicants->first();
                     @endphp
@@ -41,6 +49,7 @@
                                     <p><strong>{{ __('businessregistration::businessregistration.name') }}:</strong>
                                         {{ $firstApplicant->applicant_name }}</p>
                                 </div>
+
                                 <div class="col-sm-6">
                                     <p><strong>{{ __('businessregistration::businessregistration.gender') }}:</strong>
                                         {{ $firstApplicant->gender }}</p>
@@ -109,19 +118,21 @@
                                 {{ __('businessregistration::businessregistration.business_organization_industry_firm_details') }}
                             </h5>
                             @if ($businessRegistration->application_status == 'accepted')
-                                @if (empty($businessRegistration->records->first()?->reg_no))
-                                    <a href="{{ route('admin.business-registration.business.register', ['id' => $businessRegistration->id]) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-registered me-1"></i>
-                                        {{ __('businessregistration::businessregistration.register_business') }}
-                                    </a>
-                                @else
-                                    <a href="{{ route('admin.file_records.show', ['id' => $businessRegistration->records->first()->id]) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-file me-1"></i>
-                                        {{ __('recommendation::recommendation.view_registerd_file') }}
-                                    </a>
-                                @endif
+                                @perm('business_registration status')
+                                    @if (empty($businessRegistration->records->first()?->reg_no))
+                                        <a href="{{ route('admin.business-registration.business.register', ['id' => $businessRegistration->id]) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            <i class="bx bx-registered me-1"></i>
+                                            {{ __('businessregistration::businessregistration.register_business') }}
+                                        </a>
+                                    @else
+                                        <a href="{{ route('admin.file_records.show', ['id' => $businessRegistration->records->first()->id]) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            <i class="bx bx-file me-1"></i>
+                                            {{ __('recommendation::recommendation.view_registerd_file') }}
+                                        </a>
+                                    @endif
+                                @endperm
                             @endif
                         </div>
                     </div>
@@ -162,19 +173,26 @@
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.registration_category') }}:</strong>
-                                    {{ $businessRegistration->registration_category }}
+
+
+                                    {!! \Src\BusinessRegistration\Enums\RegistrationCategoryEnum::tryFrom(
+                                        $businessRegistration->registration_category,
+                                    )?->label() ?? '' !!}
                                 </p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.status') }}:</strong>
-                                    {{ $businessRegistration->application_status }}</p>
+                                <p><strong>{{ __('businessregistration::businessregistration.application_status') }}:</strong>
+
+                                    {!! \Src\BusinessRegistration\Enums\ApplicationStatusEnum::tryFrom(
+                                        $businessRegistration->application_status,
+                                    )?->label() ?? \Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->label() !!}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.business_status') }}:</strong>
                                     {{ $businessRegistration->business_status?->label() }}</p>
                             </div>
                             <div class="col-sm-6">
-                                <p><strong>{{ __('businessregistration::businessregistration.amount') }}:</strong>
+                                <p><strong>{{ __('businessregistration::businessregistration.paid_amount') }}:</strong>
                                     {{ $businessRegistration->amount }}</p>
                             </div>
                             <div class="col-sm-6">
@@ -190,6 +208,10 @@
                                     {{ $businessRegistration->business_tole ? ', ' . $businessRegistration->business_tole : '' }}
                                     {{ $businessRegistration->business_street ? ', ' . $businessRegistration->business_street : '' }}
                                 </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong>{{ __('businessregistration::businessregistration.purpose') }}:</strong>
+                                    {{ $businessRegistration->purpose }}</p>
                             </div>
                         </div>
                     </div>
@@ -284,6 +306,12 @@
                     {{ __('businessregistration::businessregistration.business_registration_application_detail') }}
                 </button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="btn mx-2 btn-primary" role="tab" data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-nibedan" aria-controls="navs-pills-nibedan" aria-selected="false">
+                    {{ __('businessregistration::businessregistration.registration_application') }}
+                </button>
+            </li>
 
 
             @if ($businessRegistration->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
@@ -319,6 +347,9 @@
             <div class="tab-pane fade" id="navs-pills-letter" role="tabpanel">
                 <livewire:business_registration.business_registration_preview :$businessRegistration />
             </div>
+            <div class="tab-pane fade" id="navs-pills-nibedan" role="tabpanel">
+                <livewire:business_registration.business_registration_application :$businessRegistration />
+            </div>
         </div>
     </div>
-</x-layout.app>
+</x-dynamic-component>

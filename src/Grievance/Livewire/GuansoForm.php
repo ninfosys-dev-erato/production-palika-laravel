@@ -117,7 +117,7 @@ class GuansoForm extends Component
 
         $customer = Customer::findOrFail ($this->customerID);
 
-        try{
+        // try{
             $data = $this->getValidatedData();
             $dto = GrievanceDto::fromValidatedRequest($data);
             $grievanceService = new GrievanceService();
@@ -128,10 +128,11 @@ class GuansoForm extends Component
                 return redirect()->route('admin.grievance.grievanceDetail.index');
             }
             return redirect(url('customer/grievances'));
-        }catch (\Throwable $e){
-            logger($e->getMessage());
-           $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
-        }
+        // }catch (\Throwable $e){
+        //     dd($e->getMessage());
+        //     logger($e->getMessage());
+        //    $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
+        // }
     }
     
     private function getValidatedData(): array

@@ -70,16 +70,16 @@ Column::make(__("yojana::yojana.issue_date"), "issue_date") ->sortable()->search
 Column::make(__("yojana::yojana.validity_period"), "validity_period") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__("yojana::yojana.amount"), "amount") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('collaterals edit') || can('collaterals delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
-                if (can('collaterals edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('collaterals delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -96,7 +96,7 @@ Column::make(__("yojana::yojana.amount"), "amount") ->sortable()->searchable()->
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('collaterals edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH(__('You Cannot Perform this action'));
                return false;
         }
@@ -104,7 +104,7 @@ Column::make(__("yojana::yojana.amount"), "amount") ->sortable()->searchable()->
     }
     public function delete($id)
     {
-        if(!can('collaterals delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -113,7 +113,7 @@ Column::make(__("yojana::yojana.amount"), "amount") ->sortable()->searchable()->
         $this->successFlash(__("Collateral Deleted Successfully"));
     }
     public function deleteSelected(){
-        if(!can('collaterals delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

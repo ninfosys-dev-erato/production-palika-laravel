@@ -27,9 +27,9 @@ class ChalaniAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:chalani_access', only: ['index']),
-            new Middleware('permission:chalani_create', only: ['create']),
-            new Middleware('permission:chalani_update', only: ['edit']),
+            new Middleware('permission:chalani access', only: ['index']),
+            new Middleware('permission:chalani create', only: ['create']),
+            new Middleware('permission:chalani update', only: ['edit']),
         ];
     }
 

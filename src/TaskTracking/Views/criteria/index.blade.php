@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('tasktracking::tasktracking.criterion_list') }}</h5>
                     </div>
                     <div>
-                        @perm('criteria create')
+                        @perm('tsk_setting create')
                             <a href="{{ route('admin.criteria.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('tasktracking::tasktracking.add_criterion') }}</a>
                         @endperm

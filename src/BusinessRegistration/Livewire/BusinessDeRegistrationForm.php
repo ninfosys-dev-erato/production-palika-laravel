@@ -201,13 +201,13 @@ class BusinessDeRegistrationForm extends Component
             'businessLocalBody'
         )
             ->whereNull('deleted_at')
-            ->whereNull('deleted_by')
             ->where(function ($query) {
                 $query->where('entity_name', $this->search)
                     ->orWhere('registration_number', $this->search);
             })
             ->where('application_status', ApplicationStatusEnum::ACCEPTED->value)
             ->first();
+
 
         if ($businessData) {
             if ($this->action == Action::CREATE) {
@@ -692,50 +692,6 @@ class BusinessDeRegistrationForm extends Component
         );
     }
 
-    // public function updated($propertyName)
-    // {
-    //     if (preg_match('/^personalDetails\.(\d+)\.citizenship_front$/', $propertyName, $matches)) {
-    //         $index = (int) $matches[1];
-    //         $file = data_get($this->personalDetails, "$index.citizenship_front");
-    //         $this->handleFileUpload($file, $index, 'citizenship_front');
-    //     }
-
-    //     if (preg_match('/^personalDetails\.(\d+)\.citizenship_rear$/', $propertyName, $matches)) {
-    //         $index = (int) $matches[1];
-    //         $file = data_get($this->personalDetails, "$index.citizenship_rear");
-    //         $this->handleFileUpload($file, $index, 'citizenship_rear');
-    //     }
-    // }
-
-
-
-    // Add this method to handle file uploads for each applicant
-    // public function handleApplicantFileUpload(&$applicant, $fileField, $urlField)
-    // {
-    //     $file = $applicant[$fileField] ?? null;
-    //     if ($file && $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-    //         $save = FileFacade::saveFile(
-    //             path: config('src.BusinessRegistration.businessRegistration.registration'),
-    //             file: $file,
-    //             disk: "local",
-    //             filename: ""
-    //         );
-    //         $applicant[$fileField] = $save;
-    //         $applicant[$urlField] = FileFacade::getTemporaryUrl(
-    //             path: config('src.BusinessRegistration.businessRegistration.registration'),
-    //             filename: $save,
-    //             disk: 'local'
-    //         );
-    //     } elseif (!empty($applicant[$fileField]) && is_string($applicant[$fileField])) {
-    //         // If already saved, just get the URL
-    //         $applicant[$urlField] = FileFacade::getTemporaryUrl(
-    //             path: config('src.BusinessRegistration.businessRegistration.registration'),
-    //             filename: $applicant[$fileField],
-    //             disk: 'local'
-    //         );
-    //     }
-    // }
-
     public function updatedPersonalDetails($value, $name)
     {
 
@@ -787,6 +743,7 @@ class BusinessDeRegistrationForm extends Component
 
         DB::beginTransaction();
         try {
+
             $this->validate();
             $this->businessDeRegistration['data'] = $this->getFormattedData();
             $this->businessDeRegistration['application_date_en'] = $this->bsToAd($this->businessDeRegistration['application_date']);
@@ -812,6 +769,61 @@ class BusinessDeRegistrationForm extends Component
             DB::rollBack();
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
+        }
+    }
+
+    // Add this method to handle file uploads for dynamic fields
+    public function updatedData($value, $name)
+    {
+        $parts = explode('.', $name);
+        $fieldSlug = $parts[0];
+        $fieldKey = $parts[1] ?? null;
+
+        if (!isset($this->data[$fieldSlug])) return;
+        $field = &$this->data[$fieldSlug];
+
+        if ($field['type'] === 'file') {
+            // Single file or multiple files
+            $files = $field['value'];
+            if (!$files) return;
+            if (isset($field['is_multiple']) && $field['is_multiple'] === 'yes') {
+                $urls = [];
+                $filenames = [];
+                foreach ((array)$files as $file) {
+                    if ($file) {
+                        $filename = FileFacade::saveFile(
+                            path: config('src.BusinessRegistration.businessRegistration.registration'),
+                            file: $file,
+                            disk: 'local',
+                            filename: ''
+                        );
+                        $filenames[] = $filename;
+                        $urls[] = FileFacade::getTemporaryUrl(
+                            path: config('src.BusinessRegistration.businessRegistration.registration'),
+                            filename: $filename,
+                            disk: 'local'
+                        );
+                    }
+                }
+                $field['value'] = $filenames;
+                $field['urls'] = $urls;
+            } else {
+                $file = $files;
+                if ($file) {
+                    $filename = FileFacade::saveFile(
+                        path: config('src.BusinessRegistration.businessRegistration.registration'),
+                        file: $file,
+                        disk: 'local',
+                        filename: ''
+                    );
+                    $field['value'] = $filename;
+                    $field['url'] = FileFacade::getTemporaryUrl(
+                        path: config('src.BusinessRegistration.businessRegistration.registration'),
+                        filename: $filename,
+                        disk: 'local'
+                    );
+                }
+            }
         }
     }
 }

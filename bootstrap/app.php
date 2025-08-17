@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'customer' => CustomerMiddleware::class,
             'checkKycVerification' => CustomerKycVerificationMiddleware::class,
             'check_module' => \App\Http\Middleware\CheckModuleEnabled::class,
+            'business_registration_owner' => \App\Http\Middleware\BusinessRegistrationOwner::class,
         ]);
     })
     ->withCommands([
@@ -43,17 +44,17 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return $request->expectsJson();
         });
-//        $exceptions->render(function (Throwable $e, Request $request) {
-//            if (!$request->expectsJson() && !$request->is('api/*')) {
-//                app(MattermostAlert::class)->alert($e, $request);
-//                return back()->with('alert', [
-//                    'type' => 'danger',
-//                    'title' => 'Error!',
-//                    'message' => App::environment('production')
-//                        ? 'An error was encountered. Please contact your system administrator.'
-//                        : $e->getMessage(), // Show real error in local/dev
-//                ]);
-//            }
-//            return null;
-//        });
+        //        $exceptions->render(function (Throwable $e, Request $request) {
+        //            if (!$request->expectsJson() && !$request->is('api/*')) {
+        //                app(MattermostAlert::class)->alert($e, $request);
+        //                return back()->with('alert', [
+        //                    'type' => 'danger',
+        //                    'title' => 'Error!',
+        //                    'message' => App::environment('production')
+        //                        ? 'An error was encountered. Please contact your system administrator.'
+        //                        : $e->getMessage(), // Show real error in local/dev
+        //                ]);
+        //            }
+        //            return null;
+        //        });
     })->create();

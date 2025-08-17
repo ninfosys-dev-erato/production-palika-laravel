@@ -107,9 +107,9 @@
             <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
         </a>
 
-        <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
+        {{-- <button onclick="downloadPdf({{ $mapApply->id }})" class="btn btn-outline-primary">
             <i class="bx bx-printer"></i> Download PDF
-        </button>
+        </button> --}}
 
     </div>
 
@@ -130,7 +130,7 @@
             <div>
 
                 <div class="section-subheader">
-                    <i class="fas fa-user me-2"></i> {{ __('ebps::ebps.personal_information') }}
+                    <i class="fas fa-user me-2"></i> {{ __('आवेदकको विवरण') }}
                 </div>
                 <div>
                     <div class="data-row">
@@ -142,10 +142,10 @@
                         <div class="data-label">{{ __('ebps::ebps.full_name') }}:</div>
                         <div class="data-value">{{ $mapApply->full_name ?? 'N/A' }}</div>
                     </div>
-                    <div class="data-row">
+                    {{-- <div class="data-row">
                         <div class="data-label">{{ __('ebps::ebps.age') }}:</div>
                         <div class="data-value">{{ $mapApply->age ?? 'N/A' }}</div>
-                    </div>
+                    </div> --}}
                     <div class="data-row">
                         <div class="data-label">{{ __('ebps::ebps.applied_date') }}:</div>
                         <div class="data-value">{{ $mapApply->applied_date ?? 'N/A' }}</div>

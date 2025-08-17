@@ -1,37 +1,45 @@
 <div>
     <div class="container mt-3">
-        @foreach ($mapApplySteps as $index => $step)
-            @foreach ($step->mapApplyStepTemplates as $letter)
-                @php
-                    $form = Src\Settings\Models\Form::findOrFail($letter->form_id);
-                @endphp
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-info" onclick="history.back()">
-                        <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
-                    </button>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <button type="button" class="btn btn-info" onclick="history.back()">
+                    <i class="bx bx-arrow-back"></i> {{ __('ebps::ebps.back') }}
+                </button>
+            </div>
+        </div>
 
+        @if (isset($mapApplySteps) && $mapApplySteps->isNotEmpty())
+            @foreach ($mapApplySteps as $index => $step)
+                @if ($step->mapApplyStepTemplates->isNotEmpty())
+                    @foreach ($step->mapApplyStepTemplates as $letter)
+                        @if ($letter->form_id)
+                            <div class="d-flex justify-content-end mb-3">
+                                <button type="button" class="btn btn-danger" wire:click="print({{ $letter->id }})"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Print">
+                                    <i class="bx bx-printer"></i> {{ __('ebps::ebps.print') }}
+                                </button>
+                            </div>
 
-                    <button type="button" class="btn btn-danger" wire:click="print({{ $letter->id }})"
-                        data-bs-toggle="tooltip" data-bs-placement="top" title="Print">
-                        <i class="bx bx-printer"></i> {{ __('ebps::ebps.print') }}
-                    </button>
-                </div>
+                            @php
+                                $form = Src\Settings\Models\Form::find($letter->form_id);
+                            @endphp
 
-                <div class="col-md-12 mt-3">
-                    <div style="border-radius: 10px; text-align: center; padding: 20px;">
-                        <div id="printContent" class="a4-container">
-
-                            <style>
-                                {{ $form->styles ?? '' }}
-                            </style>
-
-                            {!! $letter->template !!}
-                        </div>
-                    </div>
-                </div>
+                            <div class="col-md-12 mt-3">
+                                <div style="border-radius: 10px; text-align: center; padding: 20px;">
+                                    <div id="printContent" class="a4-container">
+                                        <style>
+                                            {{ $form?->styles ?? '' }}
+                                        </style>
+                                        {!! $letter->template !!}
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                @endif
             @endforeach
-        @endforeach
+        @endif
 
         @if (isset($files) && count($files) > 0)
             <div class="mt-4">
@@ -49,6 +57,7 @@
                                         <th class="text-center" style="width: 80px;">{{ __('क्र.स') }}</th>
                                         <th class="text-center">{{ __('File Name') }}</th>
                                         <th class="text-center">{{ __('फाइल') }}</th>
+                                        <th class="text-center">{{ __('ebps::ebps.actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -58,13 +67,20 @@
                                             <td class="text-center">{{ $file->title }}</td>
                                             <td class="text-center">
                                                 @if ($file->file)
-                                                    <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $file->file, 'local') }}"
+                                                    <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $file->file, 'local', 'tempUrl') }}"
                                                         target="_blank" class="btn btn-sm btn-primary">
                                                         <i class="bx bx-show me-1"></i> {{ __('View') }}
                                                     </a>
                                                 @else
                                                     <span class="text-muted">{{ __('No file') }}</span>
                                                 @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                    wire:click="deleteFile({{ $file->id }})"
+                                                    wire:confirm="{{ __('ebps::ebps.are_you_sure_you_want_to_delete_this_file') }}">
+                                                    <i class="bx bx-trash"></i> {{ __('ebps::ebps.delete') }}
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach

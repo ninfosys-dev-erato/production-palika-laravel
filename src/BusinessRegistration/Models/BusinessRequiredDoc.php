@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BusinessRequiredDoc extends Model
 {
-    protected $table = 'brs_businessRequiredDoc';
+    protected $table = 'brs_business_required_doc';
 
     protected $fillable = [
         'business_registration_id',

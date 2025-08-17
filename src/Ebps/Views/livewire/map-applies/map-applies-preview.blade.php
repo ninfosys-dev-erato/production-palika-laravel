@@ -12,7 +12,7 @@
                     @php
                         $firstStep = $mapApplySteps->first();
                     @endphp
-                    @if ($firstStep->status != 'accepted')
+                    @if (isSuperAdmin() || $firstStep->status != 'accepted')
                         <button type="button" class="btn btn-info" wire:click="changeStatus({{ $firstStep->id }})">
                             {{ $selectedStatus }} <i class="bx bx-chevron-down text-muted"></i>
                             {{ __('ebps::ebps.change_status') }}
@@ -77,6 +77,7 @@
                                         </th>
                                         <th class="text-center">{{ __('ebps::ebps.file_name') }}</th>
                                         <th class="text-center">{{ __('ebps::ebps.फइल') }}</th>
+                                        <th class="text-center">{{ __('ebps::ebps.actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -94,6 +95,13 @@
                                                 @else
                                                     <span class="text-muted">{{ __('ebps::ebps.no_file') }}</span>
                                                 @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                    wire:click="deleteFile({{ $file->id }})"
+                                                    wire:confirm="{{ __('ebps::ebps.are_you_sure_you_want_to_delete_this_file') }}">
+                                                    <i class="bx bx-trash"></i> {{ __('ebps::ebps.delete') }}
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -167,7 +175,7 @@
                                     wire:model="selectedStatus">
                                     <option value="">{{ __('ebps::ebps.change_status') }}</option>
                                     @foreach ($mapApplyStatusEnum as $status)
-                                        <option value="{{ $status->value }}">{{ __($status->name) }}</option>
+                                        <option value="{{ $status->value }}">{{ $status->label() }}</option>
                                     @endforeach
                                 </select>
                                 <div class="position-absolute top-50 end-0 translate-middle-y pe-3 pointer-events-none">

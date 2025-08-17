@@ -3,11 +3,14 @@
 namespace Src\Users\Livewire;
 
 use App\Enums\Action;
+use App\Facades\FileFacade;
 use App\Rules\MobileNumberIdentifierRule;
 use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
+use App\Facades\ImageServiceFacade;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Src\Users\DTO\UserAdminDto;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +26,7 @@ use Src\Users\Service\UserAdminService;
 
 class UserForm extends Component
 {
-    use SessionFlash, HelperDate;
+    use SessionFlash, HelperDate, WithFileUploads;
 
     public $user_password;
     public ?User $user;
@@ -38,14 +41,18 @@ class UserForm extends Component
     public array $selectedDepartments = [];
     public array $departmentHeads = [];
     public bool $fromWard = false;
+    public $userSignature;
+    public $userSignatureUrl;
+    public $uploadedSignaturePath; // Store the uploaded file path
 
     public function rules(): array
     {
         $rules = [
             'user.name' => ['required'],
             'user.email' => ["required", "email"],
-            'user.mobile_no' => ['nullable', 'string', 'max:10', new MobileNumberIdentifierRule(), 'unique:users,mobile_no'],
+            'user.mobile_no' => ['nullable', 'string', 'max:10', 'unique:users,mobile_no'],
             'selected_wards' => ['nullable', 'array'],
+            'userSignature' => ['nullable', 'image'],
         ];
 
         if ($this->action == Action::CREATE) {
@@ -58,7 +65,7 @@ class UserForm extends Component
                 Rule::unique('users', 'email')->ignore($this->user->id),
             ];
             // Remove unique check for mobile_no when updating:
-            $rules['user.mobile_no'] = ['nullable', 'string', 'max:10', new MobileNumberIdentifierRule()];
+            $rules['user.mobile_no'] = ['nullable', 'string', 'max:10'];
         }
 
         return $rules;
@@ -78,6 +85,7 @@ class UserForm extends Component
             'user_password.min' => __('users::users.the_password_must_be_at_least_6_characters'),
             'user.email.unique' => __('users::users.the_email_has_already_been_taken'),
             'user.mobile_no.unique' => __('users::users.the_mobile_number_has_already_been_taken'),
+            'userSignature.image' => __('users::users.the_signature_must_be_an_image'),
         ];
     }
 
@@ -116,17 +124,65 @@ class UserForm extends Component
                 ->toArray();
             $this->selectedRoles = $user->roles()?->pluck('id')->toArray();
         }
+        if ($this->action == Action::UPDATE) {
+            $this->handleFileUpload(null, 'signature', 'userSignatureUrl');
+        }
+    }
+
+    public function updatedUserSignature()
+    {
+
+        $this->handleFileUpload($this->userSignature, 'signature', 'userSignatureUrl');
+    }
+
+    public function handleFileUpload($file = null, string $modelField, string $urlProperty)
+    {
+        if ($file) {
+            $save = FileFacade::saveFile(
+                path: config('src.Profile.profile.path'),
+                file: $file,
+                disk: "local",
+                filename: ""
+            );
+
+            // Store the uploaded file path in a separate property
+            $this->uploadedSignaturePath = $save;
+
+            $this->user->{$modelField} = $save;
+            $this->{$urlProperty} = FileFacade::getTemporaryUrl(
+                path: config('src.Profile.profile.path'),
+                filename: $save,
+                disk: 'local'
+            );
+        } else {
+            // If no file is provided (edit mode), load the existing file URL
+            if ($this->user->{$modelField}) {
+                $this->{$urlProperty} = FileFacade::getTemporaryUrl(
+                    path: config('src.Profile.profile.path'),
+                    filename: $this->user->{$modelField},
+                    disk: 'local'
+                );
+            }
+        }
     }
 
 
     public function save()
     {
+
         $this->validate();
         $this->user->mobile_no = $this->convertNepaliToEnglish($this->user->mobile_no);
+
+
+        if ($this->uploadedSignaturePath) {
+            $this->user->signature = $this->uploadedSignaturePath;
+        }
+
 
         if (!empty($this->user_password)) {
             $this->user->password = $this->user_password;
         }
+
 
         $dto = UserAdminDto::fromLiveWireModel($this->user);
         $wardDtos = UserWardDto::fromInputs($this->local_body_id, $this->selected_wards);

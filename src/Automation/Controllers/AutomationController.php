@@ -13,6 +13,7 @@ use Src\BusinessRegistration\Models\NatureOfBusiness;
 class AutomationController extends Controller
 {
  
+    
     public function wardUsers(): View
     {
         return view('Automation::ward-users');

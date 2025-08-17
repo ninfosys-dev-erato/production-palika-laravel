@@ -64,22 +64,26 @@ class CustomerMapApplyForm extends Component
     public bool $addLandForm = false;
     public $localBodies;
     public $wards;
+    public $formerWards;
     public $ownerships;
     public $fourBoundaries = [];
     public bool $is_boundary = false;
-
     public $issuedDistricts;
     public $houseOwnerProvinces = [];
     public $houseOwnerPhoto;
     public $usageOptions;
     public $documents = [];
     public $options = [];
+    public $organizations;
+    public $formerLocalBodies;
 
     public function rules(): array
     {
         if ($this->addLandForm) {
             return [
                 'customerLandDetail.local_body_id' => ['required'],
+                'customerLandDetail.former_local_body' => ['nullable'],
+                'customerLandDetail.former_ward_no' => ['nullable'],
                 'customerLandDetail.ward' => ['required'],
                 'customerLandDetail.tole' => ['required'],
                 'customerLandDetail.area_sqm' => ['required'],
@@ -99,6 +103,8 @@ class CustomerMapApplyForm extends Component
             'uploadedImage' => ['required'],
             'mapApply.is_applied_by_customer' => ['nullable'],
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['nullable'],
+            'customerLandDetail.former_ward_no' => ['nullable'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],
@@ -125,15 +131,51 @@ class CustomerMapApplyForm extends Component
 
     public function loadWards(): void
     {
-        $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
+        $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
+        
+        if ($localBody) {
+            $this->wards = getWards($localBody->wards);
+        } else {
+            $this->wards = [];
+        }
+    }
+
+     public function loadFormerWards(): void
+    {
+        $localBody = LocalBody::find($this->customerLandDetail->former_local_body);
+
+        if ($localBody) {
+            $this->formerWards = getWards($localBody->wards);
+        } else {
+            $this->formerWards = [];
+        }
     }
 
 
     public function addFourBoundaries()
     {
+        // Limit to 4 boundaries (matching DirectionEnum cases)
+        if (count($this->fourBoundaries) >= 4) {
+            $this->errorToast(__('ebps::ebps.maximum_four_boundaries_allowed'));
+            return;
+        }
+        
+        // Get the next available direction
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $availableDirections = collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections) {
+                return !in_array($direction->value, $usedDirections);
+            });
+        
+        $nextDirection = $availableDirections->first();
+        
         $this->fourBoundaries[] = [
             'title' => '',
-            'direction' => '',
+            'direction' => $nextDirection ? $nextDirection->value : '',
             'distance' => '',
             'lot_no' => ''
         ];
@@ -150,7 +192,27 @@ class CustomerMapApplyForm extends Component
         }
     }
 
-    public function mount(MapApply $mapApply,Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail, MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
+    public function getAvailableDirections($currentIndex)
+    {
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $currentDirection = $this->fourBoundaries[$currentIndex]['direction'] ?? '';
+        
+        return collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections, $currentDirection) {
+                // Allow current direction to remain selected
+                if ($direction->value === $currentDirection) {
+                    return true;
+                }
+                // Filter out already used directions
+                return !in_array($direction->value, $usedDirections);
+            });
+    }
+
+    public function mount(MapApply $mapApply, Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail, MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
     {
         $this->customerLandDetail = $customerLandDetail;
 
@@ -158,6 +220,7 @@ class CustomerMapApplyForm extends Component
         $this->mapApplyDetail = new MapApplyDetail();
         $this->houseOwnerDetail = $houseOwnerDetail;
         $this->organizationDetail = $organizationDetail;
+        $this->organizations  = Organization::whereNull('deleted_at')->get();
         $this->mapApply = $mapApply->load('landDetail', 'customer');
         $this->action = $action;
         $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
@@ -166,7 +229,10 @@ class CustomerMapApplyForm extends Component
         $this->landDetails = CustomerLandDetail::where('customer_id', $this->customer_id)->get() ?? [];
         $this->houseOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
 
-        $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerLocalBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerWards = [];
+        
         $this->ownerships = LandOwernshipEnum::cases();
         $this->wards = [];
         $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::MAP_APPLIES)->get();
@@ -179,6 +245,8 @@ class CustomerMapApplyForm extends Component
             $this->uploadedImage = $this->mapApply->signature;
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
 
+            $this->houseOwnerDetail = HouseOwnerDetail::where('id', $this->mapApply->house_owner_id)->first();
+            $this->houseOwnerPhoto = $this->houseOwnerDetail->photo;
             $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->whereNotNull('map_document_id')->get();
             $this->documents = DocumentFile::where(
             'map_apply_id', $this->mapApply->id)->whereNull('map_document_id')->get()->map(function ($document) {
@@ -196,6 +264,8 @@ class CustomerMapApplyForm extends Component
              $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
              $this->mapApplyDetail = MapApplyDetail::where('map_apply_id', $this->mapApply->id)->first() ?? new MapApplyDetail();
             $this->loadFourBoundaries($this->customerLandDetail);
+             $this->loadWards();
+             $this->loadFormerWards();
         }
 
     }
@@ -206,6 +276,11 @@ class CustomerMapApplyForm extends Component
             $index = (int) filter_var($propertyName, FILTER_SANITIZE_NUMBER_INT);
             // Call the fileUpload method with the relevant index
             $this->fileUpload($index);
+        }
+
+        // Handle former local body changes
+        if ($propertyName === 'customerLandDetail.former_local_body') {
+            $this->loadFormerWards();
         }
     }
 
@@ -271,6 +346,7 @@ class CustomerMapApplyForm extends Component
         $landDto = CustomerLandDetailDto::fromLiveWireModel($this->customerLandDetail);
         $mapApplyDetailDto = MapApplyDetailAdminDto::fromLiveWireModel($this->mapApplyDetail);
         $houseOwnerDto = HouseOwnerDetailDto::fromLiveWireModel($this->houseOwnerDetail);
+     
 
         $this->organizationDetail->organization_id = $this->mapApplyDetail->organization_id;
         $organization = Organization::where('id', $this->organizationDetail->organization_id)->first();
@@ -298,7 +374,7 @@ class CustomerMapApplyForm extends Component
                     }
 
                 $houseOwner = $ownerDetail->store( $houseOwnerDto);
-                $this->mapApply->house_owner_id = $houseOwner->id;
+                $dto->house_owner_id = $houseOwner->id;
                 $dto->land_detail_id = $landDetail->id;
                 $mapApply = $mapApplyService->store($dto);
 

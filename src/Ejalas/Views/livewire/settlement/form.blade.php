@@ -38,7 +38,7 @@
                             <label for='discussion_date'
                                 class="form-label">{{ __('ejalas::ejalas.discussion_date') }}</label>
                             <input wire:model='settlement.discussion_date' id="discussion_date" name='discussion_date'
-                                type='text' class='form-control'
+                                type='text' class='form-control nepali-date'
                                 placeholder="{{ __('ejalas::ejalas.enter_discussion_date') }}">
                             <div>
                                 @error('settlement.discussion_date')
@@ -52,7 +52,7 @@
                             <label for='settlement_date'
                                 class="form-label">{{ __('ejalas::ejalas.settlement_date') }}</label>
                             <input wire:model='settlement.settlement_date' id="settlement_date" name='settlement_date'
-                                type='text' class='form-control'
+                                type='text' class='form-control nepali-date'
                                 placeholder="{{ __('ejalas::ejalas.enter_settlement_date') }}">
                             <div>
                                 @error('settlement.settlement_date')
@@ -73,8 +73,7 @@
                                         <option value="{{ $id }}">{{ $value }}</option>
                                     @endforeach
                                 </select>
-                                {{-- <input wire:model='settlement.present_members' name='present_members' type='text'
-                                    class='form-control' placeholder="{{ __('ejalas::ejalas.enter_present_members') }}"> --}}
+
                                 <div>
                                     @error('settlement.present_members')
                                         <small class='text-danger'>{{ __($message) }}</small>
@@ -114,7 +113,7 @@
                 <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.settlement_detail_list') }}</h5>
             </div>
             <div>
-                @perm('settlement_detail create')
+                @perm('jms_judicial_management create')
                     <button data-bs-toggle="modal" data-bs-target="#indexModal" class="btn btn-info"><i
                             class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_settlement_detail') }}</button>
                 @endperm
@@ -245,9 +244,11 @@
                                 <textarea class="form-control" id="detail" wire:model="settlementDetail.detail" rows="4" required></textarea>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">
-                            {{ $editIndex === null ? 'Save' : 'Update' }}
-                        </button>
+                        @perm('jms_judicial_management create')
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('ejalas::ejalas.save') }}
+                            </button>
+                        @endperm
                     </form>
                 </div>
             </div>
@@ -295,20 +296,8 @@
             });
         });
 
-        $('#settlement_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('settlement.settlement_date', nepaliDate);
-        });
-        $('#discussion_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('settlement.discussion_date', nepaliDate);
-        });
+
+
         $('#deadline_set_date').nepaliDatePicker({
             dateFormat: '%y-%m-%d',
             closeOnDateSelect: true,

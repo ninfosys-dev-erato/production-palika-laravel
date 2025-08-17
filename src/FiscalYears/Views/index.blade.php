@@ -16,7 +16,7 @@
                 <div class="card-header d-flex justify-content-between">
                     {{ __('fiscalyears::fiscalyears.fiscal_year_list') }}
                     <div>
-                        @perm('fiscal_year_create')
+                        @perm('fiscal_year create')
                             <a href="{{ route('admin.setting.fiscal-years.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i>{{ __('fiscalyears::fiscalyears.add_fiscal_year') }}</a>
                         @endperm

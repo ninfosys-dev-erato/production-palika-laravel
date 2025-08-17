@@ -15,11 +15,9 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.ejalas_forms') }}</h5>
                     </div>
                     <div>
-                        @perm('form_create')
-                            <div>
-                                <a href="{{ route('admin.ejalas.form.create') }}" class="btn btn-info"><i
-                                        class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_form_template') }}</a>
-                            </div>
+                        @perm('jms_settings create')
+                            <a href="{{ route('admin.ejalas.form-template.index') }}" class="btn btn-info"><i
+                                    class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_ejalas_form') }}</a>
                         @endperm
                     </div>
                 </div>

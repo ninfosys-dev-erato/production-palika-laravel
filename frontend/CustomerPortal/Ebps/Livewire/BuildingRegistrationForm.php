@@ -20,6 +20,8 @@ use Src\Ebps\Enums\BuildingStructureEnum;
 use Src\Ebps\Enums\LandOwernshipEnum;
 use Src\Ebps\Enums\MapProcessTypeEnum;
 use Src\Ebps\Enums\OwnershipTypeEnum;
+use Src\Ebps\Enums\PurposeOfConstructionEnum;
+use Src\Ebps\Models\Document;
 use Src\Ebps\Models\FourBoundary;
 use Src\Ebps\Models\HouseOwnerDetail;
 use Src\Ebps\Models\MapApply;
@@ -59,7 +61,8 @@ class BuildingRegistrationForm extends Component
     public bool $openModal = false;
     public bool $isModalForm = true;
     public bool $addLandForm = false;
-
+    public $usageOptions;
+    public $mapDocuments;
     public $provinces = [];
     public $districts = [];
     public $localBodies = [];
@@ -89,6 +92,10 @@ class BuildingRegistrationForm extends Component
     public $fourBoundaries = [];
     public $organizations;
     public ?OrganizationDetail $organizationDetail;
+    public $documents = [];
+    public $formerLocalBodies;
+
+    public $formerWards;
 
     public function rules(): array
     {
@@ -116,7 +123,8 @@ class BuildingRegistrationForm extends Component
             'mapApply.no_of_rooms' => ['required'],
             'mapApply.storey_no' => ['required'],
             'mapApply.year_of_house_built' => ['required'],
-
+            'mapApply.usage' => ['nullable'],
+            'mapApply.building_structure' => ['nullable'],
 
             'mapApply.mobile_no' => ['nullable'],
             'mapApply.province_id' => ['required'],
@@ -125,6 +133,8 @@ class BuildingRegistrationForm extends Component
             'mapApply.ward_no' => ['required'],
             'mapApply.application_date' => ['nullable'],
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['nullable'],
+            'customerLandDetail.former_ward_no' => ['nullable'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],
@@ -160,9 +170,28 @@ class BuildingRegistrationForm extends Component
 
     public function addFourBoundaries()
     {
+        // Limit to 4 boundaries (matching DirectionEnum cases)
+        if (count($this->fourBoundaries) >= 4) {
+            $this->errorToast(__('ebps::ebps.maximum_four_boundaries_allowed'));
+            return;
+        }
+        
+        // Get the next available direction
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $availableDirections = collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections) {
+                return !in_array($direction->value, $usedDirections);
+            });
+        
+        $nextDirection = $availableDirections->first();
+        
         $this->fourBoundaries[] = [
             'title' => '',
-            'direction' => '',
+            'direction' => $nextDirection ? $nextDirection->value : '',
             'distance' => '',
             'lot_no' => ''
         ];
@@ -172,8 +201,26 @@ class BuildingRegistrationForm extends Component
     {
         unset($this->fourBoundaries[$index]);
         $this->fourBoundaries = array_values($this->fourBoundaries);
+    }
 
-
+    public function getAvailableDirections($currentIndex)
+    {
+        $usedDirections = collect($this->fourBoundaries)
+            ->pluck('direction')
+            ->filter()
+            ->toArray();
+        
+        $currentDirection = $this->fourBoundaries[$currentIndex]['direction'] ?? '';
+        
+        return collect(\Src\Ebps\Enums\DirectionEnum::cases())
+            ->filter(function ($direction) use ($usedDirections, $currentDirection) {
+                // Allow current direction to remain selected
+                if ($direction->value === $currentDirection) {
+                    return true;
+                }
+                // Filter out already used directions
+                return !in_array($direction->value, $usedDirections);
+            });
     }
 
     public function loadFourBoundaries($customerLandDetail)
@@ -192,7 +239,7 @@ class BuildingRegistrationForm extends Component
     }
 
     public function render(){
-        return view("Ebps::livewire.building-registration.building-registration-form");
+        return view("CustomerPortal.Ebps::livewire.building-registration-form");
     }
 
     public function isSameAsLandOwner()
@@ -248,7 +295,8 @@ class BuildingRegistrationForm extends Component
 
     public function getApplicantLocalBodies(): void
     {
-        $this->applicantLocalBodies = getLocalBodies($this->mapApply['district_id'])->pluck('title', 'id')->toArray();
+        $this->applicantLocalBodies = LocalBody::where('district_id', $this->mapApply['district_id'])->pluck('title', 'id')->toArray();
+
         $this->applicantWards = [];
     }
 
@@ -266,9 +314,26 @@ class BuildingRegistrationForm extends Component
         }
     }
 
-    public function loadWards(): void
+     public function loadWards(): void
     {
-        $this->wards = getWards(getLocalBodies(localBodyId: $this->customerLandDetail->local_body_id)->wards);
+        $localBody = LocalBody::find($this->customerLandDetail->local_body_id);
+        
+        if ($localBody) {
+            $this->wards = getWards($localBody->wards);
+        } else {
+            $this->wards = [];
+        }
+    }
+
+         public function loadFormerWards(): void
+    {
+        $localBody = LocalBody::find($this->customerLandDetail->former_local_body);
+
+        if ($localBody) {
+            $this->formerWards = getWards($localBody->wards);
+        } else {
+            $this->formerWards = [];
+        }
     }
 
     public function mount(MapApply $mapApply,Action $action, CustomerLandDetail $customerLandDetail, HouseOwnerDetail $houseOwnerDetail, MapApplyDetail $mapApplyDetail, OrganizationDetail $organizationDetail)
@@ -286,9 +351,13 @@ class BuildingRegistrationForm extends Component
         $this->applicantProvinces = getProvinces()->pluck('title', 'id')->toArray();
         $this->landOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
         $this->houseOwnerProvinces = getProvinces()->pluck('title', 'id')->toArray();
-        $this->localBodies = getLocalBodies(district_ids: key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->localBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerLocalBodies = LocalBody::where('district_id', key(getSettingWithKey('palika-district')))->pluck('title', 'id')->toArray();
+        $this->formerWards = [];
 
+        $this->usageOptions = PurposeOfConstructionEnum::cases();
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
+        $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)->get();
 
         $this->wards = [];
         $this->buildingStructures = BuildingStructureEnum::cases();
@@ -298,7 +367,8 @@ class BuildingRegistrationForm extends Component
 
         if ($this->action === Action::UPDATE) {
             $this->customer_id = $this->mapApply->customer_id;
-            $this->landOwnerPhoto = $this->mapApply->signature;
+            
+             $this->landOwnerPhoto = $this->mapApply->signature;
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
             $this->loadFourBoundaries($this->customerLandDetail);
@@ -313,6 +383,8 @@ class BuildingRegistrationForm extends Component
             $this->getApplicantDistricts();
             $this->getApplicantLocalBodies();
             $this->getApplicantWards();
+            $this->loadWards();
+            $this->loadFormerWards();
         }
     }
 
@@ -349,7 +421,7 @@ class BuildingRegistrationForm extends Component
 
     public function save()
     {
-
+ $this->validate();
         $this->prepareMapApplyData();
         $dto = MapApplyAdminDto::fromLiveWireModel($this->mapApply);
         $landDetailDto = CustomerLandDetailDto::fromLiveWireModel($this->customerLandDetail);

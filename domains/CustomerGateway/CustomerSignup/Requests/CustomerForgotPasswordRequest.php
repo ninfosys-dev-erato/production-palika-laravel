@@ -35,7 +35,7 @@ class CustomerForgotPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile_no' => ['required', 'numeric', 'digits:10', 'exists:tbl_customers,mobile_no', new MobileNumberIdentifierRule()],
+            'mobile_no' => ['required', 'numeric', 'digits:10', 'exists:tbl_customers,mobile_no'],
         ];
     }    
 }

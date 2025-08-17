@@ -11,7 +11,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    @perm('project_deadline_extensions create')
+                    @perm('plan create')
                         <a href="{{ route('admin.project_deadline_extensions.create') }}" class="btn btn-info"><i
                                 class="fa fa-plus"></i> Add ProjectDeadlineExtension</a>
                     @endperm

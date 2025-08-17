@@ -56,15 +56,15 @@ Column::make("Submitted Date", "submitted_date") ->sortable()->searchable()->col
 Column::make("En Submitted Date", "en_submitted_date") ->sortable()->searchable()->collapseOnTablet(),
 Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('project_deadline_extensions edit') || can('project_deadline_extensions delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('project_deadline_extensions edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="fa fa-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('project_deadline_extensions delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="fa fa-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -80,7 +80,7 @@ Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('project_deadline_extensions edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -88,7 +88,7 @@ Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(
     }
     public function delete($id)
     {
-        if(!can('project_deadline_extensions delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -97,7 +97,7 @@ Column::make("Remarks", "remarks") ->sortable()->searchable()->collapseOnTablet(
         $this->successFlash("Project Deadline Extension Deleted Successfully");
     }
     public function deleteSelected(){
-        if(!can('project_deadline_extensions delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

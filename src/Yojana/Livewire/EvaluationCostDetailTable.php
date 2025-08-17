@@ -63,16 +63,16 @@ Column::make(__('yojana::yojana.evaluationcostdetailrate'), "rate") ->sortable()
 Column::make(__('yojana::yojana.evaluationcostdetailassessment_amount'), "assessment_amount") ->sortable()->searchable()->collapseOnTablet(),
 Column::make(__('yojana::yojana.evaluationcostdetailvat_amount'), "vat_amount") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('evaluation_cost_details edit') || can('evaluation_cost_details delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__('yojana::yojana.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('evaluation_cost_details edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('evaluation_cost_details delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -89,7 +89,7 @@ Column::make(__('yojana::yojana.evaluationcostdetailvat_amount'), "vat_amount") 
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('evaluation_cost_details edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH(__('yojana::yojana.you_cannot_perform_this_action'));
                return false;
         }
@@ -97,7 +97,7 @@ Column::make(__('yojana::yojana.evaluationcostdetailvat_amount'), "vat_amount") 
     }
     public function delete($id)
     {
-        if(!can('evaluation_cost_details delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -106,7 +106,7 @@ Column::make(__('yojana::yojana.evaluationcostdetailvat_amount'), "vat_amount") 
         $this->successFlash(__('yojana::yojana.evaluation_cost_detail_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('evaluation_cost_details delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

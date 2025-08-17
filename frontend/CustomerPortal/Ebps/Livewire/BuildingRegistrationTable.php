@@ -47,7 +47,7 @@ class BuildingRegistrationTable extends DataTableComponent
          ->where('mobile_no', Auth::guard('customer')->user()->mobile_no)
         ->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)
         ->with(['fiscalYear', 'customer', 'landDetail', 'constructionType', 'mapApplySteps', 'houseOwner', 'localBody', 'district'])
-        ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no')
+        ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id')
 
             ->where('ebps_map_applies.deleted_at',null)
             ->where('ebps_map_applies.deleted_by',null)
@@ -71,24 +71,20 @@ class BuildingRegistrationTable extends DataTableComponent
             )->html(),
             Column::make(__("Applied Date"), "applied_date") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('map_applies edit') || can('map_applies delete')) {
+       
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('map_applies access')) {
+               
                     $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
-                }
-
-                if (can('map_applies edit')) {
+               
                     $edit = '<button type="button" class="btn btn-primary btn-sm"  wire:click="edit(' . $row->id . ')"><i class="bx bx-edit"></i></button>';
                     $buttons .= $edit;
-                }
-
-                if (can('map_applies delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm"  wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
-                    $buttons .= $delete;
-                }
+                
+                    // $delete = '<button type="button" class="btn btn-danger btn-sm"  wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
+                    // $buttons .= $delete;
+             
 
                 $moveForward = '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
                 $buttons .= $moveForward;
@@ -98,7 +94,7 @@ class BuildingRegistrationTable extends DataTableComponent
             })->html();
 
             $columns[] = $actionsColumn;
-        }
+        
 
         return $columns;
 
@@ -122,29 +118,19 @@ class BuildingRegistrationTable extends DataTableComponent
 
     public function view($id)
     {
-        if(!can('map_applies access')){
-            $this->warningFlash(__('You Cannot Perform this action'));
-               return false;
-        }
         return redirect()->route('customer.ebps.building-registrations.view',['id'=>$id]);
     }
 
 
     public function delete($id)
     {
-        if(!can('map_applies delete')){
-            $this->warningFlash(__('You Cannot Perform this action'));
-                return false;
-        }
+      
         $service = new MapApplyAdminService();
         $service->delete(MapApply::findOrFail($id));
         $this->successFlash(__("ebps::ebps.map_apply_deleted_successfully"));
     }
     public function deleteSelected(){
-        if(!can('map_applies delete')){
-            $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
-                    return false;
-        }
+       
         $service = new MapApplyAdminService();
         $service->collectionDelete($this->getSelected());
         $this->clearSelected();

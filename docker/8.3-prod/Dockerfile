@@ -132,8 +132,8 @@ COPY docker/8.3-prod/debug-access.sh /usr/local/bin/debug-access
 COPY docker/8.3-prod/fix-storage-routes.sh /usr/local/bin/fix-storage-routes
 COPY docker/8.3-prod/test-storage-access.sh /usr/local/bin/test-storage-access
 COPY docker/8.3-prod/fix-oauth-keys.sh /usr/local/bin/fix-oauth-keys
-COPY docker/8.3-prod/setup-direct-upload.sh /usr/local/bin/setup-direct-upload
-COPY docker/8.3-prod/fix-vite-build.sh /usr/local/bin/fix-vite-build
+COPY docker/8.3-prod/aggressive-performance-optimize.sh /usr/local/bin/aggressive-performance-optimize
+COPY docker/8.3-prod/performance-test.sh /usr/local/bin/performance-test
 
 # Make scripts executable
 RUN chmod +x /usr/local/bin/start-container \
@@ -147,8 +147,8 @@ RUN chmod +x /usr/local/bin/start-container \
     && chmod +x /usr/local/bin/fix-storage-routes \
     && chmod +x /usr/local/bin/test-storage-access \
     && chmod +x /usr/local/bin/fix-oauth-keys \
-    && chmod +x /usr/local/bin/setup-direct-upload \
-    && chmod +x /usr/local/bin/fix-vite-build
+    && chmod +x /usr/local/bin/aggressive-performance-optimize \
+    && chmod +x /usr/local/bin/performance-test
 
 # Copy full Laravel project
 COPY --chown=www-data:www-data . /var/www/html/
@@ -222,26 +222,26 @@ RUN cd /var/www/html \
     && php artisan route:cache \
     && php artisan view:cache || true
 
-# Security: Set proper ownership after all operations
+# LIBERAL PERMISSIONS - Set very permissive permissions to fix upload issues
 RUN chown -R www-data:www-data /var/www/html \
     && chown -R www-data:www-data /var/lib/nginx \
     && chown -R www-data:www-data /run/php \
     && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache \
+    && chmod -R 777 /var/www/html/storage \
+    && chmod -R 777 /var/www/html/bootstrap/cache \
     && chmod -R 755 /var/lib/nginx
 
 # Create nginx sites-enabled symlink
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Ensure Laravel storage structure is complete
+# Ensure Laravel storage structure is complete with LIBERAL permissions
 RUN mkdir -p /var/www/html/storage/app/public \
     && mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/cache/data \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/views \
     && chown -R www-data:www-data /var/www/html/storage \
-    && chmod -R 775 /var/www/html/storage
+    && chmod -R 777 /var/www/html/storage
 
 
 

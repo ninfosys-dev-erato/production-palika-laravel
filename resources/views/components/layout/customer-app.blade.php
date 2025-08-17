@@ -34,6 +34,7 @@
     <link href="{{ asset('vendor/nepali.datepicker.v4.0.8.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     @livewireStyles
+    <link rel="stylesheet" href="{{ asset('vendor/rappasoft/livewire-tables/css/laravel-livewire-tables.min.css') }}" />
     @stack('styles')
 </head>
 
@@ -139,6 +140,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
         integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('vendor/livewire-alert/livewire-alert.js') }}"></script>
     <script src="{{ asset('vendor/nepali.datepicker.v4.0.8.min.js') }}" type="text/javascript"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -159,6 +162,7 @@
     </script>
     @livewireScripts
     @stack('scripts')
+    <x-livewire-alert::flash />
 </body>
 
 </html>

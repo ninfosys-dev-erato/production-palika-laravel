@@ -62,16 +62,16 @@ class DownloadTable extends DataTableComponent
             })
             ->collapseOnTablet(),
         ];
-        if (can('downloads_update') || can('downloads_delete')) {
+        if (can('downloads edit') || can('downloads delete')) {
             $actionsColumn = Column::make(__('downloads::downloads.works'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('downloads_update')) {
+                if (can('downloads edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('downloads_delete')) {
+                if (can('downloads delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -98,7 +98,7 @@ class DownloadTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('downloads_update')){
+        if(!can('downloads edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -106,7 +106,7 @@ class DownloadTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('downloads_delete')){
+        if(!can('downloads delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -115,7 +115,7 @@ class DownloadTable extends DataTableComponent
         $this->successFlash(__('downloads::downloads.download_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('downloads_delete')){
+        if(!can('downloads delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

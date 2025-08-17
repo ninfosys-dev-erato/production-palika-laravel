@@ -14,10 +14,10 @@ class RoleAdminController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:roles_access', only: ['index']),
-            new Middleware('permission:roles_create', only: ['create']),
-            new Middleware('permission:roles_update', only: ['edit']),
-            new Middleware('permission:roles_manage', only: ['managePermissions'])
+            new Middleware('permission:roles access', only: ['index']),
+            new Middleware('permission:roles create', only: ['create']),
+            new Middleware('permission:roles update', only: ['edit']),
+            new Middleware('permission:roles manage', only: ['managePermissions'])
         ];
     }
 

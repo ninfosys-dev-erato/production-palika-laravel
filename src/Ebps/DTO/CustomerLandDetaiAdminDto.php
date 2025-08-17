@@ -11,9 +11,9 @@ class CustomerLandDetaiAdminDto
         public string $local_body_id,
         public string $ward,
         public string $tole,
-        public string $area_sqm,
-        public string $lot_no,
-        public string $seat_no,
+        public int|string|null $area_sqm,
+        public int|string|null $lot_no,
+        public int|string|null $seat_no,
         public string $ownership,
         public string $is_landlord
     ){}

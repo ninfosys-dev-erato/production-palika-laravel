@@ -18,7 +18,7 @@ class GrievanceSettingController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware('permission:grievance_setting_access', only: ['setting'])
+            new Middleware('permission:grievance_setting access', only: ['setting'])
         ];
     }
 

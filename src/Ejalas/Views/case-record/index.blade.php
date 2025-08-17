@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.case_record_list') }}</h5>
                     </div>
                     <div>
-                        @perm('case_records create')
+                        @perm('jms_judicial_management create')
                             <a href="{{ route('admin.ejalas.case_records.create') }}" class="btn btn-info"><i
                                     class="bx bx-plus"></i> {{ __('ejalas::ejalas.add_case_record') }}</a>
                         @endperm

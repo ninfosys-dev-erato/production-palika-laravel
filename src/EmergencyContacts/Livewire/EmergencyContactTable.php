@@ -86,16 +86,16 @@ class EmergencyContactTable extends DataTableComponent
                 ->searchable()
                 ->collapseOnTablet(),
             ];
-        if (can('emergency_contact_update') || can('emergency_contact_delete')) {
+        if (can('emergency_contact update') || can('emergency_contact delete')) {
             $actionsColumn = Column::make(__('emergencycontacts::emergencycontacts.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('emergency_contact_update')) {
+                if (can('emergency_contact update')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('emergency_contact_delete')) {
+                if (can('emergency_contact delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -112,7 +112,7 @@ class EmergencyContactTable extends DataTableComponent
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('emergency_contact_update')){
+        if(!can('emergency_contact update')){
                SessionFlash::WARNING_FLASH(__('emergencycontacts::emergencycontacts.you_cannot_perform_this_action'));
                return false;
         }
@@ -120,7 +120,7 @@ class EmergencyContactTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if(!can('emergency_contact_delete')){
+        if(!can('emergency_contact delete')){
                 SessionFlash::WARNING_FLASH('you_cannot_perform_this_action');
                 return false;
         }
@@ -129,7 +129,7 @@ class EmergencyContactTable extends DataTableComponent
         $this->successFlash(__('emergencycontacts::emergencycontacts.emergency_contact_deleted_successfully'));
     }
     public function deleteSelected(){
-        if(!can('emergency_contact_delete')){
+        if(!can('emergency_contact delete')){
             SessionFlash::WARNING_FLASH('you_cannot_perform_this_action');
             return false;
         }

@@ -16,19 +16,21 @@ class PartyAdminController extends Controller
         //$this->middleware('permission:parties create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         return view('Ejalas::party.index');
     }
 
-    function create(Request $request){
+    function create(Request $request)
+    {
         $action = Action::CREATE;
         return view('Ejalas::party.form')->with(compact('action'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $party = Party::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('Ejalas::party.form')->with(compact('action','party'));
+        return view('Ejalas::party.form')->with(compact('action', 'party'));
     }
-
 }

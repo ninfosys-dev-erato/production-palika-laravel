@@ -85,16 +85,16 @@ Column::make("Other Taxes", "other_taxes") ->sortable()->searchable()->collapseO
 Column::make("Is Contracted", "is_contracted") ->sortable()->searchable()->collapseOnTablet(),
 Column::make("Contract Date", "contract_date") ->sortable()->searchable()->collapseOnTablet(),
      ];
-        if (can('projects edit') || can('projects delete')) {
+        if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make('Actions')->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('projects edit')) {
+                if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="fa fa-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('projects delete')) {
+                if (can('plan delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="fa fa-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -111,7 +111,7 @@ Column::make("Contract Date", "contract_date") ->sortable()->searchable()->colla
     public function refresh(){}
     public function edit($id)
     {
-        if(!can('projects edit')){
+        if(!can('plan edit')){
                SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                return false;
         }
@@ -119,7 +119,7 @@ Column::make("Contract Date", "contract_date") ->sortable()->searchable()->colla
     }
     public function delete($id)
     {
-        if(!can('projects delete')){
+        if(!can('plan delete')){
                 SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                 return false;
         }
@@ -128,7 +128,7 @@ Column::make("Contract Date", "contract_date") ->sortable()->searchable()->colla
         $this->successFlash("Project Deleted Successfully");
     }
     public function deleteSelected(){
-        if(!can('projects delete')){
+        if(!can('plan delete')){
                     SessionFlash::WARNING_FLASH('You Cannot Perform this action');
                     return false;
         }

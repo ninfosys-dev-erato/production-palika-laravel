@@ -17,6 +17,6 @@
 
     @if ($row->registration_number && $row->registration_number !== 'N/A')
         <strong>{{ __('businessregistration::businessregistration.registration_number') }}:</strong>
-        {{ $row->registration_number }} <br>
+        {{ replaceNumbers($row->registration_number, true) }} <br>
     @endif
 </div>

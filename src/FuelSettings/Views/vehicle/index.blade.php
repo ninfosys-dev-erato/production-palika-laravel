@@ -14,7 +14,7 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('Vehicle List') }}
                     </h5>
-                    @perm('vehicles create')
+                    @perm('fms_vehicles create')
                         <a href="{{ route('admin.vehicles.create') }}" class="btn btn-info"><i class="bx bx-plus"></i>
                             {{ __('Add Vehicle') }}</a>
                     @endperm

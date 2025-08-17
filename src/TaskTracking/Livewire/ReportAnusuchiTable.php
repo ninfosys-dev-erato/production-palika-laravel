@@ -74,22 +74,26 @@ class ReportAnusuchiTable extends DataTableComponent
             Column::make(__('tasktracking::tasktracking.full_score'), "full_score")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('tasktracking::tasktracking.obtained_score'), "obtained_score")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('task_update') || can('task_delete')) {
+        if (can('tsk_management edit') || can('tsk_management delete') || can('tsk_management print')) {
             $actionsColumn = Column::make(__('tasktracking::tasktracking.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
-                $buttons .= $view;
+                if (can('tsk_management edit')) {
+                    $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
+                    $buttons .= $view;
+                }
 
-                $print = '<button class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
-                $buttons .= $print;
+                if (can('tsk_management print')) {
+                    $print = '<button class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $print;
+                }
 
-                if (can('task_update')) {
+                if (can('tsk_management edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('task_delete')) {
+                if (can('tsk_management delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -105,7 +109,7 @@ class ReportAnusuchiTable extends DataTableComponent
     public function refresh() {}
     public function edit($id)
     {
-        if (!can('task_update')) {
+        if (!can('tsk_management edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -113,7 +117,7 @@ class ReportAnusuchiTable extends DataTableComponent
     }
     public function view($id)
     {
-        if (!can('task_view')) {
+        if (!can('tsk_management edit')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -121,7 +125,7 @@ class ReportAnusuchiTable extends DataTableComponent
     }
     public function print($id)
     {
-        if (!can('task_view')) {
+        if (!can('tsk_management print')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -129,7 +133,7 @@ class ReportAnusuchiTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('task_delete')) {
+        if (!can('tsk_management delete')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }
@@ -139,7 +143,7 @@ class ReportAnusuchiTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('task_delete')) {
+        if (!can('tsk_management delete')) {
             $this->warningFlash(__('tasktracking::tasktracking.you_cannot_perform_this_action'));
             return false;
         }

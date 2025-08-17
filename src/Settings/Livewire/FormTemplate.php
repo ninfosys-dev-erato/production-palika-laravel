@@ -37,7 +37,6 @@ class FormTemplate extends Component
                 'title' => __('settings::settings.global_fields'),
                 'fields' => [
                     'global.letter-head' => __('settings::settings.letter_head'),
-                    'global.letter-head-with-campaign-logo' => __('settings::settings.letter_head_with_campaign_logo'),
                     'global.province' => __('settings::settings.province'),
                     'global.district' => __('settings::settings.district'),
                     'global.local-body' => __('settings::settings.local_body'),
@@ -55,7 +54,8 @@ class FormTemplate extends Component
                     'global.acceptor_name' => __('settings::settings.acceptor_name'),
                     'global.palika_email' => __('settings::settings.palika_email'),
                     'global.palika_phone' => __('settings::settings.palika_phone'),
-
+                    'global.palika_logo' => __('settings::settings.palika_logo'),
+                    'global.palika_campaign_logo' => __('settings::settings.palika_campaign_logo'),
                 ]
             ],
             [
@@ -102,10 +102,11 @@ class FormTemplate extends Component
                 'title' => __('settings::settings.ebps_customer_fields'),
                 'fields' => [
                     'mapApply.customer.name' => __('settings::settings.customer_name'),
-                    'mapApply.landDetail.ward_no' => __('settings::settings.land_detail_ward'),
-                    'mapApply.landDetail.tole' => __('settings::settings.land_detail_tole'),
                     'mapApply.landDetail.former_ward' => __('settings::settings.land_detail_former_ward'),
                     'mapApply.landDetail.former_localBody' => __('Land Detail Former Local Body'),
+                    'mapApply.landDetail.ward_no' => __('settings::settings.land_detail_ward'),
+                    'mapApply.landDetail.local_body' => __('settings::settings.local_body'),
+                    'mapApply.landDetail.tole' => __('settings::settings.land_detail_tole'),
                     'mapApply.landDetail.plot_no' => __('settings::settings.land_detail_plot_no'),
                     'mapApply.landDetail.area' => __('settings::settings.land_detail_area'),
                     'mapApply.landDetail.ownership_type' => __('settings::settings.ownership_detail'),

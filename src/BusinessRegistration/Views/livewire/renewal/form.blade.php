@@ -15,7 +15,7 @@
                     @if ($businessData)
                         <button class="btn btn-success" type="button"
                             wire:click="renewBusiness({{ $businessData->id }})">
-                            {{ __('businessregistration::businessregistration._do_renew_business') }}
+                            {{ __('businessregistration::businessregistration.do_renew_business') }}
                         </button>
                     @endif
                 </div>
@@ -189,4 +189,5 @@
             </div>
         @endif
     </div>
+
 </div>

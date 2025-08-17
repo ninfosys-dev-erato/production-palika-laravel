@@ -51,16 +51,16 @@ class PlanAreaTable extends DataTableComponent
         $columns = [
             Column::make(__('yojana::yojana.area_name'), "area_name")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('plan_areas edit') || can('plan_areas delete')) {
+        if (can('plan_basic_settings edit') || can('plan_basic_settings delete')) {
             $actionsColumn = Column::make(__(__('yojana::yojana.actions')))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
 
-                if (can('plan_areas edit')) {
+                if (can('plan_basic_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')"  ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('plan_areas delete')) {
+                if (can('plan_basic_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -78,7 +78,7 @@ class PlanAreaTable extends DataTableComponent
     }
     public function edit($id)
     {
-        if (!can('plan_areas edit')) {
+        if (!can('plan_basic_settings edit')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
 
             return false;
@@ -88,7 +88,7 @@ class PlanAreaTable extends DataTableComponent
     }
     public function delete($id)
     {
-        if (!can('plan_areas delete')) {
+        if (!can('plan_basic_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -98,7 +98,7 @@ class PlanAreaTable extends DataTableComponent
     }
     public function deleteSelected()
     {
-        if (!can('plan_areas delete')) {
+        if (!can('plan_basic_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

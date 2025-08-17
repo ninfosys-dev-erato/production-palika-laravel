@@ -16,9 +16,10 @@
                         </h5>
                     </div>
                     <div>
-                        @perm('token_holders create')
+                        @perm('tok_token action')
                             <a href="{{ route('admin.token_holders.create') }}" class="btn btn-info"><i
-                                    class="bx bx-plus"></i> {{ __('tokentracking::tokentracking.add_token_holder') }}</a>
+                                    class="bx bx-plus"></i>
+                                {{ __('tokentracking::tokentracking.add_token_holder') }}</a>
                         @endperm
                     </div>
                 </div>

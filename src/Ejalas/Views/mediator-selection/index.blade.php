@@ -15,7 +15,7 @@
                         <h5 class="text-primary fw-bold mb-0">{{ __('ejalas::ejalas.mediator_selection_list') }}</h5>
                     </div>
                     <div>
-                        @perm('mediator_selections create')
+                        @perm('jms_judicial_management create')
                             <a href="{{ route('admin.ejalas.mediator_selections.create', ['from' => $from]) }}"
                                 class="btn btn-info"><i class="bx bx-plus"></i>
                                 {{ __('ejalas::ejalas.add_mediator_selection') }}</a>

@@ -19,11 +19,11 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             @if (isset($registration->title))
-                <h4 class="text-primary"><i class="bx bx-radio-circle"></i> {{ $registration->title }}</h4>
-            @else
-                <h5 class="text-primary fw-bold mb-0">
-                    {{ __('businessregistration::businessregistration.registration_form') }}
-                </h5>
+                <h5 class="text-primary fw-bold mb-0"> {{ $registration->title }}</h4>
+                @else
+                    <h5 class="text-primary fw-bold mb-0">
+                        {{ __('businessregistration::businessregistration.registration_form') }}
+                    </h5>
             @endif
 
             <a href="{{ route('admin.business-registration.business-registration.index', ['type' => $businessRegistrationType]) }}"

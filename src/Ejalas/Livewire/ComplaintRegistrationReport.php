@@ -53,6 +53,7 @@ class ComplaintRegistrationReport extends Component
 
     public function render()
     {
+
         return view("Ejalas::livewire.complaint-registration.report");
     }
 

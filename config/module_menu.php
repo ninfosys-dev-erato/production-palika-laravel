@@ -7,7 +7,7 @@ return [
         'icon' => 'bx bx-message-dots text-danger',
         'logo' => 'GunasoByabasthapanIcon.png',
         'label' => 'Grievance',
-        'perm' => 'grievance_access',
+        'perm' => 'grievance access',
     ],
     [
         'module' => 'recommendation',
@@ -15,7 +15,7 @@ return [
         'icon' => 'bx bx-notepad text-info',
         'logo' => 'YojanaByabasthapanIcon.png',
         'label' => 'Recommendation',
-        'perm' => 'recommendation_access',
+        'perm' => 'recommendation access',
     ],
     [
         'module' => 'token',
@@ -23,7 +23,7 @@ return [
         'icon' => 'bx bx-detail text-secondary',
         'logo' => 'RajaswaSankalanIcon.png',
         'label' => 'Token Management System',
-        'perm' => 'token_access',
+        'perm' => 'token access',
     ],
     [
         'module' => 'meeting',
@@ -47,7 +47,7 @@ return [
         'icon' => 'bx bx-list-check text-warning',
         'logo' => 'GharNaksaPassIcon.png',
         'label' => 'Task Tracking',
-        'perm' => null,
+        'perm' => 'tsk_management access',
     ],
     [
         'module' => 'patrachar',
@@ -63,7 +63,7 @@ return [
         'icon' => 'bx bx-book text-purple',
         'logo' => 'DartaChalaniIcon.png',
         'label' => 'Darta /Chalani',
-        'perm' => 'darta_access',
+        'perm' => 'darta access',
     ],
     [
         'module' => 'business_registration',
@@ -79,7 +79,7 @@ return [
         'icon' => 'bx bx-barcode text-primary',
         'logo' => 'GharNaksaPassIcon.png',
         'label' => 'EBPS System',
-        'perm' => 'ebps_access',
+        'perm' => 'ebps access',
     ],
     [
         'module' => 'plan',
@@ -87,7 +87,7 @@ return [
         'icon' => 'bx bx-map text-success',
         'logo' => 'YojanaByabasthapanIcon.png',
         'label' => 'Plan Management System',
-        'perm' => null,
+        'perm' => 'plan access',
     ],
     [
         'module' => 'grant',
@@ -95,7 +95,7 @@ return [
         'icon' => 'bx bx-dollar-circle',
         'logo' => 'RajaswaSankalanIcon.png',
         'label' => 'Grant Management System',
-        'perm' => null,
+        'perm' => 'gms_grant access',
     ],
     [
         'module' => 'fuel',
@@ -111,6 +111,14 @@ return [
         'icon' => 'bx bx-book text-orange',
         'logo' => 'NyayikSamitiIcon.png',
         'label' => 'Ejalash System',
-        'perm' => null,
+        'perm' => 'jms access',
+    ],
+    [
+        'module' => 'beruju',
+        'route' => 'admin.beruju.dashboard.dashboard',
+        'icon' => 'bx bx-book text-orange',
+        'logo' => 'RajaswaSankalanIcon.png',
+        'label' => 'Beruju System',
+        'perm' => 'brj access',
     ],
 ];

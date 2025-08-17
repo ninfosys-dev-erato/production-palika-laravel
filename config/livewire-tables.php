@@ -33,7 +33,7 @@ return [
     /**
      * Customise Script & Styles Paths
      */
-    'script_base_path' => '/rappasoft/laravel-livewire-tables',
+    'script_base_path' => '/rappasoft/livewire-tables',
 
     /**
      * Filter Default Configuration Options
@@ -112,6 +112,16 @@ return [
     'multiSelectDropdownFilter' => [
         'defaultOptions' => [],
         'defaultConfig' => [],
+    ],
+
+    /**
+     * Configuration options for Events
+     */
+    'events' => [
+        /**
+         * Enable or disable passing the user from Laravel's Auth service to events
+         */
+        'enableUserForEvent' => true,
     ],
 
 ];

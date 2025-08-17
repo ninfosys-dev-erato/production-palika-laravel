@@ -55,16 +55,16 @@ class RecommendationCategoryTable extends DataTableComponent
         $columns = [
             Column::make(__('recommendation::recommendation.title'), "title")->sortable()->searchable()->collapseOnTablet(),
         ];
-        if (can('recommendation_category_update') || can('recommendation_category_delete')) {
+        if (can('recommendation_settings update') || can('recommendation_settings delete')) {
             $actionsColumn = Column::make(__('recommendation::recommendation.actions'))->label(function ($row, Column $column) {
                 $buttons = '';
 
-                if (can('recommendation_category_update')) {
+                if (can('recommendation_settings update')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
-                if (can('recommendation_category_delete')) {
+                if (can('recommendation_settings delete')) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
@@ -84,7 +84,7 @@ class RecommendationCategoryTable extends DataTableComponent
 
     public function edit($id)
     {
-        if (!can('recommendation_category_update')) {
+        if (!can('recommendation_settings update')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -93,7 +93,7 @@ class RecommendationCategoryTable extends DataTableComponent
 
     public function delete($id)
     {
-        if (!can('recommendation_category_delete')) {
+        if (!can('recommendation_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }
@@ -104,7 +104,7 @@ class RecommendationCategoryTable extends DataTableComponent
 
     public function deleteSelected()
     {
-        if (!can('recommendation_category_delete')) {
+        if (!can('recommendation_settings delete')) {
             SessionFlash::WARNING_FLASH('You Cannot Perform this action');
             return false;
         }

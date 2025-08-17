@@ -15,7 +15,7 @@ class RecommendationDashboardController extends Controller implements HasMiddlew
     public static function middleware()
     {
         // return [
-        //     new Middleware('permission:recommendation_access', only: ['index']),
+        //     new Middleware('permission:recommendation_settings access', only: ['index']),
         // ];
     }
 

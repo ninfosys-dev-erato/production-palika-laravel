@@ -5,8 +5,11 @@ namespace Src\BusinessRegistration\Traits;
 use App\Traits\HelperTemplate;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Illuminate\Support\Str;
+use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Models\BusinessDeRegistration;
 use Src\FileTracking\Models\FileRecord;
+use Src\Settings\Enums\TemplateEnum;
+use Src\Settings\Models\LetterHeadSample;
 
 trait BusinessRegistrationTemplate
 {
@@ -14,37 +17,40 @@ trait BusinessRegistrationTemplate
     const EMPTY_LINES = '____________________';
     public $reg_no;
 
-    public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration)
+    public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration, $template = null)
     {
 
-        $template = $businessRegistration->registrationType?->form?->template ?? '';
+        $template = $template ?? $businessRegistration->registrationType?->form?->template ?? '';
 
         if ($businessRegistration instanceof \Src\BusinessRegistration\Models\BusinessDeRegistration) {
             $businessRegistration = $businessRegistration->businessRegistration;
         }
 
-        $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature');
+        $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature', 'renewals');
 
 
         $fileRecord = FileRecord::where('subject_id',  $businessRegistration->id)->whereNull('deleted_at')->first();
         $regNo = $fileRecord && $fileRecord->reg_no ? replaceNumbers($fileRecord->reg_no, true) : ' ';
         $this->reg_no = $regNo;
         $globalData = $this->getGlobalData($businessRegistration->approvedBy?->name, $businessRegistration->ward_no, $businessRegistration->id);
-        $letterHeadwithCampaign = $this->getLetterHeader($businessRegistration->ward_no, getFormattedBsDate(), $regNo, true, $businessRegistration?->fiscalYear?->year ?? getSetting('fiscal-year'));
-        $letterHead = $this->getLetterHeaderForBusiness(null, getFormattedBsDate(), $regNo, true, $businessRegistration?->fiscalYear?->year ?? getSetting('fiscal-year'));
+
+
+        $letterHead = $this->getBusinessLetterHeaderFromSample();
         // $letterFoot = $this->getLetterFooter(getFormattedBsDate());
         $businessRegistrationData = $this->resolveBusinessDate($businessRegistration);
 
         $formData = $this->getResolvedFormData(is_array($businessRegistration->data) ? $businessRegistration->data : json_decode($businessRegistration->data, true), true);
+
+
+
         $customerData = $this->getCustomerData($businessRegistration);
 
         $replacements = array_merge(
-            ['{{global.letter-head}}' => $letterHead, '{{global.letter-head-with-campaign-logo}}' => $letterHeadwithCampaign],
-
+            ['{{global.letter-head}}' => $letterHead],
+            ['{{business.renewal_table}}' => $this->renderRenewalTemplateWithData($businessRegistration)],
             $globalData,
             $formData,
             $customerData,
-            // ['{{global.letter-foot}}' => $letterFoot],
             $businessRegistrationData
         );
 
@@ -68,14 +74,14 @@ trait BusinessRegistrationTemplate
     {
         return [
             // Registration type and fiscal year
-            '{{business.fiscal_year}}' => $businessRegistration->fiscalYear?->title ?? ' ',
+            '{{business.fiscal_year}}' => $businessRegistration->fiscalYear?->year ?? ' ',
 
             // Entity and registration details
             '{{business.entity_name}}' => $businessRegistration->entity_name ?? ' ',
             '{{business.registration_date}}' => replaceNumbers($businessRegistration->registration_date, true) ?? ' ',
             '{{business.registration_date_en}}' => $businessRegistration->registration_date_en ?? ' ',
-            '{{business.registration_number}}' => $businessRegistration->registration_number ?? ' ',
-            '{{business.certificate_number}}' => $businessRegistration->certificate_number ?? ' ',
+            '{{business.registration_number}}' => replaceNumbers($businessRegistration->registration_number, true) ?? ' ',
+            '{{business.certificate_number}}' => replaceNumbers($businessRegistration->certificate_number, true) ?? ' ',
 
             // Applicant details - handle multiple applicants
             '{{business.applicant_name}}' => $this->getApplicantNames($businessRegistration),
@@ -99,12 +105,14 @@ trait BusinessRegistrationTemplate
 
             // Business details (relationships)
             '{{business.business_nature}}' => $businessRegistration->business_nature ?? ' ',
+            '{{business.business_category}}' => $businessRegistration->business_category ?? ' ',
+            '{{business.business_purpose}}' => $businessRegistration->purpose ?? ' ',
             '{{business.main_service_or_goods}}' => $businessRegistration->main_service_or_goods ?? ' ',
             '{{business.total_capital}}' => $businessRegistration->total_capital ?? ' ',
             '{{business.business_province}}' => $businessRegistration->businessProvince?->title ?? ' ',
             '{{business.business_district}}' => $businessRegistration->businessDistrict?->title ?? ' ',
             '{{business.business_local_body}}' => $businessRegistration->businessLocalBody?->title ?? ' ',
-            '{{business.business_ward}}' => $businessRegistration->business_ward ?? ' ',
+            '{{business.business_ward}}' => replaceNumbers($businessRegistration->business_ward, true) ?? ' ',
             '{{business.business_tole}}' => $businessRegistration->business_tole ?? ' ',
             '{{business.business_street}}' => $businessRegistration->business_street ?? ' ',
 
@@ -142,7 +150,6 @@ trait BusinessRegistrationTemplate
             '{{business.area}}' => $businessRegistration->area ?? ' ',
             '{{business.is_rented}}' => $businessRegistration->is_rented ?? ' ',
             '{{business.total_running_day}}' => $businessRegistration->total_running_day ?? ' ',
-
 
 
 
@@ -265,11 +272,16 @@ trait BusinessRegistrationTemplate
     private function getApplicantWards($businessRegistration)
     {
         $applicants = $businessRegistration->applicants;
+
         if ($applicants->isEmpty()) {
-            return $businessRegistration->applicant_ward ?? ' ';
+            return replaceNumbers($businessRegistration->applicant_ward ?? ' ', true);
         }
-        return $applicants->pluck('applicant_ward')->filter()->implode(', ');
+
+        $wards = $applicants->pluck('applicant_ward')->filter()->implode(', ');
+
+        return replaceNumbers($wards, true);
     }
+
 
     private function getApplicantToles($businessRegistration)
     {
@@ -287,5 +299,81 @@ trait BusinessRegistrationTemplate
             return $businessRegistration->applicant_street ?? ' ';
         }
         return $applicants->pluck('applicant_street')->filter()->implode(', ');
+    }
+
+    public function renderRenewalTemplateWithData(BusinessRegistration $businessRegistration): string
+    {
+        $template = LetterHeadSample::where('slug', TemplateEnum::BusinessRenewal)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$template) {
+            return '';
+        }
+
+        $style = $template->style ? "<style>{$template->style}</style>" : '';
+        $content = $template->content;
+
+        $globalData = $this->getGlobalData($businessRegistration->approvedBy?->name, $businessRegistration->ward_no, $businessRegistration->id);
+        $globalData = $this->sanitizeReplacements($globalData);
+
+
+        // Replace global variables anywhere in the content
+        $content = Str::replace(array_keys($globalData), array_values($globalData), $content);
+
+        // Step 2: Renewal records
+        $renewals = $businessRegistration->renewals->where('application_status', ApplicationStatusEnum::ACCEPTED);
+        $renewals->load('fiscalYear');
+        $renewals = $renewals->values(); // Reset array keys for index access
+
+        preg_match('/<tbody>\s*<tr>(.*?)<\/tr>\s*<\/tbody>/s', $content, $matches);
+
+        if (!isset($matches[0], $matches[1])) {
+            // No match for row template — return global-replaced template only
+            return <<<HTML
+            {$style}
+            {$content}
+            HTML;
+        }
+
+        $originalRowHtml = $matches[1];
+        $generatedRows = '';
+        $maxRows = 10;
+
+        for ($i = 0; $i < $maxRows; $i++) {
+            $row = $originalRowHtml;
+
+            if (isset($renewals[$i])) {
+                $renewal = $renewals[$i];
+
+                $additionalData = [
+                    '{{renew.fiscalYear}}' => $renewal->fiscalYear->year ?? '',
+                    '{{renew.renewalDate}}' => replaceNumbers($renewal->renew_date ?? '', true) ?? '',
+                    '{{renew.billNo}}' => replaceNumbers($renewal->bill_no ?? '', true) ?? '',
+                    '{{renew.paymentDate}}' => replaceNumbers($renewal->payment_receipt_date ?? '', true) ?? '',
+                ];
+            } else {
+                // Blank row if no renewal exists
+                $additionalData = [
+                    '{{renew.fiscalYear}}' => '',
+                    '{{renew.renewalDate}}' => '',
+                    '{{renew.billNo}}' => '',
+                    '{{renew.paymentDate}}' => '',
+                ];
+            }
+
+            $additionalData = $this->sanitizeReplacements($additionalData);
+            $row = Str::replace(array_keys($additionalData), array_values($additionalData), $row);
+
+            $generatedRows .= "<tr>{$row}</tr>\n";
+        }
+
+
+        $content = Str::replace($matches[0], "<tbody>\n{$generatedRows}</tbody>", $content);
+
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
     }
 }

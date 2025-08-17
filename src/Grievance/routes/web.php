@@ -7,15 +7,15 @@ use Src\Grievance\Controllers\GrievanceSettingController;
 use Src\Grievance\Controllers\GrievanceTypeController;
 
 Route::group(['middleware' => ['auth', 'web', 'check_module:grievance'], 'prefix' => 'admin/grievances', 'as' => 'admin.grievance.'], function () {
-    Route::get('/setting', [GrievanceSettingController::class, 'setting'])->name('setting')->middleware('permission:grievance_setting_access');
+    Route::get('/setting', [GrievanceSettingController::class, 'setting'])->name('setting')->middleware('permission:grievance_setting access');
     Route::get('/', [GrievanceDashboardController::class, 'index'])->name('index');
 
-    Route::get('/grievance-type', [GrievanceTypeController::class, 'index'])->name('grievanceType.index')->middleware('permission:grievance_type_access');
-    Route::get('/grievance-type/create', [GrievanceTypeController::class, 'create'])->name('grievanceType.create')->middleware('permission:grievance_type_create');
-    Route::get('/grievance-type/edit/{id}', [GrievanceTypeController::class, 'edit'])->name('grievanceType.edit')->middleware('permission:grievance_type_edit');
-    Route::get('/grievance-type/manage/{id}', [GrievanceTypeController::class, 'manage'])->name('grievanceType.manage')->middleware('permission:grievance_type_access');
+    Route::get('/grievance-type', [GrievanceTypeController::class, 'index'])->name('grievanceType.index')->middleware('permission:grievance_setting access');
+    Route::get('/grievance-type/create', [GrievanceTypeController::class, 'create'])->name('grievanceType.create')->middleware('permission:grievance_setting create');
+    Route::get('/grievance-type/edit/{id}', [GrievanceTypeController::class, 'edit'])->name('grievanceType.edit')->middleware('permission:grievance_setting edit');
+    Route::get('/grievance-type/manage/{id}', [GrievanceTypeController::class, 'manage'])->name('grievanceType.manage')->middleware('permission:grievance_setting access');
     Route::get('/grievance-detail', [GrievanceDetailController::class, 'index'])
-        ->name('grievanceDetail.index')->middleware('permission:grievance_detail_access');
+        ->name('grievanceDetail.index')->middleware('permission:grievance access');
     Route::get('/create', [GrievanceDetailController::class, 'create'])
         ->name('create');
     Route::get('/grievance-detail/{grievanceDetail}', [GrievanceDetailController::class, 'show'])
