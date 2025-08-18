@@ -444,5 +444,37 @@ return [
         'inr_symbol' => '₹',
         'pound_symbol' => '£',
         'dollar_symbol' => '$',
+        
+        // Resolution Cycles
+        'no_resolution_cycles' => 'No resolution cycles assigned yet',
+        'assign_beruju_for_resolution' => 'Assign Beruju for Resolution',
+        'incharge' => 'Incharge',
+        'select_incharge' => 'Select Incharge',
+        'remarks' => 'Remarks',
+        'enter_remarks' => 'Enter any additional remarks or notes',
+        'assign' => 'Assign',
+        'beruju_assigned_successfully' => 'Beruju assigned successfully',
+        'beruju_updated_successfully' => 'Beruju updated successfully',
+        'reset' => 'Reset',
+        'update_resolution_cycle' => 'Update Resolution Cycle',
+        // Validation Messages
+        'beruju_entry_required' => 'Beruju entry is required',
+        'selected_beruju_entry_not_exist' => 'Selected beruju entry does not exist',
+        'incharge_required' => 'Incharge is required',
+        'selected_incharge_not_exist' => 'Selected incharge does not exist',
+        'assigned_by_required' => 'Assigned by is required',
+        'selected_assigned_by_not_exist' => 'Selected assigned by does not exist',
+        'assigned_at_required' => 'Assigned at is required',
+        'assigned_at_must_be_valid_date' => 'Assigned at must be a valid date',
+        'status_required' => 'Status is required',
+        'status_invalid' => 'Status is invalid',
+        'remarks_must_be_string' => 'Remarks must be a string',
+        'completed_at_must_be_valid_date' => 'Completed at must be a valid date',
+        // Additional Labels
+        'assigned_by' => 'Assigned By',
+        'assigned_at' => 'Assigned At',
+        'not_assigned_yet' => 'Not assigned yet',
+        'assign_beruju' => 'Assign Beruju',
+        'assign_another' => 'Assign Another',
     
 ];

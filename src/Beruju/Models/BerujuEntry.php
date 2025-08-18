@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\User;
 use Src\Beruju\Enums\BerujuAduitTypeEnum;
 use Src\Beruju\Enums\BerujuCategoryEnum;
@@ -15,6 +16,7 @@ use Src\Beruju\Enums\BerujuCurrencyTypeEnum;
 use Src\FiscalYears\Models\FiscalYear;
 use Src\Employees\Models\Branch;
 use Src\Beruju\Models\SubCategory;
+use Src\Beruju\Models\ResolutionCycle;
 use Src\Yojana\Models\Project;
 
 class BerujuEntry extends Model
@@ -106,6 +108,11 @@ class BerujuEntry extends Model
     public function evidences()
     {
         return $this->hasMany(Evidence::class, 'beruju_entry_id');
+    }
+
+    public function resolutionCycles() : HasMany
+    {
+        return $this->hasMany(ResolutionCycle::class, 'beruju_id');
     }
 
 }

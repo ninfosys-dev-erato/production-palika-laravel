@@ -41,7 +41,7 @@ class BerujuEntryAdminController extends Controller implements HasMiddleware
 
     public function view(Request $request)
     {
-        $berujuEntry = BerujuEntry::with(['creator', 'updater', 'fiscalYear', 'branch', 'subCategory'])->findOrFail($request->route('id'));
+        $berujuEntry = BerujuEntry::with(['creator', 'updater', 'fiscalYear', 'branch', 'subCategory', 'resolutionCycles.incharge', 'resolutionCycles.assignedBy'])->findOrFail($request->route('id'));
         return view('Beruju::beruju-entry.show')->with(compact('berujuEntry'));
     }
 }

@@ -21,6 +21,11 @@ return new class extends Migration
             $table->text('remarks')->nullable();
             $table->timestamp('completed_at')->nullable();
             
+            // User tracking fields
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null');
+            
             // Foreign key constraints
             $table->foreign('beruju_id')->references('id')->on('brj_beruju_entries')->onDelete('cascade');
             $table->foreign('incharge_id')->references('id')->on('users')->onDelete('restrict');
@@ -32,6 +37,7 @@ return new class extends Migration
             $table->index(['assigned_at']);
             
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

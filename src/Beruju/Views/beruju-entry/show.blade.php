@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
                          <h1 class="h3 mb-0 text-gray-800">{{ __('beruju::beruju.beruju_entry_details') }}</h1>
-             <p class="text-muted">{{ __('beruju::beruju.view_comprehensive_information') }}</p>
+
         </div>
         <div class="d-flex gap-2">
                          <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-outline-secondary border-radius-0">
@@ -181,8 +181,14 @@
             </div>
         </div>
 
+
+
         <!-- Right Column - Status & Actions -->
         <div class="col-lg-4">
+
+            <!-- Assigned To Card -->
+                         <livewire:beruju.beruju_incharge_details :berujuEntry="$berujuEntry" />
+
                          <!-- Status Overview Card -->
              <div class="card shadow-sm mb-4 border-radius-0">
                  <div class="card-header">
@@ -285,20 +291,65 @@
     </div>
 </div>
 
-<!-- Print Styles -->
-<style media="print">
-    .btn, .card-header {
-        display: none !important;
-    }
-    .card {
-        border: 1px solid #ddd !important;
-        box-shadow: none !important;
-    }
-    .container-fluid {
-        max-width: 100% !important;
-    }
-    .border-radius-0 {
-        border-radius: 0 !important;
-    }   
-</style>
-</x-layout.app>
+ <!-- Print Styles -->
+ <style media="print">
+     .btn, .card-header {
+         display: none !important;
+     }
+     .card {
+         border: 1px solid #ddd !important;
+         box-shadow: none !important;
+     }
+     .container-fluid {
+         max-width: 100% !important;
+     }
+     .border-radius-0 {
+         border-radius: 0 !important;
+     }   
+ </style>
+ <!-- Resolution Cycle Modal -->
+ <div wire:ignore class="modal fade" id="resolutionCycleModal" tabindex="-1" aria-labelledby="resolutionCycleModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="resolutionCycleModalLabel">{{ __('beruju::beruju.assign_beruju_for_resolution') }}</h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetResolutionForm()" aria-label="Close"></button>
+             </div>
+             <div class="modal-body">
+                 <livewire:beruju.resolution_cycle_form :berujuEntry=$berujuEntry :action="App\Enums\Action::CREATE" />
+             </div>
+         </div>
+     </div>
+ </div>
+
+ <!-- JavaScript for Modal -->
+ <script>
+     document.addEventListener('livewire:initialized', () => {
+         Livewire.on('close-modal', () => {
+             const modal = bootstrap.Modal.getInstance(document.getElementById('resolutionCycleModal'));
+             if (modal) {
+                 modal.hide();
+             }
+             
+             // Clean up modal backdrop and body classes
+             setTimeout(() => {
+                 $('.modal-backdrop').remove();
+                 $('body').removeClass('modal-open');
+                 $('body').css('padding-right', '');
+                 $('body').css('overflow', '');
+             }, 150);
+         });
+     });
+     
+     document.getElementById('resolutionCycleModal').addEventListener('hidden.bs.modal', () => {
+         // Clean up any remaining modal artifacts
+         $('.modal-backdrop').remove();
+         $('body').removeClass('modal-open');
+         $('body').css('padding-right', '');
+         $('body').css('overflow', '');
+         
+         // Reset the form
+         Livewire.dispatch('reset-form');
+     });
+ </script>
+ </x-layout.app>
