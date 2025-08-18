@@ -150,8 +150,8 @@ trait BusinessRegistrationTemplate
             '{{business.area}}' => $businessRegistration->area ?? ' ',
             '{{business.is_rented}}' => $businessRegistration->is_rented ?? ' ',
             '{{business.total_running_day}}' => $businessRegistration->total_running_day ?? ' ',
-
-
+            '{{business.kardata_number}}' => replaceNumbers($businessRegistration->kardata_number, true) ?? ' ',
+            '{{business.kardata_miti}}' => $businessRegistration->kardata_miti ?? ' ',
 
         ];
     }
