@@ -713,6 +713,413 @@
             </div>
         </div>
 
+        <!-- Dynamic Form Fields Section -->
+        @if (!empty($data))
+            @foreach ($data as $formKey => $formData)
+                @if (isset($formData['form_name']) && isset($formData['fields']))
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">{{ $formData['form_name'] }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach ($formData['fields'] as $fieldSlug => $field)
+                                    @if (isset($field['slug']))
+                                        <div
+                                            class="col-md-{{ ($field['type'] ?? 'text') === 'table' ? '12' : '6' }} mb-3">
+                                            @switch($field['type'] ?? 'text')
+                                                @case('text')
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            {{ $field['label'] ?? 'Default Label' }}
+                                                            @if (($field['is_required'] ?? 'no') === 'yes')
+                                                                <span class="text-danger">*</span>
+                                                            @endif
+                                                        </label>
+                                                        <input type="{{ $field['input_type'] ?? 'text' }}"
+                                                            class="form-control @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value') is-invalid @enderror"
+                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value"
+                                                            placeholder="{{ $field['placeholder'] ?? '' }}"
+                                                            @if (($field['is_required'] ?? 'no') === 'yes') required @endif
+                                                            @if (($field['is_readonly'] ?? 'no') === 'yes') readonly @endif
+                                                            @if (($field['is_disabled'] ?? 'no') === 'yes') disabled @endif>
+                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                @break
+
+                                                @case('textarea')
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            {{ $field['label'] ?? 'Default Label' }}
+                                                            @if (($field['is_required'] ?? 'no') === 'yes')
+                                                                <span class="text-danger">*</span>
+                                                            @endif
+                                                        </label>
+                                                        <textarea
+                                                            class="form-control @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value') is-invalid @enderror"
+                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value" rows="3"
+                                                            placeholder="{{ $field['placeholder'] ?? '' }}" @if (($field['is_required'] ?? 'no') === 'yes') required @endif
+                                                            @if (($field['is_readonly'] ?? 'no') === 'yes') readonly @endif @if (($field['is_disabled'] ?? 'no') === 'yes') disabled @endif></textarea>
+                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                @break
+
+                                                @case('checkbox')
+                                                    <div class="form-group">
+                                                        <label class="form-label">{{ $field['label'] ?? 'Checkbox' }}</label>
+                                                        @php
+                                                            $isMultiple = ($field['is_multiple'] ?? '0') === '1';
+                                                            $inputType = $isMultiple ? 'checkbox' : 'radio';
+                                                            $modelPath = "data.{$formKey}.fields.{$field['slug']}.value";
+                                                        @endphp
+
+                                                        @foreach ($field['option'] ?? [] as $option)
+                                                            <div
+                                                                class="form-check {{ $isMultiple ? 'form-check-inline' : '' }}">
+                                                                <input type="{{ $inputType }}"
+                                                                    name="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value{{ $isMultiple ? '[]' : '' }}"
+                                                                    value="{{ $option['value'] }}"
+                                                                    id="{{ $field['slug'] }}-{{ $option['value'] }}"
+                                                                    class="form-check-input"
+                                                                    wire:model{{ $isMultiple ? '.live' : '' }}="{{ $modelPath }}{{ $isMultiple ? '.' . $option['value'] : '' }}"
+                                                                    @if (($field['is_disabled'] ?? 'no') === 'yes') disabled @endif>
+                                                                <label class="form-check-label"
+                                                                    for="{{ $field['slug'] }}-{{ $option['value'] }}">
+                                                                    {{ $option['label'] }}
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @break
+
+                                                @case('select')
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            {{ $field['label'] ?? 'Default Label' }}
+                                                            @if (($field['is_required'] ?? 'no') === 'yes')
+                                                                <span class="text-danger">*</span>
+                                                            @endif
+                                                        </label>
+                                                        <select
+                                                            class="form-select @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value') is-invalid @enderror"
+                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value"
+                                                            @if (($field['is_required'] ?? 'no') === 'yes') required @endif
+                                                            @if (($field['is_disabled'] ?? 'no') === 'yes') disabled @endif
+                                                            @if (($field['is_multiple'] ?? '0') === '1') multiple @endif>
+                                                            <option value="">
+                                                                {{ $field['placeholder'] ?? 'Select any one' }}</option>
+                                                            @foreach ($field['option'] ?? [] as $option)
+                                                                <option value="{{ $option['value'] }}">
+                                                                    {{ $option['label'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                @break
+
+                                                @case('radio')
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            {{ $field['label'] ?? 'Default Label' }}
+                                                            @if (($field['is_required'] ?? 'no') === 'yes')
+                                                                <span class="text-danger">*</span>
+                                                            @endif
+                                                        </label>
+                                                        @foreach ($field['option'] ?? [] as $option)
+                                                            <div class="form-check">
+                                                                <input type="radio"
+                                                                    name="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value"
+                                                                    value="{{ $option['value'] }}"
+                                                                    id="{{ $field['slug'] }}-{{ $option['value'] }}"
+                                                                    class="form-check-input"
+                                                                    wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value"
+                                                                    @if (($field['is_disabled'] ?? 'no') === 'yes') disabled @endif
+                                                                    @if (($field['is_required'] ?? 'no') === 'yes') required @endif>
+                                                                <label class="form-check-label"
+                                                                    for="{{ $field['slug'] }}-{{ $option['value'] }}">
+                                                                    {{ $option['label'] }}
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                @break
+
+                                                @case('file')
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            {{ $field['label'] ?? 'Default Label' }}
+                                                            @if (($field['is_required'] ?? 'no') === 'yes')
+                                                                <span class="text-danger">*</span>
+                                                            @endif
+                                                        </label>
+                                                        <input type="file"
+                                                            class="form-control @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value') is-invalid @enderror"
+                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value"
+                                                            @if (($field['is_multiple'] ?? '0') === '1') multiple @endif
+                                                            @if (($field['is_required'] ?? 'no') === 'yes') required @endif
+                                                            @if (($field['is_disabled'] ?? 'no') === 'yes') disabled @endif>
+                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                @break
+
+                                                @case('table')
+                                                    <div class="table-container mt-3">
+                                                        <label class="form-label">{{ $field['label'] ?? 'Table' }}</label>
+                                                        @if (!empty($field['fields']))
+                                                            <table class="table table-bordered table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        @foreach ($field['fields'][0] ?? [] as $columnSlug => $columnField)
+                                                                            <th>{{ $columnField['label'] ?? $columnSlug }}
+                                                                            </th>
+                                                                        @endforeach
+                                                                        <th>Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($field['fields'] ?? [] as $rowIndex => $row)
+                                                                        <tr>
+                                                                            @foreach ($row as $columnSlug => $columnField)
+                                                                                <td>
+                                                                                    @switch($columnField['type'] ?? 'text')
+                                                                                        @case('text')
+                                                                                            <input type="text" class="form-control"
+                                                                                                wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $rowIndex }}.{{ $columnSlug }}.value"
+                                                                                                placeholder="{{ $columnField['placeholder'] ?? 'Enter value' }}"
+                                                                                                @if (($columnField['is_readonly'] ?? 'no') === 'yes') readonly @endif
+                                                                                                @if (($columnField['is_disabled'] ?? 'no') === 'yes') disabled @endif>
+                                                                                        @break
+
+                                                                                        @case('select')
+                                                                                            <select class="form-select"
+                                                                                                wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $rowIndex }}.{{ $columnSlug }}.value"
+                                                                                                @if (($columnField['is_disabled'] ?? 'no') === 'yes') disabled @endif>
+                                                                                                <option value="">
+                                                                                                    {{ $columnField['placeholder'] ?? 'Select' }}
+                                                                                                </option>
+                                                                                                @foreach ($columnField['option'] ?? [] as $option)
+                                                                                                    <option
+                                                                                                        value="{{ $option['value'] }}">
+                                                                                                        {{ $option['label'] }}
+                                                                                                    </option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        @break
+                                                                                    @endswitch
+                                                                                </td>
+                                                                            @endforeach
+                                                                            <td>
+                                                                                <button type="button"
+                                                                                    wire:confirm="Are you sure you want to delete this record?"
+                                                                                    wire:click="removeTableRow('{{ $formKey }}', '{{ $field['slug'] }}', {{ $rowIndex }})"
+                                                                                    class="btn btn-danger btn-sm">
+                                                                                    <i class="bx bx-trash"> </i>
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        @else
+                                                            <div class="alert alert-info">
+                                                                No data in table. Click "Add Row" to start adding data.
+                                                            </div>
+                                                        @endif
+                                                        <div class="text-end mt-3">
+                                                            <button type="button"
+                                                                wire:click="addTableRow('{{ $formKey }}', '{{ $field['slug'] }}')"
+                                                                class="btn btn-primary">
+                                                                Add Row
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @break
+
+                                                @case('group')
+                                                    <div class="pl-4 border-l-4 border-primary mb-4">
+                                                        <div class="divider divider-primary text-start text-primary">
+                                                            <h5 class="divider-text">{{ __($field['label'] ?? 'Group') }}
+                                                            </h5>
+                                                        </div>
+                                                        @foreach ($field['fields'] ?? [] as $groupFieldSlug => $groupField)
+                                                            @switch($groupField['type'] ?? 'text')
+                                                                @case('text')
+                                                                    <div class="form-group mb-3">
+                                                                        <label class="form-label">
+                                                                            {{ __($groupField['label']) }}
+                                                                            @if (($groupField['is_required'] ?? 'no') === 'yes')
+                                                                                <span class="text-danger">*</span>
+                                                                            @endif
+                                                                        </label>
+                                                                        <input type="text"
+                                                                            class="form-control @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value') is-invalid @enderror"
+                                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value"
+                                                                            placeholder="{{ $groupField['placeholder'] ?? 'Enter value' }}"
+                                                                            @if (($groupField['is_required'] ?? 'no') === 'yes') required @endif
+                                                                            @if (($groupField['is_readonly'] ?? 'no') === 'yes') readonly @endif
+                                                                            @if (($groupField['is_disabled'] ?? 'no') === 'yes') disabled @endif>
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
+                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                @break
+
+                                                                @case('select')
+                                                                    <div class="form-group mb-3">
+                                                                        <label class="form-label">
+                                                                            {{ __($groupField['label']) }}
+                                                                            @if (($groupField['is_required'] ?? 'no') === 'yes')
+                                                                                <span class="text-danger">*</span>
+                                                                            @endif
+                                                                        </label>
+                                                                        <select
+                                                                            class="form-select @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value') is-invalid @enderror"
+                                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value"
+                                                                            @if (($groupField['is_required'] ?? 'no') === 'yes') required @endif
+                                                                            @if (($groupField['is_disabled'] ?? 'no') === 'yes') disabled @endif
+                                                                            @if (($groupField['is_multiple'] ?? 'no') === 'yes') multiple @endif>
+                                                                            <option value="">
+                                                                                {{ $groupField['placeholder'] ?? 'Select' }}</option>
+                                                                            @foreach ($groupField['option'] ?? [] as $option)
+                                                                                <option value="{{ $option['value'] }}">
+                                                                                    {{ $option['label'] }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
+                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                @break
+
+                                                                @case('file')
+                                                                    <div class="form-group mb-3">
+                                                                        <label class="form-label">
+                                                                            {{ $groupField['label'] ?? '' }}
+                                                                            @if (($groupField['is_required'] ?? 'no') === 'yes')
+                                                                                <span class="text-danger">*</span>
+                                                                            @endif
+                                                                        </label>
+                                                                        <input type="file"
+                                                                            class="form-control @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value') is-invalid @enderror"
+                                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value"
+                                                                            @if (($groupField['is_multiple'] ?? 'no') === 'yes') multiple @endif
+                                                                            @if (($groupField['is_required'] ?? 'no') === 'yes') required @endif
+                                                                            @if (($groupField['is_disabled'] ?? 'no') === 'yes') disabled @endif>
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
+                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                @break
+
+                                                                @case('radio')
+                                                                    <div class="form-group mb-3">
+                                                                        <label class="form-label">
+                                                                            {{ __($groupField['label'] ?? 'Default Label') }}
+                                                                            @if (($groupField['is_required'] ?? 'no') === 'yes')
+                                                                                <span class="text-danger">*</span>
+                                                                            @endif
+                                                                        </label>
+                                                                        @foreach ($groupField['option'] ?? [] as $option)
+                                                                            <div class="form-check">
+                                                                                <input type="radio"
+                                                                                    name="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value"
+                                                                                    value="{{ $option['value'] }}"
+                                                                                    id="{{ $field['slug'] }}-{{ $groupFieldSlug }}-{{ $option['value'] }}"
+                                                                                    class="form-check-input"
+                                                                                    wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value"
+                                                                                    @if (($groupField['is_disabled'] ?? 'no') === 'yes') disabled @endif
+                                                                                    @if (($groupField['is_required'] ?? 'no') === 'yes') required @endif>
+                                                                                <label class="form-check-label"
+                                                                                    for="{{ $field['slug'] }}-{{ $groupFieldSlug }}-{{ $option['value'] }}">
+                                                                                    {{ $option['label'] }}
+                                                                                </label>
+                                                                            </div>
+                                                                        @endforeach
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
+                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                            <div class="text-danger">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                @break
+
+                                                                @case('checkbox')
+                                                                    <div class="form-group mb-3">
+                                                                        <label
+                                                                            class="form-label">{{ __($groupField['label']) }}</label>
+                                                                        @foreach ($groupField['option'] ?? [] as $option)
+                                                                            <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+                                                                                <div class="form-check mt-2">
+                                                                                    <input class="form-check-input" type="checkbox"
+                                                                                        id="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value.{{ $option['value'] }}"
+                                                                                        @if (($groupField['is_disabled'] ?? 'no') === 'yes') disabled @endif
+                                                                                        wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value"
+                                                                                        value="{{ $option['value'] }}">
+                                                                                    <label class="form-label"
+                                                                                        for="data.{{ $formKey }}.fields.{{ $field['slug'] }}.fields.{{ $groupFieldSlug }}.value.{{ $option['value'] }}"
+                                                                                        style="font-size: 0.95rem;">
+                                                                                        {{ __(ucwords(str_replace('_', ' ', $option['label']))) }}
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
+                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                            <div class="text-danger">{{ $message }}</div>
+                                                                        @enderror
+                                                                    </div>
+                                                                @break
+                                                            @endswitch
+                                                        @endforeach
+                                                    </div>
+                                                @break
+
+                                                @default
+                                                    <div class="form-group">
+                                                        <label class="form-label">
+                                                            {{ $field['label'] ?? $field['slug'] }}
+                                                            @if (($field['is_required'] ?? 'no') === 'yes')
+                                                                <span class="text-danger">*</span>
+                                                            @endif
+                                                        </label>
+                                                        <input type="text"
+                                                            class="form-control @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value') is-invalid @enderror"
+                                                            wire:model="data.{{ $formKey }}.fields.{{ $field['slug'] }}.value"
+                                                            placeholder="{{ $field['placeholder'] ?? '' }}"
+                                                            @if (($field['is_required'] ?? 'no') === 'yes') required @endif>
+                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                            @endswitch
+
+
+
+                                            @error('data.' . $formKey . '.fields.' . $field['slug'] . '.value')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        @endif
 
         <!-- Declaration Section -->
         <div class="card mb-4">
