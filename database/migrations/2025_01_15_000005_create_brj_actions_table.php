@@ -25,7 +25,11 @@ return new class extends Migration
             
             // Foreign key constraints
             $table->foreign('cycle_id')->references('id')->on('brj_resolution_cycles')->onDelete('cascade');
-            $table->foreign('action_type_id')->references('id')->on('brj_action_types')->onDelete('set null');
+            $table->foreign('action_type_id')->references('id')->on('brj_action_types')->onDelete('restrict');
+            
+            // Indexes for better performance
+            $table->index(['cycle_id', 'status']);
+            $table->index('action_type_id');
             
             $table->timestamps();
             $table->softDeletes();
