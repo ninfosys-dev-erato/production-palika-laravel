@@ -4,6 +4,84 @@
             <i class="bx bx-arrow-back"></i> {{ __('Back') }}
         </a>
     </div>
+
+
+    <div class="row">
+        <!-- Sidebar with tab navigation -->
+
+
+        <div class="col-md-3">
+            <div class="bg-white p-3 rounded-0 shadow-sm">
+                <ul class="nav flex-column nav-pills">
+                    @foreach ($additionalFormsTemplate as $formTemplate)
+                        <li class="nav-item mb-2">
+                            <button type="button"
+                                class="nav-link {{ $activeFormId === $formTemplate['id'] ? 'active' : '' }}"
+                                wire:click="switchToForm({{ $formTemplate['id'] }})">
+                                {{ $formTemplate['name'] }}
+                            </button>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="d-flex align-items-center justify-content-between flex-wrap ms-5 mb-3">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button class="btn btn-outline-primary" type="button" wire:loading.attr="disabled"
+                        wire:click="writeAdditionalFormTemplate">
+                        <i class="bx bx-save"></i>
+                        {{ __('ebps::ebps.save') }}
+                    </button>
+                    <button class="btn btn-outline-primary" type="button" wire:loading.attr="disabled"
+                        wire:click="resetLetter">
+                        <i class="bx bx-reset"></i>
+                        {{ __('ebps::ebps.reset') }}
+                    </button>
+                    <!-- Toggle Preview/Edit Mode -->
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0" for="previewToggle">
+                            {{ $preview ? __('ebps::ebps.preview') : __('ebps::ebps.edit') }}
+                        </label>
+                        <div class="form-check form-switch mb-0">
+                            <input type="checkbox" id="previewToggle" class="form-check-input"
+                                style="width: 3rem; height: 1.3rem;" wire:model="editMode" wire:click="togglePreview">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="{{ $preview ? 'd-none' : '' }}">
+                <x-form.ck-editor-input label="" id="currentEditingTemplate" name="currentEditingTemplate"
+                    :value="$currentEditingTemplate" wire:model.defer="currentEditingTemplate" />
+            </div>
+
+            <div class="{{ !$preview ? 'd-none' : '' }} a4-container">
+                {!! $currentEditingTemplate !!}
+            </div>
+        </div>
+        {!! $formStyles !!}
+
+
+    </div>
+
+
+    <style>
+        .a4-container {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: auto;
+            background: white;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            position: relative;
+        }
+    </style>
+
+
+
+
     <form wire:submit.prevent="save">
         <!-- Applicant Details Section -->
         <div class="card mb-4">
@@ -38,7 +116,8 @@
                             name="construction_purpose">
                             <option value="">छानुहोस *</option>
                             @foreach ($constructionPurposes as $constructionPurpose)
-                                <option value="{{ $constructionPurpose['value'] }}">{{ $constructionPurpose['label'] }}
+                                <option value="{{ $constructionPurpose['value'] }}">
+                                    {{ $constructionPurpose['label'] }}
                                 </option>
                             @endforeach
                         </select>
@@ -80,7 +159,8 @@
                             name="approval_type" wire:model="mapApplyDetail.change_acceptance_type" required>
                             <option value="">छानुहोस *</option>
                             @foreach ($acceptanceTypes as $acceptanceType)
-                                <option value="{{ $acceptanceType['value'] }}">{{ $acceptanceType['label'] }}</option>
+                                <option value="{{ $acceptanceType['value'] }}">{{ $acceptanceType['label'] }}
+                                </option>
                             @endforeach
                         </select>
                         @error('mapApplyDetail.change_acceptance_type')
@@ -713,8 +793,10 @@
             </div>
         </div>
 
+
+
         <!-- Dynamic Form Fields Section -->
-        @if (!empty($data))
+        {{-- @if (!empty($data))
             @foreach ($data as $formKey => $formData)
                 @if (isset($formData['form_name']) && isset($formData['fields']))
                     <div class="card mb-4">
@@ -969,8 +1051,7 @@
                                                                             @if (($groupField['is_required'] ?? 'no') === 'yes') required @endif
                                                                             @if (($groupField['is_readonly'] ?? 'no') === 'yes') readonly @endif
                                                                             @if (($groupField['is_disabled'] ?? 'no') === 'yes') disabled @endif>
-                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
-                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value')
                                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                                         @enderror
                                                                     </div>
@@ -997,8 +1078,7 @@
                                                                                     {{ $option['label'] }}</option>
                                                                             @endforeach
                                                                         </select>
-                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
-                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value')
                                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                                         @enderror
                                                                     </div>
@@ -1018,8 +1098,7 @@
                                                                             @if (($groupField['is_multiple'] ?? 'no') === 'yes') multiple @endif
                                                                             @if (($groupField['is_required'] ?? 'no') === 'yes') required @endif
                                                                             @if (($groupField['is_disabled'] ?? 'no') === 'yes') disabled @endif>
-                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
-                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value')
                                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                                         @enderror
                                                                     </div>
@@ -1049,8 +1128,7 @@
                                                                                 </label>
                                                                             </div>
                                                                         @endforeach
-                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
-                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value')
                                                                             <div class="text-danger">{{ $message }}</div>
                                                                         @enderror
                                                                     </div>
@@ -1076,8 +1154,7 @@
                                                                                 </div>
                                                                             </div>
                                                                         @endforeach
-                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] .
-                                                                            '.fields.' . $groupFieldSlug . '.value')
+                                                                        @error('data.' . $formKey . '.fields.' . $field['slug'] . '.fields.' . $groupFieldSlug . '.value')
                                                                             <div class="text-danger">{{ $message }}</div>
                                                                         @enderror
                                                                     </div>
@@ -1119,7 +1196,7 @@
                     </div>
                 @endif
             @endforeach
-        @endif
+        @endif --}}
 
         <!-- Declaration Section -->
         <div class="card mb-4">

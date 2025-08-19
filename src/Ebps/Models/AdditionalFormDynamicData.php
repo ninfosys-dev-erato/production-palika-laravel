@@ -4,6 +4,7 @@ namespace Src\Ebps\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Src\Settings\Models\Form;
 
 class AdditionalFormDynamicData extends Model
 {
@@ -11,14 +12,19 @@ class AdditionalFormDynamicData extends Model
 
     protected $fillable = [
         'map_apply_id',
-        'additional_form_id',
-        'form_data'
+        'form_id',
+        'form_data',
+        'deleted_at',
+        'deleted_by'
     ];
 
     protected $casts = [
         'map_apply_id' => 'integer',
-        'additional_form_id' => 'integer',
-        'form_data' => 'array'
+        'form_id' => 'integer',
+        'form_data' => 'array',
+        'deleted_at' => 'datetime',
+        'deleted_by' => 'integer'
+
     ];
 
     public function mapApply(): BelongsTo
@@ -26,8 +32,8 @@ class AdditionalFormDynamicData extends Model
         return $this->belongsTo(MapApply::class);
     }
 
-    public function additionalForm(): BelongsTo
+    public function form(): BelongsTo
     {
-        return $this->belongsTo(AdditionalForm::class);
+        return $this->belongsTo(Form::class);
     }
 }
