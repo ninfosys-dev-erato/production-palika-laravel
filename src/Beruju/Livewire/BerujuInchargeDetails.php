@@ -23,6 +23,12 @@ class BerujuInchargeDetails extends Component
         $this->showInchargeDetails = true;
         $this->berujuEntry->refresh();
     }
+    
+    #[On('incharge-updated')]
+    public function refreshInchargeDetails()
+    {
+        $this->berujuEntry->refresh();
+    }
 
     public function toggleToForm()
     {
@@ -31,6 +37,20 @@ class BerujuInchargeDetails extends Component
 
     public function render()
     {
-        return view('Beruju::livewire.beruju-incharge-details');
+        // Load the resolution cycles with their relationships
+        $this->berujuEntry->load([
+            'resolutionCycles' => function($query) {
+                $query->where('status', 'active')
+                      ->with(['incharge', 'assignedBy']);
+            }
+        ]);
+        
+        // Get only the latest active resolution cycle from the loaded collection
+        $latestCycle = $this->berujuEntry->resolutionCycles
+            ->where('status', 'active')
+            ->sortByDesc('id')
+            ->first();
+            
+        return view('Beruju::livewire.beruju-incharge-details', compact('latestCycle'));
     }
 }
