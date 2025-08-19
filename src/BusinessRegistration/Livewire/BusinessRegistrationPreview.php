@@ -5,15 +5,19 @@ namespace Src\BusinessRegistration\Livewire;
 use App\Traits\SessionFlash;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Src\BusinessRegistration\DTO\CertificatePratilipiLogDto;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Service\BusinessRegistrationAdminService;
 use Src\BusinessRegistration\Traits\BusinessRegistrationTemplate;
 use Src\Recommendation\Services\RecommendationService;
+use Src\BusinessRegistration\Models\CertificatePratilipiLog;
+use Src\BusinessRegistration\Service\CertificatePratilipiLogService;
 
 class BusinessRegistrationPreview extends Component
 {
     use SessionFlash, BusinessRegistrationTemplate;
     public ?BusinessRegistration $businessRegistration;
+    public ?CertificatePratilipiLog $certificatePratilipiLog;
 
     public $certificateTemplate;
     public $style;
@@ -21,9 +25,22 @@ class BusinessRegistrationPreview extends Component
     public $editMode = false;
     public $hasUnsavedChanges = false;
 
+    public function rules()
+    {
+        return [
+            'certificatePratilipiLog.damage_reason' => 'nullable',
+        ];
+    }
+    public function messages(): array
+    {
+        return [];
+    }
+
     public function mount(BusinessRegistration $businessRegistration)
     {
         $this->businessRegistration = $businessRegistration;
+        $this->certificatePratilipiLog = new CertificatePratilipiLog();
+
         $this->style = $this->businessRegistration->registrationType->form?->styles ?? "";
         $this->getCertificateTemplate();
         $this->editMode = !$this->preview;
@@ -94,5 +111,36 @@ class BusinessRegistrationPreview extends Component
 
         // If no unsaved changes, proceed with printing
         $this->dispatch('print-certificate-letter');
+    }
+    public function pratilipiEntry()
+    {
+        $this->dispatch('open-modal');
+    }
+    #[On('reset-form')]
+    public function resetPratilipiEntry()
+    {
+        $this->reset(['certificatePratilipiLog']);
+        $this->certificatePratilipiLog = new CertificatePratilipiLog();
+    }
+    public function savePratilipiEntry()
+    {
+        try {
+            $this->validate();
+
+            $this->certificatePratilipiLog->business_registration_id = $this->businessRegistration->id;
+
+            $dto = CertificatePratilipiLogDto::fromLiveWireModel($this->certificatePratilipiLog);
+            $service = new CertificatePratilipiLogService();
+            $service->store($dto);
+
+            $this->resetPratilipiEntry();
+            $this->dispatch('close-modal');
+            $this->resetLetter();
+
+            $this->successToast(__('businessregistration::businessregistration.pratilipi_entry_saved_successfully'));
+        } catch (\Exception $e) {
+
+            $this->errorToast(__('businessregistration::businessregistration.failed_to_save_pratilipi_entry'));
+        }
     }
 }
