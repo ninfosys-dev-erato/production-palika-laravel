@@ -78,26 +78,36 @@ class ResolutionCycleForm extends Component
     {
         try {
             $this->validate();
+            
+            if ($this->action === Action::CREATE) {
+                // Deactivate all previous resolution cycles for this beruju entry
+                ResolutionCycle::where('beruju_id', $this->resolutionCycle->beruju_id)
+                    ->where('status', 'active')
+                    ->update(['status' => 'inactive']);
+            }
+            
             $this->resolutionCycle->status = 'active';
             $dto = ResolutionCycleAdminDto::fromLiveWireModel($this->resolutionCycle);
             $service = new ResolutionCycleAdminService();
         
-        switch ($this->action) {
-            case Action::CREATE:
-                $service->store($dto);
-                $this->successFlash(__('beruju::beruju.beruju_assigned_successfully'));
-                $this->dispatch('close-modal');
-                $this->dispatch('show-incharge-details');
-                break;
-            case Action::UPDATE:
-                $service->update($this->resolutionCycle, $dto);
-                $this->successFlash(__('beruju::beruju.beruju_updated_successfully'));
-                $this->dispatch('close-modal');
-                $this->dispatch('show-incharge-details');
-                break;
-            default:
-                break;
-        }
+            switch ($this->action) {
+                case Action::CREATE:
+                    $service->store($dto);
+                    $this->successFlash(__('beruju::beruju.beruju_assigned_successfully'));
+                    $this->dispatch('close-modal');
+                    $this->dispatch('show-incharge-details');
+                    $this->dispatch('incharge-updated');
+                    break;
+                case Action::UPDATE:
+                    $service->update($this->resolutionCycle, $dto);
+                    $this->successFlash(__('beruju::beruju.beruju_updated_successfully'));
+                    $this->dispatch('close-modal');
+                    $this->dispatch('show-incharge-details');
+                    $this->dispatch('incharge-updated');
+                    break;
+                default:
+                    break;
+            }
         } catch (\Exception $e) {
             $this->errorFlash($e->getMessage());
         }

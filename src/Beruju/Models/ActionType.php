@@ -6,6 +6,7 @@ use App\Traits\HelperDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -77,6 +78,11 @@ class ActionType extends Model
     public function deleter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function actions(): HasMany
+    {
+        return $this->hasMany(\Src\Beruju\Models\Action::class, 'action_type_id');
     }
 
     // Scopes

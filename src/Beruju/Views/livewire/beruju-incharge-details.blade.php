@@ -1,89 +1,100 @@
-<div class="card shadow-sm mb-4 border-radius-0">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="bx bx-check-circle me-2"></i>{{ __('beruju::beruju.incharge') }}
-        </h5>
+<div class="card mb-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h6 class="card-title mb-0 fw-semibold">
+            <i class="bx bx-user-check me-2"></i>{{ __('beruju::beruju.incharge') }}
+        </h6>
+        @if($showInchargeDetails && $latestCycle)
+            <button type="button" class="btn btn-primary btn-sm" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
+                <i class="bx bx-plus me-1"></i>{{ __('beruju::beruju.assign_another') }}
+            </button>
+        @endif
     </div>
-    <div class="card-body">
+    <div class="card-body p-3">
         @if($showInchargeDetails)
-            <!-- Incharge Details -->
-            @if($berujuEntry->resolutionCycles && $berujuEntry->resolutionCycles->count() > 0)
-                @foreach($berujuEntry->resolutionCycles as $resolutionCycle)
-                    <div class="border-bottom pb-3 mb-3">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-muted">{{ __('beruju::beruju.incharge') }}</label>
-                                <p class="mb-1 fw-bold">
-                                    @if($resolutionCycle->incharge)
-                                        {{ $resolutionCycle->incharge->name }}
-                                    @else
-                                        <span class="text-muted">{{ __('beruju::beruju.not_specified') }}</span>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-muted">{{ __('beruju::beruju.assigned_by') }}</label>
-                                <p class="mb-1 fw-bold">
-                                    @if($resolutionCycle->assignedBy)
-                                        {{ $resolutionCycle->assignedBy->name }}
-                                    @else
-                                        <span class="text-muted">{{ __('beruju::beruju.not_specified') }}</span>
-                                    @endif
-                                </p>
-                            </div>
+            @if($latestCycle)
+                <!-- Incharge Information -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">{{ __('beruju::beruju.incharge') }}</span>
+                            <span class="fw-medium">
+                                @if($latestCycle->incharge)
+                                    {{ $latestCycle->incharge->name }}
+                                @else
+                                    {{ __('beruju::beruju.not_specified') }}
+                                @endif
+                            </span>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-muted">{{ __('beruju::beruju.assigned_at') }}</label>
-                                <p class="mb-1">
-                                    @if($resolutionCycle->assigned_at)
-                                        {{ $resolutionCycle->assigned_at->format('Y-m-d H:i') }}
-                                    @else
-                                        <span class="text-muted">{{ __('beruju::beruju.not_specified') }}</span>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-muted">{{ __('beruju::beruju.status') }}</label>
-                                <div class="d-flex align-items-center">
-                                    @if($resolutionCycle->status)
-                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: {{ $resolutionCycle->status_color }}; margin-right: 8px;"></span>
-                                        <span class="fw-bold">{{ ucfirst($resolutionCycle->status) }}</span>
-                                    @else
-                                        <span class="text-muted">{{ __('beruju::beruju.not_specified') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        @if($resolutionCycle->remarks)
-                            <div class="row">
-                                <div class="col-12">
-                                    <label class="form-label fw-bold text-muted">{{ __('beruju::beruju.remarks') }}</label>
-                                    <p class="mb-0">{{ $resolutionCycle->remarks }}</p>
-                                </div>
-                            </div>
-                        @endif
-                        @if($resolutionCycle->completed_at)
-                            <div class="row">
-                                <div class="col-12">
-                                    <label class="form-label fw-bold text-muted">{{ __('beruju::beruju.completed_at') }}</label>
-                                    <p class="mb-0">{{ $resolutionCycle->completed_at->format('Y-m-d H:i') }}</p>
-                                </div>
-                            </div>
-                        @endif
-                        <!-- <div class="mt-3">
-                            <button type="button" class="btn btn-outline-primary btn-sm" wire:click="toggleToForm">
-                                <i class="bx bx-plus me-1"></i>{{ __('beruju::beruju.assign_another') }}
-                            </button>
-                        </div> -->
                     </div>
-                @endforeach
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">{{ __('beruju::beruju.assigned_by') }}</span>
+                            <span class="fw-medium">
+                                @if($latestCycle->assignedBy)
+                                    {{ $latestCycle->assignedBy->name }}
+                                @else
+                                    {{ __('beruju::beruju.not_specified') }}
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">{{ __('beruju::beruju.assigned_at') }}</span>
+                            <span class="fw-medium">
+                                @if($latestCycle->assigned_at)
+                                    {{ $latestCycle->assigned_at->format('M d, Y H:i') }}
+                                @else
+                                    {{ __('beruju::beruju.not_specified') }}
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">{{ __('beruju::beruju.status') }}</span>
+                            <div class="d-flex align-items-center">
+                                @if($latestCycle->status)
+                                    <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: {{ $latestCycle->status === 'active' ? '#24a148' : '#8a3ffc' }}; margin-right: 6px;"></span>
+                                    <span class="fw-medium">{{ ucfirst($latestCycle->status) }}</span>
+                                @else
+                                    <span class="fw-medium">{{ __('beruju::beruju.not_specified') }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Details -->
+                @if($latestCycle->remarks || $latestCycle->completed_at)
+                    <div class="border-top pt-3">
+                        @if($latestCycle->remarks)
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted small">{{ __('beruju::beruju.remarks') }}</span>
+                                </div>
+                                <p class="mb-0 small">{{ $latestCycle->remarks }}</p>
+                            </div>
+                        @endif
+                        @if($latestCycle->completed_at)
+                            <div class="mb-0">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted small">{{ __('beruju::beruju.completed_at') }}</span>
+                                </div>
+                                <p class="mb-0 small">{{ $latestCycle->completed_at->format('M d, Y H:i') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                @endif
             @endif
         @else
-            <!-- Form Button -->
+            <!-- Empty State -->
             <div class="text-center py-3">
-                <p class="text-muted mb-0">{{ __('beruju::beruju.not_assigned_yet') }}</p>
-                <button type="button" class="btn btn-primary mt-3" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
+                <div class="mb-3">
+                    <i class="bx bx-user-plus text-muted" style="font-size: 2rem;"></i>
+                </div>
+                <p class="text-muted mb-3 small">{{ __('beruju::beruju.not_assigned_yet') }}</p>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
                     <i class="bx bx-plus me-2"></i>{{ __('beruju::beruju.assign_beruju') }}
                 </button>
             </div>
