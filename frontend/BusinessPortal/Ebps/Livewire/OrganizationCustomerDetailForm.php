@@ -36,6 +36,8 @@ use Src\Ebps\Models\AdditionalForm;
 use App\Enums\Action;
 use App\Facades\FileFacade;
 use App\Facades\ImageServiceFacade;
+use Src\Ebps\DTO\AdditionalFormDynamicDataDto;
+use Src\Ebps\Service\AdditionalFormDynamicDataService;
 use Src\Ebps\Models\AdditionalFormDynamicData;
 
 class OrganizationCustomerDetailForm extends Component
@@ -67,11 +69,18 @@ class OrganizationCustomerDetailForm extends Component
     public array $highTensionDetails = [];
     public $todayDate;
 
-    public $additionalForms;
-    public $data = [];
-    public $action = Action::CREATE; // Add back the missing action property
+    public Action $action = Action::CREATE;
 
-
+    public  array $additionalFormsTemplate;
+    public $editMode = false;
+    public $hasUnsavedChanges = false;
+    public $editingFormId = null;
+    public $editingTemplate = '';
+    public $preview = true;
+    public $editingTemplates = [];
+    public $currentEditingTemplate = '';
+    public $activeFormId = null;
+    public $formStyles = '';
     public function rules(): array
     {
         $rules =  [
@@ -137,15 +146,15 @@ class OrganizationCustomerDetailForm extends Component
         }
 
         // Add validation rules for dynamic form fields
-        foreach ($this->data as $formKey => $formData) {
-            if (isset($formData['fields'])) {
-                foreach ($formData['fields'] as $fieldSlug => $fieldData) {
-                    if (isset($fieldData['is_required']) && $fieldData['is_required'] === 'yes') {
-                        $rules["data.$formKey.fields.$fieldSlug.value"] = 'required';
-                    }
-                }
-            }
-        }
+        // foreach ($this->data as $formKey => $formData) {
+        //     if (isset($formData['fields'])) {
+        //         foreach ($formData['fields'] as $fieldSlug => $fieldData) {
+        //             if (isset($fieldData['is_required']) && $fieldData['is_required'] === 'yes') {
+        //                 $rules["data.$formKey.fields.$fieldSlug.value"] = 'required';
+        //             }
+        //         }
+        //     }
+        // }
 
         return $rules;
     }
@@ -200,8 +209,12 @@ class OrganizationCustomerDetailForm extends Component
         $this->todayDate = $this->convertEnglishToNepali(\Carbon\Carbon::today()->toDateString());
 
         // Initialize dynamic form fields from AdditionalForm
-        $this->setFields();
+        // $this->setFields();
+
+        $this->getAdditionalForms();
     }
+
+
 
 
     public function updateTotalArea($index)
@@ -233,9 +246,6 @@ class OrganizationCustomerDetailForm extends Component
     {
         return view("BusinessPortal.Ebps::livewire.template");
     }
-
-
-
 
 
     public function addStoreyPurpose()
@@ -326,106 +336,264 @@ class OrganizationCustomerDetailForm extends Component
         }
     }
 
+    // public function getAdditionalForms()
+    // {
+    //     $additionalForms = AdditionalForm::with('form')->where('status', true)->get();
+    //     $this->additionalFormsTemplate = $additionalForms->map(function ($additionalForm) {
+    //         return [
+    //             'id' => $additionalForm->id,
+    //             'name' => $additionalForm->name,
+    //             'form_id' => $additionalForm->form?->id,
+    //             'template' => $additionalForm->form?->template,
+    //             'style' => $additionalForm->form?->styles,
+    //         ];
+    //     })->toArray();
+
+    //     // Initialize editing templates for each form
+    //     foreach ($this->additionalFormsTemplate as $formTemplate) {
+    //         $this->editingTemplates[$formTemplate['id']] = $formTemplate['template'] ?? '';
+    //     }
+
+    //     // Set the first form as active
+    //     if (!empty($this->additionalFormsTemplate)) {
+    //         $this->activeFormId = $this->additionalFormsTemplate[0]['id'];
+    //         $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId] ?? '';
+    //     }
+    // }
 
 
-    private function getFormattedData(): array
+    public function getAdditionalForms()
     {
-        $processedData = [];
+        $additionalForms = AdditionalForm::with('form')->where('status', true)->get();
 
-        foreach ($this->data as $formKey => $formData) {
-            if (!isset($formData['fields'])) {
-                continue;
-            }
+        // Fetch saved templates
+        $existingData = AdditionalFormDynamicData::where('map_apply_id', $this->mapApply->id)
+            ->pluck('form_data', 'form_id')
+            ->toArray();
 
-            foreach ($formData['fields'] as $fieldSlug => $fieldValue) {
-                // Extract the actual field slug (remove form_1_ prefix)
-                $fieldSlugParts = explode('_', $fieldSlug);
-                $actualFieldSlug = end($fieldSlugParts); // This gives us 'abc-abc'
-
-                $fieldDefinition = collect($formData['fields'])->firstWhere('slug', $fieldValue['slug'] ?? $fieldSlug);
-
-                if ($fieldDefinition && $fieldDefinition['type'] === 'table') {
-                    $tableData = [];
-
-                    foreach ($fieldValue['fields'] as $index => $field) {
-                        $processedRow = [];
-
-                        foreach ($field as $rowKey => $rowValue) {
-                            if (is_array($rowValue) && isset($rowValue['value']) && is_string($rowValue['value'])) {
-                                // Convert value inside nested structure
-                                $rowValue['value'] = replaceNumbers($rowValue['value'], true);
-                                $processedRow[$rowKey] = $rowValue;
-                            } else {
-                                $processedRow[$rowKey] = $rowValue;
-                            }
-                        }
-
-                        if (!empty($processedRow)) {
-                            $tableData[] = $processedRow;
-                        }
-                    }
-
-                    $processedData[$actualFieldSlug] = [
-                        'label' => $fieldDefinition['label'] ?? '',
-                        'slug' => $actualFieldSlug,
-                        'type' => 'table',
-                        'value' => $tableData
-                    ];
-                } elseif ($fieldDefinition['type'] === 'file' && is_array($fieldDefinition)) {
-                    $storedDocuments = [];
-
-                    if (isset($fieldDefinition['value'])) {
-                        $document = $fieldDefinition['value'];
-
-                        if (is_array($document)) {
-                            foreach ($document as $file) {
-                                if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                                    $path = FileFacade::saveFile(
-                                        config('src.BusinessRegistration.businessRegistration.registration'),
-                                        "",
-                                        $file,
-                                        'local'
-                                    );
-                                    $storedDocuments[] = $path;
-                                }
-                            }
-                        } else {
-                            if ($document instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                                $path = FileFacade::saveFile(
-                                    config('src.BusinessRegistration.businessRegistration.registration'),
-                                    "",
-                                    $document,
-                                    'local'
-                                );
-                                $storedDocuments[] = $path;
-                            }
-                        }
-                    }
-
-                    $processedData[$actualFieldSlug] = array_merge(
-                        $fieldDefinition ?? [],
-                        [
-                            'label' => $fieldDefinition['label'] ?? '',
-                            'value' => $storedDocuments,
-                        ]
-                    );
-                } else {
-                    $value = $fieldValue['value'] ?? null;
-
-                    if (is_string($value)) {
-                        $value = replaceNumbers($value, true);
-                    }
-
-                    $processedData[$actualFieldSlug] = array_merge($fieldDefinition ?? [], [
-                        'value' => $value,
-                        'label' => $fieldDefinition['label'] ?? '',
-                    ]);
-                }
-            }
+        $this->additionalFormsTemplate = $additionalForms->map(function ($additionalForm) use ($existingData) {
+            return [
+                'id' => $additionalForm->id,
+                'name' => $additionalForm->name,
+                'form_id' => $additionalForm->form?->id,
+                'template' => $existingData[$additionalForm->form?->id] ?? $additionalForm->form?->template,
+                'style' => $additionalForm->form?->styles,
+            ];
+        })->toArray();
+        $this->formStyles = collect($this->additionalFormsTemplate)
+            ->map(function ($formTemplate) {
+                return preg_replace(
+                    '/(\.[^{\s]+)\s*\{/',
+                    "#template-{$formTemplate['id']} $1 {",
+                    $formTemplate['style']
+                );
+            })
+            ->implode("\n");
+        // Initialize editing templates for each form
+        foreach ($this->additionalFormsTemplate as $formTemplate) {
+            $this->editingTemplates[$formTemplate['id']] = $formTemplate['template'] ?? '';
         }
 
-        return $processedData;
+        // Set the first form as active
+        if (!empty($this->additionalFormsTemplate)) {
+            $this->activeFormId = $this->additionalFormsTemplate[0]['id'];
+            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId] ?? '';
+        }
     }
+
+
+    public function togglePreview()
+    {
+        $this->preview = !$this->preview;
+        $this->editMode = !$this->preview;
+
+        // If switching to edit mode, set the current editing template to the active form
+        if ($this->editMode && $this->activeFormId) {
+            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId] ?? '';
+        }
+    }
+
+
+    public function switchToForm($formId)
+    {
+        // Save current form's template before switching
+        if ($this->editMode && $this->activeFormId) {
+            $this->editingTemplates[$this->activeFormId] = $this->currentEditingTemplate;
+        }
+
+        // Switch to new form
+        $this->activeFormId = $formId;
+        $this->currentEditingTemplate = $this->editingTemplates[$formId] ?? '';
+        $this->dispatch('update-editor', ['currentEditingTemplate' => $this->currentEditingTemplate]);
+
+        // Always show preview mode when switching tabs
+        $this->preview = true;
+        $this->editMode = false;
+    }
+
+
+
+
+    public function writeAdditionalFormTemplate()
+    {
+        try {
+            // Get the correct form_id from the AdditionalForm model
+            $additionalForm = AdditionalForm::with('form')->find($this->activeFormId);
+            if (!$additionalForm || !$additionalForm->form) {
+                $this->errorToast('Form not found.');
+                return;
+            }
+
+            $dynamicDataDto = new AdditionalFormDynamicDataDto(
+                map_apply_id: $this->mapApply->id,
+                form_id: $additionalForm->form->id,
+                form_data: $this->currentEditingTemplate
+            );
+
+            $dynamicDataService = new AdditionalFormDynamicDataService();
+            $dynamicDataService->updateOrCreate($dynamicDataDto);
+            $this->preview = true;
+            $this->editMode = false;
+            $this->successToast('Template saved successfully.');
+        } catch (\Exception $e) {
+            $this->errorToast('Failed to save template.');
+        }
+    }
+
+    public function resetLetter()
+    {
+        try {
+            if ($this->activeFormId) {
+
+                $additionalForm = AdditionalForm::with('form')->find($this->activeFormId);
+                if (!$additionalForm || !$additionalForm->form) {
+                    $this->errorToast('Form not found.');
+                    return;
+                }
+
+                $dynamicDataService = new AdditionalFormDynamicDataService();
+
+                $existingData = $dynamicDataService->findByMapApplyAndForm($this->mapApply->id, $additionalForm->form_id);
+
+                if ($existingData) {
+                    $dynamicDataService->deleteFormData($existingData);
+                }
+
+                $this->editingTemplates[$this->activeFormId] = $additionalForm->form->template ?? '';
+                $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId];
+
+                $this->dispatch('update-editor', [
+                    'currentEditingTemplate' => $this->currentEditingTemplate
+                ]);
+            }
+
+            $this->successToast('Template reset successfully.');
+        } catch (\Exception $e) {
+            dd($e);
+            $this->errorToast('Failed to reset template.');
+        }
+    }
+
+
+
+    // private function getFormattedData(): array
+    // {
+    //     $processedData = [];
+
+    //     foreach ($this->data as $formKey => $formData) {
+    //         if (!isset($formData['fields'])) {
+    //             continue;
+    //         }
+
+    //         foreach ($formData['fields'] as $fieldSlug => $fieldValue) {
+    //             // Extract the actual field slug (remove form_1_ prefix)
+    //             $fieldSlugParts = explode('_', $fieldSlug);
+    //             $actualFieldSlug = end($fieldSlugParts); // This gives us 'abc-abc'
+
+    //             $fieldDefinition = collect($formData['fields'])->firstWhere('slug', $fieldValue['slug'] ?? $fieldSlug);
+
+    //             if ($fieldDefinition && $fieldDefinition['type'] === 'table') {
+    //                 $tableData = [];
+
+    //                 foreach ($fieldValue['fields'] as $index => $field) {
+    //                     $processedRow = [];
+
+    //                     foreach ($field as $rowKey => $rowValue) {
+    //                         if (is_array($rowValue) && isset($rowValue['value']) && is_string($rowValue['value'])) {
+    //                             // Convert value inside nested structure
+    //                             $rowValue['value'] = replaceNumbers($rowValue['value'], true);
+    //                             $processedRow[$rowKey] = $rowValue;
+    //                         } else {
+    //                             $processedRow[$rowKey] = $rowValue;
+    //                         }
+    //                     }
+
+    //                     if (!empty($processedRow)) {
+    //                         $tableData[] = $processedRow;
+    //                     }
+    //                 }
+
+    //                 $processedData[$actualFieldSlug] = [
+    //                     'label' => $fieldDefinition['label'] ?? '',
+    //                     'slug' => $actualFieldSlug,
+    //                     'type' => 'table',
+    //                     'value' => $tableData
+    //                 ];
+    //             } elseif ($fieldDefinition['type'] === 'file' && is_array($fieldDefinition)) {
+    //                 $storedDocuments = [];
+
+    //                 if (isset($fieldDefinition['value'])) {
+    //                     $document = $fieldDefinition['value'];
+
+    //                     if (is_array($document)) {
+    //                         foreach ($document as $file) {
+    //                             if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+    //                                 $path = FileFacade::saveFile(
+    //                                     config('src.BusinessRegistration.businessRegistration.registration'),
+    //                                     "",
+    //                                     $file,
+    //                                     'local'
+    //                                 );
+    //                                 $storedDocuments[] = $path;
+    //                             }
+    //                         }
+    //                     } else {
+    //                         if ($document instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+    //                             $path = FileFacade::saveFile(
+    //                                 config('src.BusinessRegistration.businessRegistration.registration'),
+    //                                 "",
+    //                                 $document,
+    //                                 'local'
+    //                             );
+    //                             $storedDocuments[] = $path;
+    //                         }
+    //                     }
+    //                 }
+
+    //                 $processedData[$actualFieldSlug] = array_merge(
+    //                     $fieldDefinition ?? [],
+    //                     [
+    //                         'label' => $fieldDefinition['label'] ?? '',
+    //                         'value' => $storedDocuments,
+    //                     ]
+    //                 );
+    //             } else {
+    //                 $value = $fieldValue['value'] ?? null;
+
+    //                 if (is_string($value)) {
+    //                     $value = replaceNumbers($value, true);
+    //                 }
+
+    //                 $processedData[$actualFieldSlug] = array_merge($fieldDefinition ?? [], [
+    //                     'value' => $value,
+    //                     'label' => $fieldDefinition['label'] ?? '',
+    //                 ]);
+    //             }
+    //         }
+    //     }
+
+    //     return $processedData;
+    // }
 
     /**
      * Get resolved form data for template replacement
@@ -453,277 +621,277 @@ class OrganizationCustomerDetailForm extends Component
     // }
 
 
-    public function setFields()
-    {
-        try {
-            $additionalForms = AdditionalForm::with('form')->where('status', true)->get();
+    // public function setFields()
+    // {
+    //     try {
+    //         $additionalForms = AdditionalForm::with('form')->where('status', true)->get();
 
-            $this->data = [];
+    //         $this->data = [];
 
-            foreach ($additionalForms as $additionalForm) {
-                if (!$additionalForm->form) continue;
+    //         foreach ($additionalForms as $additionalForm) {
+    //             if (!$additionalForm->form) continue;
 
-                $formFields = json_decode($additionalForm->form->fields, true);
-                if (!$formFields) continue;
+    //             $formFields = json_decode($additionalForm->form->fields, true);
+    //             if (!$formFields) continue;
 
-                $formKey = 'form_' . $additionalForm->id;
-                $this->data[$formKey] = [
-                    'form_name' => $additionalForm->name,
-                    'form_id' => $additionalForm->id,
-                    'fields' => []
-                ];
+    //             $formKey = 'form_' . $additionalForm->id;
+    //             $this->data[$formKey] = [
+    //                 'form_name' => $additionalForm->name,
+    //                 'form_id' => $additionalForm->id,
+    //                 'fields' => []
+    //             ];
 
-                // Process fields with proper handling for table and group types
-                $processedFields = collect($formFields)
-                    ->filter(function ($field) {
-                        return isset($field['type']);
-                    })
-                    ->map(function ($field) {
-                        // Handle table fields
-                        if ($field['type'] === "table") {
-                            $field['fields'] = [];
-                            $row = [];
-                            foreach ($field as $key => $values) {
-                                if (is_numeric($key)) {
-                                    $row[$values['slug']] = $values;
-                                    unset($field[$key]);
-                                }
-                            }
-                            $field['fields'][] = $row;
-                        }
-                        // Handle group fields
-                        elseif ($field['type'] === "group") {
-                            $fields = [];
-                            foreach ($field as $key => $values) {
-                                if (is_numeric($key)) {
-                                    $values['value'] = $this->initializeFieldValue($values);
-                                    $fields[$values['slug']] = $values;
-                                    unset($field[$key]);
-                                }
-                            }
-                            $field['fields'] = $fields;
-                        }
-                        // Handle regular fields
-                        else {
-                            $field['value'] = $this->initializeFieldValue($field);
-                        }
+    //             // Process fields with proper handling for table and group types
+    //             $processedFields = collect($formFields)
+    //                 ->filter(function ($field) {
+    //                     return isset($field['type']);
+    //                 })
+    //                 ->map(function ($field) {
+    //                     // Handle table fields
+    //                     if ($field['type'] === "table") {
+    //                         $field['fields'] = [];
+    //                         $row = [];
+    //                         foreach ($field as $key => $values) {
+    //                             if (is_numeric($key)) {
+    //                                 $row[$values['slug']] = $values;
+    //                                 unset($field[$key]);
+    //                             }
+    //                         }
+    //                         $field['fields'][] = $row;
+    //                     }
+    //                     // Handle group fields
+    //                     elseif ($field['type'] === "group") {
+    //                         $fields = [];
+    //                         foreach ($field as $key => $values) {
+    //                             if (is_numeric($key)) {
+    //                                 $values['value'] = $this->initializeFieldValue($values);
+    //                                 $fields[$values['slug']] = $values;
+    //                                 unset($field[$key]);
+    //                             }
+    //                         }
+    //                         $field['fields'] = $fields;
+    //                     }
+    //                     // Handle regular fields
+    //                     else {
+    //                         $field['value'] = $this->initializeFieldValue($field);
+    //                     }
 
-                        return $field;
-                    })
-                    ->toArray();
+    //                     return $field;
+    //                 })
+    //                 ->toArray();
 
-                // Add processed fields to data structure
-                foreach ($processedFields as $field) {
-                    if (!isset($field['slug'])) {
-                        continue;
-                    }
+    //             // Add processed fields to data structure
+    //             foreach ($processedFields as $field) {
+    //                 if (!isset($field['slug'])) {
+    //                     continue;
+    //                 }
 
-                    // Use the original slug for the field key, not the prefixed one
-                    $this->data[$formKey]['fields'][$field['slug']] = $field;
-                }
-            }
+    //                 // Use the original slug for the field key, not the prefixed one
+    //                 $this->data[$formKey]['fields'][$field['slug']] = $field;
+    //             }
+    //         }
 
-            // Load existing data if editing
-            $this->loadExistingDynamicData();
-        } catch (\Exception $e) {
-            $this->data = [];
-        }
-    }
+    //         // Load existing data if editing
+    //         $this->loadExistingDynamicData();
+    //     } catch (\Exception $e) {
+    //         $this->data = [];
+    //     }
+    // }
 
     /**
      * Initialize field value based on field type and default value
      */
-    private function initializeFieldValue($field)
-    {
-        $type = $field['type'] ?? 'text';
+    // private function initializeFieldValue($field)
+    // {
+    //     $type = $field['type'] ?? 'text';
 
-        switch ($type) {
-            case 'checkbox':
-                // For multiple checkboxes, initialize as empty array
-                if (($field['is_multiple'] ?? '0') === '1') {
-                    return [];
-                }
-                // For single checkbox, use default value or false
-                return $field['default_value'] ?? false;
+    //     switch ($type) {
+    //         case 'checkbox':
+    //             // For multiple checkboxes, initialize as empty array
+    //             if (($field['is_multiple'] ?? '0') === '1') {
+    //                 return [];
+    //             }
+    //             // For single checkbox, use default value or false
+    //             return $field['default_value'] ?? false;
 
-            case 'select':
-                // For multiple select, initialize as empty array
-                if (($field['is_multiple'] ?? '0') === '1') {
-                    return [];
-                }
-                // For single select, use default value or null
-                return $field['default_value'] ?? null;
+    //         case 'select':
+    //             // For multiple select, initialize as empty array
+    //             if (($field['is_multiple'] ?? '0') === '1') {
+    //                 return [];
+    //             }
+    //             // For single select, use default value or null
+    //             return $field['default_value'] ?? null;
 
-            case 'table':
-                // Initialize table with empty array
-                return [];
+    //         case 'table':
+    //             // Initialize table with empty array
+    //             return [];
 
-            case 'group':
-                // Initialize group fields
-                $groupFields = [];
-                if (isset($field['fields'])) {
-                    foreach ($field['fields'] as $groupField) {
-                        $groupFields[$groupField['slug']] = $this->initializeFieldValue($groupField);
-                    }
-                }
-                return $groupFields;
+    //         case 'group':
+    //             // Initialize group fields
+    //             $groupFields = [];
+    //             if (isset($field['fields'])) {
+    //                 foreach ($field['fields'] as $groupField) {
+    //                     $groupFields[$groupField['slug']] = $this->initializeFieldValue($groupField);
+    //                 }
+    //             }
+    //             return $groupFields;
 
-            default:
-                // For text, textarea, radio, file, etc.
-                return $field['default_value'] ?? null;
-        }
-    }
+    //         default:
+    //             // For text, textarea, radio, file, etc.
+    //             return $field['default_value'] ?? null;
+    //     }
+    // }
 
-    private function loadExistingDynamicData()
-    {
-        try {
-            $existingData = AdditionalFormDynamicData::where('map_apply_id', $this->mapApply->id)->get();
+    // private function loadExistingDynamicData()
+    // {
+    //     try {
+    //         $existingData = AdditionalFormDynamicData::where('map_apply_id', $this->mapApply->id)->get();
 
-            foreach ($existingData as $data) {
-                $formKey = 'form_' . $data->additional_form_id;
+    //         foreach ($existingData as $data) {
+    //             $formKey = 'form_' . $data->additional_form_id;
 
-                if (isset($this->data[$formKey]) && isset($data->form_data)) {
-                    // Load the saved form data
-                    foreach ($data->form_data as $fieldSlug => $fieldData) {
-                        // Find the corresponding field in current form structure
-                        if (isset($this->data[$formKey]['fields'][$fieldSlug])) {
-                            $field = &$this->data[$formKey]['fields'][$fieldSlug];
+    //             if (isset($this->data[$formKey]) && isset($data->form_data)) {
+    //                 // Load the saved form data
+    //                 foreach ($data->form_data as $fieldSlug => $fieldData) {
+    //                     // Find the corresponding field in current form structure
+    //                     if (isset($this->data[$formKey]['fields'][$fieldSlug])) {
+    //                         $field = &$this->data[$formKey]['fields'][$fieldSlug];
 
-                            // Handle different field types when loading existing data
-                            if ($field['type'] === 'table') {
-                                // Load table data - ensure we have the proper structure
-                                if (isset($fieldData['value']) && is_array($fieldData['value'])) {
-                                    $field['fields'] = $fieldData['value'];
-                                } else {
-                                    // Initialize with empty array if no data
-                                    $field['fields'] = [];
-                                }
-                            } elseif ($field['type'] === 'group') {
-                                // Load group data
-                                if (isset($fieldData['value']) && is_array($fieldData['value'])) {
-                                    foreach ($fieldData['value'] as $groupFieldSlug => $groupFieldValue) {
-                                        if (isset($field['fields'][$groupFieldSlug])) {
-                                            $field['fields'][$groupFieldSlug]['value'] = $groupFieldValue;
-                                        }
-                                    }
-                                }
-                            } else {
-                                // Load regular field data
-                                $field['value'] = $fieldData['value'] ?? null;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            // Silently fail if there's an error loading existing data
-        }
-    }
-
-
+    //                         // Handle different field types when loading existing data
+    //                         if ($field['type'] === 'table') {
+    //                             // Load table data - ensure we have the proper structure
+    //                             if (isset($fieldData['value']) && is_array($fieldData['value'])) {
+    //                                 $field['fields'] = $fieldData['value'];
+    //                             } else {
+    //                                 // Initialize with empty array if no data
+    //                                 $field['fields'] = [];
+    //                             }
+    //                         } elseif ($field['type'] === 'group') {
+    //                             // Load group data
+    //                             if (isset($fieldData['value']) && is_array($fieldData['value'])) {
+    //                                 foreach ($fieldData['value'] as $groupFieldSlug => $groupFieldValue) {
+    //                                     if (isset($field['fields'][$groupFieldSlug])) {
+    //                                         $field['fields'][$groupFieldSlug]['value'] = $groupFieldValue;
+    //                                     }
+    //                                 }
+    //                             }
+    //                         } else {
+    //                             // Load regular field data
+    //                             $field['value'] = $fieldData['value'] ?? null;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     } catch (\Exception $e) {
+    //         // Silently fail if there's an error loading existing data
+    //     }
+    // }
 
 
-    private function processDynamicFormData($mapApplyId)
-    {
-        // Get formatted data from dynamic forms
-        $formattedData = $this->getFormattedData();
 
-        // Delete existing data for this map_apply_id
-        AdditionalFormDynamicData::where('map_apply_id', $mapApplyId)->delete();
 
-        // Group the formatted data by additional_form_id
-        $groupedData = [];
+    // private function processDynamicFormData($mapApplyId)
+    // {
+    //     // Get formatted data from dynamic forms
+    //     $formattedData = $this->getFormattedData();
 
-        foreach ($this->data as $formKey => $formData) {
-            if (!isset($formData['form_id']) || !isset($formData['fields'])) {
-                continue;
-            }
+    //     // Delete existing data for this map_apply_id
+    //     AdditionalFormDynamicData::where('map_apply_id', $mapApplyId)->delete();
 
-            $additionalFormId = $formData['form_id'];
+    //     // Group the formatted data by additional_form_id
+    //     $groupedData = [];
 
-            // Get the fields for this form from formatted data
-            $formFields = [];
-            foreach ($formattedData as $fieldSlug => $fieldData) {
-                // Check if this field belongs to this form
-                if (isset($formData['fields'][$fieldSlug])) {
-                    $formFields[$fieldSlug] = $fieldData;
-                }
-            }
+    //     foreach ($this->data as $formKey => $formData) {
+    //         if (!isset($formData['form_id']) || !isset($formData['fields'])) {
+    //             continue;
+    //         }
 
-            if (!empty($formFields)) {
-                $groupedData[$additionalFormId] = $formFields;
-            }
-        }
+    //         $additionalFormId = $formData['form_id'];
 
-        // Save the grouped data
-        foreach ($groupedData as $additionalFormId => $formFields) {
-            try {
-                AdditionalFormDynamicData::create([
-                    'map_apply_id' => $mapApplyId,
-                    'additional_form_id' => $additionalFormId,
-                    'form_data' => $formFields
-                ]);
-            } catch (\Exception $e) {
-                // Silently handle any save errors
-            }
-        }
-    }
+    //         // Get the fields for this form from formatted data
+    //         $formFields = [];
+    //         foreach ($formattedData as $fieldSlug => $fieldData) {
+    //             // Check if this field belongs to this form
+    //             if (isset($formData['fields'][$fieldSlug])) {
+    //                 $formFields[$fieldSlug] = $fieldData;
+    //             }
+    //         }
+
+    //         if (!empty($formFields)) {
+    //             $groupedData[$additionalFormId] = $formFields;
+    //         }
+    //     }
+
+    //     // Save the grouped data
+    //     foreach ($groupedData as $additionalFormId => $formFields) {
+    //         try {
+    //             AdditionalFormDynamicData::create([
+    //                 'map_apply_id' => $mapApplyId,
+    //                 'additional_form_id' => $additionalFormId,
+    //                 'form_data' => $formFields
+    //             ]);
+    //         } catch (\Exception $e) {
+    //             // Silently handle any save errors
+    //         }
+    //     }
+    // }
 
     /**
      * Add a new row to a table field
      */
-    public function addTableRow($formKey, $fieldSlug)
-    {
-        if (isset($this->data[$formKey]['fields'][$fieldSlug])) {
-            $field = &$this->data[$formKey]['fields'][$fieldSlug];
+    // public function addTableRow($formKey, $fieldSlug)
+    // {
+    //     if (isset($this->data[$formKey]['fields'][$fieldSlug])) {
+    //         $field = &$this->data[$formKey]['fields'][$fieldSlug];
 
-            if ($field['type'] === 'table') {
-                // Create a new row with the same structure as the first row
-                if (!empty($field['fields'])) {
-                    $newRow = [];
-                    foreach ($field['fields'][0] as $columnSlug => $columnField) {
-                        $newRow[$columnSlug] = [
-                            'slug' => $columnField['slug'],
-                            'label' => $columnField['label'],
-                            'type' => $columnField['type'],
-                            'value' => $this->initializeFieldValue($columnField)
-                        ];
-                    }
-                    $field['fields'][] = $newRow;
-                } else {
-                    // If no existing rows, create the first row from the field structure
-                    $newRow = [];
-                    foreach ($field as $key => $values) {
-                        if (is_numeric($key)) {
-                            $newRow[$values['slug']] = [
-                                'slug' => $values['slug'],
-                                'label' => $values['label'],
-                                'type' => $values['type'],
-                                'value' => $this->initializeFieldValue($values)
-                            ];
-                        }
-                    }
-                    if (!empty($newRow)) {
-                        $field['fields'][] = $newRow;
-                    }
-                }
-            }
-        }
-    }
+    //         if ($field['type'] === 'table') {
+    //             // Create a new row with the same structure as the first row
+    //             if (!empty($field['fields'])) {
+    //                 $newRow = [];
+    //                 foreach ($field['fields'][0] as $columnSlug => $columnField) {
+    //                     $newRow[$columnSlug] = [
+    //                         'slug' => $columnField['slug'],
+    //                         'label' => $columnField['label'],
+    //                         'type' => $columnField['type'],
+    //                         'value' => $this->initializeFieldValue($columnField)
+    //                     ];
+    //                 }
+    //                 $field['fields'][] = $newRow;
+    //             } else {
+    //                 // If no existing rows, create the first row from the field structure
+    //                 $newRow = [];
+    //                 foreach ($field as $key => $values) {
+    //                     if (is_numeric($key)) {
+    //                         $newRow[$values['slug']] = [
+    //                             'slug' => $values['slug'],
+    //                             'label' => $values['label'],
+    //                             'type' => $values['type'],
+    //                             'value' => $this->initializeFieldValue($values)
+    //                         ];
+    //                     }
+    //                 }
+    //                 if (!empty($newRow)) {
+    //                     $field['fields'][] = $newRow;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     /**
      * Remove a row from a table field
      */
-    public function removeTableRow($formKey, $fieldSlug, $rowIndex)
-    {
-        if (isset($this->data[$formKey]['fields'][$fieldSlug])) {
-            $field = &$this->data[$formKey]['fields'][$fieldSlug];
+    // public function removeTableRow($formKey, $fieldSlug, $rowIndex)
+    // {
+    //     if (isset($this->data[$formKey]['fields'][$fieldSlug])) {
+    //         $field = &$this->data[$formKey]['fields'][$fieldSlug];
 
-            if ($field['type'] === 'table' && isset($field['fields'][$rowIndex])) {
-                unset($field['fields'][$rowIndex]);
-                // Reindex the array
-                $field['fields'] = array_values($field['fields']);
-            }
-        }
-    }
+    //         if ($field['type'] === 'table' && isset($field['fields'][$rowIndex])) {
+    //             unset($field['fields'][$rowIndex]);
+    //             // Reindex the array
+    //             $field['fields'] = array_values($field['fields']);
+    //         }
+    //     }
+    // }
 }
