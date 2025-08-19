@@ -17,10 +17,10 @@ trait BusinessRegistrationTemplate
     const EMPTY_LINES = '____________________';
     public $reg_no;
 
-    public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration)
+    public function resolveTemplate(BusinessRegistration | BusinessDeRegistration $businessRegistration, $template = null)
     {
 
-        $template = $businessRegistration->registrationType?->form?->template ?? '';
+        $template = $template ?? $businessRegistration->registrationType?->form?->template ?? '';
 
         if ($businessRegistration instanceof \Src\BusinessRegistration\Models\BusinessDeRegistration) {
             $businessRegistration = $businessRegistration->businessRegistration;
@@ -105,6 +105,7 @@ trait BusinessRegistrationTemplate
 
             // Business details (relationships)
             '{{business.business_nature}}' => $businessRegistration->business_nature ?? ' ',
+            '{{business.business_category}}' => $businessRegistration->business_category ?? ' ',
             '{{business.business_purpose}}' => $businessRegistration->purpose ?? ' ',
             '{{business.main_service_or_goods}}' => $businessRegistration->main_service_or_goods ?? ' ',
             '{{business.total_capital}}' => $businessRegistration->total_capital ?? ' ',
@@ -149,8 +150,8 @@ trait BusinessRegistrationTemplate
             '{{business.area}}' => $businessRegistration->area ?? ' ',
             '{{business.is_rented}}' => $businessRegistration->is_rented ?? ' ',
             '{{business.total_running_day}}' => $businessRegistration->total_running_day ?? ' ',
-
-
+            '{{business.kardata_number}}' => replaceNumbers($businessRegistration->kardata_number, true) ?? ' ',
+            '{{business.kardata_miti}}' => $businessRegistration->kardata_miti ?? ' ',
 
         ];
     }

@@ -59,11 +59,14 @@ class MapApplyAdminController extends Controller
 
     function moveForward(int $id)
     {
-        $mapStepsBefore = MapStep::whereNull('deleted_by')->where('form_position', FormPositionEnum::BEFORE_FILLING_APPLICATION)->get();
+        $mapStepsBefore = MapStep::with('form')->whereNull('deleted_by')->where('form_position', FormPositionEnum::BEFORE_FILLING_APPLICATION)->get();
         $mapStepsAfter = MapStep::whereNull('deleted_by')->where('form_position', FormPositionEnum::AFTER_FILLING_APPLICATION)->get();
         $mapApply = MapApply::where('id', $id)->with('mapApplySteps')->first();
+        
+        // Initialize role filter service for step access checks
+        $roleFilterService = new \Src\Ebps\Service\ApplicationRoleFilterService();
 
-        return view('Ebps::map-applies.map-applies-steps', compact('mapStepsBefore', 'mapStepsAfter', 'mapApply'));
+        return view('Ebps::map-applies.map-applies-steps', compact('mapStepsBefore', 'mapStepsAfter', 'mapApply', 'roleFilterService'));
     }
 
     public function changeOwner(int $id)

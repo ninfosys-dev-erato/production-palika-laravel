@@ -10,6 +10,7 @@ use Src\GrantManagement\DTO\GrantTypeAdminDto;
 use Src\GrantManagement\Models\GrantType;
 use Src\GrantManagement\Service\GrantTypeAdminService;
 use Livewire\Attributes\On;
+use Src\Employees\Models\Branch;
 
 class GrantTypeForm extends Component
 {
@@ -17,12 +18,15 @@ class GrantTypeForm extends Component
 
     public ?GrantType $grantType;
     public ?Action $action = Action::CREATE;
+    public $branches;
 
     public function rules(): array
     {
         return [
             'grantType.title' => ['required'],
             'grantType.title_en' => ['required'],
+            'grantType.amount' => ['required'],
+            'grantType.department' => ['required'],
         ];
     }
     public function messages(): array
@@ -30,6 +34,8 @@ class GrantTypeForm extends Component
         return [
             'grantType.title.required' => __('grantmanagement::grantmanagement.title_is_required'),
             'grantType.title_en.required' => __('grantmanagement::grantmanagement.title_en_is_required'),
+            'grantType.amount.required' => __('grantmanagement::grantmanagement.amount_is_required'),
+            'grantType.department.required' => __('grantmanagement::grantmanagement.department_is_required'),
         ];
     }
 
@@ -42,6 +48,7 @@ class GrantTypeForm extends Component
     {
         $this->grantType = $grantType;
         $this->action = $action;
+        $this->branches = Branch::whereNull('deleted_by')->get()->pluck('title', 'id')->toArray();
     }
 
     public function save()

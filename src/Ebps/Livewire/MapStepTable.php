@@ -72,6 +72,10 @@ class MapStepTable extends DataTableComponent
                 if (can('ebps_settings edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
+                    
+                    // Add manage roles button
+                    $manageRoles = '<a href="' . route('admin.ebps.map_steps.manage-roles', ['id' => $row->id]) . '" class="btn btn-info btn-sm"><i class="bx bx-user-check"></i></a>&nbsp;';
+                    $buttons .= $manageRoles;
                 }
 
                 if (can('ebps_settings delete')) {

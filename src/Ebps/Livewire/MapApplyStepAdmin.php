@@ -134,7 +134,17 @@ class MapApplyStepAdmin extends Component
             $service->saveOrUpdate($dto, $data);
 
             $this->successToast(__('ebps::ebps.saved_successfully'));
-            return redirect()->route('admin.ebps.map_applies.step', ['id'=>$this->mapApply->id]);
+
+           
+            if($this->mapApply->application_type === 'map_applies') 
+            {
+                return redirect()->route('admin.ebps.map_applies.step', ['id'=>$this->mapApply->id]);
+            }
+            else
+            {
+                return redirect()->route('admin.ebps.building-registrations.step', ['id'=>$this->mapApply->id]);
+            }
+
         }catch (\Throwable $e){
             logger($e->getMessage());
             $this->errorFlash(((__('ebps::ebps.something_went_wrong_while_saving') . $e->getMessage())));

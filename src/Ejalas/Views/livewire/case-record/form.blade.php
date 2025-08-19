@@ -185,21 +185,6 @@
 
 @script
     <script>
-        $('#discussion_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('caseRecord.discussion_date', nepaliDate);
-        });
-        $('#decision_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('caseRecord.decision_date', nepaliDate);
-        });
-
         $('#complaint_registration_id').select2();
         $('#complaint_registration_id').on('change', function(e) {
             let complaintId = $(this).val();

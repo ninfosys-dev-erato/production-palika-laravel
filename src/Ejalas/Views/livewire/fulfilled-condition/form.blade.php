@@ -63,7 +63,7 @@
                     <label for='completion_date'
                         class="form-label">{{ __('ejalas::ejalas.condition_completion_date') }}</label>
                     <input wire:model='fulfilledCondition.completion_date' name='completion_date' id="completion_date"
-                        type='text' class='form-control'
+                        type='text' class='form-control nepali-date'
                         placeholder="{{ __('ejalas::ejalas.enter_completion_date') }}">
                     <div>
                         @error('fulfilledCondition.completion_date')
@@ -140,7 +140,7 @@
                 <div class='form-group'>
                     <label for='entry_date' class="form-label">{{ __('ejalas::ejalas.entry_date') }}</label>
                     <input wire:model='fulfilledCondition.entry_date' name='entry_date' type='text' id="entry_date"
-                        class='form-control' placeholder="{{ __('ejalas::ejalas.enter_entry_date') }}">
+                        class='form-control nepali-date' placeholder="{{ __('ejalas::ejalas.enter_entry_date') }}">
                     <div>
                         @error('fulfilledCondition.entry_date')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -213,21 +213,6 @@
 </form>
 @script
     <script>
-        $('#entry_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('fulfilledCondition.entry_date', nepaliDate);
-        });
-        $('#completion_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('fulfilledCondition.completion_date', nepaliDate);
-        });
-
         $('#complaint_registration_id').select2();
         $('#complaint_registration_id').on('change', function(e) {
             let complaintId = $(this).val();

@@ -150,9 +150,13 @@ class BusinessRegistrationShow extends Component
             ];
 
 
+
             $service->accept($this->businessRegistration, $data);
             $this->successFlash(__('businessregistration::businessregistration.business_registration_approved_successfully'));
-            return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
+            return redirect()->route('admin.business-registration.business-registration.show', [
+                'id' => $this->businessRegistration->id,
+                'type' => $this->businessRegistration->registration_type
+            ]);
         } catch (\Exception $e) {
             logger()->error($e);
             $this->errorFlash('Something went wrong while accepting.', $e->getMessage());

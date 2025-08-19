@@ -45,6 +45,8 @@ class CustomerLandDetailForm extends Component
     {
         $rules =  [
             'customerLandDetail.local_body_id' => ['required'],
+            'customerLandDetail.former_local_body' => ['required'],
+            'customerLandDetail.former_ward_no' => ['required'],
             'customerLandDetail.ward' => ['required'],
             'customerLandDetail.tole' => ['required'],
             'customerLandDetail.area_sqm' => ['required'],

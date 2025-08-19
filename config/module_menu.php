@@ -113,4 +113,12 @@ return [
         'label' => 'Ejalash System',
         'perm' => 'jms access',
     ],
+    [
+        'module' => 'beruju',
+        'route' => 'admin.beruju.dashboard.dashboard',
+        'icon' => 'bx bx-book text-orange',
+        'logo' => 'RajaswaSankalanIcon.png',
+        'label' => 'Beruju System',
+        'perm' => 'brj access',
+    ],
 ];

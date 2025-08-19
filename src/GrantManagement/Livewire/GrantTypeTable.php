@@ -26,11 +26,11 @@ class GrantTypeTable extends DataTableComponent
     ];
     public function configure(): void
     {
-        $this->setPrimaryKey('id')
+        $this->setPrimaryKey('gms_grant_types.id')
             ->setTableAttributes([
                 'class' => "table table-bordered table-hover dataTable dtr-inline"
             ])
-            ->setAdditionalSelects(['id'])
+            ->setAdditionalSelects(['gms_grant_types.id'])
             ->setBulkActionsDisabled()
             ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
@@ -42,9 +42,10 @@ class GrantTypeTable extends DataTableComponent
     public function builder(): Builder
     {
         return GrantType::query()
-            ->where('deleted_at', null)
-            ->where('deleted_by', null)
-            ->orderBy('created_at', 'DESC'); // Select some things
+            ->with('branch')
+            ->where('gms_grant_types.deleted_at', null)
+            ->where('gms_grant_types.deleted_by', null)
+            ->orderBy('gms_grant_types.created_at', 'DESC'); // Select some things
     }
     public function filters(): array
     {
@@ -55,6 +56,8 @@ class GrantTypeTable extends DataTableComponent
         $columns = [
             Column::make(__('grantmanagement::grantmanagement.title'), "title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('grantmanagement::grantmanagement.title_en'), "title_en")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.amount'), "amount")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('grantmanagement::grantmanagement.department'), "branch.title")->sortable()->searchable()->collapseOnTablet(),
         ];
         if (can('gms_settings edit') || can('gms_settings delete')) {
             $actionsColumn = Column::make(__('grantmanagement::grantmanagement.actions'))->label(function ($row, Column $column) {

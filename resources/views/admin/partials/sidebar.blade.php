@@ -21,6 +21,10 @@
         @include('Recommendation::menu.sidebar')
     @endif
 
+    @if (\Illuminate\Support\Facades\Route::is('admin.beruju.*'))
+        @include('Beruju::menu.sidebar')
+    @endif
+
     @if (
         \Illuminate\Support\Facades\Route::is(
             'admin.grant_management.index',
@@ -244,6 +248,7 @@
             'admin.tasks.*'))
         @include('TaskTracking::menu.sidebar')
     @endif
+
 
     @if (
         \Illuminate\Support\Facades\Route::is(

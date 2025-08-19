@@ -1,4 +1,12 @@
-<x-layout.app header="{{ __('businessregistration::businessregistration.business_registration_details') }}">
+@php
+    $isCustomer = Auth::guard('customer')->check();
+    $layoutComponent = $isCustomer ? 'layout.customer-app' : 'layout.app';
+    $header = $isCustomer
+        ? 'Business registration'
+        : __('businessregistration::businessregistration.business_registration_details');
+@endphp
+
+<x-dynamic-component :component="$layoutComponent" :header="$header">
     @push('styles')
         <link rel="stylesheet" href="{{ asset('home') }}/businessstyle.css">
     @endpush
@@ -110,19 +118,21 @@
                                 {{ __('businessregistration::businessregistration.business_organization_industry_firm_details') }}
                             </h5>
                             @if ($businessRegistration->application_status == 'accepted')
-                                @if (empty($businessRegistration->records->first()?->reg_no))
-                                    <a href="{{ route('admin.business-registration.business.register', ['id' => $businessRegistration->id]) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-registered me-1"></i>
-                                        {{ __('businessregistration::businessregistration.register_business') }}
-                                    </a>
-                                @else
-                                    <a href="{{ route('admin.file_records.show', ['id' => $businessRegistration->records->first()->id]) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-file me-1"></i>
-                                        {{ __('recommendation::recommendation.view_registerd_file') }}
-                                    </a>
-                                @endif
+                                @perm('business_registration status')
+                                    @if (empty($businessRegistration->records->first()?->reg_no))
+                                        <a href="{{ route('admin.business-registration.business.register', ['id' => $businessRegistration->id]) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            <i class="bx bx-registered me-1"></i>
+                                            {{ __('businessregistration::businessregistration.register_business') }}
+                                        </a>
+                                    @else
+                                        <a href="{{ route('admin.file_records.show', ['id' => $businessRegistration->records->first()->id]) }}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            <i class="bx bx-file me-1"></i>
+                                            {{ __('recommendation::recommendation.view_registerd_file') }}
+                                        </a>
+                                    @endif
+                                @endperm
                             @endif
                         </div>
                     </div>
@@ -296,6 +306,12 @@
                     {{ __('businessregistration::businessregistration.business_registration_application_detail') }}
                 </button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button type="button" class="btn mx-2 btn-primary" role="tab" data-bs-toggle="tab"
+                    data-bs-target="#navs-pills-nibedan" aria-controls="navs-pills-nibedan" aria-selected="false">
+                    {{ __('businessregistration::businessregistration.registration_application') }}
+                </button>
+            </li>
 
 
             @if ($businessRegistration->application_status != \Src\BusinessRegistration\Enums\ApplicationStatusEnum::PENDING->value)
@@ -331,6 +347,9 @@
             <div class="tab-pane fade" id="navs-pills-letter" role="tabpanel">
                 <livewire:business_registration.business_registration_preview :$businessRegistration />
             </div>
+            <div class="tab-pane fade" id="navs-pills-nibedan" role="tabpanel">
+                <livewire:business_registration.business_registration_application :$businessRegistration />
+            </div>
         </div>
     </div>
-</x-layout.app>
+</x-dynamic-component>

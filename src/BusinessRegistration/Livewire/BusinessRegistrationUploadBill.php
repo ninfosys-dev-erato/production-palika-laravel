@@ -4,6 +4,7 @@ namespace Src\BusinessRegistration\Livewire;
 
 use App\Facades\ImageServiceFacade;
 use App\Traits\SessionFlash;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Src\BusinessRegistration\DTO\BusinessRegistrationShowDto;
@@ -18,12 +19,16 @@ class BusinessRegistrationUploadBill extends Component
     public ?BusinessRegistration $businessRegistration = null;
     public bool $showBillUpload = false;
     public $bill;
+    public $isCustomer = false;
 
 
     public function mount(BusinessRegistration $businessRegistration)
     {
         $this->businessRegistration = $businessRegistration;
         $this->showBillUpload = $this->businessRegistration->application_status == ApplicationStatusEnum::SENT_FOR_PAYMENT->value;
+        if (Auth::guard('customer')->check()) {
+            $this->isCustomer = true;
+        }
     }
 
     public function uploadBill()
@@ -45,9 +50,14 @@ class BusinessRegistrationUploadBill extends Component
             $this->businessRegistration->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
             $dto = BusinessRegistrationShowDto::fromModel($this->businessRegistration);
             $service = new BusinessRegistrationAdminService();
-            $service->uploadBill($this->businessRegistration, $dto);
+            $service->uploadBill($this->businessRegistration, $dto, !$this->isCustomer);
             $this->successFlash(__('businessregistration::businessregistration.bill_uploaded_successfully'));
-            return redirect()->route('admin.business-registration.business-registration.show', $this->businessRegistration->id);
+            return redirect()->route(
+                $this->isCustomer
+                    ? 'customer.business-registration.business-registration.show'
+                    : 'admin.business-registration.business-registration.show',
+                ['id' => $this->businessRegistration->id, 'type' => $this->businessRegistration->registration_type]
+            );
         } catch (\Exception $e) {
             logger()->error($e);
             $this->errorFlash('Something went wrong while rejecting.', $e->getMessage());

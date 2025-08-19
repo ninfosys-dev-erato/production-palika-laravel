@@ -6,4 +6,5 @@ Route::group(['prefix' =>'admin/ebps/map-steps', 'as'=>'admin.ebps.map_steps.','
     Route::get('/',[MapStepAdminController::class,'index'])->name('index');
     Route::get('/create',[MapStepAdminController::class,'create'])->name('create');
     Route::get('/edit/{id}',[MapStepAdminController::class,'edit'])->name('edit');
+    Route::get('/manage-roles/{id}',[MapStepAdminController::class,'manageRoles'])->name('manage-roles');
 });

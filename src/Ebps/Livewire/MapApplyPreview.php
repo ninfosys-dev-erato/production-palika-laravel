@@ -2,6 +2,8 @@
 
 namespace Src\Ebps\Livewire;
 
+use App\Facades\FileFacade;
+use App\Facades\ImageServiceFacade;
 use App\Traits\SessionFlash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -30,7 +32,8 @@ class MapApplyPreview extends Component
     public $files;
     public bool $openStatusModal = false;
 
-    public function render(){
+    public function render()
+    {
         return view("Ebps::livewire.map-applies.map-applies-preview");
     }
 
@@ -53,8 +56,32 @@ class MapApplyPreview extends Component
         $this->selectedStatus = $mapApplyStep->status;
         $this->mapApplyStatusEnum = MapApplyStatusEnum::cases();
 
-        $this->files = BuildingRegistrationDocument::where('map_step_id', $mapStepId)->where('map_apply_id', $mapApplyId)->get();
+        $this->files = BuildingRegistrationDocument::where('map_step_id', $mapStepId)
+            ->where('map_apply_id', $mapApplyId)
+            ->whereNull('deleted_at')
+            ->get();
+    }
 
+    public function deleteFile($fileId)
+    {
+        try {
+            $file = BuildingRegistrationDocument::findOrFail($fileId);
+            
+            $file->update([
+                'deleted_at' => now(),
+            ]);
+
+            // Refresh the files collection to exclude the deleted file
+            $this->files = BuildingRegistrationDocument::where('map_step_id', $this->mapApplyStep->map_step_id)
+                ->where('map_apply_id', $this->mapApplyStep->map_apply_id)
+                ->whereNull('deleted_at')
+                ->get();
+
+            $this->successFlash(__('ebps::ebps.file_deleted_successfully'));
+        } catch (\Throwable $e) {
+            logger($e->getMessage());
+            $this->errorFlash(__('ebps::ebps.something_went_wrong_while_deleting_file'));
+        }
     }
 
     public function changeStatus()
@@ -64,15 +91,26 @@ class MapApplyPreview extends Component
 
     public function saveStatus()
     {
-        try{
-           
+        try {
+
             foreach ($this->mapApplySteps as $step) {
 
                 foreach ($step->mapApplyStepTemplates as $template) {
                     if ($this->selectedStatus === "accepted") {
-                        $signature = Auth::user()?->signature
-                            ? '<img src="data:image/jpeg;base64,' . Auth::user()->signature . '" alt="Signature" width="80">'
-                            : 'No Signature Available';
+                        $signature = 'सहि फेला परेन ';
+
+                        if (Auth::user()?->signature) {
+
+                            $signatureContent = FileFacade::getFile(
+                                config('src.Profile.profile.path'),
+                                Auth::user()->signature,
+                            );
+
+                            if ($signatureContent !== false) {
+                                $base64 = base64_encode($signatureContent);
+                                $signature = '<img src="data:image/jpeg;base64,' . $base64 . '" alt="Signature" width="80">';
+                            }
+                        }
                         $this->letter = Str::replace('{{form.approver.signature}}', $signature, $template->template);
                     }
                     $template->update([
@@ -90,14 +128,14 @@ class MapApplyPreview extends Component
                     status: $this->selectedStatus,
                     reason: $this->reason ?? '',
                 );
-    
+
                 $service = new MapApplyStepApproverAdminService();
                 $service->store($dto);
             }
 
             $this->successFlash(__('ebps::ebps.status_updated_successfully'));
             $this->changeStatus();
-        }catch (\Throwable $e){
+        } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash(((__('ebps::ebps.something_went_wrong_while_saving') . $e->getMessage())));
         }
@@ -107,7 +145,6 @@ class MapApplyPreview extends Component
     public function print(MapApplyStepTemplate $mapApplyStepTemplate)
     {
         $service = new MapApplyAdminService();
-        return $service->getLetter($mapApplyStepTemplate,'web');
+        return $service->getLetter($mapApplyStepTemplate, 'web');
     }
-
 }

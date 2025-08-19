@@ -17,11 +17,11 @@ trait HelperTemplate
     function getLetterHeader(
         ?int $ward_no = null,
         string $date = '',     // default inside function if empty
-        string $reg_no = '1',
+        string|null $reg_no = '',
         bool $is_darta = true,
         string|null $fiscal_year = ''
     ): string {
-        $date = $date ?: date('Y-m-d');
+        $date = $date ?: getFormattedBsDate() ?? '';
         $fiscal_year = $fiscal_year ?: (getSetting('fiscal-year') ?? self::EMPTY_LINES);
 
 
@@ -351,6 +351,7 @@ trait HelperTemplate
             '{{global.palika_name}}' => getSetting('palika-name') ?? self::EMPTY_LINES,
             '{{global.palika_name_en}}' => getSetting('palika-name-english') ?: self::EMPTY_LINES,
             '{{global.office_name}}' => getSetting('office-name') ?? self::EMPTY_LINES,
+            '{{global.office_name_en}}' => getSetting('office-name-eng') ?: self::EMPTY_LINES,
             '{{global.fiscal_year}}' => getSetting('fiscal-year') ?? self::EMPTY_LINES,
             '{{global.palika_address}}' => getSetting('palika-address') ?? self::EMPTY_LINES,
             '{{global.palika_email}}' => getSetting('office_email') ?? self::EMPTY_LINES,

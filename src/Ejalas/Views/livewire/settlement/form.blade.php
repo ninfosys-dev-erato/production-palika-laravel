@@ -38,7 +38,7 @@
                             <label for='discussion_date'
                                 class="form-label">{{ __('ejalas::ejalas.discussion_date') }}</label>
                             <input wire:model='settlement.discussion_date' id="discussion_date" name='discussion_date'
-                                type='text' class='form-control'
+                                type='text' class='form-control nepali-date'
                                 placeholder="{{ __('ejalas::ejalas.enter_discussion_date') }}">
                             <div>
                                 @error('settlement.discussion_date')
@@ -52,7 +52,7 @@
                             <label for='settlement_date'
                                 class="form-label">{{ __('ejalas::ejalas.settlement_date') }}</label>
                             <input wire:model='settlement.settlement_date' id="settlement_date" name='settlement_date'
-                                type='text' class='form-control'
+                                type='text' class='form-control nepali-date'
                                 placeholder="{{ __('ejalas::ejalas.enter_settlement_date') }}">
                             <div>
                                 @error('settlement.settlement_date')
@@ -73,8 +73,7 @@
                                         <option value="{{ $id }}">{{ $value }}</option>
                                     @endforeach
                                 </select>
-                                {{-- <input wire:model='settlement.present_members' name='present_members' type='text'
-                                    class='form-control' placeholder="{{ __('ejalas::ejalas.enter_present_members') }}"> --}}
+
                                 <div>
                                     @error('settlement.present_members')
                                         <small class='text-danger'>{{ __($message) }}</small>
@@ -297,20 +296,8 @@
             });
         });
 
-        $('#settlement_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('settlement.settlement_date', nepaliDate);
-        });
-        $('#discussion_date').nepaliDatePicker({
-            dateFormat: '%y-%m-%d',
-            closeOnDateSelect: true,
-        }).on('dateSelect', function() {
-            let nepaliDate = $(this).val();
-            @this.set('settlement.discussion_date', nepaliDate);
-        });
+
+
         $('#deadline_set_date').nepaliDatePicker({
             dateFormat: '%y-%m-%d',
             closeOnDateSelect: true,

@@ -122,6 +122,38 @@
                 <div class="divider-text ">{{ __('ebps::ebps.land_details') }}</div>
             </div>
 
+            <div class="col-md-6 mb-4">
+                <label for="former_local_body">{{ __('ebps::ebps.former_local_body') }}</label>
+                <select id="former_local_body" wire:model="customerLandDetail.former_local_body"
+                    name="customerLandDetail.former_local_body" class="form-control" wire:change="loadFormerWards">
+
+                    <option value="">{{ __('ebps::ebps.choose_former_local_body') }}</option>
+
+                    @foreach ($formerLocalBodies as $id => $title)
+                        <option value="{{ $id }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_local_body')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <label for="former_ward_no">{{ __('ebps::ebps.former_ward_no') }}</label>
+                <select id="former_ward_no" name="customerLandDetail.former_ward_no" class="form-control"
+                    wire:model="customerLandDetail.former_ward_no">
+                    <option value="">{{ __('ebps::ebps.choose_former_ward_no') }}</option>
+                    @foreach ($formerWards as $id => $title)
+                        <option value="{{ $title }}">{{ $title }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('customerLandDetail.former_ward_no')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-4">
                     <label for="local_body_id">{{ __('ebps::ebps.local_body') }}</label>
@@ -226,7 +258,8 @@
 
             <div class=" d-flex justify-content-between mb-4">
                 <label class="form-label" for="form-label">{{ __('ebps::ebps.four_boundaries') }}</label>
-                <button type="button" class="btn btn-info" wire:click='addFourBoundaries'>
+                <button type="button" class="btn btn-info" wire:click='addFourBoundaries'
+                    {{ count($fourBoundaries) >= 4 ? 'disabled' : '' }}>
                     + {{ __('ebps::ebps.add_four_boundaries') }}
                 </button>
             </div>
@@ -260,7 +293,7 @@
                                                 class='form-control'>
                                                 <option value="">
                                                     {{ __('ebps::ebps.select_direction') }}</option>
-                                                @foreach (\Src\Ebps\Enums\DirectionEnum::cases() as $direction)
+                                                @foreach ($this->getAvailableDirections($index) as $direction)
                                                     <option value="{{ $direction->value }}">
                                                         {{ $direction->label() }}
                                                     </option>
@@ -830,274 +863,279 @@
                 <div class="divider-text ">{{ __('ebps::ebps.applicant_details') }}</div>
             </div>
 
-        <div class="col-md-6 mb-3">
-            <div class="form-group">
-                <label for="applicant_type" class="form-label">{{ __('ebps::ebps.applicant_type') }}</label>
-                <span class="text-danger">*</span>
-                <select wire:model="mapApply.applicant_type" name="applicant_type"
-                    class="form-control {{ $errors->has('mapApply.applicant_type') ? 'is-invalid' : '' }}"
-                    style="{{ $errors->has('mapApply.applicant_type') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
-                    <option value="" selected hidden>{{ __('ebps::ebps.select_applicant_type') }}</option>
-                    @foreach ($applicantTypes as $type)
-                        <option value="{{ $type->value }}">{{ $type->label() }}</option>
-                    @endforeach
-                </select>
-                </select>
-                <div>
-                    @error('mapApply.applicant_type')
-                        <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-        <div class='col-md-4 mb-3'>
-            <div class='form-group'>
-                <label class="form-label" for='full_name'>{{ __('ebps::ebps.full_name') }}</label>
-                <span class="text-danger">*</span>
-                <input wire:model.defer='mapApply.full_name' id="full_name" name='full_name' type='text'
-                    class='form-control' placeholder='निवेदकको नाम'>
-                <div>
-                    @error('mapApply.full_name')
-                        <small class='text-danger'>{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-        <div class='col-md-4 mb-3'>
-            <div class='form-group'>
-                <label class="form-label" for='mobile_no'>{{ __('ebps::ebps.phone_number') }}</label>
-                <span class="text-danger">*</span>
-                <input wire:model='mapApply.mobile_no' id="mobile_no" name='mobile_no' type='number'
-                    class='form-control' placeholder='फोन नं.'>
-                <div>
-                    @error('mapApply.mobile_no')
-                        <small class='text-danger'>{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-        <div class="divider divider-primary text-start text-primary font-14">
-            <div class="divider-text ">{{ __('ebps::ebps.applicant_address') }}</div>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <div class="form-group">
-                <label for="province_id" class="form-label">{{ __('ebps::ebps.province') }}</label>
-                <span class="text-danger">*</span>
-                <select wire:model.live="mapApply.province_id" name="province_id" wire:change="getApplicantDistricts"
-                    class="form-control {{ $errors->has('mapApply.province_id') ? 'is-invalid' : '' }}"
-                    style="{{ $errors->has('mapApply.province_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
-                    >
-                    <option value="" selected hidden>{{ __('ebps::ebps.select_province') }}</option>
-                    <!-- Placeholder -->
-                    @foreach ($applicantProvinces as $id => $title)
-                        <option value="{{ $id }}">{{ $title }}</option>
-                    @endforeach
-                </select>
-                <div>
-                    @error('mapApply.province_id')
-                        <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-
-        <div class="col-md-6 mb-3">
-            <div class="form-group">
-                <label for="district_id" class="form-label">{{ __('ebps::ebps.district') }}</label>
-                <span class="text-danger">*</span>
-                <select wire:model="mapApply.district_id" name="district_id" wire:change="getApplicantLocalBodies"
-                    class="form-control {{ $errors->has('mapApply.local_body_id') ? 'is-invalid' : '' }}"
-                    style="{{ $errors->has('mapApply.local_body_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
-
-                    <option value="" selected hidden>{{ __('ebps::ebps.select_district') }}</option>
-                    @foreach ($applicantDistricts as $id => $title)
-                        <option value="{{ $id }}">{{ $title }}</option>
-                    @endforeach
-
-
-                </select>
-                <div>
-                    @error('mapApply.district_id')
-                        <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <div class="form-group">
-                <label for="local_body_id" class="form-label">{{ __('ebps::ebps.local_body') }}</label>
-                <span class="text-danger">*</span>
-                <select wire:model="mapApply.local_body_id" name="local_body_id"
-                    class="form-control {{ $errors->has('mapApply.local_body_id') ? 'is-invalid' : '' }}"
-                    style="{{ $errors->has('mapApply.local_body_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
-                    wire:change="getApplicantWards">
-                    <option value="" selected hidden>{{ __('ebps::ebps.select_local_body') }}</option>
-                    @foreach ($applicantLocalBodies as $id => $title)
-                        <option value="{{ $id }}">{{ $title }}</option>
-                    @endforeach
-                </select>
-                <div>
-                    @error('mapApply.local_body_id')
-                        <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <div class="form-group">
-                <label for="ward_no" class="form-label">{{ __('ebps::ebps.ward') }}</label>
-                <span class="text-danger">*</span>
-                <select wire:model="mapApply.ward_no" name="ward_no"
-                    class="form-control {{ $errors->has('mapApply.ward_no') ? 'is-invalid' : '' }}"
-                    style="{{ $errors->has('mapApply.ward_no') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
-                    <option value="" selected hidden>{{ __('ebps::ebps.select_ward') }}</option>
-                    @foreach ($applicantWards as $id => $title)
-                        <option value="{{ $title }}">{{ $title }}</option>
-                    @endforeach
-                </select>
-                <div>
-                    @error('mapApply.ward_no')
-                        <small class="text-danger">{{ $message }}</small>
-                    @enderror
-                </div>
-            </div>
-        </div>
-
-        <div class="divider divider-primary text-start text-primary font-14">
-            <div class="divider-text">{{ __('ebps::ebps.required_documents') }}</div>
-        </div>
-
-        @php
-            $reindexedFiles = array_values($uploadedFiles);
-
-        @endphp
-
-        @foreach ($mapDocuments as $index => $document)
-            @php
-                $filePath = $reindexedFiles[$index] ?? null;
-            @endphp
-
-            <div class="row">
-                <div class='col-md-6 mb-3'>
-                    <div class='form-group'>
-                        <label class="form-label">{{ __('ebps::ebps.document_name') }}</label>
-                        <input type="text" class="form-control" value="{{ $document->title }}" readonly>
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="applicant_type" class="form-label">{{ __('ebps::ebps.applicant_type') }}</label>
+                    <span class="text-danger">*</span>
+                    <select wire:model="mapApply.applicant_type" name="applicant_type"
+                        class="form-control {{ $errors->has('mapApply.applicant_type') ? 'is-invalid' : '' }}"
+                        style="{{ $errors->has('mapApply.applicant_type') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
+                        <option value="" selected hidden>{{ __('ebps::ebps.select_applicant_type') }}</option>
+                        @foreach ($applicantTypes as $type)
+                            <option value="{{ $type->value }}">{{ $type->label() }}</option>
+                        @endforeach
+                    </select>
+                    </select>
+                    <div>
+                        @error('mapApply.applicant_type')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
+            </div>
 
-                <div class='col-md-6 mb-3'>
-                    <div class='form-group'>
-                        <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
-                        <input wire:model="uploadedFiles.{{ $index }}" type="file"
-                            class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
-                            accept="image/*">
-                        <div>
-                            @error("uploadedFiles.$index")
-                                <small class='text-danger'>{{ $message }}</small>
-                            @enderror
+            <div class='col-md-4 mb-3'>
+                <div class='form-group'>
+                    <label class="form-label" for='full_name'>{{ __('ebps::ebps.full_name') }}</label>
+                    <span class="text-danger">*</span>
+                    <input wire:model.defer='mapApply.full_name' id="full_name" name='full_name' type='text'
+                        class='form-control' placeholder='निवेदकको नाम'>
+                    <div>
+                        @error('mapApply.full_name')
+                            <small class='text-danger'>{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
 
-                            @if (isset($reindexedFiles[$index]) &&
-                                    ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
-                                        $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
-                                        $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
-                                <img src="{{ $reindexedFiles[$index]->temporaryUrl() }}"
-                                    alt="Uploaded Image Preview" class="img-thumbnail mt-2" style="height: 300px;">
-                            @elseif (!empty($filePath))
-                                {{-- Show existing file if no new file is uploaded --}}
-                                <img src="{{ customAsset(config('src.Ebps.ebps.path'), $filePath) }}"
-                                    alt="Existing Document Preview" class="img-thumbnail mt-2"
-                                    style="height: 300px;">
-                            @endif
+            <div class='col-md-4 mb-3'>
+                <div class='form-group'>
+                    <label class="form-label" for='mobile_no'>{{ __('ebps::ebps.phone_number') }}</label>
+                    <span class="text-danger">*</span>
+                    <input wire:model='mapApply.mobile_no' id="mobile_no" name='mobile_no' type='number'
+                        class='form-control' placeholder='फोन नं.'>
+                    <div>
+                        @error('mapApply.mobile_no')
+                            <small class='text-danger'>{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider divider-primary text-start text-primary font-14">
+                <div class="divider-text ">{{ __('ebps::ebps.applicant_address') }}</div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="province_id" class="form-label">{{ __('ebps::ebps.province') }}</label>
+                    <span class="text-danger">*</span>
+                    <select wire:model.live="mapApply.province_id" name="province_id"
+                        wire:change="getApplicantDistricts"
+                        class="form-control {{ $errors->has('mapApply.province_id') ? 'is-invalid' : '' }}"
+                        style="{{ $errors->has('mapApply.province_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
+                        >
+                        <option value="" selected hidden>{{ __('ebps::ebps.select_province') }}</option>
+                        <!-- Placeholder -->
+                        @foreach ($applicantProvinces as $id => $title)
+                            <option value="{{ $id }}">{{ $title }}</option>
+                        @endforeach
+                    </select>
+                    <div>
+                        @error('mapApply.province_id')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="district_id" class="form-label">{{ __('ebps::ebps.district') }}</label>
+                    <span class="text-danger">*</span>
+                    <select wire:model="mapApply.district_id" name="district_id"
+                        wire:change="getApplicantLocalBodies"
+                        class="form-control {{ $errors->has('mapApply.local_body_id') ? 'is-invalid' : '' }}"
+                        style="{{ $errors->has('mapApply.local_body_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
+
+                        <option value="" selected hidden>{{ __('ebps::ebps.select_district') }}</option>
+                        @foreach ($applicantDistricts as $id => $title)
+                            <option value="{{ $id }}">{{ $title }}</option>
+                        @endforeach
+
+
+                    </select>
+                    <div>
+                        @error('mapApply.district_id')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="local_body_id" class="form-label">{{ __('ebps::ebps.local_body') }}</label>
+                    <span class="text-danger">*</span>
+                    <select wire:model="mapApply.local_body_id" name="local_body_id"
+                        class="form-control {{ $errors->has('mapApply.local_body_id') ? 'is-invalid' : '' }}"
+                        style="{{ $errors->has('mapApply.local_body_id') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
+                        wire:change="getApplicantWards">
+                        <option value="" selected hidden>{{ __('ebps::ebps.select_local_body') }}</option>
+                        @foreach ($applicantLocalBodies as $id => $title)
+                            <option value="{{ $id }}">{{ $title }}</option>
+                        @endforeach
+                    </select>
+                    <div>
+                        @error('mapApply.local_body_id')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label for="ward_no" class="form-label">{{ __('ebps::ebps.ward') }}</label>
+                    <span class="text-danger">*</span>
+                    <select wire:model="mapApply.ward_no" name="ward_no"
+                        class="form-control {{ $errors->has('mapApply.ward_no') ? 'is-invalid' : '' }}"
+                        style="{{ $errors->has('mapApply.ward_no') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}">
+                        <option value="" selected hidden>{{ __('ebps::ebps.select_ward') }}</option>
+                        @foreach ($applicantWards as $id => $title)
+                            <option value="{{ $title }}">{{ $title }}</option>
+                        @endforeach
+                    </select>
+                    <div>
+                        @error('mapApply.ward_no')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider divider-primary text-start text-primary font-14">
+                <div class="divider-text">{{ __('ebps::ebps.required_documents') }}</div>
+            </div>
+
+            @php
+                $reindexedFiles = array_values($uploadedFiles);
+
+            @endphp
+
+            @foreach ($mapDocuments as $index => $document)
+                @php
+                    $filePath = $reindexedFiles[$index] ?? null;
+                @endphp
+
+                <div class="row">
+                    <div class='col-md-6 mb-3'>
+                        <div class='form-group'>
+                            <label class="form-label">{{ __('ebps::ebps.document_name') }}</label>
+                            <input type="text" class="form-control" value="{{ $document->title }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class='col-md-6 mb-3'>
+                        <div class='form-group'>
+                            <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
+                            <input type="file"
+                                class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
+                                wire:model="uploadedFiles.{{ $index }}" accept="image/*,application/pdf">
+                            <div>
+                                @error("uploadedFiles.$index")
+                                    <small class='text-danger'>{{ $message }}</small>
+                                @enderror
+
+                                @if (isset($reindexedFiles[$index]) &&
+                                        ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
+                                            $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
+                                            $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
+                                    <img src="{{ $reindexedFiles[$index]->temporaryUrl() }}"
+                                        alt="Uploaded Image Preview" class="img-thumbnail mt-2"
+                                        style="height: 300px;">
+                                @elseif (!empty($filePath))
+                                    {{-- Show existing file if no new file is uploaded --}}
+                                    <img src="{{ customAsset(config('src.Ebps.ebps.path'), $filePath) }}"
+                                        alt="Existing Document Preview" class="img-thumbnail mt-2"
+                                        style="height: 300px;">
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
 
-        @if ($documents)
+            @if ($documents)
 
-            <div class="divider divider-primary text-start text-primary font-14">
-                <div class="divider-text">{{ __('ebps::ebps.more_documents') }}</div>
-            </div>
+                <div class="divider divider-primary text-start text-primary font-14">
+                    <div class="divider-text">{{ __('ebps::ebps.more_documents') }}</div>
+                </div>
 
 
-            <div class="col-md-12">
-                <div class="list-group">
-                    @foreach ($documents as $key => $document)
-                        <div class="list-group-item list-group-item-action py-3 px-4 rounded shadow-sm"
-                            wire:key="doc-{{ $key }}">
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="font-weight-bold">{{ __('ebps::ebps.document_name') }}</label>
-                                        <input dusk="businessregistration-documents.{{ $key }}.title-field"
-                                            type="text" class="form-control"
-                                            wire:model="documents.{{ $key }}.title"
-                                            placeholder="Enter document name">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label
-                                            class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
-                                        <input type="file" class="form-control-file"
-                                            wire:model.defer="documents.{{ $key }}.file">
-
-                                        <div wire:loading wire:target="documents.{{ $key }}.file">
-                                            <span class="spinner-border spinner-border-sm" role="status"
-                                                aria-hidden="true"></span>
-                                            Uploading...
+                <div class="col-md-12">
+                    <div class="list-group">
+                        @foreach ($documents as $key => $document)
+                            <div class="list-group-item list-group-item-action py-3 px-4 rounded shadow-sm"
+                                wire:key="doc-{{ $key }}">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label
+                                                class="font-weight-bold">{{ __('ebps::ebps.document_name') }}</label>
+                                            <input
+                                                dusk="businessregistration-documents.{{ $key }}.title-field"
+                                                type="text" class="form-control"
+                                                wire:model="documents.{{ $key }}.title"
+                                                placeholder="Enter document name" accept="image/*,application/pdf">
                                         </div>
+                                    </div>
 
-                                        @if (isset($documents[$key]['url']) && !empty($documents[$key]['url']))
-                                            <p>
-                                                <a href="{{ $documents[$key]['url'] }}" target="_blank">
-                                                    <i class="bx bx-file"></i> {{ $documents[$key]['title'] }}
-                                                </a>
-                                            </p>
-                                        @endif
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label
+                                                class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
+                                            <input type="file" class="form-control-file"
+                                                wire:model.defer="documents.{{ $key }}.file">
+
+                                            <div wire:loading wire:target="documents.{{ $key }}.file">
+                                                <span class="spinner-border spinner-border-sm" role="status"
+                                                    aria-hidden="true"></span>
+                                                Uploading...
+                                            </div>
+
+                                            @if (isset($documents[$key]['url']) && !empty($documents[$key]['url']))
+                                                <p>
+                                                    <a href="{{ $documents[$key]['url'] }}" target="_blank">
+                                                        <i class="bx bx-file"></i> {{ $documents[$key]['title'] }}
+                                                    </a>
+                                                </p>
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3" wire:target="documents.{{ $key }}.file">
-                                    <div class="form-group">
-                                        <label
-                                            class="font-weight-bold">{{ __('ebps::ebps.document_status') }}</label>
-                                        <select
-                                            dusk="businessregistration-documents.{{ $key }}.status-field"
-                                            wire:model.defer="documents.{{ $key }}.status"
-                                            id="documents.{{ $key }}.status" class="form-control">
-                                            @foreach ($options as $k => $v)
-                                                <option value="{{ $k }}">{{ $v }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                    <div class="col-md-3" wire:target="documents.{{ $key }}.file">
+                                        <div class="form-group">
+                                            <label
+                                                class="font-weight-bold">{{ __('ebps::ebps.document_status') }}</label>
+                                            <select
+                                                dusk="businessregistration-documents.{{ $key }}.status-field"
+                                                wire:model.defer="documents.{{ $key }}.status"
+                                                id="documents.{{ $key }}.status" class="form-control">
+                                                @foreach ($options as $k => $v)
+                                                    <option value="{{ $k }}">{{ $v }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-1">
-                                    <div class="btn-group-vertical">
-                                        <button class="btn btn-danger"
-                                            wire:click="removeDocument({{ $key }})">
-                                            <i class="bx bx-trash"></i></button>
+                                    <div class="col-md-1">
+                                        <div class="btn-group-vertical">
+                                            <button class="btn btn-danger"
+                                                wire:click="removeDocument({{ $key }})">
+                                                <i class="bx bx-trash"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-        @endif
-    </div>
-    <div class="card-footer">
-        <button type="submit" class="btn btn-primary">{{ __('ebps::ebps.save') }}</button>
-        <a href="{{ route('admin.ebps.old_applications.index') }}" wire:loading.attr="disabled"
-            class="btn btn-danger">{{ __('ebps::ebps.back') }}</a>
-    </div>
+            @endif
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">{{ __('ebps::ebps.save') }}</button>
+            <a href="{{ route('admin.ebps.old_applications.index') }}" wire:loading.attr="disabled"
+                class="btn btn-danger">{{ __('ebps::ebps.back') }}</a>
+        </div>
 </form>

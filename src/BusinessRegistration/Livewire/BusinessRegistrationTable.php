@@ -16,6 +16,7 @@ use Src\BusinessRegistration\Enums\RegistrationCategoryEnum;
 use Src\BusinessRegistration\Models\BusinessRegistration;
 use Src\BusinessRegistration\Models\BusinessRenewal;
 use Src\BusinessRegistration\Service\BusinessRegistrationAdminService;
+use Src\Customers\Models\Customer;
 
 class BusinessRegistrationTable extends DataTableComponent
 {
@@ -24,10 +25,15 @@ class BusinessRegistrationTable extends DataTableComponent
     protected $model = BusinessRegistration::class;
 
     public $type;
+    public $isCustomer = false;
+    public $customerData;
 
     public function mount($type)
     {
         $this->type = $type;
+        if (Auth::guard('customer')->user()) {
+            $this->isCustomer = true;
+        }
     }
 
     public array $bulkActions = [
@@ -60,13 +66,22 @@ class BusinessRegistrationTable extends DataTableComponent
                 'businessProvince',
                 'businessDistrict',
                 'businessLocalBody',
+                'applicants',
                 'applicants.applicantProvince',
                 'applicants.applicantDistrict',
                 'applicants.applicantLocalBody',
             ])
+
             ->select('*')
-            ->when($this->type, function ($query) {
-                $query->where('registration_type', $this->type);
+            ->when($this->isCustomer, function ($query) {
+                $query->whereHas('applicants', function ($subQuery) {
+                    $user = Auth::guard('customer')->user();
+                    $subQuery->where('phone', $user->mobile_no)
+                        ->orWhere('email', $user->email);
+                });
+            })
+            ->when($this->type == BusinessRegistrationType::ARCHIVING, function ($query) {
+                $query->where('registration_type', BusinessRegistrationType::ARCHIVING);
             })
             ->whereNull(['brs_business_registration_data.deleted_at'])
             ->orderBy('brs_business_registration_data.created_at', 'desc');
@@ -161,14 +176,14 @@ class BusinessRegistrationTable extends DataTableComponent
                     $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
                     $buttons .= $view;
                 }
-                if ($this->type != BusinessRegistrationType::DEREGISTRATION->value) {
-                    if (can('business_registration edit') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
-                        $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
-                        $buttons .= $edit;
-                    }
+
+                if (can('business_registration edit') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
+                    $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
+                    $buttons .= $edit;
                 }
 
-                if (can('business_registration delete') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value && $this->type !=  BusinessRegistrationType::DEREGISTRATION->value) {
+
+                if (can('business_registration delete') && $row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
                     $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
                     $buttons .= $delete;
                 }
@@ -180,7 +195,7 @@ class BusinessRegistrationTable extends DataTableComponent
                 }
 
 
-                if ($row->application_status === ApplicationStatusEnum::ACCEPTED->value && $this->type !=  BusinessRegistrationType::DEREGISTRATION->value) {
+                if ($row->application_status === ApplicationStatusEnum::ACCEPTED->value) {
                     $renewButton = '<button type="button" class="btn btn-secondary btn-sm" wire:click="renew(' . $row->id . ')"><i class="bx bx-refresh"></i></button>';
                     $buttons .= $renewButton;
                 }
@@ -189,6 +204,33 @@ class BusinessRegistrationTable extends DataTableComponent
 
             $columns[] = $actionsColumn;
         }
+        if ($this->isCustomer) {
+            $columns[] = Column::make(__('businessregistration::businessregistration.actions'))->label(function ($row, Column $column) {
+                $buttons = '<div class="btn-group" role="group">';
+
+                $buttons .= '<button class="btn btn-success btn-sm" wire:click="customerView(' . $row->id . ')"><i class="bx bx-show"></i></button>&nbsp;';
+
+                if ($row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
+                    $buttons .= '<button class="btn btn-primary btn-sm" wire:click="customerEdit(' . $row->id . ')"><i class="bx bx-edit"></i></button>&nbsp;';
+                }
+
+
+                if ($row->application_status !== ApplicationStatusEnum::ACCEPTED->value) {
+                    $buttons .= '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="customerDelete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
+                }
+                if ($row->application_status === ApplicationStatusEnum::ACCEPTED->value) {
+                    $buttons .= '<button type="button" class="btn btn-primary btn-sm" wire:click="customerPreview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                }
+
+                // Show renew button if accepted and not deregistration
+                // if ($row->application_status === ApplicationStatusEnum::ACCEPTED->value) {
+                //     $buttons .= '<button type="button" class="btn btn-secondary btn-sm" wire:click="renew(' . $row->id . ')"><i class="bx bx-refresh"></i></button>';
+                // }
+
+                return $buttons . '</div>';
+            })->html();
+        }
+
 
         return $columns;
     }
@@ -197,8 +239,10 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function view($id)
     {
-
-        return redirect()->route('admin.business-registration.business-registration.show', ['id' => $id]);
+        return redirect()->route('admin.business-registration.business-registration.show', [
+            'id' => $id,
+            'type' => $this->type
+        ]);
     }
 
     public function edit($id)
@@ -265,6 +309,33 @@ class BusinessRegistrationTable extends DataTableComponent
 
     public function preview($id)
     {
-        return redirect()->route('admin.business-registration.business-registration.preview', ['id' => $id]);
+        return redirect()->route('admin.business-registration.business-registration.preview', [
+            'id' => $id,
+            'type' => $this->type
+        ]);
+    }
+
+    // Customer Portal Functions for Action buttons
+    public function customerView($id)
+    {
+        return redirect()->route('customer.business-registration.business-registration.show', ['id' => $id]);
+    }
+
+    public function customerEdit($id)
+    {
+        return redirect()->route('customer.business-registration.business-registration.edit', ['id' => $id]);
+    }
+
+    public function customerDelete($id)
+    {
+        $service = new BusinessRegistrationAdminService();
+        $business = BusinessRegistration::findOrFail($id);
+        $service->delete($business, false);
+        $this->successFlash("Registration Deleted Successfully");
+    }
+
+    public function customerPreview($id)
+    {
+        return redirect()->route('customer.business-registration.business-registration.preview', ['id' => $id]);
     }
 }

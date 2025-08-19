@@ -39,6 +39,9 @@ class BusinessRegistration extends Model
         'registration_type_id',
 
         'business_nature',
+        'business_category',
+        'kardata_number',
+        'kardata_miti',
         'main_service_or_goods',
         'total_capital',
         'business_province',
@@ -93,6 +96,8 @@ class BusinessRegistration extends Model
         'registration_category',
         'business_status',
         'is_previouslyRegistered',
+        'application_letter',
+        'certificate_letter',
     ];
 
     protected $casts = [
@@ -103,6 +108,9 @@ class BusinessRegistration extends Model
         'registration_type_id' => 'integer',
 
         'business_nature' => 'string',
+        'business_category' => 'string',
+        'kardata_number' => 'string',
+        'kardata_miti' => 'string',
         'main_service_or_goods' => 'string',
         'total_capital' => 'integer',
         'business_province' => 'string',
@@ -152,6 +160,8 @@ class BusinessRegistration extends Model
         'is_previouslyRegistered' => 'string',
         'registration_category' => 'string',
         'business_status' => BusinessStatusEnum::class,
+        'application_letter' => 'string',
+        'certificate_letter' => 'string',
     ];
 
 

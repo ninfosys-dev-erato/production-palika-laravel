@@ -26,6 +26,9 @@ class BusinessRegistrationAdminService
         $businessRegistration = BusinessRegistration::create([
             // Business Info
             'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'business_category'            => $businessRegistrationAdminDto->business_category,
+            'kardata_number'               => $businessRegistrationAdminDto->kardata_number,
+            'kardata_miti'                 => $businessRegistrationAdminDto->kardata_miti,
             'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
             'total_capital'                => $businessRegistrationAdminDto->total_capital,
             'business_province'            => $businessRegistrationAdminDto->business_province,
@@ -75,6 +78,7 @@ class BusinessRegistrationAdminService
             'total_running_day' => $businessRegistrationAdminDto->total_running_day,
             'registration_category' => $businessRegistrationAdminDto->registration_category,
             'business_status' => BusinessStatusEnum::ACTIVE->value,
+            'application_letter' => $businessRegistrationAdminDto->application_letter,
         ]);
 
         return $businessRegistration;
@@ -85,6 +89,9 @@ class BusinessRegistrationAdminService
         $registration = tap($businessRegistration)->update([
             // Business Info
             'business_nature'              => $businessRegistrationAdminDto->business_nature,
+            'business_category'            => $businessRegistrationAdminDto->business_category,
+            'kardata_number'               => $businessRegistrationAdminDto->kardata_number,
+            'kardata_miti'                 => $businessRegistrationAdminDto->kardata_miti,
             'main_service_or_goods'        => $businessRegistrationAdminDto->main_service_or_goods,
             'total_capital'                => $businessRegistrationAdminDto->total_capital,
             'business_province'            => $businessRegistrationAdminDto->business_province,
@@ -132,17 +139,18 @@ class BusinessRegistrationAdminService
             'is_rented' => $businessRegistrationAdminDto->is_rented,
             'total_running_day' => $businessRegistrationAdminDto->total_running_day,
             'registration_category' => $businessRegistrationAdminDto->registration_category,
+            'application_letter' => $businessRegistrationAdminDto->application_letter,
         ]);
 
         return $registration;
     }
 
-    public function delete(BusinessRegistration $businessRegistration): bool|BusinessRegistration
+    public function delete(BusinessRegistration $businessRegistration, bool $admin = true): bool|BusinessRegistration
     {
 
         $businessRegistration = tap($businessRegistration)->update([
             'deleted_at' => date('Y-m-d H:i:s'),
-            'deleted_by' => Auth::user()->id
+            'deleted_by' => $admin ? Auth::user()->id : Auth::guard('customer')->user()->id,
         ]);
 
         return $businessRegistration;
@@ -235,9 +243,7 @@ class BusinessRegistrationAdminService
         // If no records yet, start from 1
         $newSerial = $maxNumber ? $maxNumber + 1 : 1;
 
-        $newNumber = str_pad($newSerial, 6, '0', STR_PAD_LEFT);
-
-        return $newNumber . '/' . $fiscalYear;
+        return $newSerial . '/' . $fiscalYear;
     }
 
 

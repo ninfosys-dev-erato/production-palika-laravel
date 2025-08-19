@@ -743,6 +743,7 @@ class BusinessDeRegistrationForm extends Component
 
         DB::beginTransaction();
         try {
+
             $this->validate();
             $this->businessDeRegistration['data'] = $this->getFormattedData();
             $this->businessDeRegistration['application_date_en'] = $this->bsToAd($this->businessDeRegistration['application_date']);

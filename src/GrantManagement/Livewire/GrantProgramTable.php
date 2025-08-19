@@ -42,6 +42,7 @@ class GrantProgramTable extends DataTableComponent
     public function builder(): Builder
     {
         return GrantProgram::query()
+            ->select('*')
             ->with(['fiscalYear', 'grantType', 'grantingOrganization', 'branch'])
             ->where('deleted_at', null)
             ->where('deleted_by', null)
@@ -100,6 +101,19 @@ class GrantProgramTable extends DataTableComponent
                     }
                     return '-';
                 })
+                ->collapseOnTablet(),
+
+            Column::make(__('grantmanagement::grantmanagement.decision_type'))
+                ->label(function ($row) {
+                    return $row->decision_type?->label() ?? '-';
+                })
+                ->collapseOnTablet(),
+
+            Column::make(__('grantmanagement::grantmanagement.decision_date'))
+                ->label(function ($row) {
+                    return $row->decision_date ?? '-';
+                })
+                ->collapseOnTablet(),
 
         ];
 

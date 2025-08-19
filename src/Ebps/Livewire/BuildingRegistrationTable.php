@@ -15,16 +15,26 @@ use Src\Ebps\Enums\ApplicationTypeEnum;
 use Src\Ebps\Exports\MapAppliesExport;
 use Src\Ebps\Models\MapApply;
 use Src\Ebps\Service\MapApplyAdminService;
+use Src\Ebps\Service\ApplicationRoleFilterService;
 use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class BuildingRegistrationTable extends DataTableComponent
 {
     use SessionFlash,IsSearchable;
+    
     protected $model = MapApply::class;
+    protected ApplicationRoleFilterService $roleFilterService;
+    
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+
+    public function boot(): void
+    {
+        $this->roleFilterService = new ApplicationRoleFilterService();
+    }
+
     public function configure(): void
     {
         $this->setPrimaryKey('ebps_map_applies.id')
@@ -42,14 +52,19 @@ class BuildingRegistrationTable extends DataTableComponent
     }
     public function builder(): Builder
     {
-     
-        return MapApply::query()
-        ->with(['fiscalYear', 'customer', 'landDetail', 'constructionType', 'mapApplySteps', 'houseOwner', 'localBody', 'district'])
-        ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id')
-        ->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)
-            ->where('ebps_map_applies.deleted_at',null)
-            ->where('ebps_map_applies.deleted_by',null)
-           ->orderBy('ebps_map_applies.created_at','DESC'); // Select some things
+        $query = MapApply::query()
+            ->with(['fiscalYear', 'customer', 'landDetail', 'constructionType', 'mapApplySteps', 'houseOwner', 'localBody', 'district'])
+            ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id', 'application_type')
+            ->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)
+            ->where('ebps_map_applies.deleted_at', null)
+            ->where('ebps_map_applies.deleted_by', null)
+            ->orderBy('ebps_map_applies.created_at', 'DESC');
+
+        // Apply enhanced role-based filtering based on current step access
+        return $this->roleFilterService->filterApplicationsByCurrentStepAccess(
+            $query, 
+            ApplicationTypeEnum::BUILDING_DOCUMENTATION->value
+        );
     }
     public function filters(): array
     {
@@ -67,31 +82,15 @@ class BuildingRegistrationTable extends DataTableComponent
                 ])->render()
             )->html(),
             Column::make(__('ebps::ebps.applied_date'), "applied_date") ->sortable()->searchable()->collapseOnTablet(),
+            
+            // Add current step and status column
+            Column::make(__('ebps::ebps.step_and_status'), "id")->label(
+                fn($row, Column $column) => $this->getCurrentStepLabel($row)
+            )->html(),
      ];
         if (can('ebps_map_applies edit') || can('ebps_map_applies delete')) {
-            $actionsColumn = Column::make(__('ebps::ebps.actions'))->label(function ($row, Column $column) {
-                $buttons = '';
-
-                if (can('ebps_map_applies access')) {
-                    $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
-                    $buttons .= $view;
-                }
-
-                if (can('ebps_map_applies edit')) {
-                    $edit = '<button type="button" class="btn btn-primary btn-sm"  wire:click="edit(' . $row->id . ')"><i class="bx bx-edit"></i></button>';
-                    $buttons .= $edit;
-                }
-
-                if (can('ebps_map_applies delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm"  wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
-                    $buttons .= $delete;
-                }
-
-                $moveForward = '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
-                $buttons .= $moveForward;
-
-              
-                return $buttons;
+            $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
+                return $this->getActionButtons($row);
             })->html();
 
             $columns[] = $actionsColumn;
@@ -100,6 +99,83 @@ class BuildingRegistrationTable extends DataTableComponent
         return $columns;
 
     }
+
+    protected function getCurrentStepLabel($application): string
+    {
+        $currentStep = $this->roleFilterService->getCurrentStep($application);
+        
+        if (!$currentStep) {
+            return '
+                <div class="text-center">
+                    <span class="badge bg-success mb-1">✅ ' . __('ebps::ebps.completed') . '</span><br>
+                    <small class="text-muted">All steps finished</small>
+                </div>
+            ';
+        }
+
+        // Get step number from form_position
+        $stepNumber = $currentStep->position ?? 'N/A';
+        
+        // Get current step record to determine status
+        $stepRecord = $application->mapApplySteps()
+            ->where('map_step_id', $currentStep->id)
+            ->first();
+            
+        $status = $stepRecord ? $stepRecord->status : 'not_started';
+        
+        // Status mapping with icons and colors
+        $statusConfig = [
+            'pending' => ['label' => __('ebps::ebps.pending'), 'class' => 'bg-warning', 'icon' => '⏳'],
+            'submitted' => ['label' => __('ebps::ebps.submitted'), 'class' => 'bg-info', 'icon' => '📝'],
+            'accepted' => ['label' => __('ebps::ebps.accepted'), 'class' => 'bg-success', 'icon' => '✅'],
+            'rejected' => ['label' => __('ebps::ebps.rejected'), 'class' => 'bg-danger', 'icon' => '❌'],
+            'not_started' => ['label' => __('ebps::ebps.not_started'), 'class' => 'bg-secondary', 'icon' => '⚪'],
+        ];
+        
+        $statusInfo = $statusConfig[$status] ?? $statusConfig['not_started'];
+
+        return sprintf('
+            <div class="text-center">
+                <div class="mb-1">
+                    <strong class="text-primary">Step: %s</strong>
+                </div>
+                <span class="badge %s">%s %s</span><br>
+              
+            </div>',
+            $stepNumber,
+            $statusInfo['class'],
+            $statusInfo['icon'],
+            $statusInfo['label']
+        );
+    }
+
+    protected function getActionButtons($application): string
+    {
+        $buttons = '';
+
+        // Always show view button if user has permission
+        if (can('ebps_map_applies access')) {
+            $buttons .= '<button class="btn btn-success btn-sm" wire:click="view(' . $application->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
+        }
+
+        // Always show edit button if user has permission
+        if (can('ebps_map_applies edit')) {
+            $buttons .= '<button class="btn btn-primary btn-sm" wire:click="edit(' . $application->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
+        }
+
+        // Always show delete button if user has permission
+        if (can('ebps_map_applies delete')) {
+            $buttons .= '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $application->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
+        }
+
+        // Always show move forward button if user has permission
+        if (can('ebps_map_applies edit')) {
+            $buttons .= '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $application->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
+        }
+
+        return $buttons;
+    }
+    
     public function refresh(){}
 
     public function edit($id)
