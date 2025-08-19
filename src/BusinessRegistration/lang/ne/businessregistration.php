@@ -581,4 +581,10 @@ return [
     'summarized_records' => 'संक्षेपित रिपोर्ट',
     'archiving' => 'अभिलेखिकरण',
     'business_archiving' => 'व्यवसाय अभिलेखिकरण',
+    'damage_reason' => 'हानि कारण',
+    'pratilipi_entry_saved_successfully' => 'प्रतिलिपी इनपुट सफलतापूर्वक सेव गरियो',
+    'pratilipi_entry_failed' => 'प्रतिलिपी इनपुट असफल भयो',
+    'pratilipi' => 'प्रतिलिपी',
+    'create_pratilipi' => 'प्रतिलिपी सिर्जना गर्नुहोस्',
+    'failed_to_save_pratilipi_entry' => 'प्रतिलिपी इनपुट गर्न असफल भयो',
 ];

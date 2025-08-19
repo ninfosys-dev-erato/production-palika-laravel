@@ -557,4 +557,10 @@ return [
     'summarized_records' => 'Summarized Records',
     'archiving' => 'Archiving',
     'business_archiving' => 'Business Archiving',
+    'damage_reason' => 'Damage Reason',
+    'pratilipi_entry_saved_successfully' => 'Pratilipi entry saved successfully',
+    'pratilipi_entry_failed' => 'Pratilipi entry failed',
+    'pratilipi' => 'Pratilipi',
+    'create_pratilipi' => 'Create Pratilipi',
+    'failed_to_save_pratilipi_entry' => 'Failed to save pratilipi entry',
 ];
