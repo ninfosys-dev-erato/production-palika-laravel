@@ -7,6 +7,7 @@ use Src\BusinessRegistration\Models\BusinessRegistration;
 use Illuminate\Support\Str;
 use Src\BusinessRegistration\Enums\ApplicationStatusEnum;
 use Src\BusinessRegistration\Models\BusinessDeRegistration;
+use Src\BusinessRegistration\Models\CertificatePratilipiLog;
 use Src\FileTracking\Models\FileRecord;
 use Src\Settings\Enums\TemplateEnum;
 use Src\Settings\Models\LetterHeadSample;
@@ -72,6 +73,8 @@ trait BusinessRegistrationTemplate
 
     public function resolveBusinessDate($businessRegistration)
     {
+        $pratilipiCount = $this->getPratilipCount($businessRegistration);
+
         return [
             // Registration type and fiscal year
             '{{business.fiscal_year}}' => $businessRegistration->fiscalYear?->year ?? ' ',
@@ -152,6 +155,9 @@ trait BusinessRegistrationTemplate
             '{{business.total_running_day}}' => $businessRegistration->total_running_day ?? ' ',
             '{{business.kardata_number}}' => replaceNumbers($businessRegistration->kardata_number, true) ?? ' ',
             '{{business.kardata_miti}}' => $businessRegistration->kardata_miti ?? ' ',
+            '{{business.pratilipi_count}}' => $pratilipiCount ? 'प्रतिलिपी: ' . $pratilipiCount . ' प्रतिलिपी' : ' ',
+            '{{business.is_pratilipi}}' => $pratilipiCount ? 'प्रतिलिपी' : ' ',
+
 
         ];
     }
@@ -299,6 +305,16 @@ trait BusinessRegistrationTemplate
             return $businessRegistration->applicant_street ?? ' ';
         }
         return $applicants->pluck('applicant_street')->filter()->implode(', ');
+    }
+    private function getPratilipCount($businessRegistration)
+    {
+        $pratilipiCount = CertificatePratilipiLog::where('business_registration_id', $businessRegistration->id)->count();
+
+        if ($pratilipiCount === 0) {
+            return 0;
+        }
+
+        return replaceNumbers($pratilipiCount, true);
     }
 
     public function renderRenewalTemplateWithData(BusinessRegistration $businessRegistration): string
