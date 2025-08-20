@@ -279,6 +279,7 @@ return [
     'view_all_beruju' => 'सबै बेरुजु हेर्नुहोस्',
     'beruju_reports' => 'बेरुजु रिपोर्टहरू',
     'beruju_settings' => 'बेरुजु सेटिङहरू',
+    'refresh' => 'रिफ्रेश',
     'total_beruju' => 'कुल बेरुजु',
     'pending_beruju' => 'विचाराधीन बेरुजु',
     'resolved_beruju' => 'समाधान भएका बेरुजु',
@@ -545,4 +546,6 @@ return [
     'total_overdue' => 'कुल ओभरड्यु',
     'multi_year_outstanding' => 'बहु-वर्ष बकाया',
     'npr' => 'रुपैयाँ',
+    'all_fiscal_year' => 'सबै आर्थिक वर्ष',
+    'filter_by' => 'फिल्टर',
 ];
