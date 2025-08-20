@@ -34,6 +34,7 @@ class BerujuEntryForm extends Component
     public $isMonetary = false;
     public $childSubCategories = [];
     public $subCategoryLevels = []; // Store multiple levels of subcategories
+    public $selectedSubCategoryPath = []; // Store the selected path for editing
 
     public function rules(): array
     {
@@ -87,7 +88,7 @@ class BerujuEntryForm extends Component
         $this->subCategories = SubCategory::whereNull('deleted_at')->pluck('name_nep', 'id')->toArray();
         
         // Initialize isMonetary based on current beruju category
-        if ($this->berujuEntry->beruju_category === BerujuCategoryEnum::MONETARY_BERUJU->value) {
+        if ($this->berujuEntry->beruju_category === BerujuCategoryEnum::MONETARY_BERUJU) {
             $this->isMonetary = true;
         } else {
             $this->isMonetary = false;
@@ -155,6 +156,67 @@ class BerujuEntryForm extends Component
                 $this->berujuEntry->sub_category_id = null;
             }
         }
+    }
+
+    /**
+     * Load the complete subcategory hierarchy for editing
+     */
+    private function loadSubCategoryHierarchy($finalSubCategoryId)
+    {
+        $currentSubCategory = SubCategory::find($finalSubCategoryId);
+        if (!$currentSubCategory) {
+            return;
+        }
+
+        $hierarchy = [];
+        $selectedPath = [];
+        $level = 0;
+
+        // Build the hierarchy from the final subcategory up to the root
+        while ($currentSubCategory) {
+            // Find parent subcategory
+            $parentSubCategory = SubCategory::where('id', $currentSubCategory->parent_id)
+                ->orWhere('slug', $currentSubCategory->parent_slug)
+                ->orWhere('name_nep', $currentSubCategory->parent_name_nep)
+                ->orWhere('name_eng', $currentSubCategory->parent_name_eng)
+                ->first();
+
+            if ($parentSubCategory) {
+                // Get all siblings of current subcategory
+                $siblings = SubCategory::where('parent_id', $parentSubCategory->id)
+                    ->orWhere('parent_slug', $parentSubCategory->slug)
+                    ->orWhere('parent_name_nep', $parentSubCategory->parent_name_nep)
+                    ->orWhere('parent_name_eng', $parentSubCategory->parent_name_eng)
+                    ->get()
+                    ->pluck('name_nep', 'id')
+                    ->toArray();
+
+                $hierarchy[$level] = $siblings;
+                $selectedPath[$level] = $currentSubCategory->id;
+                $currentSubCategory = $parentSubCategory;
+                $level++;
+            } else {
+                // This is a root level subcategory
+                // Get all root level subcategories
+                $rootSubCategories = SubCategory::whereNull('parent_id')
+                    ->whereNull('parent_slug')
+                    ->whereNull('parent_name_nep')
+                    ->whereNull('parent_name_eng')
+                    ->get()
+                    ->pluck('name_nep', 'id')
+                    ->toArray();
+
+                $hierarchy[$level] = $rootSubCategories;
+                $selectedPath[$level] = $currentSubCategory->id;
+                break;
+            }
+        }
+
+        // Reverse the hierarchy to get the correct order (root to leaf)
+        $this->subCategoryLevels = array_reverse($hierarchy, true);
+        
+        // Store the selected path for reference
+        $this->selectedSubCategoryPath = array_reverse($selectedPath, true);
     }
 
     public function save()

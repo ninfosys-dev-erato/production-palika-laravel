@@ -151,11 +151,11 @@
                     <div class="form-group">
                         <label for="sub_category_id"
                             class="form-label">{{ __('beruju::beruju.sub_category_id') }}</label>
-                        <select  wire:change="onSubCategoryChange($event.target.value)"
+                        <select wire:model="berujuEntry.sub_category_id" wire:change="onSubCategoryChange($event.target.value)"
                             class="form-select rounded-0 @error('berujuEntry.sub_category_id') is-invalid @enderror">
                             <option value="">{{ __('beruju::beruju.select_sub_category') }}</option>
                             @foreach ($subCategories as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
+                                <option value="{{ $value }}" {{ $berujuEntry->sub_category_id == $value ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
                         @error('berujuEntry.sub_category_id')
@@ -176,7 +176,7 @@
                                     class="form-select rounded-0">
                                 <option value="">{{ __('beruju::beruju.select_child_sub_category') }}</option>
                                 @foreach ($subCategories as $value => $label)
-                                    <option value="{{ $value }}">{{ $label }}</option>
+                                    <option value="{{ $value }}" {{ isset($selectedSubCategoryPath[$level]) && $selectedSubCategoryPath[$level] == $value ? 'selected' : '' }}>{{ $label }}</option>
                                 @endforeach
                             </select>
                         </div>

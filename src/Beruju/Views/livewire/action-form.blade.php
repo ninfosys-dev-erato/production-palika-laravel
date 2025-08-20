@@ -24,8 +24,8 @@
                 <label for="action_type_id" class="form-label">{{ __('beruju::beruju.action_type') }} <span class="text-danger">*</span></label>
                 <select wire:model="berujuAction.action_type_id" id="action_type_id" class="form-select @error('berujuAction.action_type_id') is-invalid @enderror">
                     <option value="">{{ __('beruju::beruju.select_action_type') }}</option>
-                    @foreach($actionTypes as $id => $name)
-                        <option value="{{ $id }}">{{ $name }}</option>
+                    @foreach($actionTypes as $actionType)
+                        <option value="{{ $actionType->id }}">{{ app()->getLocale() === 'en' ? $actionType->name_eng : $actionType->name_nep ?? $actionType->name_eng}}</option>
                     @endforeach
                 </select>
                 @error('berujuAction.action_type_id')

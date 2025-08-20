@@ -121,4 +121,28 @@ class BerujuEntry extends Model
         return $this->hasMany(ResolutionCycle::class, 'beruju_id');
     }
 
+    /**
+     * Get the latest resolution cycle for this beruju entry
+     */
+    public function latestResolutionCycle()
+    {
+        return $this->hasOne(ResolutionCycle::class, 'beruju_id')->latestOfMany();
+    }
+
+    /**
+     * Calculate the total resolved amount from the latest resolution cycle
+     */
+    public function getResolvedAmountAttribute()
+    {
+        $latestCycle = $this->latestResolutionCycle;
+        
+        if (!$latestCycle) {
+            return 0;
+        }
+
+        return $latestCycle->actions()
+            ->whereNotNull('resolved_amount')
+            ->sum('resolved_amount');
+    }
+
 }
