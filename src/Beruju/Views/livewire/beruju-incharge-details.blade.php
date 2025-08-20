@@ -43,7 +43,7 @@
                             <span class="text-muted small">{{ __('beruju::beruju.assigned_at') }}</span>
                             <span class="fw-medium">
                                 @if($latestCycle->assigned_at)
-                                    {{ $latestCycle->assigned_at->format('M d, Y H:i') }}
+                                    {{ replaceNumbersWithLocale(ne_date($latestCycle->assigned_at),true) }}
                                 @else
                                     {{ __('beruju::beruju.not_specified') }}
                                 @endif

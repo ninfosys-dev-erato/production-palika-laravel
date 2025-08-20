@@ -132,16 +132,19 @@ class ActionForm extends Component
         
             switch ($this->action) {
                 case Action::CREATE:
-                    $service->store($dto);
+                    $action = $service->store($dto);
                     $this->successFlash(__('beruju::beruju.action_created_successfully'));
                     $this->dispatch('close-modal');
                     $this->dispatch('action-created');
+                    $this->dispatch('saveAllDocumentsfunction', $this->berujuEntry->id, $action->id);
                     break;
                 case Action::UPDATE:
                     $service->update($this->berujuAction, $dto);
                     $this->successFlash(__('beruju::beruju.action_updated_successfully'));
                     $this->dispatch('close-modal');
                     $this->dispatch('action-updated');
+                    $this->dispatch('saveAllDocumentsfunction',$this->berujuEntry->id, $this->berujuAction->id);
+
                     break;
                 default:
                     break;
@@ -159,6 +162,9 @@ class ActionForm extends Component
         
         // Dispatch event to open the modal
         $this->dispatch('open-action-modal');
+        
+        // Dispatch event to notify child components that action data has changed
+        $this->dispatch('load-existing-documents');
     }
     
     #[On('incharge-updated')]

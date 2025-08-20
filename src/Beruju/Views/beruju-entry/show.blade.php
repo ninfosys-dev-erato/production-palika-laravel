@@ -33,6 +33,12 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <div class="d-flex justify-content-between">
+                                <span class="text-muted small">{{ __('beruju::beruju.name') }}</span>
+                                <span class="fw-medium">{{ $berujuEntry->name ?: __('beruju::beruju.not_specified') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between">
                                 <span class="text-muted small">{{ __('beruju::beruju.reference_number') }}</span>
                                 <span class="fw-medium">{{ replaceNumbersWithLocale($berujuEntry->reference_number, true) ?: __('beruju::beruju.not_specified') }}</span>
                             </div>
@@ -79,41 +85,47 @@
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex justify-content-between">
-                                <span class="text-muted small">{{ __('beruju::beruju.current_status') }}</span>
-                                <div class="d-flex align-items-center">
-                                    @if($berujuEntry->status)
-                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: {{ $berujuEntry->status->color() }}; margin-right: 8px;"></span>
-                                        <span class="fw-medium">{{ $berujuEntry->status->label() }}</span>
-                                    @else
-                                        <span class="fw-medium">{{ __('beruju::beruju.not_specified') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted small">{{ __('beruju::beruju.submission_status') }}</span>
-                                <div class="d-flex align-items-center">
-                                    @if($berujuEntry->submission_status)
-                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: {{ $berujuEntry->submission_status->color() }}; margin-right: 8px;"></span>
-                                        <span class="fw-medium">{{ $berujuEntry->submission_status->label() }}</span>
-                                    @else
-                                        <span class="fw-medium">{{ __('beruju::beruju.not_specified') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-between">
                                 <span class="text-muted small">{{ __('beruju::beruju.branch_id') }}</span>
                                 <span class="fw-medium">{{ $berujuEntry->branch?->title ?: __('beruju::beruju.not_specified') }}</span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex justify-content-between">
-                                <span class="text-muted small">{{ __('beruju::beruju.project_id') }}</span>
-                                <span class="fw-medium">{{ $berujuEntry->project_id ?: __('beruju::beruju.not_specified') }}</span>
+                                <span class="text-muted small">{{ __('beruju::beruju.project') }}</span>
+                                <span class="fw-medium">{{ $berujuEntry->project ?: __('beruju::beruju.not_specified') }}</span>
                             </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">{{ __('beruju::beruju.owner_name') }}</span>
+                                <span class="fw-medium">{{ $berujuEntry->owner_name ?: __('beruju::beruju.not_specified') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">{{ __('beruju::beruju.dafa_number') }}</span>
+                                <span class="fw-medium">{{ $berujuEntry->dafa_number ?: __('beruju::beruju.not_specified') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Information -->
+                    <div class="border-top pt-3 mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted small">{{ __('beruju::beruju.current_status') }}</span>
+                                    <div class="d-flex align-items-center">
+                                        @if($berujuEntry->status)
+                                            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: {{ $berujuEntry->status->color() }}; margin-right: 8px;"></span>
+                                            <span class="fw-medium">{{ $berujuEntry->status->label() }}</span>
+                                        @else
+                                            <span class="fw-medium">{{ __('beruju::beruju.not_specified') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                         
                         </div>
                     </div>
 
@@ -148,7 +160,7 @@
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted small">{{ __('beruju::beruju.created_at') }}</span>
-                                    <span class="fw-medium">{{ $berujuEntry->created_at?->format('M d, Y H:i') ?: __('beruju::beruju.not_available') }}</span>
+                                    <span class="fw-medium">{{ replaceNumbersWithLocale(ne_date($berujuEntry->created_at),true) ?: __('beruju::beruju.not_available') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -161,6 +173,12 @@
                                 <span class="text-muted small">{{ __('beruju::beruju.description') }}</span>
                             </div>
                             <p class="mb-0 small">{{ $berujuEntry->description ?: __('beruju::beruju.no_description_provided') }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted small">{{ __('beruju::beruju.beruju_description') }}</span>
+                            </div>
+                            <p class="mb-0 small">{{ $berujuEntry->beruju_description ?: __('beruju::beruju.not_specified') }}</p>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
@@ -194,7 +212,7 @@
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted small">{{ __('beruju::beruju.last_updated') }}</span>
-                                    <span class="fw-medium">{{ $berujuEntry->updated_at?->format('M d, Y H:i') ?: __('beruju::beruju.not_available') }}</span>
+                                    <span class="fw-medium">{{ replaceNumbersWithLocale(ne_date($berujuEntry->updated_at),true) ?: __('beruju::beruju.not_available') }}</span>
                                 </div>
                             </div>
                         </div>
