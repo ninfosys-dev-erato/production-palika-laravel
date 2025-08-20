@@ -48,7 +48,20 @@
                 @enderror
             </div>
 
-
+            <!-- Resolved Amount -->
+            <div class="col-md-6 mb-3">
+                <label for="resolved_amount" class="form-label">{{ __('beruju::beruju.resolved_amount') }}</label>
+                <input type="number" 
+                       wire:model="berujuAction.resolved_amount" 
+                       id="resolved_amount" 
+                       class="form-control @error('berujuAction.resolved_amount') is-invalid @enderror"
+                       placeholder="{{ __('beruju::beruju.enter_resolved_amount') }}"
+                       step="0.01" 
+                       min="0">
+                @error('berujuAction.resolved_amount')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
         <!-- Remarks -->

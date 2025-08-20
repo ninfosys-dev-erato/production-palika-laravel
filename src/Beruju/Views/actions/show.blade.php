@@ -48,6 +48,10 @@
                                         <span class="badge bg-{{ $color }}">{{ $berujuAction->status }}</span>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>{{ __('beruju::beruju.resolved_amount') }}:</th>
+                                    <td>{{ $berujuAction->resolved_amount ? number_format($berujuAction->resolved_amount, 2) : 'N/A' }}</td>
+                                </tr>
                             </table>
                         </div>
                         <div class="col-md-6">

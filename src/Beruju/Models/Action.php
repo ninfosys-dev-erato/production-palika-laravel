@@ -22,6 +22,7 @@ class Action extends Model
         'action_type_id',
         'status',
         'remarks',
+        'resolved_amount',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -32,6 +33,7 @@ class Action extends Model
         'action_type_id' => 'integer',
         'status' => 'string',
         'remarks' => 'string',
+        'resolved_amount' => 'decimal:2',
         'created_by' => 'integer',
         'updated_by' => 'integer',
         'deleted_by' => 'integer',
@@ -48,6 +50,7 @@ class Action extends Model
                 'action_type_id',
                 'status',
                 'remarks',
+                'resolved_amount',
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()

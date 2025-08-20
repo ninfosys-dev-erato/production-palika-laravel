@@ -11,6 +11,7 @@ class ActionAdminDto
         public int $action_type_id,
         public string $status = 'Pending',
         public ?string $remarks = null,
+        public ?float $resolved_amount = null,
     ) {}
 
     public static function fromLiveWireModel(Action $action): ActionAdminDto
@@ -20,6 +21,7 @@ class ActionAdminDto
             action_type_id: $action->action_type_id,
             status: $action->status,
             remarks: $action->remarks,
+            resolved_amount: $action->resolved_amount,
         );
     }
 
@@ -30,6 +32,7 @@ class ActionAdminDto
             action_type_id: $data['action_type_id'],
             status: $data['status'] ?? 'Pending',
             remarks: $data['remarks'] ?? null,
+            resolved_amount: $data['resolved_amount'] ?? null,
         );
     }
 
@@ -40,6 +43,7 @@ class ActionAdminDto
             action_type_id: $action->action_type_id,
             status: $action->status,
             remarks: $action->remarks,
+            resolved_amount: $action->resolved_amount,
         );
     }
 
@@ -50,6 +54,7 @@ class ActionAdminDto
             'action_type_id' => $this->action_type_id,
             'status' => $this->status,
             'remarks' => $this->remarks,
+            'resolved_amount' => $this->resolved_amount,
         ];
     }
 }

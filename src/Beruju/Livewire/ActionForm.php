@@ -30,6 +30,7 @@ class ActionForm extends Component
             'berujuAction.action_type_id' => ['required', 'exists:brj_action_types,id'],
             'berujuAction.status' => ['required', 'in:Pending,Completed,Rejected'],
             'berujuAction.remarks' => ['nullable', 'string'],
+            'berujuAction.resolved_amount' => ['nullable', 'numeric', 'min:0', 'max:9999999999999.99'],
         ];
     }
 
@@ -43,6 +44,9 @@ class ActionForm extends Component
             'berujuAction.status.required' => __('beruju::beruju.status_required'),
             'berujuAction.status.in' => __('beruju::beruju.status_invalid'),
             'berujuAction.remarks.string' => __('beruju::beruju.remarks_must_be_string'),
+            'berujuAction.resolved_amount.numeric' => __('beruju::beruju.resolved_amount_must_be_numeric'),
+            'berujuAction.resolved_amount.min' => __('beruju::beruju.resolved_amount_must_be_positive'),
+            'berujuAction.resolved_amount.max' => __('beruju::beruju.resolved_amount_too_large'),
         ];
     }
 
