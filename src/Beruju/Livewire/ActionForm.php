@@ -115,7 +115,7 @@ class ActionForm extends Component
             $this->latestCycle = $latestCycle;
         }
         
-        $this->actionTypes = ActionType::whereNull('deleted_at')->pluck('name_eng', 'id');
+        $this->actionTypes = ActionType::whereNull('deleted_at')->get();
         
         if ($this->action === Action::CREATE) {
             // Set default values for required fields

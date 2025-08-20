@@ -41,6 +41,7 @@ class BerujuEntryTable extends DataTableComponent
         return BerujuEntry::query()
             ->where('deleted_at', null)
             ->where('deleted_by', null)
+            ->with(['latestResolutionCycle.actions'])
             ->orderBy('created_at', 'DESC');
     }
 
@@ -104,6 +105,16 @@ class BerujuEntryTable extends DataTableComponent
                         ? \Src\Beruju\Enums\BerujuCurrencyTypeEnum::symbol($row->currency_type)
                         : __('beruju::beruju.npr_symbol');
                     return $symbol . ' ' . replaceNumbersWithLocale(number_format((float)$value, 2), true);
+                }),
+
+            Column::make(__('beruju::beruju.resolved_amount'), 'id')
+                ->format(function ($value, $row) {
+                    $resolvedAmount = $row->resolved_amount;
+                    if ($resolvedAmount == 0) return __('beruju::beruju.not_available');
+                    $symbol = $row->currency_type
+                        ? \Src\Beruju\Enums\BerujuCurrencyTypeEnum::symbol($row->currency_type)
+                        : __('beruju::beruju.npr_symbol');
+                    return $symbol . ' ' . replaceNumbersWithLocale(number_format((float)$resolvedAmount, 2), true);
                 }),
 
             Column::make(__('beruju::beruju.owner_name'), 'owner_name')
