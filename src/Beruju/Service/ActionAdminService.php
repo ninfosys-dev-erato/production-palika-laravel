@@ -15,6 +15,7 @@ class ActionAdminService
             'action_type_id' => $actionAdminDto->action_type_id,
             'status' => $actionAdminDto->status,
             'remarks' => $actionAdminDto->remarks,
+            'resolved_amount' => $actionAdminDto->resolved_amount,
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->id,
         ]);
@@ -27,6 +28,7 @@ class ActionAdminService
             'action_type_id' => $actionAdminDto->action_type_id,
             'status' => $actionAdminDto->status,
             'remarks' => $actionAdminDto->remarks,
+            'resolved_amount' => $actionAdminDto->resolved_amount,
             'updated_at' => date('Y-m-d H:i:s'),
             'updated_by' => Auth::user()->id,
         ]);

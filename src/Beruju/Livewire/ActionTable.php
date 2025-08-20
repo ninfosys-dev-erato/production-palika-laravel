@@ -74,6 +74,11 @@ class ActionTable extends DataTableComponent
                     return "<span class='badge bg-{$color}'>{$value}</span>";
                 })->html(),
 
+            Column::make(__('beruju::beruju.resolved_amount'), "resolved_amount")->sortable()->searchable()->collapseOnTablet()
+                ->format(function ($value, $row, $column) {
+                    return $value ? number_format($value, 2) : 'N/A';
+                }),
+
             Column::make(__('beruju::beruju.remarks'), "remarks")->sortable()->searchable()->collapseOnTablet(),
         ];
 
