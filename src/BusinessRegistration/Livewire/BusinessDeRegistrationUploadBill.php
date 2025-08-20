@@ -2,7 +2,7 @@
 
 namespace Src\BusinessRegistration\Livewire;
 
-use App\Facades\ImageServiceFacade;
+use App\Facades\FileFacade;
 use App\Traits\SessionFlash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -37,10 +37,12 @@ class BusinessDeRegistrationUploadBill extends Component
         try {
             $path = $this->businessDeRegistration->bill; // default to existing value
             if ($this->bill) {
-                $path = ImageServiceFacade::compressAndStoreImage(
-                    $this->bill,
-                    config('src.BusinessRegistration.businessRegistration.bill'),
-                    'local'
+                
+                $path = FileFacade::saveFile(
+                    path: config('src.BusinessRegistration.businessRegistration.bill'),
+                    filename: '',
+                    file: $this->bill,
+                    disk: 'local'
                 );
             }
             $this->businessDeRegistration->bill = $path;

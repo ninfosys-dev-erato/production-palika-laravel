@@ -42,8 +42,8 @@ class BusinessRegistrationUploadBill extends Component
                 $path = FileFacade::saveFile(
                     config('src.BusinessRegistration.businessRegistration.bill'),
                     '',
-                    'local',
                     $this->bill,
+                    'local',
                 );
             }
             $this->businessRegistration->bill = $path;

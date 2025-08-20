@@ -11,7 +11,7 @@
                 <form wire:submit.prevent="uploadBill">
                     <div class="mb-3">
                         <label for="bill" class="form-label fw-bold">{{ __('Payment Photo') }}</label>
-                        <input wire:model="bill" name="bill" type="file" class="form-control" accept="image/*">
+                        <input wire:model="bill" name="bill" type="file" class="form-control" accept="image/*,application/pdf">
                         @error('bill')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror

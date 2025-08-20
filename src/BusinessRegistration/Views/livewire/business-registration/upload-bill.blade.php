@@ -14,7 +14,7 @@
                     <div class="mb-3">
                         <label for="bill"
                             class="form-label fw-bold">{{ __('businessregistration::businessregistration.payment_photo') }}</label>
-                        <input wire:model="payment_receipt" name="payment_receipt" type="file" class="form-control"
+                        <input wire:model="bill" name="bill" type="file" class="form-control"
                             accept="image/*,application/pdf">
                         @error('bill')
                             <div class="text-danger mt-1">{{ __($message) }}</div>
