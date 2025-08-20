@@ -284,6 +284,7 @@ return [
     'view_all_beruju' => 'View All Beruju',
     'beruju_reports' => 'Beruju Reports',
     'beruju_settings' => 'Beruju Settings',
+    'refresh' => 'Refresh',
     'total_beruju' => 'Total Beruju',
     'pending_beruju' => 'Pending Beruju',
     'resolved_beruju' => 'Resolved Beruju',
@@ -553,5 +554,7 @@ return [
     'total_overdue' => 'Total Overdue',
     'multi_year_outstanding' => 'Multi-Year Outstanding',
     'npr' => 'NPR',
+    'all_fiscal_year' => 'All Fiscal Year',
+    'filter_by' => 'Filter by',
 
 ];
