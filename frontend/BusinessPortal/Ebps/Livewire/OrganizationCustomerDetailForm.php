@@ -366,38 +366,35 @@ class OrganizationCustomerDetailForm extends Component
     {
         $additionalForms = AdditionalForm::with('form')->where('status', true)->get();
 
-        // Fetch saved templates
         $existingData = AdditionalFormDynamicData::where('map_apply_id', $this->mapApply->id)
             ->pluck('form_data', 'form_id')
             ->toArray();
 
-        $this->additionalFormsTemplate = $additionalForms->map(function ($additionalForm) use ($existingData) {
+        $this->additionalFormsTemplate = $additionalForms->mapWithKeys(function ($additionalForm) use ($existingData) {
+            $id = $additionalForm->id;
             return [
-                'id' => $additionalForm->id,
-                'name' => $additionalForm->name,
-                'form_id' => $additionalForm->form?->id,
-                'template' => $existingData[$additionalForm->form?->id] ?? $additionalForm->form?->template,
-                'style' => $additionalForm->form?->styles,
+                $id => [
+                    'id' => $id,
+                    'name' => $additionalForm->name,
+                    'form_id' => $additionalForm->form?->id,
+                    'template' => $existingData[$additionalForm->form?->id] ?? $additionalForm->form?->template,
+                    'style' => $additionalForm->form?->styles,
+                    'is_saved' => isset($existingData[$additionalForm->form?->id]),
+                ]
             ];
         })->toArray();
+
         $this->formStyles = collect($this->additionalFormsTemplate)
-            ->map(function ($formTemplate) {
-                return preg_replace(
-                    '/(\.[^{\s]+)\s*\{/',
-                    "#template-{$formTemplate['id']} $1 {",
-                    $formTemplate['style']
-                );
-            })
+            ->pluck('style')
             ->implode("\n");
-        // Initialize editing templates for each form
+
         foreach ($this->additionalFormsTemplate as $formTemplate) {
             $this->editingTemplates[$formTemplate['id']] = $formTemplate['template'] ?? '';
         }
 
-        // Set the first form as active
         if (!empty($this->additionalFormsTemplate)) {
-            $this->activeFormId = $this->additionalFormsTemplate[0]['id'];
-            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId] ?? '';
+            $this->activeFormId = array_key_first($this->additionalFormsTemplate);
+            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId];
         }
     }
 
@@ -434,15 +431,19 @@ class OrganizationCustomerDetailForm extends Component
 
 
 
+
+
     public function writeAdditionalFormTemplate()
     {
         try {
-            // Get the correct form_id from the AdditionalForm model
             $additionalForm = AdditionalForm::with('form')->find($this->activeFormId);
             if (!$additionalForm || !$additionalForm->form) {
                 $this->errorToast('Form not found.');
                 return;
             }
+
+
+            $this->additionalFormsTemplate[$this->activeFormId]['is_saved'] = true;
 
             $dynamicDataDto = new AdditionalFormDynamicDataDto(
                 map_apply_id: $this->mapApply->id,
@@ -452,8 +453,10 @@ class OrganizationCustomerDetailForm extends Component
 
             $dynamicDataService = new AdditionalFormDynamicDataService();
             $dynamicDataService->updateOrCreate($dynamicDataDto);
+
             $this->preview = true;
             $this->editMode = false;
+
             $this->successToast('Template saved successfully.');
         } catch (\Exception $e) {
             $this->errorToast('Failed to save template.');
@@ -463,36 +466,36 @@ class OrganizationCustomerDetailForm extends Component
     public function resetLetter()
     {
         try {
-            if ($this->activeFormId) {
+            if (!$this->activeFormId) return;
 
-                $additionalForm = AdditionalForm::with('form')->find($this->activeFormId);
-                if (!$additionalForm || !$additionalForm->form) {
-                    $this->errorToast('Form not found.');
-                    return;
-                }
-
-                $dynamicDataService = new AdditionalFormDynamicDataService();
-
-                $existingData = $dynamicDataService->findByMapApplyAndForm($this->mapApply->id, $additionalForm->form_id);
-
-                if ($existingData) {
-                    $dynamicDataService->deleteFormData($existingData);
-                }
-
-                $this->editingTemplates[$this->activeFormId] = $additionalForm->form->template ?? '';
-                $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId];
-
-                $this->dispatch('update-editor', [
-                    'currentEditingTemplate' => $this->currentEditingTemplate
-                ]);
+            $additionalForm = AdditionalForm::with('form')->find($this->activeFormId);
+            if (!$additionalForm || !$additionalForm->form) {
+                $this->errorToast('Form not found.');
+                return;
             }
+
+            $dynamicDataService = new AdditionalFormDynamicDataService();
+            $existingData = $dynamicDataService->findByMapApplyAndForm($this->mapApply->id, $additionalForm->form_id);
+
+            if ($existingData) {
+                $dynamicDataService->deleteFormData($existingData);
+            }
+
+            // Reset is_saved
+            $this->additionalFormsTemplate[$this->activeFormId]['is_saved'] = false;
+
+            // Reset editing template to original
+            $this->editingTemplates[$this->activeFormId] = $additionalForm->form->template ?? '';
+            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId];
+
+            $this->dispatch('update-editor', ['currentEditingTemplate' => $this->currentEditingTemplate]);
 
             $this->successToast('Template reset successfully.');
         } catch (\Exception $e) {
-            dd($e);
             $this->errorToast('Failed to reset template.');
         }
     }
+
 
 
 
