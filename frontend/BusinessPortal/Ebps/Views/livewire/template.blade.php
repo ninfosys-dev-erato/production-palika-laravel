@@ -11,20 +11,24 @@
 
 
         <div class="col-md-3">
-            <div class="bg-white p-3 rounded-0 shadow-sm">
+            <div class="bg-white p-3 rounded shadow-sm">
                 <ul class="nav flex-column nav-pills">
                     @foreach ($additionalFormsTemplate as $formTemplate)
-                        <li class="nav-item mb-2">
+                        <li class="nav-item mb-2 d-flex align-items-center">
                             <button type="button"
-                                class="nav-link {{ $activeFormId === $formTemplate['id'] ? 'active' : '' }}"
+                                class="nav-link {{ $activeFormId === $formTemplate['id'] ? 'active' : '' }} flex-grow-1 text-start"
                                 wire:click="switchToForm({{ $formTemplate['id'] }})">
                                 {{ $formTemplate['name'] }}
                             </button>
+                            <span class="badge {{ $formTemplate['is_saved'] ? 'bg-success' : 'bg-warning text-dark' }} ms-2">
+                                {{ $formTemplate['is_saved'] ? '✓' : '✗' }}
+                            </span>
                         </li>
                     @endforeach
                 </ul>
             </div>
         </div>
+        
 
         <div class="col-md-9">
             <div class="d-flex align-items-center justify-content-between flex-wrap ms-5 mb-3">
