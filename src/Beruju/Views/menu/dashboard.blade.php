@@ -4,7 +4,7 @@
             <div class="row g-3">
                 <!-- Total Beruju Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card card-border-shadow-primary h-100">
+                    <div class="card card-border-shadow-primary h-100 rounded-0">
                         <div class="card-body d-flex align-items-center">
                             <div class="avatar flex-shrink-0 me-3">
                                 <span class="avatar-initial rounded bg-label-primary">
@@ -25,7 +25,7 @@
 
                 <!-- Total Amount Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card card-border-shadow-success h-100">
+                    <div class="card card-border-shadow-success h-100 rounded-0">
                         <div class="card-body d-flex align-items-center">
                             <div class="avatar flex-shrink-0 me-3">
                                 <span class="avatar-initial rounded bg-label-success">
@@ -47,7 +47,7 @@
 
                 <!-- Total Overdue Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card card-border-shadow-warning h-100">
+                    <div class="card card-border-shadow-warning h-100 rounded-0">
                         <div class="card-body d-flex align-items-center">
                             <div class="avatar flex-shrink-0 me-3">
                                 <span class="avatar-initial rounded bg-label-warning">
@@ -68,7 +68,7 @@
 
                 <!-- Multi-Year Outstanding Card -->
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card card-border-shadow-danger h-100">
+                    <div class="card card-border-shadow-danger h-100 rounded-0">
                         <div class="card-body d-flex align-items-center">
                             <div class="avatar flex-shrink-0 me-3">
                                 <span class="avatar-initial rounded bg-label-danger">
@@ -93,7 +93,7 @@
         <div class="row">
 
             <div class="col-md-7 d-flex flex-column">
-                <div class="card flex-fill mb-3">
+                <div class="card flex-fill mb-3 rounded-0">
 
                     <div class="card-header d-flex justify-content-between align-items-center m-1 p-3">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.beruju_status_distribution') }}</h5>
@@ -127,7 +127,7 @@
                     </div>
                 </div>
 
-                <div class="card flex-fill mb-3 ">
+                <div class="card flex-fill mb-3 rounded-0">
 
                     <div class="card-header d-flex justify-content-between align-items-center m-1 p-3">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.beruju_by_department') }}</h5>
@@ -149,7 +149,7 @@
 
 
             <div class="col-md-5 d-flex flex-column">
-                <div class="card flex-fill mb-3">
+                <div class="card flex-fill mb-3 rounded-0">
                     <div
                         class="card-header d-flex justify-content-between align-items-center border-card-topic m-1 p-3">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.recent_beruju_entries') }}</h5>
@@ -194,7 +194,7 @@
                     </div>
                 </div>
 
-                <div class="card flex-fill mb-3">
+                <div class="card flex-fill mb-3 rounded-0">
                     <div
                         class="card-header border-card-topic d-flex justify-content-between align-items-center m-1 p-3">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.category_amount_summary') }}</h5>
@@ -233,7 +233,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card flex-fill mb-3">
+                <div class="card flex-fill mb-3 rounded-0">
                     <div class="card-header border-card-topic d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.fiscal_year_summary') }}</h5>
                         <div class="d-flex align-items-center">
