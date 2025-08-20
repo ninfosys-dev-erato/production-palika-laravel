@@ -31,6 +31,9 @@ class BerujuEntryForm extends Component
     public $auditTypeOptions;
     public $berujuCategoryOptions;
     public $currencyTypeOptions;
+    public $isMonetary = false;
+    public $childSubCategories = [];
+    public $subCategoryLevels = []; // Store multiple levels of subcategories
 
     public function rules(): array
     {
@@ -42,7 +45,7 @@ class BerujuEntryForm extends Component
             'berujuEntry.entry_date' => ['nullable', 'string'],
             'berujuEntry.reference_number' => ['nullable', 'string', 'max:255'],
             'berujuEntry.branch_id' => ['nullable', 'string'],
-            'berujuEntry.project_id' => ['nullable', 'string'],
+            'berujuEntry.project' => ['nullable', 'string'],
             'berujuEntry.beruju_category' => ['nullable', 'string'],
             'berujuEntry.sub_category_id' => ['nullable', 'string'],
             'berujuEntry.amount' => ['nullable', 'string'],
@@ -50,6 +53,9 @@ class BerujuEntryForm extends Component
             'berujuEntry.legal_provision' => ['nullable', 'string'],
             'berujuEntry.action_deadline' => ['nullable', 'string'],
             'berujuEntry.description' => ['nullable', 'string'],
+            'berujuEntry.beruju_description' => ['nullable', 'string'],
+            'berujuEntry.owner_name' => ['nullable', 'string'],
+            'berujuEntry.dafa_number' => ['nullable', 'string'],
             'berujuEntry.notes' => ['nullable', 'string'],
             // Additional fields
             'berujuEntry.status' => ['nullable', 'string'],
@@ -79,6 +85,13 @@ class BerujuEntryForm extends Component
         $this->fiscalYears = getFiscalYears()->pluck('year', 'id')->toArray();
         $this->branches = Branch::whereNull('deleted_at')->pluck('title', 'id')->toArray();
         $this->subCategories = SubCategory::whereNull('deleted_at')->pluck('name_nep', 'id')->toArray();
+        
+        // Initialize isMonetary based on current beruju category
+        if ($this->berujuEntry->beruju_category === BerujuCategoryEnum::MONETARY_BERUJU->value) {
+            $this->isMonetary = true;
+        } else {
+            $this->isMonetary = false;
+        }
     }
 
     private function loadEnumOptions()
@@ -89,8 +102,59 @@ class BerujuEntryForm extends Component
         // Load beruju category options
         $this->berujuCategoryOptions = BerujuCategoryEnum::getForWeb();
 
-        // Load currency type options
+        // Load currency type optionss
         $this->currencyTypeOptions = BerujuCurrencyTypeEnum::getForWeb();
+    }
+
+    public function onBerujuCategoryChange($value)
+    {
+        if ($value === BerujuCategoryEnum::MONETARY_BERUJU->value) {
+            $this->isMonetary = true;
+        } else {
+            $this->isMonetary = false;
+        }
+    }
+
+    public function onSubCategoryChange($value, $level = 0)
+    {
+        if ($value) {
+            $subCategory = SubCategory::find($value);
+            if ($subCategory) {
+                // Find child subcategories
+                $childSubCategories = SubCategory::where('parent_id', $subCategory->id)
+                    ->orWhere('parent_slug', $subCategory->slug)
+                    ->orWhere('parent_name_nep', $subCategory->name_nep)
+                    ->orWhere('parent_name_eng', $subCategory->name_eng)
+                    ->get()
+                    ->pluck('name_nep', 'id')
+                    ->toArray();
+                
+                // Store this level's children
+                $this->subCategoryLevels[$level] = $childSubCategories;
+                
+                // Clear all subsequent levels
+                for ($i = $level + 1; $i < 10; $i++) {
+                    unset($this->subCategoryLevels[$i]);
+                }
+                
+                // Update the sub_category_id with the current selection
+                $this->berujuEntry->sub_category_id = $value;
+                
+                // Also update the main childSubCategories for backward compatibility
+                $this->childSubCategories = $childSubCategories;
+            }
+        } else {
+            // Clear this level and all subsequent levels
+            unset($this->subCategoryLevels[$level]);
+            for ($i = $level + 1; $i < 10; $i++) {
+                unset($this->subCategoryLevels[$i]);
+            }
+            
+            if ($level === 0) {
+                $this->childSubCategories = [];
+                $this->berujuEntry->sub_category_id = null;
+            }
+        }
     }
 
     public function save()

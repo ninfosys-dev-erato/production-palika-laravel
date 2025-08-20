@@ -7,6 +7,7 @@ use App\Traits\SessionFlash;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Src\Beruju\Models\BerujuEntry;
+use App\Traits\HelperDate;
 use Src\Beruju\Enums\BerujuStatusEnum;
 use Src\Beruju\Enums\BerujuSubmissionStatusEnum;
 use Src\Beruju\Enums\BerujuAduitTypeEnum;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BerujuEntryTable extends DataTableComponent
 {
-    use SessionFlash;
+    use SessionFlash, HelperDate;
 
     protected $model = BerujuEntry::class;
 
@@ -26,7 +27,10 @@ class BerujuEntryTable extends DataTableComponent
             ->setTableAttributes([
                 'class' => "table table-bordered table-hover text-center",
             ])
-            ->setAdditionalSelects(['id'])
+            ->setAdditionalSelects([
+                'brj_beruju_entries.id',
+                'brj_beruju_entries.currency_type',
+            ])
             ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
             ->setRefreshMethod('refresh');
@@ -43,15 +47,13 @@ class BerujuEntryTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make(__('beruju::beruju.id'), 'id')
-                ->sortable()
-                ->searchable(),
+           
 
             Column::make(__('beruju::beruju.reference_number'), 'reference_number')
                 ->sortable()
                 ->searchable()
                 ->format(function ($value) {
-                    return $value ?: __('beruju::beruju.not_available');
+                    return replaceNumbersWithLocale($value, true) ?: __('beruju::beruju.not_available');
                 }),
 
             Column::make(__('beruju::beruju.entry_date'), 'entry_date')
@@ -98,8 +100,24 @@ class BerujuEntryTable extends DataTableComponent
                 ->sortable()
                 ->format(function ($value, $row) {
                     if (!$value) return __('beruju::beruju.not_available');
-                    $currency = $row->currency_type ?: 'NPR';
-                    return $currency . ' ' . number_format((float)$value, 2);
+                    $symbol = $row->currency_type
+                        ? \Src\Beruju\Enums\BerujuCurrencyTypeEnum::symbol($row->currency_type)
+                        : __('beruju::beruju.npr_symbol');
+                    return $symbol . ' ' . replaceNumbersWithLocale(number_format((float)$value, 2), true);
+                }),
+
+            Column::make(__('beruju::beruju.owner_name'), 'owner_name')
+                ->sortable()
+                ->searchable()
+                ->format(function ($value) {
+                    return $value ?: __('beruju::beruju.not_available');
+                }),
+
+            Column::make(__('beruju::beruju.dafa_number'), 'dafa_number')
+                ->sortable()
+                ->searchable()
+                ->format(function ($value) {
+                    return replaceNumbersWithLocale($value, true) ?: __('beruju::beruju.not_available');
                 }),
 
             Column::make(__('beruju::beruju.status'), 'status')
@@ -126,34 +144,12 @@ class BerujuEntryTable extends DataTableComponent
                 })
                 ->html(),
 
-            Column::make(__('beruju::beruju.submission_status'), 'submission_status')
-                ->sortable()
-                ->format(function ($value) {
-                    if (!$value) return __('beruju::beruju.not_available');
-                    try {
-                        // Check if value is already an enum instance
-                        if ($value instanceof BerujuSubmissionStatusEnum) {
-                            return '<div style="display: flex; align-items: center;">
-                                        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ' . $value->color() . '; margin-right: 8px;"></span>
-                                        <span>' . $value->label() . '</span>
-                                    </div>';
-                        }
-                        // If it's a string/int, convert to enum
-                        $submissionStatus = BerujuSubmissionStatusEnum::from($value);
-                        return '<div style="display: flex; align-items: center;">
-                                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ' . $submissionStatus->color() . '; margin-right: 8px;"></span>
-                                    <span>' . $submissionStatus->label() . '</span>
-                                </div>';
-                    } catch (\Exception $e) {
-                        return $value;
-                    }
-                })
-                ->html(),
+      
 
             Column::make(__('beruju::beruju.created_at'), 'created_at')
                 ->sortable()
                 ->format(function ($value) {
-                    return $value ? $value->format('Y-m-d H:i') : __('beruju::beruju.not_available');
+                    return $value ? replaceNumbersWithLocale($this->adToBs($value,'Y-m-d'),true) : __('beruju::beruju.not_available');
                 }),
 
             Column::make(__('beruju::beruju.actions'), 'id')

@@ -57,7 +57,7 @@
                 </div>
 
                 <!-- Entry Date -->
-                <div class="col-md-6 ">
+                <div class="col-md-6" wire:ignore>
                     <div class="form-group">
                         <label for="entry_date" class="form-label">{{ __('beruju::beruju.entry_date') }}</label>
                         <input wire:model="berujuEntry.entry_date" type="text"
@@ -100,19 +100,14 @@
                     </div>
                 </div>
 
-                <!-- Project ID -->
+                <!-- Project -->
                 <div class="col-md-6 ">
                     <div class="form-group">
-                        <label for="project_id" class="form-label">{{ __('beruju::beruju.project_id') }}</label>
-                        <input wire:model="berujuEntry.project_id" type="text"
-                            class="form-control rounded-0 @error('berujuEntry.project_id') is-invalid @enderror"
-                            placeholder="{{ __('beruju::beruju.enter_project_id') }}">
-                        {{-- <select wire:model="berujuEntry.project_id"
-                            class="form-select rounded-0 @error('berujuEntry.project_id') is-invalid @enderror">
-                            <option value="">{{ __('beruju::beruju.select_project') }}</option>
-                            <!-- Options will be added later -->
-                        </select> --}}
-                        @error('berujuEntry.project_id')
+                        <label for="project" class="form-label">{{ __('beruju::beruju.project') }}</label>
+                        <input wire:model="berujuEntry.project" type="text"
+                            class="form-control rounded-0 @error('berujuEntry.project') is-invalid @enderror"
+                            placeholder="{{ __('beruju::beruju.enter_project') }}">
+                        @error('berujuEntry.project')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -136,7 +131,7 @@
                     <div class="form-group">
                         <label for="beruju_category"
                             class="form-label">{{ __('beruju::beruju.beruju_category') }}</label>
-                        <select wire:model="berujuEntry.beruju_category"
+                        <select wire:model="berujuEntry.beruju_category" wire:change="onBerujuCategoryChange($event.target.value)"
                             class="form-select rounded-0 @error('berujuEntry.beruju_category') is-invalid @enderror">
                             <option value="">{{ __('beruju::beruju.select_beruju_category') }}
                             </option>
@@ -150,12 +145,13 @@
                     </div>
                 </div>
 
-                <!-- Sub Category ID -->
+                <!-- Sub Category ID - Only show for Monetary Beruju -->
+                @if($isMonetary)
                 <div class="col-md-6 ">
                     <div class="form-group">
                         <label for="sub_category_id"
                             class="form-label">{{ __('beruju::beruju.sub_category_id') }}</label>
-                        <select wire:model="berujuEntry.sub_category_id"
+                        <select  wire:change="onSubCategoryChange($event.target.value)"
                             class="form-select rounded-0 @error('berujuEntry.sub_category_id') is-invalid @enderror">
                             <option value="">{{ __('beruju::beruju.select_sub_category') }}</option>
                             @foreach ($subCategories as $value => $label)
@@ -167,6 +163,26 @@
                         @enderror
                     </div>
                 </div>
+                @endif
+
+                <!-- Dynamic Child Sub Categories - Generated for each level -->
+                @foreach($subCategoryLevels as $level => $subCategories)
+                    @if(!empty($subCategories))
+                    <div class="col-md-6 ">
+                        <div class="form-group">
+                            <label for="child_sub_category_{{ $level }}"
+                                class="form-label">{{ __('beruju::beruju.child_sub_category') }}</label>
+                            <select wire:change="onSubCategoryChange($event.target.value, {{ $level + 1 }})"
+                                    class="form-select rounded-0">
+                                <option value="">{{ __('beruju::beruju.select_child_sub_category') }}</option>
+                                @foreach ($subCategories as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    @endif
+                @endforeach
 
                 <!-- Amount -->
                 <div class="col-md-6 ">
@@ -215,7 +231,7 @@
                 </div>
 
                 <!-- Action Deadline -->
-                <div class="col-md-6 ">
+                <div class="col-md-6 " wire:ignore>
                     <div class="form-group">
                         <label for="action_deadline"
                             class="form-label">{{ __('beruju::beruju.action_deadline') }}</label>
@@ -223,6 +239,45 @@
                             class="form-control rounded-0 nepali-date @error('berujuEntry.action_deadline') is-invalid @enderror"
                             placeholder="{{ __('beruju::beruju.enter_action_deadline') }}">
                         @error('berujuEntry.action_deadline')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Owner Name -->
+                <div class="col-md-6 ">
+                    <div class="form-group">
+                        <label for="owner_name" class="form-label">{{ __('beruju::beruju.owner_name') }}</label>
+                        <input wire:model="berujuEntry.owner_name" type="text"
+                            class="form-control rounded-0 @error('berujuEntry.owner_name') is-invalid @enderror"
+                            placeholder="{{ __('beruju::beruju.enter_owner_name') }}">
+                        @error('berujuEntry.owner_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Dafa Number -->
+                <div class="col-md-6 ">
+                    <div class="form-group">
+                        <label for="dafa_number" class="form-label">{{ __('beruju::beruju.dafa_number') }}</label>
+                        <input wire:model="berujuEntry.dafa_number" type="text"
+                            class="form-control rounded-0 @error('berujuEntry.dafa_number') is-invalid @enderror"
+                            placeholder="{{ __('beruju::beruju.enter_dafa_number') }}">
+                        @error('berujuEntry.dafa_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Beruju Description -->
+                <div class="col-md-6 ">
+                    <div class="form-group">
+                        <label for="beruju_description" class="form-label">{{ __('beruju::beruju.beruju_description') }}</label>
+                        <input wire:model="berujuEntry.beruju_description" type="text"
+                            class="form-control rounded-0 @error('berujuEntry.beruju_description') is-invalid @enderror"
+                            placeholder="{{ __('beruju::beruju.enter_beruju_description') }}">
+                        @error('berujuEntry.beruju_description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

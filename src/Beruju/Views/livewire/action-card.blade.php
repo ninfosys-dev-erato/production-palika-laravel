@@ -30,25 +30,25 @@
             <div class="row g-2 mb-3">
                 <div class="col-3">
                     <div class="text-center p-2 border-end">
-                        <div class="h5 mb-0 fw-semibold text-muted">{{ $totalActions }}</div>
+                        <div class="h5 mb-0 fw-semibold text-muted">{{ replaceNumbersWithLocale($totalActions,true) }}</div>
                         <small class="text-muted">{{ __('beruju::beruju.total') }}</small>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="text-center p-2 border-end">
-                        <div class="h5 mb-0 fw-semibold text-muted">{{ $pendingActions }}</div>
+                        <div class="h5 mb-0 fw-semibold text-muted">{{ replaceNumbersWithLocale($pendingActions,true) }}</div>
                         <small class="text-muted">{{ __('beruju::beruju.pending') }}</small>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="text-center p-2 border-end">
-                        <div class="h5 mb-0 fw-semibold text-muted">{{ $completedActions }}</div>
+                        <div class="h5 mb-0 fw-semibold text-muted">{{ replaceNumbersWithLocale($completedActions,true) }}</div>
                         <small class="text-muted">{{ __('beruju::beruju.completed') }}</small>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="text-center p-2">
-                        <div class="h5 mb-0 fw-semibold text-muted">{{ $rejectedActions }}</div>
+                        <div class="h5 mb-0 fw-semibold text-muted">{{ replaceNumbersWithLocale($rejectedActions,true) }}</div>
                         <small class="text-muted">{{ __('beruju::beruju.rejected') }}</small>
                     </div>
                 </div>
@@ -62,11 +62,11 @@
                     </div>
                     <div class="space-y-2">
                         @if($latestCycle && $latestCycle->actions && $latestCycle->actions->count() > 0)
-                            @foreach($latestCycle->actions->sortByDesc('created_at')->take(3) as $action)
+                            @foreach($latestCycle->actions->sortBy('created_at')->take(-3) as $action)
                                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
                                     <div class="flex-grow-1">
-                                        <div class="fw-medium small">{{ $action->actionType ? $action->actionType->name_eng : 'N/A' }}</div>
-                                        <div class="text-muted small">{{ $action->created_at ? $action->created_at->format('M d, Y') : 'N/A' }}</div>
+                                        <div class="fw-medium small">{{ $action->actionType ? $action->actionType->name_nep : $action->actionType->name_eng ?? 'N/A' }}</div>
+                                        <div class="text-muted small">{{ $action->created_at ? (app()->getLocale() === "ne" ? replaceNumbersWithLocale(ne_date($action->created_at),true) : $action->created_at->format('M d, Y')) : 'N/A' }}</div>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
                                         <span class="badge bg-light text-dark border">

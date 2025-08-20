@@ -13,6 +13,7 @@ class EvidenceService
     {
         $evidence = Evidence::create([
             'beruju_entry_id' => $evidenceDto->beruju_entry_id,
+            'action_id' => $evidenceDto->action_id,
             'name' => $evidenceDto->name,
             'description' => $evidenceDto->description,
             'evidence_document_name' => $evidenceDto->evidence_document_name,
@@ -28,6 +29,7 @@ class EvidenceService
     {
         $updateData = [
             'beruju_entry_id' => $evidenceDto->beruju_entry_id,
+            'action_id' => $evidenceDto->action_id,
             'name' => $evidenceDto->name,
             'description' => $evidenceDto->description,
             'evidence_document_name' => $evidenceDto->evidence_document_name,

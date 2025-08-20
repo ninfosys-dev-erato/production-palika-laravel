@@ -76,6 +76,7 @@
                 @enderror
             </div>
         </div>
+        <livewire:beruju.evidence_document_upload :berujuEntry="$berujuEntry" :berujuAction="$berujuAction" :type="'action'" wire:key="evidence-upload-{{ $berujuAction->id ?? 'new' }}" />
 
         <!-- Form Actions -->
         <div class="d-flex justify-content-end gap-2">

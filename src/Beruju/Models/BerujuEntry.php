@@ -32,7 +32,7 @@ class BerujuEntry extends Model
         'entry_date',
         'reference_number',
         'branch_id',
-        'project_id',
+        'project',
         'beruju_category',
         'sub_category_id',
         'amount',
@@ -40,6 +40,9 @@ class BerujuEntry extends Model
         'legal_provision',
         'action_deadline',
         'description',
+        'beruju_description',
+        'owner_name',
+        'dafa_number',
         'notes',
         // Additional fields
         'status',
@@ -56,7 +59,7 @@ class BerujuEntry extends Model
         'entry_date' => 'string',
         'reference_number' => 'string',
         'branch_id' => 'string',
-        'project_id' => 'string',
+        'project' => 'string',
         'beruju_category' => BerujuCategoryEnum::class,
         'sub_category_id' => 'string',
         'amount' => 'string',
@@ -64,6 +67,9 @@ class BerujuEntry extends Model
         'legal_provision' => 'string',
         'action_deadline' => 'string',
         'description' => 'string',
+        'beruju_description' => 'string',
+        'owner_name' => 'string',
+        'dafa_number' => 'string',
         'notes' => 'string',
 
 

@@ -21,12 +21,15 @@ return new class extends Migration
             $table->string('entry_date')->nullable();
             $table->string('reference_number')->nullable();
             $table->string('branch_id')->nullable();
-            $table->string('project_id')->nullable();
+            $table->string('project')->nullable();
             $table->string('beruju_category')->nullable();
             $table->string('sub_category_id')->nullable();
             $table->string('amount')->nullable();
             $table->string('currency_type')->nullable();
             $table->text('description')->nullable();
+            $table->string('beruju_description')->nullable();
+            $table->string('owner_name')->nullable();
+            $table->string('dafa_number')->nullable();
             $table->string('action_deadline')->nullable();
             $table->text('legal_provision')->nullable();
             $table->text('notes')->nullable();
