@@ -14,17 +14,18 @@
                     <div class="mb-3">
                         <label for="bill"
                             class="form-label fw-bold">{{ __('businessregistration::businessregistration.payment_photo') }}</label>
-                        <input wire:model="bill" name="bill" type="file" class="form-control" accept="image/*">
+                        <input wire:model="payment_receipt" name="payment_receipt" type="file" class="form-control"
+                            accept="image/*,application/pdf">
                         @error('bill')
                             <div class="text-danger mt-1">{{ __($message) }}</div>
                         @enderror
                     </div>
 
                     @if ($bill)
-                        <div class="text-center">
-                            <img src="{{ $bill?->temporaryUrl() }}" alt="Uploaded Image Preview"
-                                class="img-thumbnail mt-2 shadow" style="max-height: 300px; border-radius: 8px;">
-                        </div>
+                        <a href="{{ $bill }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bx bx-file"></i>
+                            {{ __('yojana::yojana.view_uploaded_file') }}
+                        </a>
                     @endif
 
                     <div class="text-center mt-3">
@@ -50,11 +51,19 @@
                     {{ __('businessregistration::businessregistration.view') }}
                 </button>
             </div>
-            <div class="text-center">
-                <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRegistration->bill, 'local') }}"
-                    alt="Uploaded Bill" class="img-fluid rounded shadow-sm border"
-                    style="max-height: 300px; object-fit: contain;">
-            </div>
+             @php
+                    $fileUrl = customFileAsset(
+                        config('src.BusinessRegistration.businessRegistration.bill'),
+                        $businessRegistration->bill,
+                        'local',
+                        'tempUrl',
+                    );
+                @endphp
+
+                <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <i class="bx bx-file"></i>
+                    {{ __('yojana::yojana.view_uploaded_file') }}
+                </a>
         </div>
     @endif
 

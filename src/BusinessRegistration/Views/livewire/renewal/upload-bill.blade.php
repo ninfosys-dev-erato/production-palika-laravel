@@ -15,14 +15,17 @@
                                 <label
                                     for="payment_receipt">{{ __('businessregistration::businessregistration.upload_payment_photo') }}</label>
                                 <input wire:model="payment_receipt" name="payment_receipt" type="file"
-                                    class="form-control" accept="image/*">
+                                    class="form-control" accept="image/*,application/pdf">
+
                                 @error('payment_receipt')
                                     <div class="text-danger">{{ __($message) }}</div>
                                 @enderror
                                 @if ($payment_receipt)
-                                    <img src="{{ method_exists($payment_receipt, 'temporaryUrl') ? $payment_receipt->temporaryUrl() : $payment_receipt }}"
-                                        alt="Uploaded Image Preview" class="img-thumbnail mt-2" style="height: 300px;"
-                                        onerror="this.style.display='none';">
+                                    <a href="{{ $payment_receipt }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('yojana::yojana.view_uploaded_file') }}
+                                    </a>
                                 @endif
 
                             </div>
@@ -38,9 +41,19 @@
             <div class="col-md-12 mt-3">
                 <label
                     for="existing-bill">{{ __('businessregistration::businessregistration.uploaded_payment_photo') }}</label>
-                <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
-                    alt="Uploaded Bill Image" class="img-thumbnail mt-2 clickable"
-                    style="height: 300px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#billModal">
+                @php
+                    $fileUrl = customFileAsset(
+                        config('src.BusinessRegistration.businessRegistration.bill'),
+                        $businessRenewal->payment_receipt,
+                        'local',
+                        'tempUrl',
+                    );
+                @endphp
+
+                <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <i class="bx bx-file"></i>
+                    {{ __('yojana::yojana.view_uploaded_file') }}
+                </a>
             </div>
 
             <div class="modal fade" id="billModal" tabindex="-1" aria-labelledby="billModalLabel" aria-hidden="true">
@@ -53,7 +66,7 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center">
-                            <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
+                            <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
                                 alt="Full-size Uploaded Bill" class="img-fluid" style="max-height: 90vh;">
                         </div>
                     </div>

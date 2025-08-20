@@ -2,6 +2,7 @@
 
 namespace Src\BusinessRegistration\Livewire;
 
+use App\Facades\FileFacade;
 use App\Facades\ImageServiceFacade;
 use App\Traits\SessionFlash;
 use Livewire\Component;
@@ -30,7 +31,7 @@ class BusinessRenewalUploadBill extends Component
             'payment_receipt' => 'required|file|mimes:pdf,jpg,png|max:2048'
         ]);
         try {
-            $path = ImageServiceFacade::compressAndStoreImage($this->payment_receipt, config('src.BusinessRegistration.businessRegistration.bill'), 'local');
+           $path = FileFacade::saveFile(config('src.BusinessRegistration.businessRegistration.bill'),"",$this->payment_receipt, 'local');
             $this->businessRenewal->payment_receipt = $path;
             $this->businessRenewal->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
             $service = new BusinessRenewalAdminService();
