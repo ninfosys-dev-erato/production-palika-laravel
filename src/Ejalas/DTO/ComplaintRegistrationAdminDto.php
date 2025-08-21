@@ -33,7 +33,7 @@ class ComplaintRegistrationAdminDto
             reg_no: $complaintRegistration->reg_no,
             old_reg_no: $complaintRegistration->old_reg_no,
             reg_date: $complaintRegistration->reg_date,
-            reg_address: $complaintRegistration->reg_address,
+            reg_address: $complaintRegistration->reg_address->value,
             complainer_id: $complaintRegistration->complainer_id,
             defender_id: $complaintRegistration->defender_id,
             priority_id: $complaintRegistration->priority_id,

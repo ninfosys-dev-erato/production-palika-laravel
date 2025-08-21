@@ -70,13 +70,10 @@
                         <div class='form-group'>
                             <label for='reg_address'
                                 class="form-label">{{ __('ejalas::ejalas.place_of_registration') }}</label>
-                            {{-- <input wire:model='complaintRegistration.reg_address' name='reg_address' type='text'
-                                class='form-control' placeholder="{{ __('ejalas::ejalas.enter_reg_address') }}"> --}}
-                            <select wire:model="complaintRegistration.reg_address" class="form-select"
-                                wire:change="checkRegAddress">
+                            <select wire:model="complaintRegistration.reg_address" class="form-select">
                                 <option value=""hidden>{{ __('ejalas::ejalas.select_an_option') }}</option>
-                                @foreach ($placeOfRegistration as $value)
-                                    <option value="{{ $value->value }}">{{ $value->value }}</option>
+                                @foreach ($placeOfRegistration as $id => $value)
+                                    <option value="{{ $id }}">{{ $value }}</option>
                                 @endforeach
                             </select>
                             <div>
@@ -86,7 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    @if ($from == RouteName::ReconciliationCenter->value || $showField)
+                    {{-- @if ($from == RouteName::ReconciliationCenter->value || $showField)
                         <div class='col-md-6 mb-3'>
                             <div class='form-group'>
                                 <label for='reconciliation_center'
@@ -116,7 +113,7 @@
                                     placeholder="{{ __('ejalas::ejalas.enter_reconciliation_reg_no') }}">
                             </div>
                         </div>
-                    @endif
+                    @endif --}}
                 </div>
             </form>
         </div>
@@ -186,8 +183,7 @@
 
 
 
-        <div class="modal fade" id="indexModal-defender" tabindex="-1" aria-labelledby="ModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="indexModal-defender" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
