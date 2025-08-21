@@ -1,7 +1,7 @@
 <form wire:submit.prevent="save">
     <div class="card-body">
         <div class="row">
-            <div class='col-md-6 mb-3'>
+            {{-- <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='fiscal_year_id'>{{ __('ejalas::ejalas.fiscal_year_id') }}</label>
                     <select wire:model='mediator.fiscal_year_id' name='fiscal_year_id' class='form-control'>
@@ -17,7 +17,7 @@
                     </div>
                 </div>
 
-            </div>
+            </div> --}}
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='listed_no'>{{ __('ejalas::ejalas.listed_no') }}</label>
@@ -44,8 +44,7 @@
             </div>
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
-                    <label class="form-label"
-                        for='mediator_address'>{{ __('ejalas::ejalas.mediator_address') }}</label>
+                    <label class="form-label" for='mediator_address'>{{ __('ejalas::ejalas.mediator_address') }}</label>
                     <input wire:model='mediator.mediator_address' name='mediator_address' type='text'
                         class='form-control' placeholder="{{ __('ejalas::ejalas.enter_mediator_address') }}">
                     <div>

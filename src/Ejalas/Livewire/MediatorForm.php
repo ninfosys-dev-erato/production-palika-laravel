@@ -25,15 +25,14 @@ class MediatorForm extends Component
     public function rules(): array
     {
         return [
-            'mediator.fiscal_year_id' => ['required'],
-            'mediator.listed_no' => ['required'],
+            'mediator.listed_no' => ['nullable'],
             'mediator.mediator_name' => ['required'],
             'mediator.mediator_address' => ['required'],
-            'mediator.ward_id' => ['required'],
-            'mediator.training_detail' => ['required'],
+            'mediator.ward_id' => ['nullable'],
+            'mediator.training_detail' => ['nullable'],
             'mediator.mediator_phone_no' => ['required'],
-            'mediator.mediator_email' => ['required'],
-            'mediator.municipal_approval_date' => ['required'],
+            'mediator.mediator_email' => ['nullable'],
+            'mediator.municipal_approval_date' => ['nullable'],
         ];
     }
 

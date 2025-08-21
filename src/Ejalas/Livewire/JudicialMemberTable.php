@@ -52,8 +52,12 @@ class JudicialMemberTable extends DataTableComponent
     {
         $columns = [
             Column::make(__('ejalas::ejalas.ejalashjudicialmembername'), "title")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.ejalashjudicialcommitteeposition'), "member_position")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.elected_position'), "elected_position")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ejalas::ejalas.ejalashjudicialcommitteeposition'), "member_position")->sortable()->searchable()->collapseOnTablet()->format(function ($value) {
+                return $value ? $value->label() : '';
+            }),
+            Column::make(__('ejalas::ejalas.elected_position'), "elected_position")->sortable()->searchable()->collapseOnTablet()->format(function ($value) {
+                return $value ? $value->label() : '';
+            }),
             BooleanColumn::make(__('ejalas::ejalas.active'), "status")->sortable()->searchable()->collapseOnTablet(),
         ];
         if (can('jms_settings edit') || can('jms_settings delete')) {

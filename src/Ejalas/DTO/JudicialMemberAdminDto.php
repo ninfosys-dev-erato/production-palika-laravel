@@ -17,8 +17,8 @@ class JudicialMemberAdminDto
     {
         return new self(
             title: $judicialMember->title,
-            member_position: $judicialMember->member_position,
-            elected_position: $judicialMember->elected_position,
+            member_position: $judicialMember->member_position->value,
+            elected_position: $judicialMember->elected_position->value,
             status: $judicialMember->status ?? false
         );
     }

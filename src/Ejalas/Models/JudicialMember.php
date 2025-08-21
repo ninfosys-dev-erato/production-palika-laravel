@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Ejalas\Enum\ElectedPosition;
+use Src\Ejalas\Enum\JudicialMemberPosition;
 
 class JudicialMember extends Model
 {
@@ -30,8 +32,8 @@ class JudicialMember extends Model
     {
         return [
             'title' => 'string',
-            'member_position' => 'string',
-            'elected_position' => 'string',
+            'member_position' => JudicialMemberPosition::class,
+            'elected_position' => ElectedPosition::class,
             'status' => 'boolean',
             'id' => 'int',
             'created_at' => 'datetime',
