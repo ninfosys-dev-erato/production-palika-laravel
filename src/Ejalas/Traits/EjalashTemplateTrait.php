@@ -305,17 +305,17 @@ trait EjalashTemplateTrait
 
             case "JudicialMeeting":
                 $model->load(['employees.designation']);
-                $inivitedMember = $model->members;
+                $invitedMember = $model->members;
                 $presentEmployee = $model->employees;
-                $firstPresent = $inivitedMember->first();
+                $firstPresent = $invitedMember->first();
 
                 $presentText = "";
                 foreach ($presentEmployee as $member) {
                     $presentText .= "श्री {$member->name} - {$member->designation->title}<br/>";
                 }
                 $invitedText = "";
-                foreach ($inivitedMember as $member) {
-                    $invitedText .= "श्री {$member->title} - {$member->elected_position}<br/>";
+                foreach ($invitedMember as $member) {
+                    $invitedText .= "श्री {$member->title} - {$member->elected_position->label()}<br/>";
                 }
 
                 $data = array_merge($data, [
