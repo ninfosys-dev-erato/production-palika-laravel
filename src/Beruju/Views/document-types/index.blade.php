@@ -1,16 +1,16 @@
 <x-layout.app header="{{ __('beruju::beruju.document_types') }}">
     <div class="row g-6">
         <div class="col-12">
-            <div class="card border-radius-0">
-                <div class="card-header border-radius-0 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">{{ __('beruju::beruju.document_types') }}</h4>
+            <div class="card rounded-0">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 text-primary">{{ __('beruju::beruju.document_types') }}</h4>
                     @perm('beruju create')
-                    <button data-bs-target="#indexModal" data-bs-toggle="modal" onclick="resetForm()" class="btn btn-primary border-radius-0">
+                    <button data-bs-target="#indexModal" data-bs-toggle="modal" onclick="resetForm()" class="btn btn-primary rounded-0">
                         <i class="bx bx-plus"></i> {{ __('beruju::beruju.create_document_type') }}
                     </button>
                     @endperm
                 </div>
-                <div class="card-body border-radius-0">
+                <div class="card-body">
                     <livewire:beruju.document_type_table theme="bootstrap-4" />
                 </div>
             </div>
@@ -19,9 +19,9 @@
 
     <div wire:ignore class="modal fade" id="indexModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content rounded-0">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">{{ __('beruju::beruju.create_document_type') }}</h5>
+                    <h5 class="modal-title text-primary" id="ModalLabel">{{ __('beruju::beruju.create_document_type') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetForm()" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

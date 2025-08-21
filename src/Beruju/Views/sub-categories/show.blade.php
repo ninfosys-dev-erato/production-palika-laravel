@@ -11,14 +11,14 @@
     
     <div class="row g-6">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card rounded-0">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="text-primary fw-bold mb-0">{{ __('beruju::beruju.sub_category_details') }}</h5>
                     <div>
-                        <a href="{{ route('admin.beruju.sub-categories.edit', $subCategory->id) }}" class="btn btn-warning">
+                        <a href="{{ route('admin.beruju.sub-categories.edit', $subCategory->id) }}" class="btn btn-warning rounded-0">
                             <i class="bx bx-edit"></i> {{ __('beruju::beruju.edit') }}
                         </a>
-                        <a href="{{ route('admin.beruju.sub-categories.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('admin.beruju.sub-categories.index') }}" class="btn btn-secondary rounded-0">
                             <i class="bx bx-arrow-back"></i> {{ __('beruju::beruju.back_to_list') }}
                         </a>
                     </div>
@@ -81,7 +81,7 @@
                         <div class="mt-4">
                             <h6 class="text-primary">{{ __('beruju::beruju.child_categories') }}</h6>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
+                                <table class="table table-bordered table-hover rounded-0">
                                     <thead>
                                         <tr>
                                             <th>{{ __('beruju::beruju.name') }}</th>
@@ -98,11 +98,11 @@
                                                 <td>{{ $child->created_at ? $child->created_at->format('Y-m-d H:i') : 'N/A' }}</td>
                                                 <td>
                                                     <a href="{{ route('admin.beruju.sub-categories.show', $child->id) }}" 
-                                                       class="btn btn-sm btn-info">
+                                                       class="btn btn-sm btn-info rounded-0">
                                                         <i class="bx bx-show"></i>
                                                     </a>
                                                     <a href="{{ route('admin.beruju.sub-categories.edit', $child->id) }}" 
-                                                       class="btn btn-sm btn-warning">
+                                                       class="btn btn-sm btn-warning rounded-0">
                                                         <i class="bx bx-edit"></i>
                                                     </a>
                                                 </td>

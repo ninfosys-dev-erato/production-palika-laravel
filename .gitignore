@@ -32,3 +32,4 @@ yarn-error.log
 /bootstrap/
 *.tar.gz
 storage/logs/*.log
+storage/*

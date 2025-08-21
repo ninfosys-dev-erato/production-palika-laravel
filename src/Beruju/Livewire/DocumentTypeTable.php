@@ -28,7 +28,7 @@ class DocumentTypeTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setTableAttributes([
-                'class' => "table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline rounded-0"
             ])
             ->setAdditionalSelects(['id'])
             ->setBulkActionsDisabled()
@@ -95,13 +95,13 @@ class DocumentTypeTable extends DataTableComponent
                     $actions = '';
 
                     if (can('beruju edit')) {
-                        $actions .= '<button class="btn btn-sm me-1 border-radius-0" onclick="editDocumentType(' . $value . ')" title="' . __('beruju::beruju.edit_document_type') . '">
+                        $actions .= '<button class="btn btn-sm me-1 rounded-0" onclick="editDocumentType(' . $value . ')" title="' . __('beruju::beruju.edit_document_type') . '">
                             <i class="bx bx-edit"></i>
                         </button>';
                     }
 
                     if (can('beruju delete')) {
-                        $actions .= '<button class="btn btn-sm border-radius-0" onclick="deleteDocumentType(' . $value . ')" title="' . __('beruju::beruju.delete_document_type') . '">
+                        $actions .= '<button class="btn btn-sm rounded-0" onclick="deleteDocumentType(' . $value . ')" title="' . __('beruju::beruju.delete_document_type') . '">
                             <i class="bx bx-trash"></i>
                         </button>';
                     }

@@ -26,7 +26,7 @@ class ActionTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setTableAttributes([
-                'class' => "table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline rounded-0"
             ])
             ->setAdditionalSelects(['id'])
             ->setBulkActionsDisabled()
