@@ -45,6 +45,12 @@
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex justify-content-between">
+                                <span class="text-muted small">{{ __('beruju::beruju.contract_number') }}</span>
+                                <span class="fw-medium">{{ replaceNumbersWithLocale($berujuEntry->contract_number, true) ?: __('beruju::beruju.not_specified') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between">
                                 <span class="text-muted small">{{ __('beruju::beruju.entry_date') }}</span>
                                 <span class="fw-medium">{{ $berujuEntry->entry_date ?: __('beruju::beruju.not_specified') }}</span>
                             </div>

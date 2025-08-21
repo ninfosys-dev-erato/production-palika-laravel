@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('audit_type')->nullable();
             $table->string('entry_date')->nullable();
             $table->string('reference_number')->nullable();
+            $table->string('contract_number')->nullable();
             $table->string('branch_id')->nullable();
             $table->string('project')->nullable();
             $table->string('beruju_category')->nullable();
