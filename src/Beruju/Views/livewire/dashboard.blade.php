@@ -320,108 +320,105 @@
         }
     </style>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        let berujuPieChart, departmentBarChart;
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Pie Chart
+                const ctx = document.getElementById('berujuPieChart').getContext('2d');
 
-        function initializeCharts(resolvedCount, unresolvedCount, departmentData) {
-            // Destroy existing charts if they exist
-            if (berujuPieChart) berujuPieChart.destroy();
-            if (departmentBarChart) departmentBarChart.destroy();
+                const berujuPieChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['{{ __('beruju::beruju.resolved') }}',
+                            '{{ __('beruju::beruju.unresolved') }}'
+                        ],
+                        datasets: [{
+                            data: [{{ $resolvedCount }}, {{ $unresolvedCount }}],
+                            backgroundColor: [
+                                '#1565c0', // Success green for resolved
+                                '#f44336' // Warning yellow for unresolved
+                            ],
 
-            // --- Pie Chart ---
-            const pieCtx = document.getElementById('berujuPieChart').getContext('2d');
-            berujuPieChart = new Chart(pieCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['{{ __('beruju::beruju.resolved') }}', '{{ __('beruju::beruju.unresolved') }}'],
-                    datasets: [{
-                        data: [resolvedCount, unresolvedCount],
-                        backgroundColor: ['#1565c0', '#f44336'],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = ((value / total) * 100).toFixed(1);
-                                    return `${label}: ${value} (${percentage}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // --- Bar Chart (Department) ---
-            const barCtx = document.getElementById('departmentBarChart').getContext('2d');
-            const labels = departmentData.map(item => item.branch_name);
-            const counts = departmentData.map(item => item.count);
-
-            departmentBarChart = new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '{{ __('beruju::beruju.total_beruju') }}',
-                        data: counts,
-                        backgroundColor: '#007bff',
-                        borderColor: '#0056b3',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
+                            borderWidth: 2
+                        }]
                     },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `{{ __('beruju::beruju.total_beruju') }}: ${context.parsed.y}`;
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                });
+
+                // Simple Bar Chart for Department/Branch
+                const barCtx = document.getElementById('departmentBarChart').getContext('2d');
+
+                const departmentData = @json($departmentBeruju);
+                const labels = Object.values(departmentData).map(item => item.branch_name);
+                const counts = Object.values(departmentData).map(item => item.count);
+
+                const departmentBarChart = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '{{ __('beruju::beruju.total_beruju') }}',
+                            data: counts,
+                            backgroundColor: '#007bff',
+                            borderColor: '#0056b3',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `{{ __('beruju::beruju.total_beruju') }}: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
             });
-        }
+        </script>
+    @endpush
 
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCharts({{ $resolvedCount }}, {{ $unresolvedCount }}, @json($departmentBeruju));
-        });
-
-
-        document.addEventListener('livewire:update', function() {
-            initializeCharts(@this.resolvedCount, @this.unresolvedCount, @this.departmentBeruju);
-        });
-    </script>
 
 
 
