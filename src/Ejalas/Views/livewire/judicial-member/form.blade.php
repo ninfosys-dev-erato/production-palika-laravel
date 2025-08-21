@@ -15,13 +15,13 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label" for='member_position'>{{ __('ejalas::ejalas.ejalashjudicialcommitteeposition') }}</label>
+                    <label class="form-label"
+                        for='member_position'>{{ __('ejalas::ejalas.ejalashjudicialcommitteeposition') }}</label>
                     <Select wire:model='judicialMember.member_position' name='member_position' type='text'
                         class='form-control'>
                         <option value=""hidden>{{ __('ejalas::ejalas.select_a_position') }}</option>
-                        @foreach ($judicalMemberPositions as $judicalMemberPosition)
-                            <option value="{{ $judicalMemberPosition->value }}">{{ $judicalMemberPosition->value }}
-                            </option>
+                        @foreach ($judicalMemberPositions as $value => $label)
+                            <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
                     </Select>
                     {{-- <input wire:model='judicialMember.member_position' name='member_position' type='text' class='form-control' placeholder="{{__('ejalas::ejalas.enter_member_position')}}"> --}}
@@ -38,8 +38,8 @@
                     <select wire:model='judicialMember.elected_position' name='elected_position' type='text'
                         class='form-control'>
                         <option value=""hidden>{{ __('ejalas::ejalas.select_a_position') }}</option>
-                        @foreach ($electedPositions as $electedPosition)
-                            <option value="{{ $electedPosition->value }}">{{ $electedPosition->value }}
+                        @foreach ($electedPositions as $value => $label)
+                            <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
 
                     </select>
@@ -52,11 +52,13 @@
                     </div>
                 </div>
             </div>
+
             <div class='col-md-6 mt-4'>
                 <div class='form-group'>
                     <label class="form-label" for='status'>{{ __('ejalas::ejalas.active') }}</label>
                     <input wire:model='judicialMember.status' name='status' type='checkbox'
-                        class="form-check-input border-dark p-2 mt-1" placeholder="{{ __('ejalas::ejalas.enter_status') }}">
+                        class="form-check-input border-dark p-2 mt-1"
+                        placeholder="{{ __('ejalas::ejalas.enter_status') }}">
                     <div>
                         @error('judicialMember.status')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -67,7 +69,8 @@
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
+        <button type="submit" class="btn btn-primary"
+            wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
         <a href="{{ route('admin.ejalas.judicial_members.index') }}" wire:loading.attr="disabled"
             class="btn btn-danger">{{ __('ejalas::ejalas.back') }}</a>
     </div>

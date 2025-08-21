@@ -40,8 +40,8 @@ class JudicialMemberForm extends Component
     {
         $this->judicialMember = $judicialMember;
         $this->action = $action;
-        $this->judicalMemberPositions = JudicialMemberPosition::cases();
-        $this->electedPositions = ElectedPosition::cases();
+        $this->judicalMemberPositions = JudicialMemberPosition::getForWeb();
+        $this->electedPositions = ElectedPosition::getForWeb();
     }
 
     public function save()

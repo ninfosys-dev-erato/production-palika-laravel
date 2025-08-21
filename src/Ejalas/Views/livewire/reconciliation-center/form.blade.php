@@ -27,30 +27,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
-                <div class='form-group'>
-                    <label class="form-label" for='title'>{{ __('ejalas::ejalas.title') }}</label>
-                    <input wire:model='reconciliationCenter.title' name='title' type='text' class='form-control'
-                        placeholder="{{ __('ejalas::ejalas.enter_title') }}">
-                    <div>
-                        @error('reconciliationCenter.title')
-                            <small class='text-danger'>{{ __($message) }}</small>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-            <div class='col-md-6'>
-                <div class='form-group'>
-                    <label class="form-label" for='subtile'>{{ __('ejalas::ejalas.subtile') }}</label>
-                    <input wire:model='reconciliationCenter.subtile' name='subtile' type='text' class='form-control'
-                        placeholder="{{ __('ejalas::ejalas.enter_subtile') }}">
-                    <div>
-                        @error('reconciliationCenter.subtile')
-                            <small class='text-danger'>{{ __($message) }}</small>
-                        @enderror
-                    </div>
-                </div>
-            </div>
+
             <div class='col-md-6'>
                 <div class='form-group'>
                     <label class="form-label" for='ward_id'>{{ __('ejalas::ejalas.ward_no') }}</label>
@@ -65,8 +42,7 @@
             </div>
             <div class='col-md-6'>
                 <div class='form-group'>
-                    <label class="form-label"
-                        for='established_date'>{{ __('ejalas::ejalas.established_date') }}</label>
+                    <label class="form-label" for='established_date'>{{ __('ejalas::ejalas.established_date') }}</label>
                     <input wire:model='reconciliationCenter.established_date' name='established_date' type='text'
                         class='form-control nepali-date'
                         placeholder="{{ __('ejalas::ejalas.enter_established_date') }}">
