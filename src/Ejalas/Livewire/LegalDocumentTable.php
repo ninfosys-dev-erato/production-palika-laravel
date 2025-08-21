@@ -2,7 +2,7 @@
 
 namespace Src\Ejalas\Livewire;
 
-
+use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
@@ -15,7 +15,7 @@ use Src\Ejalas\Service\LegalDocumentAdminService;
 
 class LegalDocumentTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash, IsSearchable, HelperDate;
     protected $model = LegalDocument::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',
@@ -53,9 +53,21 @@ class LegalDocumentTable extends DataTableComponent
     {
         $columns = [
             Column::make(__('ejalas::ejalas.complaint_no'), "complaintRegistration.reg_no")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.party_name'), "party.name")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.document_writer_name'), "document_writer_name")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.document_date'), "document_date")->sortable()->searchable()->collapseOnTablet(),
+            // Column::make(__('ejalas::ejalas.party_name'), "party.name")->sortable()->searchable()->collapseOnTablet(),
+            // Column::make(__('ejalas::ejalas.document_writer_name'), "document_writer_name")->sortable()->searchable()->collapseOnTablet(),
+            // Column::make(__('ejalas::ejalas.document_date'), "created_at")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ejalas::ejalas.document_date'))->label(function ($row) {
+                $date = $row->created_at
+                    ? replaceNumbers($this->adToBs($row->created_at->format('Y-m-d')), true)
+                    : 'N/A';
+
+                return $date;
+            })->html()
+                ->sortable()
+                ->searchable()
+                ->collapseOnTablet(),
+
+
             // Column::make(__('ejalas::ejalas.document_details'), "document_details")->sortable()->searchable()->collapseOnTablet(),
         ];
         if (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print')) {

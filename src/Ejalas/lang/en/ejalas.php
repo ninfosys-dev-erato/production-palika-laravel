@@ -654,5 +654,6 @@ return [
     'detail_defender' => 'Detail Defender',
     'detail_complainer' => 'Detail Complainer',
     'no_data_to_show' => 'No data to show',
+    'invited_member' => 'Invited Member',
 
 ];

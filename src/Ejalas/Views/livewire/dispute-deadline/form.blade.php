@@ -109,7 +109,7 @@
                     <label for='deadline_set_date'
                         class="form-label">{{ __('ejalas::ejalas.deadline_set_date') }}</label>
                     <input wire:model='disputeDeadline.deadline_set_date' id="deadline_set_date"
-                        name='deadline_set_date' type='text' class='form-control nepali-date'
+                        name='deadline_set_date' type='text' class='nepali-date form-control'
                         placeholder="{{ __('ejalas::ejalas.enter_deadline_set_date') }}">
                     <div>
                         @error('disputeDeadline.deadline_set_date')
