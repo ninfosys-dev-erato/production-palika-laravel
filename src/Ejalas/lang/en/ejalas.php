@@ -650,10 +650,12 @@ return [
     'judicialcommittee' => 'judicial committee',
     'judicialcommittee_surname' => 'surname',
     'judicialcommittee_committeeformationdate' => 'committee formation Date',
-    'ejalashjudicialcommitteeposition' => 'judicial committee position',
+    'ejalashjudicialcommitteeposition' => 'position',
     'detail_defender' => 'Detail Defender',
     'detail_complainer' => 'Detail Complainer',
     'no_data_to_show' => 'No data to show',
     'invited_member' => 'Invited Member',
+    'employee_levels' => 'Employee Levels',
+    'members' => 'Members',
 
 ];
