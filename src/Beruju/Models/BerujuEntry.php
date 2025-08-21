@@ -31,6 +31,7 @@ class BerujuEntry extends Model
         'audit_type',
         'entry_date',
         'reference_number',
+        'contract_number',
         'branch_id',
         'project',
         'beruju_category',
@@ -140,9 +141,22 @@ class BerujuEntry extends Model
             return 0;
         }
 
+        // Use the already loaded actions relationship if available
+        if ($latestCycle->relationLoaded('actions')) {
+            return $latestCycle->actions
+                ->whereNotNull('resolved_amount')
+                ->sum('resolved_amount');
+        }
+
+        // Fallback to query if relationship not loaded
         return $latestCycle->actions()
             ->whereNotNull('resolved_amount')
             ->sum('resolved_amount');
+    }
+
+    public function getRemainingAmountAttribute()
+    {
+        return $this->amount - $this->resolved_amount;
     }
 
 }

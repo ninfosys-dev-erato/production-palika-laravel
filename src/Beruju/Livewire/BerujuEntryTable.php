@@ -57,6 +57,13 @@ class BerujuEntryTable extends DataTableComponent
                     return replaceNumbersWithLocale($value, true) ?: __('beruju::beruju.not_available');
                 }),
 
+            Column::make(__('beruju::beruju.contract_number'), 'contract_number')
+                ->sortable()
+                ->searchable()
+                ->format(function ($value) {
+                    return replaceNumbersWithLocale($value, true) ?: __('beruju::beruju.not_available');
+                }),
+
             Column::make(__('beruju::beruju.entry_date'), 'entry_date')
                 ->sortable()
                 ->format(function ($value) {

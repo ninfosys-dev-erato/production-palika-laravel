@@ -70,14 +70,26 @@
                 </div>
 
                 <!-- Reference Number -->
-                <div class="col-md-6 ">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label for="reference_number"
-                            class="form-label">{{ __('beruju::beruju.reference_number') }}</label>
-                        <input wire:model="berujuEntry.reference_number" type="text"
-                            class="form-control rounded-0 @error('berujuEntry.reference_number') is-invalid @enderror"
+                        <label for="reference_number" class="form-label">{{ __('beruju::beruju.reference_number') }}</label>
+                        <input type="text" wire:model="berujuEntry.reference_number" name="reference_number" id="reference_number"
+                            class="form-control @error('berujuEntry.reference_number') is-invalid @enderror"
                             placeholder="{{ __('beruju::beruju.enter_reference_number') }}">
                         @error('berujuEntry.reference_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Contract Number -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="contract_number" class="form-label">{{ __('beruju::beruju.contract_number') }}</label>
+                        <input type="text" wire:model="berujuEntry.contract_number" name="contract_number" id="contract_number"
+                            class="form-control @error('berujuEntry.contract_number') is-invalid @enderror"
+                            placeholder="{{ __('beruju::beruju.enter_contract_number') }}">
+                        @error('berujuEntry.contract_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
