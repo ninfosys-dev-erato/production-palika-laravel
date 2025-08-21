@@ -24,12 +24,12 @@
             <div data-i18n="Ejalas Management">{{ __('ejalas::ejalas.ejalas_management') }}</div>
         </a>
         <ul class="menu-sub">
-            <li class="{{ \Illuminate\Support\Facades\Route::is('admin.ejalas.judicial_committees.*') ? 'active' : '' }}">
+            {{-- <li class="{{ \Illuminate\Support\Facades\Route::is('admin.ejalas.judicial_committees.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.judicial_committees.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-shield"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.judicial_committee') }}</div>
                 </a>
-            </li>
+            </li> --}}
             <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.judicial_members.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.judicial_members.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-user"></i>
@@ -43,16 +43,16 @@
                 </a>
             </li>
 
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.local_levels.*') ? 'active' : '' }}">
+            {{-- <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.local_levels.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.local_levels.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-building-house"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.local_level') }}</div>
                 </a>
-            </li>
+            </li> --}}
             <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.levels.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.levels.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-layer"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.levels') }}</div>
+                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.employee_levels') }}</div>
                 </a>
             </li>
             <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.mediators.*') ? 'active' : '' }}">
@@ -80,19 +80,19 @@
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.priority') }}</div>
                 </a>
             </li>
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.parties.*') ? 'active' : '' }}">
+            {{-- <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.parties.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.parties.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-group"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.party') }}</div>
                 </a>
-            </li>
-            <li
+            </li> --}}
+            {{-- <li
                 class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.reconciliation_centers.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.reconciliation_centers.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-group"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.reconciliation_center') }}</div>
                 </a>
-            </li>
+            </li> --}}
             <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.judicial_employees.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.judicial_employees.index') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-group"></i>
@@ -312,8 +312,7 @@
         <ul class="menu-sub">
             <li
                 class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.report.complaint_registrations.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.report.complaint_registrations.report') }}"
-                    class="menu-link ps-4 gap-2">
+                <a href="{{ route('admin.ejalas.report.complaint_registrations.report') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-edit-alt"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.complaint_registration') }}</div>
                 </a>
@@ -325,8 +324,7 @@
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.hearing_schedule') }}</div>
                 </a>
             </li>
-            <li
-                class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.report.settlements.*') ? 'active' : '' }}">
+            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.report.settlements.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.report.settlements.report') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-group"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.settlement') }}</div>
