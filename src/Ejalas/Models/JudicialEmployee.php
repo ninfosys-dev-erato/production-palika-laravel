@@ -59,10 +59,7 @@ class JudicialEmployee extends Model
             ->logOnlyDirty()
             ->setDescriptionForEvent(fn(string $eventName) => "This JudicialEmployee has been {$eventName}");
     }
-    public function localLevel()
-    {
-        return $this->belongsTo(LocalLevel::class, 'local_level_id', 'id');
-    }
+
     public function level()
     {
         return $this->belongsTo(Level::class, 'level_id', 'id');
