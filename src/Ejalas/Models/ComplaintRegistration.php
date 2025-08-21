@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Ejalas\Enum\PlaceOfRegistration;
 use Src\FiscalYears\Models\FiscalYear;
 
 class ComplaintRegistration extends Model
@@ -46,7 +47,7 @@ class ComplaintRegistration extends Model
             'reg_no' => 'string',
             'old_reg_no' => 'string',
             'reg_date' => 'string',
-            'reg_address' => 'string',
+            'reg_address' => PlaceOfRegistration::class,
             'complainer_id' => 'string',
             'defender_id' => 'string',
             'priority_id' => 'string',
