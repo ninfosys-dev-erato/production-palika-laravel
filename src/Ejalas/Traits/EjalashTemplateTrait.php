@@ -29,12 +29,13 @@ trait EjalashTemplateTrait
             '{{global.ward_ne}}' => getSetting('palika-ward-ne'),
             '{{global.palika_name}}' => getSetting('palika-name'),
             '{{global.address}}' => getSetting('palika-address'),
+            '{{global.office_name}}' => getSetting('palika-name'),
             '{{global.officeName}}' => getSetting('palika-name'),
             '{{global.district}}' => getSetting('palika-district'),
             '{{global.local-body}}' => getSetting('palika-local-body'),
             '{{global.ward}}' => getSetting('palika-ward'),
             '{{global.today_date_ad}}' => today()->toDateString(),
-            '{{global.today_date_bs}}' => today()->toDateString(),
+            '{{global.today_date_bs}}' => $this->adToBs(today()->toDateString(), 'yyyy-mm-dd'),
         ];
 
         switch ($modelName) {

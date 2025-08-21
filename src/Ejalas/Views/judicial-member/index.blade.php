@@ -46,11 +46,9 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    @if (isset($judicialMember))
-                        <livewire:ejalas.judicial_member_form :action="App\Enums\Action::CREATE" />
-                    @else
-                        <livewire:ejalas.judicial_member_form :action="App\Enums\Action::UPDATE" />
-                    @endif
+
+                    <livewire:ejalas.judicial_member_form :action="App\Enums\Action::CREATE" />
+
                 </div>
 
             </div>
@@ -75,4 +73,7 @@
     function resetForm() {
         Livewire.dispatch('reset-form');
     }
+    document.getElementById('indexModal').addEventListener('hidden.bs.modal', () => {
+        Livewire.dispatch('reset-form');
+    });
 </script>

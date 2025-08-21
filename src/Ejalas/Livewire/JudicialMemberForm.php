@@ -46,7 +46,6 @@ class JudicialMemberForm extends Component
 
     public function save()
     {
-
         $this->validate();
         try {
 
