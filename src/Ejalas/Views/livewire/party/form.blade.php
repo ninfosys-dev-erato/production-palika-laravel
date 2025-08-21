@@ -1,7 +1,7 @@
 <form wire:submit.prevent="save" class="mx-4">
     <!-- Basic Information Section -->
     <div class="mb-4">
-        <label for="phone"
+        {{-- <label for="phone"
             class="form-label fw-bold fs-7 d-block">{{ __('ejalas::ejalas.search_user_by_phone_number') }}</label>
         <div class="input-group">
             <input type="text" class="form-control" id="phone" wire:model.defer="phone"
@@ -10,15 +10,22 @@
             <button class="btn btn-outline-primary" type="button" wire:click.prevent="search">
                 {{ __('ejalas::ejalas.search') }}
             </button>
-        </div>
-        @error('phone')
+        </div> --}}
+
+        <livewire:phone_search />
+        {{-- @error('phone')
             <span class="text-danger text-sm">{{ __($message) }}</span>
-        @enderror
+        @enderror --}}
     </div>
 
-    <div class="divider divider-primary text-start text-primary font-14">
-        <h5 class="divider-text ">{{ __('ejalas::ejalas.personal_details') }}</h5>
+
+
+    <div class="divider divider-primary text-start text-primary mb-4">
+        <div class="divider-text fw-bold fs-6">
+            {{ __('ejalas::ejalas.personal_details') }}
+        </div>
     </div>
+
     <div class="row">
         <div class="col-md-6 mb-3">
             <div class="form-group">
@@ -76,8 +83,10 @@
     </div>
 
     <!-- Family Information Section -->
-    <div class="divider divider-primary text-start text-primary font-14 mt-4">
-        <h5 class="divider-text ">{{ __('ejalas::ejalas.family_information') }}</h5>
+    <div class="divider divider-primary text-start text-primary mb-4">
+        <div class="divider-text fw-bold fs-6">
+            {{ __('ejalas::ejalas.family_information') }}
+        </div>
     </div>
     <div class="row">
         <div class="col-md-4 mb-3">
@@ -113,9 +122,12 @@
     </div>
 
     <!-- Permanent Address Section -->
-    <div class="divider divider-primary text-start text-primary font-14 mt-4">
-        <h5 class="divider-text ">{{ __('ejalas::ejalas.permanent_address') }}</h5>
+    <div class="divider divider-primary text-start text-primary mb-4">
+        <div class="divider-text fw-bold fs-6">
+            {{ __('ejalas::ejalas.permanent_address') }}
+        </div>
     </div>
+
     <div class="row">
         <div class="col-md-4 mb-3">
             <div class="form-group">
@@ -197,8 +209,10 @@
     </div>
 
     <!-- Temporary Address Section -->
-    <div class="divider divider-primary text-start text-primary font-14 mt-4">
-        <h5 class="divider-text ">{{ __('ejalas::ejalas.temporary_address') }}</h5>
+    <div class="divider divider-primary text-start text-primary mb-4">
+        <div class="divider-text fw-bold fs-6">
+            {{ __('ejalas::ejalas.temporary_address') }}
+        </div>
     </div>
     <div class="row">
         <!-- Temporary Province -->
