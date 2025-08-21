@@ -11,7 +11,7 @@
     
     <div class="row g-6">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card rounded-0">
                 <div class="card-header d-flex justify-content-between">
                     <div class="d-flex justify-content-between card-header">
                         <h5 class="text-primary fw-bold mb-0">{{ __('beruju::beruju.action_types') }}</h5>
@@ -19,7 +19,7 @@
                     <div>
                         @perm('beruju create')
                             <button data-bs-target="#indexModal" data-bs-toggle="modal" onclick="resetForm()"
-                                class="btn btn-info"><i class="bx bx-plus"></i>
+                                class="btn btn-info rounded-0"><i class="bx bx-plus"></i>
                                 {{ __('beruju::beruju.add_new_action_type') }}</button>
                         @endperm
                     </div>
@@ -33,9 +33,9 @@
 
     <div wire:ignore class="modal fade" id="indexModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content rounded-0">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">
+                    <h5 class="modal-title text-primary" id="ModalLabel">
                         {{ __('beruju::beruju.create_action_type') }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetForm()"

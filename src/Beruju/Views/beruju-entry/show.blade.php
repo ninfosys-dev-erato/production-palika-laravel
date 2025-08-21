@@ -6,11 +6,11 @@
             <h1 class="h3 mb-0 text-gray-800">{{ __('beruju::beruju.beruju_entry_details') }}</h1>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-outline-secondary">
+            <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-outline-secondary rounded-0">
                 <i class="bx bx-arrow-back me-1"></i> {{ __('beruju::beruju.back_to_list') }}
             </a>
             @can('beruju edit')
-            <a href="{{ route('admin.beruju.registration.edit', $berujuEntry->id) }}" class="btn btn-primary">
+            <a href="{{ route('admin.beruju.registration.edit', $berujuEntry->id) }}" class="btn btn-primary rounded-0">
                 <i class="bx bx-edit me-1"></i> {{ __('beruju::beruju.edit_entry') }}
             </a>
             @endcan
@@ -22,7 +22,7 @@
         <!-- Left Column - Main Details -->
         <div class="col-lg-8">
             <!-- Comprehensive Beruju Details Card -->
-            <div class="card mb-4">
+            <div class="card mb-4 rounded-0">
                 <div class="card-header bg-light">
                     <h6 class="card-title mb-0 fw-semibold">
                         <i class="bx bx-info-circle me-2"></i>{{ __('beruju::beruju.beruju_details') }}
@@ -230,7 +230,7 @@
             <livewire:beruju.action_card :berujuEntry="$berujuEntry" />
 
             <!-- Quick Actions Card -->
-            <div class="card">
+            <div class="card rounded-0">
                 <div class="card-header bg-light">
                     <h6 class="card-title mb-0 fw-semibold">
                         <i class="bx bx-cog me-2"></i>{{ __('beruju::beruju.quick_actions') }}
@@ -239,14 +239,14 @@
                 <div class="card-body p-3">
                     <div class="d-grid gap-2">
                         @can('beruju edit')
-                        <a href="{{ route('admin.beruju.registration.edit', $berujuEntry->id) }}" class="btn btn-outline-primary">
+                        <a href="{{ route('admin.beruju.registration.edit', $berujuEntry->id) }}" class="btn btn-outline-primary rounded-0">
                             <i class="bx bx-edit me-2"></i>{{ __('beruju::beruju.edit_entry') }}
                         </a>
                         @endcan
-                        <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-outline-secondary rounded-0">
                             <i class="bx bx-list me-2"></i>{{ __('beruju::beruju.view_all_entries') }}
                         </a>
-                        <button type="button" class="btn btn-outline-info" onclick="window.print()">
+                        <button type="button" class="btn btn-outline-info rounded-0" onclick="window.print()">
                             <i class="bx bx-printer me-2"></i>{{ __('beruju::beruju.print_details') }}
                         </button>
                     </div>
@@ -271,9 +271,9 @@
 </style>
 
 <!-- Resolution Cycle Modal -->
-<div wire:ignore class="modal fade" id="resolutionCycleModal" tabindex="-1" aria-labelledby="resolutionCycleModalLabel" aria-hidden="true">
+<div wire:ignore class="modal fade rounded-0" id="resolutionCycleModal" tabindex="-1" aria-labelledby="resolutionCycleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content rounded-0">
             <div class="modal-header">
                 <h5 class="modal-title" id="resolutionCycleModalLabel">{{ __('beruju::beruju.assign_beruju_for_resolution') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetResolutionForm()" aria-label="Close"></button>
@@ -286,9 +286,9 @@
 </div>
 
 <!-- Action Modal -->
-<div wire:ignore class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
+<div wire:ignore class="modal fade rounded-0" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content rounded-0">
             <div class="modal-header">
                 <h5 class="modal-title" id="actionModalLabel">{{ __('beruju::beruju.take_action') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetActionForm()" aria-label="Close"></button>

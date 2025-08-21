@@ -1,4 +1,4 @@
-<div class="card mb-4">
+<div class="card mb-4 rounded-0">
     <div class="card-header bg-light">
         <h6 class="card-title mb-0 fw-semibold">
             <i class="bx bx-list-check me-2"></i>{{ __('beruju::beruju.actions_taken') }}
@@ -73,7 +73,7 @@
                                             {{ $action->status }}
                                         </span>
                                         @can('beruju edit')
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-0" 
                                                 wire:click="editAction({{ $action->id }})" 
                                                 title="{{ __('beruju::beruju.edit_action') }}">
                                             <i class="bx bx-edit"></i>
@@ -89,7 +89,7 @@
             
             <!-- Take Action Button -->
             <div class="d-grid">
-                <button type="button" class="btn btn-primary btn-sm" wire:click="$dispatch('open-action-modal')">
+                <button type="button" class="btn btn-primary btn-sm rounded-0" wire:click="$dispatch('open-action-modal')">
                     <i class="bx bx-plus me-2"></i>{{ __('beruju::beruju.take_action') }}
                 </button>
             </div>
@@ -105,7 +105,7 @@
                 @else
                     <p class="text-muted mb-3 small">{{ __('beruju::beruju.no_actions_taken_yet') }}</p>
                 @endif
-                <button type="button" class="btn btn-primary btn-sm" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
+                <button type="button" class="btn btn-primary btn-sm rounded-0" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
                     <i class="bx bx-plus me-2"></i>{{ __('beruju::beruju.assign_beruju') }}
                 </button>
             </div>

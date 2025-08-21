@@ -26,7 +26,7 @@ class SubCategoryTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setTableAttributes([
-                'class' => "table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline rounded-0"
             ])
             ->setAdditionalSelects(['id'])
             ->setBulkActionsDisabled()
@@ -75,12 +75,12 @@ class SubCategoryTable extends DataTableComponent
                 $buttons = '<div class="btn-group" role="group" >';
 
                 if (can('beruju edit')) {
-                    $edit = '<button class="btn btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
+                    $edit = '<button class="btn btn-sm rounded-0" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
                 if (can('beruju delete')) {
-                    $delete = '<button type="button" class="btn btn-sm" wire:confirm="' . __('beruju::beruju.confirm_delete') . '" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
+                    $delete = '<button type="button" class="btn btn-sm rounded-0" wire:confirm="' . __('beruju::beruju.confirm_delete') . '" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 

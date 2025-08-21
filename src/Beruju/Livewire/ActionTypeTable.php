@@ -26,7 +26,7 @@ class ActionTypeTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setTableAttributes([
-                'class' => "table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline rounded-0"
             ])
             ->setAdditionalSelects(['id'])
             ->setBulkActionsDisabled()
@@ -108,13 +108,13 @@ class ActionTypeTable extends DataTableComponent
                     $actions = '<div class="btn-group">';
                     
                     if (can('beruju edit')) {
-                        $actions .= '<button class="btn btn-sm  me-1" onclick="editActionType(' . $value . ')">
+                        $actions .= '<button class="btn btn-sm me-1 rounded-0" onclick="editActionType(' . $value . ')">
                             <i class="bx bx-edit"></i>
                         </button>';
                     }
                     
                     if (can('beruju delete')) {
-                        $actions .= '<button class="btn btn-sm " onclick="deleteActionType(' . $value . ')">
+                        $actions .= '<button class="btn btn-sm rounded-0" onclick="deleteActionType(' . $value . ')">
                             <i class="bx bx-trash"></i>
                         </button>';
                     }

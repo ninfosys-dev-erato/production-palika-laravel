@@ -167,7 +167,7 @@
                         class="card-header d-flex justify-content-between align-items-center border-card-topic m-1 p-3">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.recent_beruju_entries') }}</h5>
                         <div class="btn-group btn-group-sm">
-                            <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-success me-1">
+                            <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-secondary me-1">
                                 {{ __('beruju::beruju.show_all') }}
                             </a>
                             <a href="{{ route('admin.beruju.registration.create') }}" class="btn btn-primary">

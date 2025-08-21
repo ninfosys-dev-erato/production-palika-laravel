@@ -4,7 +4,7 @@
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='name_eng'>{{ __('beruju::beruju.name_eng') }}</label>
-                    <input wire:model='subCategory.name_eng' name='name_eng' type='text' class='form-control'
+                    <input wire:model='subCategory.name_eng' name='name_eng' type='text' class='form-control rounded-0'
                         placeholder="{{ __('beruju::beruju.enter_sub_category_name_eng') }}">
                     <div>
                         @error('subCategory.name_eng')
@@ -16,7 +16,7 @@
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='name_nep'>{{ __('beruju::beruju.name_nep') }}</label>
-                    <input wire:model='subCategory.name_nep' name='name_nep' type='text' class='form-control'
+                    <input wire:model='subCategory.name_nep' name='name_nep' type='text' class='form-control rounded-0'
                         placeholder="{{ __('beruju::beruju.enter_sub_category_name_nep') }}">
                     <div>
                         @error('subCategory.name_nep')
@@ -28,7 +28,7 @@
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='slug'>{{ __('beruju::beruju.slug') }}</label>
-                    <input wire:model='subCategory.slug' name='slug' type='text' class='form-control'
+                    <input wire:model='subCategory.slug' name='slug' type='text' class='form-control rounded-0'
                         placeholder="{{ __('beruju::beruju.enter_slug') }}">
                     <div>
                         @error('subCategory.slug')
@@ -40,7 +40,7 @@
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='parent_id'>{{ __('beruju::beruju.parent_category') }}</label>
-                    <select wire:model='subCategory.parent_id' name='parent_id' class="form-control">
+                    <select wire:model='subCategory.parent_id' name='parent_id' class="form-control rounded-0">
                         <option value=""hidden>{{ __('beruju::beruju.select_parent_category') }}</option>
                         @foreach ($parentCategories as $id => $value)
                             <option value="{{ $id }}">{{ $value }}</option>
@@ -56,7 +56,7 @@
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label class="form-label" for='remarks'>{{ __('beruju::beruju.remarks') }}</label>
-                    <textarea wire:model='subCategory.remarks' name='remarks' class='form-control'
+                    <textarea wire:model='subCategory.remarks' name='remarks' class='form-control rounded-0'
                         placeholder="{{ __('beruju::beruju.enter_remarks') }}"></textarea>
                     <div>
                         @error('subCategory.remarks')
@@ -68,8 +68,8 @@
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">{{ __('beruju::beruju.save') }}</button>
-        <button class="btn btn-danger" wire:loading.attr="disabled" data-bs-dismiss="modal"
+        <button type="submit" class="btn btn-primary rounded-0" wire:loading.attr="disabled">{{ __('beruju::beruju.save') }}</button>
+        <button class="btn btn-danger rounded-0" wire:loading.attr="disabled" data-bs-dismiss="modal"
             onclick="resetForm()">{{ __('beruju::beruju.back') }}</button>
     </div>
 </form>

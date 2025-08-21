@@ -1,10 +1,10 @@
-<div class="card mb-4">
+<div class="card mb-4 rounded-0">
     <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <h6 class="card-title mb-0 fw-semibold">
             <i class="bx bx-user-check me-2"></i>{{ __('beruju::beruju.incharge') }}
         </h6>
         @if($showInchargeDetails && $latestCycle)
-            <button type="button" class="btn btn-primary btn-sm" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
+            <button type="button" class="btn btn-primary btn-sm rounded-0" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
                 <i class="bx bx-plus me-1"></i>{{ __('beruju::beruju.assign_another') }}
             </button>
         @endif
@@ -94,7 +94,7 @@
                     <i class="bx bx-user-plus text-muted" style="font-size: 2rem;"></i>
                 </div>
                 <p class="text-muted mb-3 small">{{ __('beruju::beruju.not_assigned_yet') }}</p>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
+                <button type="button" class="btn btn-primary btn-sm rounded-0" data-bs-target="#resolutionCycleModal" data-bs-toggle="modal">
                     <i class="bx bx-plus me-2"></i>{{ __('beruju::beruju.assign_beruju') }}
                 </button>
             </div>
