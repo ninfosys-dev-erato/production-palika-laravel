@@ -11,7 +11,8 @@ use Src\Ejalas\Service\PartyAdminService;
 use Src\Address\Models\District;
 use Src\Address\Models\Province;
 use Illuminate\Support\Facades\Log;
-
+use Livewire\Attributes\On;
+use Src\Customers\Models\Customer;
 
 class PartyForm extends Component
 {
@@ -175,18 +176,81 @@ class PartyForm extends Component
         $this->loadDependentDropDown();
         $this->dispatch('open-modal');
     }
-    public function search()
+    // public function search()
+    // {
+    //     $party = Party::whereNull('deleted_at')->where('phone_no', $this->phone)->first();
+    //     if ($party) {
+    //         $this->party = $party;
+    //         $this->searchResult = true;
+    //         $this->loadDependentDropDown();
+    //         $this->successToast(__('ejalas::ejalas.data_found_successfully'));
+    //     } else {
+    //         $this->errorToast(__('ejalas::ejalas.no_data_found'));
+    //     }
+    // }
+    #[On('search-user')]
+    public function restructureData($result)
     {
-        $party = Party::whereNull('deleted_at')->where('phone_no', $this->phone)->first();
-        if ($party) {
-            $this->party = $party;
-            $this->searchResult = true;
-            $this->loadDependentDropDown();
-            $this->successToast(__('ejalas::ejalas.data_found_successfully'));
-        } else {
-            $this->errorToast(__('ejalas::ejalas.no_data_found'));
+        if ($result['type'] === 'Customer') {
+            $customer = Customer::with('kyc')->where('id', $result['id'])->first();
+
+            if ($customer) {
+
+                $this->party->name = $customer->name ?? '';
+                $this->party->phone_no = $customer->mobile_no ?? '';
+                $this->party->gender = $customer->gender->value ?? '';
+
+
+                // Populate KYC data if available
+                if ($customer->kyc) {
+                    $this->party->father_name = $customer->kyc->father_name ?? '';
+                    $this->party->grandfather_name = $customer->kyc->grandfather_name ?? '';
+                    $this->party->citizenship_no = $customer->kyc->document_number ?? '';
+
+                    // Populate permanent address information if available
+                    if ($customer->kyc->permanent_province_id) {
+                        $this->party->permanent_province_id = $customer->kyc->permanent_province_id;
+                    }
+                    if ($customer->kyc->permanent_district_id) {
+                        $this->party->permanent_district_id = $customer->kyc->permanent_district_id;
+                    }
+                    if ($customer->kyc->permanent_local_body_id) {
+                        $this->party->permanent_local_body_id = $customer->kyc->permanent_local_body_id;
+                    }
+                    if ($customer->kyc->permanent_ward) {
+                        $this->party->permanent_ward_id = $customer->kyc->permanent_ward;
+                    }
+                    if ($customer->kyc->permanent_tole) {
+                        $this->party->permanent_tole = $customer->kyc->permanent_tole;
+                    }
+
+                    if ($customer->kyc->temporary_province_id) {
+                        $this->party->temporary_province_id = $customer->kyc->temporary_province_id;
+                    }
+                    if ($customer->kyc->temporary_district_id) {
+                        $this->party->temporary_district_id = $customer->kyc->temporary_district_id;
+                    }
+                    if ($customer->kyc->temporary_local_body_id) {
+                        $this->party->temporary_local_body_id = $customer->kyc->temporary_local_body_id;
+                    }
+                    if ($customer->kyc->temporary_ward) {
+                        $this->party->temporary_ward_id = $customer->kyc->temporary_ward;
+                    }
+                    if ($customer->kyc->temporary_tole) {
+                        $this->party->temporary_tole = $customer->kyc->temporary_tole;
+                    }
+                    $this->loadDependentDropDown();
+                }
+
+                // $this->searchResult = true;
+
+                $this->successToast(__('ejalas::ejalas.customer_data_loaded_successfully'));
+            } else {
+                $this->errorToast(__('ejalas::ejalas.no_customer_found'));
+            }
         }
     }
+
     public function addSearchResult()
     {
         $this->selectedParties[] = [

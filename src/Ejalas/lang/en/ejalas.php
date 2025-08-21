@@ -657,5 +657,7 @@ return [
     'invited_member' => 'Invited Member',
     'employee_levels' => 'Employee Levels',
     'members' => 'Members',
+    'customer_data_loaded_successfully' => 'Customer data loaded successfully',
+    'no_customer_found' => 'No customer found',
 
 ];

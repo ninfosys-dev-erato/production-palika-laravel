@@ -655,4 +655,6 @@ return [
     'employee_levels' => 'कर्मचारी तह',
     'members' => 'सदस्यहरू',
     'ejalash_referenceno' => 'संदर्भ नं',
+    'customer_data_loaded_successfully' => 'ग्राहक डाटा सफलतापूर्वक लोड गरियो',
+    'no_customer_found' => 'कुनै ग्राहक फेला परेन',
 ];
