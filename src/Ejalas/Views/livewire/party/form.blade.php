@@ -168,7 +168,7 @@
                     class="form-label">{{ __('ejalas::ejalas.permanent_local_body') }}</label>
                 <select wire:model="party.permanent_local_body_id" id="permanent_local_body_id"
                     name="permanent_local_body_id" class="form-select" wire:change='getWard'
-                    wire:key="temporary_local_body_{{ $party->temporary_district_id }}">
+                    wire:key="permanent_local_body_{{ $party->permanent_district_id }}">
                     <option value="" hidden>{{ __('ejalas::ejalas.select_a_local_body') }}</option>
                     @foreach ($localBodies as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
@@ -184,7 +184,7 @@
                 <label for="permanent_ward_id"
                     class="form-label">{{ __('ejalas::ejalas.permanent_ward_no') }}</label>
                 <select wire:model="party.permanent_ward_id" id="permanent_ward_id" name="permanent_ward_id"
-                    class="form-select">
+                    class="form-select" wire:key="permanent_ward_{{ $party->permanent_local_body_id }}">
                     <option value="" hidden>{{ __('ejalas::ejalas.select_a_ward') }}</option>
                     @foreach ($wards as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
@@ -239,7 +239,8 @@
                 <label for="temporary_district_id"
                     class="form-label">{{ __('ejalas::ejalas.temporary_district') }}</label>
                 <select wire:model="party.temporary_district_id" id="temporary_district_id"
-                    name="temporary_district_id" class="form-select" wire:change="getTemporaryLocalBody">
+                    name="temporary_district_id" class="form-select" wire:change="getTemporaryLocalBody"
+                    wire:key="temporary_district_{{ $party->temporary_province_id }}">
                     <option value="" hidden>{{ __('ejalas::ejalas.select_a_district') }}</option>
                     @foreach ($temporaryDistricts as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
@@ -257,7 +258,8 @@
                 <label for="temporary_local_body_id"
                     class="form-label">{{ __('ejalas::ejalas.temporary_local_body') }}</label>
                 <select wire:model="party.temporary_local_body_id" id="temporary_local_body_id"
-                    name="temporary_local_body_id" class="form-select" wire:change="getTemporaryWard">
+                    name="temporary_local_body_id" class="form-select" wire:change="getTemporaryWard"
+                    wire:key="temporary_local_body_{{ $party->temporary_district_id }}">
                     <option value="" hidden>{{ __('ejalas::ejalas.select_a_local_body') }}</option>
                     @foreach ($temporaryLocalBodies as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
@@ -275,7 +277,7 @@
                 <label for="temporary_ward_id"
                     class="form-label">{{ __('ejalas::ejalas.temporary_ward_no') }}</label>
                 <select wire:model="party.temporary_ward_id" id="temporary_ward_id" name="temporary_ward_id"
-                    class="form-select">
+                    class="form-select" wire:key="temporary_ward_{{ $party->temporary_local_body_id }}">
                     <option value="" hidden>{{ __('ejalas::ejalas.select_a_ward') }}</option>
                     @foreach ($temporaryWards as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
