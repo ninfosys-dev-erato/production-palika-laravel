@@ -340,7 +340,11 @@
 
     </div>
 
-    <livewire:beruju.evidence_document_upload :$berujuEntry />
+    <div class="card mb-3 rounded-0">
+        <div class="card-body">
+            <livewire:beruju.evidence_document_upload :$berujuEntry :type="'beruju'"/>
+        </div>
+    </div>
 
 
 

@@ -281,7 +281,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content rounded-0">
             <div class="modal-header">
-                <h5 class="modal-title" id="resolutionCycleModalLabel">{{ __('beruju::beruju.assign_beruju_for_resolution') }}</h5>
+                <h5 class="modal-title text-primary" id="resolutionCycleModalLabel">{{ __('beruju::beruju.assign_beruju_for_resolution') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetResolutionForm()" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -296,7 +296,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content rounded-0">
             <div class="modal-header">
-                <h5 class="modal-title" id="actionModalLabel">{{ __('beruju::beruju.take_action') }}</h5>
+                <h5 class="modal-title text-primary" id="actionModalLabel">{{ __('beruju::beruju.take_action') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetActionForm()" aria-label="Close"></button>
             </div>
             <div class="modal-body">

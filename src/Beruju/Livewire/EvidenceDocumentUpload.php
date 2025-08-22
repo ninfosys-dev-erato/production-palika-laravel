@@ -67,23 +67,26 @@ class EvidenceDocumentUpload extends Component
                 if ($berujuAction && $berujuAction->id) {
                     $this->actionId = $berujuAction->id;
                     $this->evidence->action_id = $berujuAction->id;
-                    $this->loadExistingDocuments($this->berujuEntryId, $this->actionId);
+                    $this->loadExistingDocuments($this->berujuEntryId, $this->actionId, $this->type);
                 } else {
                     $this->addDocument();
                 }
             } else {
-                $this->loadExistingDocuments($this->berujuEntryId);
+                $this->loadExistingDocuments($this->berujuEntryId, $this->type);
             }
         } else {
             // Initialize with one empty document
             $this->addDocument();
         }
     }
-    private function loadExistingDocuments($berujuEntryId, $actionId = null)
+    private function loadExistingDocuments($berujuEntryId, $actionId = null, $type = null)
     {
         $existingEvidences = Evidence::where('beruju_entry_id', $berujuEntryId)
             ->when($actionId, function ($query) use ($actionId) {
                 $query->where('action_id', $actionId);
+            })
+            ->when($type === 'beruju', function ($query)  {
+                $query->where('action_id', null);
             })
             ->whereNull('deleted_at')
             ->get();
@@ -194,17 +197,27 @@ class EvidenceDocumentUpload extends Component
         return [$savedFileName, $tempUrl];
     }
 
+    public function updatedUploadedFiles($value, $key)
+{
+    // $key will be like "0", "1", etc. depending on $index
+    $index = $key;
+
+    $this->saveDocuments($index);
+}
+
     public function saveDocuments($index)
     {
 
         $this->validate([
-            "evidenceData.{$index}.name" => 'required|string|max:255',
-            "evidenceData.{$index}.description" => 'nullable|string',
+            // "evidenceData.{$index}.name" => 'required|string|max:255',
+            // "evidenceData.{$index}.description" => 'nullable|string',
             "uploadedFiles.{$index}" => 'required',
         ]);
+       
 
         try {
             $file = $this->uploadedFiles[$index] ?? null;
+            // dd($this->uploadedFiles,$file);
 
             if ($file) {
 
