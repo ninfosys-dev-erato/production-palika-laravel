@@ -350,9 +350,13 @@
 
 
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary rounded-0"
+        <button type="button" wire:click="saveDraft" class="btn btn-secondary rounded-0 me-2"
+            wire:loading.attr="disabled">
+            {{ __('beruju::beruju.save_draft') }}
+        </button>
+        <button type="submit" class="btn btn-primary rounded-0 me-2"
             wire:loading.attr="disabled">{{ __('beruju::beruju.save') }}</button>
-        <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-secondary rounded-0">
+        <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-outline-secondary rounded-0">
             {{ __('beruju::beruju.back') }}
         </a>
     </div>

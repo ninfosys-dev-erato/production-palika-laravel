@@ -583,5 +583,9 @@ return [
     'npr' => 'NPR',
     'all_fiscal_year' => 'All Fiscal Year',
     'filter_by' => 'Filter by',
+    'save_draft' => 'Save Draft',
+    'beruju_draft_saved_successfully' => 'Beruju draft saved successfully',
+    'beruju_draft_updated_successfully' => 'Beruju draft updated successfully',
+    'something_went_wrong_while_saving_draft' => 'Something went wrong while saving draft',
 
 ];
