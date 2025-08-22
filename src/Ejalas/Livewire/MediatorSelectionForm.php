@@ -65,7 +65,7 @@ class MediatorSelectionForm extends Component
                 return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
             });
         $this->mediators = Mediator::whereNull('deleted_at')->pluck('mediator_name', 'id');
-        $this->mediatorSelectionTypes = MediatorSelectionType::cases();
+        $this->mediatorSelectionTypes = MediatorSelectionType::getForWeb();
     }
 
     public function save()

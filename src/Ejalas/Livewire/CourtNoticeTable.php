@@ -39,7 +39,7 @@ class CourtNoticeTable extends DataTableComponent
     public function builder(): Builder
     {
         return CourtNotice::query()
-            ->with(['complaintRegistration', 'fiscalYear', 'reconciliationCenter', 'complaintRegistration.parties', 'complaintRegistration.disputeMatter', 'complaintRegistration.disputeMatter.disputeArea'])
+            ->with(['complaintRegistration', 'fiscalYear', 'complaintRegistration.parties', 'complaintRegistration.disputeMatter', 'complaintRegistration.disputeMatter.disputeArea'])
             ->select('*')
             ->where('jms_court_notices.deleted_at', null)
             ->where('jms_court_notices.deleted_by', null)
