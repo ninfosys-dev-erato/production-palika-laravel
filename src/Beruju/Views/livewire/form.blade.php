@@ -74,7 +74,7 @@
                     <div class="form-group">
                         <label for="reference_number" class="form-label">{{ __('beruju::beruju.reference_number') }}</label>
                         <input type="text" wire:model="berujuEntry.reference_number" name="reference_number" id="reference_number"
-                            class="form-control @error('berujuEntry.reference_number') is-invalid @enderror"
+                            class="form-control @error('berujuEntry.reference_number') is-invalid @enderror rounded-0"
                             placeholder="{{ __('beruju::beruju.enter_reference_number') }}">
                         @error('berujuEntry.reference_number')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -87,7 +87,7 @@
                     <div class="form-group">
                         <label for="contract_number" class="form-label">{{ __('beruju::beruju.contract_number') }}</label>
                         <input type="text" wire:model="berujuEntry.contract_number" name="contract_number" id="contract_number"
-                            class="form-control @error('berujuEntry.contract_number') is-invalid @enderror"
+                            class="form-control @error('berujuEntry.contract_number') is-invalid @enderror rounded-0"
                             placeholder="{{ __('beruju::beruju.enter_contract_number') }}">
                         @error('berujuEntry.contract_number')
                             <div class="invalid-feedback">{{ $message }}</div>

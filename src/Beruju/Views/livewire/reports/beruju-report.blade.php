@@ -33,7 +33,7 @@
                             <!-- Left Side - Government Hierarchy -->
                             <div class="col-md-3 ">
                                 <div class="text-start">
-                                    <div class="border border-dark p-4 col-md-6" style="width: 150px;">
+                                    <div class="border border-dark p-4 col-md-6" style="width: 120px;">
                                         <p class="mb-1">
                                             <strong>नेपाल सरकार/</strong>
                                         </p>
@@ -263,11 +263,7 @@
                                             $totalAmount += (float) ($row->amount ?? 0);
                                         @endphp
                                     @endforeach
-                                    <tr>
-                                        <td class="text-right"><strong>जम्मा</strong></td>
-                                        <!-- <td><strong>{{ replaceNumbersWithLocale(number_format($totalAmount, 2), true) }}</strong></td> -->
-                                        <td colspan="20"></td>
-                                    </tr>
+                                    
                                 </tbody>
                             </table>
                         </div>

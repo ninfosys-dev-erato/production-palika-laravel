@@ -91,6 +91,7 @@ return [
     'entry_date' => 'Entry Date',
     'reference_number' => 'Reference Number',
     'contract_number' => 'Contract Number',
+    'enter_contract_number' => 'Enter Contract Number',
     'branch_id' => 'Branch',
     'project' => 'Project',
     'beruju_category' => 'Beruju Category',
