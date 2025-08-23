@@ -74,7 +74,7 @@
                     <div class="form-group">
                         <label for="reference_number" class="form-label">{{ __('beruju::beruju.reference_number') }}</label>
                         <input type="text" wire:model="berujuEntry.reference_number" name="reference_number" id="reference_number"
-                            class="form-control @error('berujuEntry.reference_number') is-invalid @enderror"
+                            class="form-control @error('berujuEntry.reference_number') is-invalid @enderror rounded-0"
                             placeholder="{{ __('beruju::beruju.enter_reference_number') }}">
                         @error('berujuEntry.reference_number')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -87,7 +87,7 @@
                     <div class="form-group">
                         <label for="contract_number" class="form-label">{{ __('beruju::beruju.contract_number') }}</label>
                         <input type="text" wire:model="berujuEntry.contract_number" name="contract_number" id="contract_number"
-                            class="form-control @error('berujuEntry.contract_number') is-invalid @enderror"
+                            class="form-control @error('berujuEntry.contract_number') is-invalid @enderror rounded-0"
                             placeholder="{{ __('beruju::beruju.enter_contract_number') }}">
                         @error('berujuEntry.contract_number')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -340,15 +340,23 @@
 
     </div>
 
-    <livewire:beruju.evidence_document_upload :$berujuEntry />
+    <div class="card mb-3 rounded-0">
+        <div class="card-body">
+            <livewire:beruju.evidence_document_upload :$berujuEntry :type="'beruju'"/>
+        </div>
+    </div>
 
 
 
 
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary rounded-0"
+        <button type="button" wire:click="saveDraft" class="btn btn-secondary rounded-0 me-2"
+            wire:loading.attr="disabled">
+            {{ __('beruju::beruju.save_draft') }}
+        </button>
+        <button type="submit" class="btn btn-primary rounded-0 me-2"
             wire:loading.attr="disabled">{{ __('beruju::beruju.save') }}</button>
-        <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-secondary rounded-0">
+        <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-outline-secondary rounded-0">
             {{ __('beruju::beruju.back') }}
         </a>
     </div>

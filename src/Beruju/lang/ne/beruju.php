@@ -575,4 +575,8 @@ return [
     'npr' => 'रुपैयाँ',
     'all_fiscal_year' => 'सबै आर्थिक वर्ष',
     'filter_by' => 'फिल्टर',
+    'save_draft' => 'मस्यौदा सुरक्षित गर्नुहोस्',
+    'beruju_draft_saved_successfully' => 'बेरुजु मस्यौदा सफलतापूर्वक सुरक्षित गरियो',
+    'beruju_draft_updated_successfully' => 'बेरुजु मस्यौदा सफलतापूर्वक अपडेट गरियो',
+    'something_went_wrong_while_saving_draft' => 'मस्यौदा सुरक्षित गर्दा केही गलत भयो',
 ];

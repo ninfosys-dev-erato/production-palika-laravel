@@ -236,12 +236,7 @@ class BerujuEntryForm extends Component
                 case Action::CREATE:
                     $berujuEntry = $service->store($dto);
                     DB::commit();
-
-
                     $this->dispatch('saveAllDocumentsfunction', $berujuEntry->id);
-
-
-
                     $this->successFlash(__('beruju::beruju.beruju_created_successfully'));
                     return redirect()->route('admin.beruju.registration.index');
                     break;
@@ -266,6 +261,50 @@ class BerujuEntryForm extends Component
             logger($e);
             DB::rollBack();
             $this->errorFlash(__('beruju::beruju.something_went_wrong_while_saving') . ': ' . $e->getMessage());
+        }
+    }
+
+    public function saveDraft()
+    {
+        $this->berujuEntry->status = BerujuStatusEnum::DRAFT;
+        $this->berujuEntry->submission_status = BerujuSubmissionStatusEnum::DRAFT;
+
+        try {
+            $dto = BerujuEntryDto::fromLiveWireModel($this->berujuEntry);
+            $service = new BerujuEntryService();
+
+            DB::beginTransaction();
+
+            switch ($this->action) {
+                case Action::CREATE:
+                    $berujuEntry = $service->store($dto);
+                    DB::commit();
+
+                    $this->dispatch('saveAllDocumentsfunction', $berujuEntry->id);
+
+                    $this->successFlash(__('beruju::beruju.beruju_draft_saved_successfully'));
+                    return redirect()->route('admin.beruju.registration.index');
+                    break;
+
+                case Action::UPDATE:
+                    $service->update($this->berujuEntry, $dto);
+                    DB::commit();
+
+                    $this->dispatch('saveAllDocumentsfunction', $this->berujuEntry->id);
+
+                    $this->successFlash(__('beruju::beruju.beruju_draft_updated_successfully'));
+                    return redirect()->route('admin.beruju.registration.index');
+                    break;
+
+                default:
+                    DB::rollBack();
+                    return $this->redirect(url()->previous());
+                    break;
+            }
+        } catch (\Exception $e) {
+            logger($e);
+            DB::rollBack();
+            $this->errorFlash(__('beruju::beruju.something_went_wrong_while_saving_draft') . ': ' . $e->getMessage());
         }
     }
 }

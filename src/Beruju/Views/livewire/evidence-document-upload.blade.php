@@ -1,4 +1,4 @@
-<div class="card rounded-0">
+<div class="rounded-0">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="card-title text-primary">{{ __('beruju::beruju.evidence_document_upload') }}</h5>
         <button type="button" class="btn btn-info rounded-0" wire:click="addDocument">
@@ -6,68 +6,61 @@
         </button>
     </div>
     <div class="card-body">
+        <!-- Labels Row - Only Once -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">{{ __('beruju::beruju.document_name') }}</label>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">{{ __('beruju::beruju.upload_file') }}</label>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">{{ __('beruju::beruju.description') }}</label>
+            </div>
+        
+        </div>
+
+        <!-- Input Fields - Looped -->
         @foreach ($evidenceDocuments as $index => $document)
-        <div class="card rounded-0 mt-3 p-3">
-            <div class="row align-items-end rounded-0">
-                <div class="row">
-                    <div class='col-md-4 mb-3'>
-                        <div class='form-group'>
-                            <label class="form-label">{{ __('beruju::beruju.document_name') }}</label>
-                            <input type="text" class="form-control rounded-0"
-                                wire:model="evidenceData.{{ $index }}.name"
-                                placeholder="{{ __('beruju::beruju.document_name') }}">
+        <div class="row mb-3 align-items-end">
+            <div class="col-md-3">
+                <input type="text" class="form-control rounded-0"
+                    wire:model="evidenceData.{{ $index }}.name"
+                    placeholder="{{ __('beruju::beruju.document_name') }}">
+            </div>
+
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-2">
+                    <input wire:model="uploadedFiles.{{ $index }}" type="file" 
+                        class="form-control rounded-0 {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
+                        accept="image/*,.pdf">
+                    @if (isset($uploadedFileUrls[$index]) && $uploadedFileUrls[$index])
+                        <a href="{{ $uploadedFileUrls[$index] }}" target="_blank"
+                            class="btn btn-outline-primary btn-sm rounded-0">
+                            <i class="bx bx-file"></i>
+                        </a>
+                    @else
+                        <div wire:loading wire:target="uploadedFiles.{{ $index }}">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         </div>
-                    </div>
-
-                    <div class='col-md-4 mb-3'>
-                        <div class='form-group'>
-                            <label class="form-label">{{ __('beruju::beruju.upload_file') }}</label>
-                            <input wire:model="uploadedFiles.{{ $index }}" type="file"
-                                class="form-control rounded-0 {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
-                                accept="image/*,.pdf">
-                            @error("uploadedFiles.$index")
-                                <small class='text-danger'>{{ $message }}</small>
-                            @enderror
-                            <div wire:loading wire:target="uploadedFiles.{{ $index }}">
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                {{ __('beruju::beruju.uploading') }}
-                            </div>
-
-                            {{-- File Preview --}}
-                            @if (isset($uploadedFileUrls[$index]) && $uploadedFileUrls[$index])
-                                <div class="mt-2">
-                                    <p class="mb-1">
-                                        <strong>{{ __('beruju::beruju.file_preview') }}:</strong>
-                                    </p>
-                                    <a href="{{ $uploadedFileUrls[$index] }}" target="_blank"
-                                        class="btn btn-outline-primary btn-sm rounded-0">
-                                        <i class="bx bx-file"></i> {{ __('beruju::beruju.view_uploaded_file') }}
-                                    </a>
-
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class='col-md-3 mb-3'>
-                        <div class='form-group'>
-                            <label class="form-label">{{ __('beruju::beruju.description') }}</label>
-                            <textarea class="form-control rounded-0" rows="3" wire:model="evidenceData.{{ $index }}.description"
-                                placeholder="{{ __('beruju::beruju.description') }}"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="col-md-1 mb-3 text-end">
-                        <button type="button" class="btn btn-sm mt-1 btn-primary rounded-0"
-                            wire:click="saveDocuments({{ $index }})">
-                            <i class="bx bx-save"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger mt-1 rounded-0"
-                            wire:click="removeDocuments({{ $index }})">
-                            <i class="bx bx-trash"></i>
-                        </button>
-                    </div>
+                    @endif
                 </div>
+                @error("uploadedFiles.$index")
+                    <small class='text-danger'>{{ $message }}</small>
+                @enderror
+                
+            </div>
+
+            <div class="col-md-4">
+                <input type="text" class="form-control rounded-0" wire:model="evidenceData.{{ $index }}.description"
+                    placeholder="{{ __('beruju::beruju.description') }}">
+            </div>
+
+            <div class="col-md-1 d-flex justify-content-end align-items-center">
+                <button type="button" class="btn btn-sm btn-danger rounded-0 mb-1"
+                    wire:click="removeDocuments({{ $index }})">
+                    <i class="bx bx-trash"></i>
+                </button>
             </div>
         </div>
         @endforeach

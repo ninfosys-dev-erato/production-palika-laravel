@@ -34,12 +34,12 @@
                                 </span>
                             </div>
                             <div>
+                                <h5 class="mb-0 text-muted mb-2">
+                                    {{ __('beruju::beruju.total_beruju') }}
+                                </h5>
                                 <h3 class="card-title mb-1">
                                     {{ replaceNumbersWithLocale($resolvedCount + $unresolvedCount, true) }}
                                 </h3>
-                                <p class="mb-0 text-muted">
-                                    {{ __('beruju::beruju.total_beruju') }}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -55,12 +55,12 @@
                                 </span>
                             </div>
                             <div>
+                                <h5 class="mb-0 text-muted mb-2">
+                                    {{ __('beruju::beruju.total_amount') }}
+                                </h5>
                                 <h3 class="card-title mb-1">
                                     {{ replaceNumbersWithLocale(collect($berujuCategoryAmount)->sum('total_amount'), true) }}
                                 </h3>
-                                <p class="mb-0 text-muted">
-                                    {{ __('beruju::beruju.total_amount') }}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -76,12 +76,12 @@
                                 </span>
                             </div>
                             <div>
+                                <h5 class="mb-0 text-muted mb-2">
+                                    {{ __('beruju::beruju.total_overdue') }}
+                                </h5>
                                 <h3 class="card-title mb-1">
                                     {{ replaceNumbersWithLocale($totalOverdue, true) }}
                                 </h3>
-                                <p class="mb-0 text-muted">
-                                    {{ __('beruju::beruju.total_overdue') }}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -97,12 +97,12 @@
                                 </span>
                             </div>
                             <div>
+                                <h5 class="mb-0 text-muted mb-2">
+                                    {{ __('beruju::beruju.multi_year_outstanding') }}
+                                </h5>
                                 <h3 class="card-title mb-1">
                                     {{ replaceNumbersWithLocale($totalMultiYearOutStanding, true) }}
                                 </h3>
-                                <p class="mb-0 text-muted">
-                                    {{ __('beruju::beruju.multi_year_outstanding') }}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
         <div class="row">
             <div class="col-md-7 d-flex flex-column">
                 <div class="card flex-fill mb-3 rounded-0">
-                    <div class="card-header d-flex justify-content-between align-items-center m-1 p-3">
+                    <div class="card-header d-flex justify-content-between align-items-center rounded-0 p-3 bg-light mb-2">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.beruju_status_distribution') }}</h5>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-primary me-2">
@@ -133,12 +133,12 @@
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="w-3 h-3 rounded-circle bg-success me-2"></div>
                                         <span class="text-muted">{{ __('beruju::beruju.resolved') }}</span>
-                                        <span class="ms-auto fw-bold">{{ $resolvedCount }}</span>
+                                        <span class="ms-auto fw-bold">{{ replaceNumbersWithLocale($resolvedCount, true) }}</span>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <div class="w-3 h-3 rounded-circle bg-warning me-2"></div>
                                         <span class="text-muted">{{ __('beruju::beruju.unresolved') }}</span>
-                                        <span class="ms-auto fw-bold">{{ $unresolvedCount }}</span>
+                                        <span class="ms-auto fw-bold">{{ replaceNumbersWithLocale($unresolvedCount, true) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -146,8 +146,8 @@
                     </div>
                 </div>
 
-                <div class="card flex-fill mb-3 rounded-0">
-                    <div class="card-header d-flex justify-content-between align-items-center m-1 p-3">
+                <div class="card flex-fill mb-3 rounded-0 ">
+                    <div class="card-header d-flex justify-content-between align-items-center rounded-0 p-3 bg-light">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.beruju_by_department') }}</h5>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-primary me-2">
@@ -164,7 +164,7 @@
             <div class="col-md-5 d-flex flex-column">
                 <div class="card flex-fill mb-3 rounded-0">
                     <div
-                        class="card-header d-flex justify-content-between align-items-center border-card-topic m-1 p-3">
+                        class="card-header d-flex justify-content-between align-items-center rounded-0 p-3 bg-light">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.recent_beruju_entries') }}</h5>
                         <div class="btn-group btn-group-sm">
                             <a href="{{ route('admin.beruju.registration.index') }}" class="btn btn-secondary me-1">
@@ -210,7 +210,7 @@
 
                 <div class="card flex-fill mb-3 rounded-0">
                     <div
-                        class="card-header border-card-topic d-flex justify-content-between align-items-center m-1 p-3">
+                        class="card-header d-flex justify-content-between align-items-center bg-light rounded-0">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.category_amount_summary') }}</h5>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-primary me-2">
@@ -224,9 +224,9 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Category</th>
-                                        <th>Total Count</th>
-                                        <th>Total Amount</th>
+                                        <th>{{__('beruju::beruju.category')}}</th>
+                                        <th>{{__('beruju::beruju.total_count')}}</th>
+                                        <th>{{__('beruju::beruju.total_amount')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -249,7 +249,7 @@
                 </div>
 
                 <div class="card flex-fill mb-3 rounded-0">
-                    <div class="card-header border-card-topic d-flex justify-content-between align-items-center">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-light rounded-0">
                         <h5 class="card-title mb-0">{{ __('beruju::beruju.fiscal_year_summary') }}</h5>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-primary me-2">
@@ -336,8 +336,8 @@
                         datasets: [{
                             data: [{{ $resolvedCount }}, {{ $unresolvedCount }}],
                             backgroundColor: [
-                                '#1565c0', // Success green for resolved
-                                '#f44336' // Warning yellow for unresolved
+                                '#007bff', // Blue for resolved
+                                '#6c757d' // Gray for unresolved
                             ],
 
                             borderWidth: 2
@@ -379,7 +379,7 @@
                         datasets: [{
                             label: '{{ __('beruju::beruju.total_beruju') }}',
                             data: counts,
-                            backgroundColor: '#007bff',
+                            backgroundColor: '#003197',
                             borderColor: '#0056b3',
                             borderWidth: 1
                         }]
