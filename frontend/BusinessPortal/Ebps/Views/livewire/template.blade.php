@@ -20,7 +20,8 @@
                                 wire:click="switchToForm({{ $formTemplate['id'] }})">
                                 {{ $formTemplate['name'] }}
                             </button>
-                            <span class="badge {{ $formTemplate['is_saved'] ? 'bg-success' : 'bg-warning text-dark' }} ms-2">
+                            <span
+                                class="badge {{ $formTemplate['is_saved'] ? 'bg-success' : 'bg-warning text-dark' }} ms-2">
                                 {{ $formTemplate['is_saved'] ? '✓' : '✗' }}
                             </span>
                         </li>
@@ -28,7 +29,7 @@
                 </ul>
             </div>
         </div>
-        
+
 
         <div class="col-md-9">
             <div class="d-flex align-items-center justify-content-between flex-wrap ms-5 mb-3">
@@ -55,12 +56,8 @@
                     </div>
                 </div>
             </div>
-            <div class="{{ $preview ? 'd-none' : '' }}">
-                <x-form.ck-editor-input label="" id="currentEditingTemplate" name="currentEditingTemplate"
-                    :value="$currentEditingTemplate" wire:model.defer="currentEditingTemplate" />
-            </div>
 
-            <div class="{{ !$preview ? 'd-none' : '' }} a4-container">
+            <div class="a4-container">
                 {!! $currentEditingTemplate !!}
             </div>
         </div>

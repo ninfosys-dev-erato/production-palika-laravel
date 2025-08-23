@@ -40,6 +40,7 @@ use App\Traits\MapApplyTrait;
 use Src\Ebps\DTO\AdditionalFormDynamicDataDto;
 use Src\Ebps\Service\AdditionalFormDynamicDataService;
 use Src\Ebps\Models\AdditionalFormDynamicData;
+use Src\Settings\Models\Form;
 
 class OrganizationCustomerDetailForm extends Component
 {
@@ -82,6 +83,8 @@ class OrganizationCustomerDetailForm extends Component
     public $currentEditingTemplate = '';
     public $activeFormId = null;
     public $formStyles = '';
+    public array $placeholders = [];
+
     public function rules(): array
     {
         $rules =  [
@@ -146,16 +149,6 @@ class OrganizationCustomerDetailForm extends Component
             $rules["highTensionDetails.$direction.remarks"] = 'nullable|string';
         }
 
-        // Add validation rules for dynamic form fields
-        // foreach ($this->data as $formKey => $formData) {
-        //     if (isset($formData['fields'])) {
-        //         foreach ($formData['fields'] as $fieldSlug => $fieldData) {
-        //             if (isset($fieldData['is_required']) && $fieldData['is_required'] === 'yes') {
-        //                 $rules["data.$formKey.fields.$fieldSlug.value"] = 'required';
-        //             }
-        //         }
-        //     }
-        // }
 
         return $rules;
     }
@@ -337,31 +330,6 @@ class OrganizationCustomerDetailForm extends Component
         }
     }
 
-    // public function getAdditionalForms()
-    // {
-    //     $additionalForms = AdditionalForm::with('form')->where('status', true)->get();
-    //     $this->additionalFormsTemplate = $additionalForms->map(function ($additionalForm) {
-    //         return [
-    //             'id' => $additionalForm->id,
-    //             'name' => $additionalForm->name,
-    //             'form_id' => $additionalForm->form?->id,
-    //             'template' => $additionalForm->form?->template,
-    //             'style' => $additionalForm->form?->styles,
-    //         ];
-    //     })->toArray();
-
-    //     // Initialize editing templates for each form
-    //     foreach ($this->additionalFormsTemplate as $formTemplate) {
-    //         $this->editingTemplates[$formTemplate['id']] = $formTemplate['template'] ?? '';
-    //     }
-
-    //     // Set the first form as active
-    //     if (!empty($this->additionalFormsTemplate)) {
-    //         $this->activeFormId = $this->additionalFormsTemplate[0]['id'];
-    //         $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId] ?? '';
-    //     }
-    // }
-
 
     public function getAdditionalForms()
     {
@@ -370,19 +338,23 @@ class OrganizationCustomerDetailForm extends Component
         $existingData = AdditionalFormDynamicData::where('map_apply_id', $this->mapApply->id)
             ->pluck('form_data', 'form_id')
             ->toArray();
+        $existingDataDecoded = array_map(fn($item) => json_decode($item, true) ?? [], $existingData);
 
-        $this->additionalFormsTemplate = $additionalForms->mapWithKeys(function ($additionalForm) use ($existingData) {
+        $this->additionalFormsTemplate = $additionalForms->mapWithKeys(function ($additionalForm) use ($existingData, $existingDataDecoded) {
+            $submittedDynamicData = $existingDataDecoded[$additionalForm->form?->id] ?? [];
             $id = $additionalForm->id;
-            $template = $this->resolveMapStepTemplate($this->mapApply, null, $additionalForm->form);
+
+            $template = $this->resolveMapStepTemplate($this->mapApply, null, $additionalForm->form, $submittedDynamicData);
 
             return [
                 $id => [
                     'id' => $id,
                     'name' => $additionalForm->name,
                     'form_id' => $additionalForm->form?->id,
-                    'template' => $existingData[$additionalForm->form?->id] ?? $template,
+                    'template' => $template,
                     'style' => $additionalForm->form?->styles,
                     'is_saved' => isset($existingData[$additionalForm->form?->id]),
+                    'submitted_data' => $submittedDynamicData,
                 ]
             ];
         })->toArray();
@@ -391,13 +363,13 @@ class OrganizationCustomerDetailForm extends Component
             ->pluck('style')
             ->implode("\n");
 
-        foreach ($this->additionalFormsTemplate as $formTemplate) {
-            $this->editingTemplates[$formTemplate['id']] = $formTemplate['template'] ?? '';
-        }
-
         if (!empty($this->additionalFormsTemplate)) {
             $this->activeFormId = array_key_first($this->additionalFormsTemplate);
-            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId];
+
+            // Initialize placeholders with the first form's data
+            $this->placeholders = $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] ?? [];
+            $template = $this->additionalFormsTemplate[$this->activeFormId]['template'] ?? '';
+            $this->currentEditingTemplate = $this->preview ? $this->replaceInputFieldsWithValues($template) : $template;
         }
     }
 
@@ -407,24 +379,42 @@ class OrganizationCustomerDetailForm extends Component
         $this->preview = !$this->preview;
         $this->editMode = !$this->preview;
 
-        // If switching to edit mode, set the current editing template to the active form
-        if ($this->editMode && $this->activeFormId) {
-            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId] ?? '';
+        if ($this->preview) {
+            $template = $this->additionalFormsTemplate[$this->activeFormId]['template'];
+            $this->currentEditingTemplate = $this->replaceInputFieldsWithValues($template);
+        } else {
+            $additionalForm = $this->additionalFormsTemplate[$this->activeFormId];
+            $submittedData = $additionalForm['submitted_data'] ?? [];
+
+            $this->currentEditingTemplate = $this->resolveMapStepTemplate(
+                $this->mapApply,
+                null,
+                Form::find($additionalForm['form_id']),
+                $submittedData
+            );
         }
     }
 
 
     public function switchToForm($formId)
     {
-        // Save current form's template before switching
-        if ($this->editMode && $this->activeFormId) {
-            $this->editingTemplates[$this->activeFormId] = $this->currentEditingTemplate;
-        }
-
         // Switch to new form
         $this->activeFormId = $formId;
-        $this->currentEditingTemplate = $this->editingTemplates[$formId] ?? '';
-        $this->dispatch('update-editor', ['currentEditingTemplate' => $this->currentEditingTemplate]);
+
+        // Load the submitted data for this form into placeholders
+        $this->placeholders = $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] ?? [];
+
+        // Get the template
+        $template = $this->additionalFormsTemplate[$this->activeFormId]['template'] ?? '';
+
+        // Apply preview mode if needed
+        if ($this->preview) {
+            $this->currentEditingTemplate = $this->replaceInputFieldsWithValues($template);
+        } else {
+            $this->currentEditingTemplate = $template;
+        }
+
+        // $this->dispatch('update-editor', ['currentEditingTemplate' => $this->currentEditingTemplate]);
 
         // Always show preview mode when switching tabs
         $this->preview = true;
@@ -439,19 +429,20 @@ class OrganizationCustomerDetailForm extends Component
     public function writeAdditionalFormTemplate()
     {
         try {
+
             $additionalForm = AdditionalForm::with('form')->find($this->activeFormId);
             if (!$additionalForm || !$additionalForm->form) {
                 $this->errorToast('Form not found.');
                 return;
             }
 
-
             $this->additionalFormsTemplate[$this->activeFormId]['is_saved'] = true;
+            $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] = $this->placeholders;
 
             $dynamicDataDto = new AdditionalFormDynamicDataDto(
                 map_apply_id: $this->mapApply->id,
                 form_id: $additionalForm->form->id,
-                form_data: $this->currentEditingTemplate
+                form_data: json_encode($this->placeholders)
             );
 
             $dynamicDataService = new AdditionalFormDynamicDataService();
@@ -459,6 +450,10 @@ class OrganizationCustomerDetailForm extends Component
 
             $this->preview = true;
             $this->editMode = false;
+
+            // Update the template to reflect the saved data
+            $template = $this->additionalFormsTemplate[$this->activeFormId]['template'] ?? '';
+            $this->currentEditingTemplate = $this->replaceInputFieldsWithValues($template);
 
             $this->successToast('Template saved successfully.');
         } catch (\Exception $e) {
@@ -484,20 +479,39 @@ class OrganizationCustomerDetailForm extends Component
                 $dynamicDataService->deleteFormData($existingData);
             }
 
-            // Reset is_saved
+            // Reset is_saved and clear placeholders
             $this->additionalFormsTemplate[$this->activeFormId]['is_saved'] = false;
+            $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] = [];
+            $this->placeholders = [];
 
-            // Reset editing template to original
-            $this->editingTemplates[$this->activeFormId] = $additionalForm->form->template ?? '';
-            $this->currentEditingTemplate = $this->editingTemplates[$this->activeFormId];
+            // Regenerate template with empty data and update based on current mode
+            $newTemplate = $this->resolveMapStepTemplate($this->mapApply, null, $additionalForm->form) ?? '';
+            $this->additionalFormsTemplate[$this->activeFormId]['template'] = $newTemplate;
 
-            $this->dispatch('update-editor', ['currentEditingTemplate' => $this->currentEditingTemplate]);
+            // Apply preview mode transformation if needed
+            $this->currentEditingTemplate = $this->preview ? $this->replaceInputFieldsWithValues($newTemplate) : $newTemplate;
+
+            // $this->dispatch('update-editor', ['currentEditingTemplate' => $this->currentEditingTemplate]);
 
             $this->successToast('Template reset successfully.');
         } catch (\Exception $e) {
             $this->errorToast('Failed to reset template.');
         }
     }
+
+    private function replaceInputFieldsWithValues($template)
+    {
+        return preg_replace_callback('/<input[^>]*wire:model\.defer="placeholders\.([^"]+)"[^>]*>/', function ($matches) {
+            $fieldName = $matches[1];
+            $value = $this->placeholders[$fieldName] ?? '';
+
+            // Return just the value as plain text
+            return e($value ?: '________________');
+        }, $template);
+    }
+
+
+
 
 
 
