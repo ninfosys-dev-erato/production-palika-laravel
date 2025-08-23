@@ -36,13 +36,14 @@ use Src\Ebps\Models\AdditionalForm;
 use App\Enums\Action;
 use App\Facades\FileFacade;
 use App\Facades\ImageServiceFacade;
+use App\Traits\MapApplyTrait;
 use Src\Ebps\DTO\AdditionalFormDynamicDataDto;
 use Src\Ebps\Service\AdditionalFormDynamicDataService;
 use Src\Ebps\Models\AdditionalFormDynamicData;
 
 class OrganizationCustomerDetailForm extends Component
 {
-    use WithFileUploads, SessionFlash, HelperDate, HelperTemplate;
+    use WithFileUploads, SessionFlash, HelperDate, HelperTemplate, MapApplyTrait;
 
     public ?MapApply $mapApply;
     public ?MapApplyDetail $mapApplyDetail;
@@ -372,12 +373,14 @@ class OrganizationCustomerDetailForm extends Component
 
         $this->additionalFormsTemplate = $additionalForms->mapWithKeys(function ($additionalForm) use ($existingData) {
             $id = $additionalForm->id;
+            $template = $this->resolveMapStepTemplate($this->mapApply, null, $additionalForm->form);
+
             return [
                 $id => [
                     'id' => $id,
                     'name' => $additionalForm->name,
                     'form_id' => $additionalForm->form?->id,
-                    'template' => $existingData[$additionalForm->form?->id] ?? $additionalForm->form?->template,
+                    'template' => $existingData[$additionalForm->form?->id] ?? $template,
                     'style' => $additionalForm->form?->styles,
                     'is_saved' => isset($existingData[$additionalForm->form?->id]),
                 ]
