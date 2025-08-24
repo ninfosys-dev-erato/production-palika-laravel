@@ -1829,4 +1829,6 @@ return [
     'additional_form_setting_updated_successfully' => 'अतिरिक्त फारम सेटिङ सफलतापूर्वक अपडेट गरियो',
     'additional_form_setting_deleted_successfully' => 'अतिरिक्त फारम सेटिङ सफलतापूर्वक मेटाइयो',
     'additional_form_setting_not_found' => 'अतिरिक्त फारम सेटिङ फेला परेनन्',
+    'enter_former_local_body' => 'पूर्व स्थानीय निकाय प्रविष्ट गर्नुहोस्',
+    'enter_former_ward_no' => 'पूर्व वर्ड नम्बर प्रविष्ट गर्नुहोस्',
 ];

@@ -344,17 +344,9 @@
 
                     <div class="col-md-6 mb-4">
                         <label for="former_local_body">{{ __('ebps::ebps.former_local_body') }}</label>
-                        <select id="former_local_body" wire:model="customerLandDetail.former_local_body"
-                            name="customerLandDetail.former_local_body" class="form-control"
-                            wire:change="loadFormerWards">
-
-                            <option value="">{{ __('ebps::ebps.choose_former_local_body') }}</option>
-
-                            @foreach ($formerLocalBodies as $id => $title)
-                                <option value="{{ $id }}">{{ $title }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <input id="former_local_body" wire:model="customerLandDetail.former_local_body"
+                            name="customerLandDetail.former_local_body" type="text" class="form-control"
+                            placeholder="{{ __('ebps::ebps.enter_former_local_body') }}">
                         @error('customerLandDetail.former_local_body')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
@@ -362,14 +354,9 @@
 
                     <div class="col-md-6 mb-4">
                         <label for="former_ward_no">{{ __('ebps::ebps.former_ward_no') }}</label>
-                        <select id="former_ward_no" name="customerLandDetail.former_ward_no" class="form-control"
-                            wire:model="customerLandDetail.former_ward_no">
-                            <option value="">{{ __('ebps::ebps.choose_former_ward_no') }}</option>
-                            @foreach ($formerWards as $id => $title)
-                                <option value="{{ $title }}">{{ $title }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <input id="former_ward_no" name="customerLandDetail.former_ward_no" type="text"
+                            class="form-control" wire:model="customerLandDetail.former_ward_no"
+                            placeholder="{{ __('ebps::ebps.enter_former_ward_no') }}">
                         @error('customerLandDetail.former_ward_no')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
@@ -481,12 +468,12 @@
                     <div class=" d-flex justify-content-between mb-4">
                         <label class="form-label" for="form-label">
                             {{ __('ebps::ebps.four_boundaries') }}
-                            
+
                         </label>
-                        <button type="button" class="btn btn-primary" wire:click='addFourBoundaries' 
-                                {{ count($fourBoundaries) >= 4 ? 'disabled' : '' }}>
+                        <button type="button" class="btn btn-primary" wire:click='addFourBoundaries'
+                            {{ count($fourBoundaries) >= 4 ? 'disabled' : '' }}>
                             + {{ __('ebps::ebps.add_four_boundaries') }}
-                           
+
                         </button>
                     </div>
 

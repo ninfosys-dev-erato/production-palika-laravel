@@ -726,5 +726,7 @@ return [
     'additional_form_setting_created_successfully' => 'Additional Form Setting Created Successfully',
     'additional_form_setting_updated_successfully' => 'Additional Form Setting Updated Successfully',
     'additional_form_setting_deleted_successfully' => 'Additional Form Setting Deleted Successfully',
+    'enter_former_local_body' => 'Enter Former Local Body',
+    'enter_former_ward_no' => 'Enter Former Ward No',
 
 ];

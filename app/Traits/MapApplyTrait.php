@@ -17,7 +17,8 @@ trait MapApplyTrait
         }
 
 
-        $mapApply?->load('customer.kyc', 'fiscalYear', 'landDetail.fourBoundaries', 'constructionType', 'mapApplySteps', 'houseOwner');
+
+        $mapApply?->load('customer.kyc', 'fiscalYear', 'landDetail.fourBoundaries', 'constructionType', 'mapApplySteps', 'houseOwner', 'detail.organization');
 
         $signatures = '______________________';
 
@@ -48,6 +49,8 @@ trait MapApplyTrait
             '{{global.registration_number}}' => $mapApply?->businessRegistration?->registration_number ?? self::EMPTY_LINES,
             '{{global.registration_date}}' => $mapApply?->businessRegistration?->registration_date ?? self::EMPTY_LINES,
             '{{global.rejected_reason}}' => $mapApply?->businessRegistration?->application_rejection_reason ?? self::EMPTY_LINES,
+            '{{global.organization_name}}' => $mapApply?->detail?->organization?->org_name_ne ?? self::EMPTY_LINES,
+
             ...getResolvedFormData($submittedData)
         ];
 
@@ -186,6 +189,7 @@ trait MapApplyTrait
             '{{mapApply.applicantDistrict}}' => isset($mapApply?->district, $mapApply?->district->title) ? $mapApply?->district->title : self::EMPTY_LINES,
             '{{mapApply.applicantLocalBody}}' => isset($mapApply?->localBody, $mapApply?->localBody->title) ? $mapApply?->localBody->title : self::EMPTY_LINES,
             '{{mapApply.applicantWard}}' => replaceNumbers($mapApply?->ward_no, true) ?? self::EMPTY_LINES,
+            // '{{mapApply.consultancy_name}}' => 
         ];
     }
 
