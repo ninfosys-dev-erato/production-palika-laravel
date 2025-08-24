@@ -94,7 +94,7 @@ class BusinessRenewalAction extends Component
         return FileFacade::getTemporaryUrl(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             filename: $filename,
-            disk: 'local'
+            disk: getStorageDisk('private')
         );
     }
 

@@ -390,13 +390,13 @@ class BusinessRegistrationForm extends Component
                         ? FileFacade::getTemporaryUrl(
                             config('src.BusinessRegistration.businessRegistration.registration'),
                             $citizenshipFront,
-                            'local'
+                            getStorageDisk('private')
                         ) : '',
                     'citizenship_rear_url' => $citizenshipRear
                         ? FileFacade::getTemporaryUrl(
                             config('src.BusinessRegistration.businessRegistration.registration'),
                             $citizenshipRear,
-                            'local'
+                            getStorageDisk('private')
                         ) : '',
                 ];
             })
@@ -418,7 +418,7 @@ class BusinessRegistrationForm extends Component
             $this->businessRequiredDocUrl[$doc->document_field . '_url'] = FileFacade::getTemporaryUrl(
                 config('src.BusinessRegistration.businessRegistration.registration'),
                 $doc->document_filename,
-                'local'
+                getStorageDisk('private')
             );
         }
     }
@@ -700,10 +700,12 @@ class BusinessRegistrationForm extends Component
 
             $filename = FileFacade::saveFile(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
+                filename: '',
                 file: $file,
-                disk: 'local',
-                filename: ''
+                disk: getStorageDisk('private'),
             );
+
+
         }
 
 
@@ -718,7 +720,7 @@ class BusinessRegistrationForm extends Component
         $url = FileFacade::getTemporaryUrl(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             filename: $filename,
-            disk: 'local'
+            disk: getStorageDisk('private')
         );
 
         if ($target === 'personal' && $index !== null) {
@@ -984,14 +986,14 @@ class BusinessRegistrationForm extends Component
                             return FileFacade::getTemporaryUrl(
                                 config('src.BusinessRegistration.businessRegistration.registration'),
                                 $filename,
-                                'local'
+                                getStorageDisk('private')
                             );
                         }, $field['value']);
                     } elseif (is_string($field['value']) && !empty($field['value'])) {
                         $field['url'] = FileFacade::getTemporaryUrl(
                             config('src.BusinessRegistration.businessRegistration.registration'),
                             $field['value'],
-                            'local'
+                            getStorageDisk('private')
                         );
                     }
                 }
@@ -1275,7 +1277,7 @@ class BusinessRegistrationForm extends Component
                         $urls[] = FileFacade::getTemporaryUrl(
                             path: config('src.BusinessRegistration.businessRegistration.registration'),
                             filename: $filename,
-                            disk: 'local'
+                            disk: getStorageDisk('private')
                         );
                     }
                 }
@@ -1287,14 +1289,14 @@ class BusinessRegistrationForm extends Component
                     $filename = FileFacade::saveFile(
                         path: config('src.BusinessRegistration.businessRegistration.registration'),
                         file: $file,
-                        disk: 'local',
+                        disk: getStorageDisk('private'),
                         filename: ''
                     );
                     $field['value'] = $filename;
                     $field['url'] = FileFacade::getTemporaryUrl(
                         path: config('src.BusinessRegistration.businessRegistration.registration'),
                         filename: $filename,
-                        disk: 'local'
+                        disk: getStorageDisk('private')
                     );
                 }
             }

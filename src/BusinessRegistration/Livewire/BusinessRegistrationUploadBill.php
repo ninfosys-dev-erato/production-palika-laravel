@@ -2,7 +2,7 @@
 
 namespace Src\BusinessRegistration\Livewire;
 
-use App\Facades\ImageServiceFacade;
+use App\Facades\FileFacade;
 use App\Traits\SessionFlash;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -40,12 +40,14 @@ class BusinessRegistrationUploadBill extends Component
 
             $path = $this->businessRegistration->bill;
             if ($this->bill) {
-                $path = ImageServiceFacade::compressAndStoreImage(
-                    $this->bill,
+                $path = FileFacade::saveFile(
                     config('src.BusinessRegistration.businessRegistration.bill'),
-                    'local'
+                    '',
+                    $this->bill,
+                    getStorageDisk('private'),
                 );
             }
+
             $this->businessRegistration->bill = $path;
             $this->businessRegistration->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
             $dto = BusinessRegistrationShowDto::fromModel($this->businessRegistration);

@@ -109,10 +109,11 @@ class BusinessDeRegistrationShow extends Component
     {
         if (!$filename) return null;
 
-        return FileFacade::getTemporaryUrl(
-            path: config('src.BusinessRegistration.businessRegistration.registration'),
-            filename: $filename,
-            disk: 'local'
+        return customFileAsset(
+            config('src.BusinessRegistration.businessRegistration.registration'),
+            $filename,
+            getStorageDisk('private'),
+            'tempUrl'
         );
     }
 

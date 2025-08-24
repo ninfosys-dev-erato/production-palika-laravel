@@ -254,13 +254,13 @@ class BusinessDeRegistrationForm extends Component
                             ? FileFacade::getTemporaryUrl(
                                 config('src.BusinessRegistration.businessRegistration.registration'),
                                 $citizenshipFront,
-                                'local'
+                                getStorageDisk('private')
                             ) : '',
                         'citizenship_rear_url' => $citizenshipRear
                             ? FileFacade::getTemporaryUrl(
                                 config('src.BusinessRegistration.businessRegistration.registration'),
                                 $citizenshipRear,
-                                'local'
+                                getStorageDisk('private')
                             ) : '',
                     ];
                 })
@@ -677,7 +677,7 @@ class BusinessDeRegistrationForm extends Component
         $save = FileFacade::saveFile(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             file: $file,
-                            disk: getStorageDisk('private'),
+            disk: getStorageDisk('private'),
             filename: ""
         );
 
@@ -688,7 +688,7 @@ class BusinessDeRegistrationForm extends Component
         $this->personalDetails[$index][$field . '_url'] = FileFacade::getTemporaryUrl(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             filename: $save,
-                            disk: getStorageDisk('private')
+            disk: getStorageDisk('private')
         );
     }
 
@@ -794,14 +794,14 @@ class BusinessDeRegistrationForm extends Component
                         $filename = FileFacade::saveFile(
                             path: config('src.BusinessRegistration.businessRegistration.registration'),
                             file: $file,
-                            disk: 'local',
+                            disk: getStorageDisk('private'),
                             filename: ''
                         );
                         $filenames[] = $filename;
                         $urls[] = FileFacade::getTemporaryUrl(
                             path: config('src.BusinessRegistration.businessRegistration.registration'),
                             filename: $filename,
-                            disk: 'local'
+                            disk: getStorageDisk('private')
                         );
                     }
                 }
@@ -813,14 +813,14 @@ class BusinessDeRegistrationForm extends Component
                     $filename = FileFacade::saveFile(
                         path: config('src.BusinessRegistration.businessRegistration.registration'),
                         file: $file,
-                        disk: 'local',
+                        disk: getStorageDisk('private'),
                         filename: ''
                     );
                     $field['value'] = $filename;
                     $field['url'] = FileFacade::getTemporaryUrl(
                         path: config('src.BusinessRegistration.businessRegistration.registration'),
                         filename: $filename,
-                        disk: 'local'
+                        disk: getStorageDisk('private')
                     );
                 }
             }

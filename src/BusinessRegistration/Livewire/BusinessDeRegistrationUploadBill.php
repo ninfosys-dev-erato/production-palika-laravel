@@ -40,7 +40,7 @@ class BusinessDeRegistrationUploadBill extends Component
                 $path = ImageServiceFacade::compressAndStoreImage(
                     $this->bill,
                     config('src.BusinessRegistration.businessRegistration.bill'),
-                    'local'
+                    getStorageDisk('private')
                 );
             }
             $this->businessDeRegistration->bill = $path;

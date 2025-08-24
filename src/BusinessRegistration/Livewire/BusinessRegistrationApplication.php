@@ -136,7 +136,7 @@ class BusinessRegistrationApplication extends Component
             $save = FileFacade::saveFile(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
 
@@ -144,7 +144,7 @@ class BusinessRegistrationApplication extends Component
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         } else {
             // If no file is provided (edit mode), load the existing file URL
@@ -152,7 +152,7 @@ class BusinessRegistrationApplication extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.BusinessRegistration.businessRegistration.registration'),
                     filename: $this->businessRequiredDoc->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }

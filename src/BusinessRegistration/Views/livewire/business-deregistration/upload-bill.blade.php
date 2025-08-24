@@ -52,7 +52,7 @@
             </div>
 
             <div class="text-center">
-                <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessDeRegistration->bill, 'local') }}"
+                <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessDeRegistration->bill, 'local', 'tempUrl') }}"
                     alt="Uploaded Bill" class="img-fluid rounded shadow-sm border"
                     style="max-height: 300px; object-fit: contain;">
             </div>
@@ -72,7 +72,7 @@
                 <div class="modal-body text-center">
                     @if ($businessDeRegistration->bill)
                         @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $businessDeRegistration->bill))
-                            <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessDeRegistration->bill, 'local') }}"
+                            <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessDeRegistration->bill, 'local', 'tempUrl') }}"
                                 alt="Uploaded Payment" class="img-fluid rounded">
                         @else
                             <p>{{ __('businessregistration::businessregistration.no_file_uploaded') }}</p>

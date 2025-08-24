@@ -46,7 +46,9 @@ class BusinessRenewalRequestedDocuments extends Component
             $this->businessRenewal->id
         )->whereNull('deleted_at')->whereNull('deleted_by')->get()->map(function ($document) {
             return array_merge($document->toArray(), [
-                'url' => $document->url,
+                'url' => $this->generateDocumentUrl($document->document),
+                'file_type' => $this->getFileType($document->document),
+                'preview_url' => $this->generatePreviewUrl($document->document),
             ]);
         })
             ->toArray();
@@ -96,16 +98,15 @@ class BusinessRenewalRequestedDocuments extends Component
         $save = FileFacade::saveFile(
             path: config('src.BusinessRegistration.businessRegistration.registration_document'),
             file: $this->documents[$index]['document'],
-                            disk: getStorageDisk('private'),
+            disk: getStorageDisk('private'),
             filename: ""
         );
         $this->documents[$index]['document'] = $save;
         $this->documents[$index]['document_status'] = BusinessDocumentStatusEnum::UPLOADED->value;
-        $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
-            path: config('src.BusinessRegistration.businessRegistration.registration_document'),
-            filename: $save,
-                            disk: getStorageDisk('private')
-        );
+        $this->documents[$index]['url'] = $this->generateDocumentUrl($save);
+        $this->documents[$index]['file_type'] = $this->getFileType($save);
+        $this->documents[$index]['preview_url'] = $this->generatePreviewUrl($save);
+        
         // ✅ Force Livewire to recognize the change
         $this->documents = array_values($this->documents);
     }
@@ -118,7 +119,9 @@ class BusinessRenewalRequestedDocuments extends Component
                 $this->businessRenewal->id
             )->whereNull('deleted_at')->whereNull('deleted_by')->get()->map(function ($document) {
                 return array_merge($document->toArray(), [
-                    'url' => $document->url,
+                    'url' => $this->generateDocumentUrl($document->document),
+                    'file_type' => $this->getFileType($document->document),
+                    'preview_url' => $this->generatePreviewUrl($document->document),
                 ]);
             })
                 ->toArray();
@@ -137,5 +140,75 @@ class BusinessRenewalRequestedDocuments extends Component
         } else {
             $this->errorToast(__('businessregistration::businessregistration.document_saving_failed'));
         }
+    }
+
+    /**
+     * Generate document URL using customFileAsset helper
+     */
+    private function generateDocumentUrl(?string $filename): ?string
+    {
+        if (!$filename) return null;
+        
+        return customFileAsset(
+            config('src.BusinessRegistration.businessRegistration.registration_document'),
+            $filename,
+            getStorageDisk('private'),
+            'tempUrl'
+        );
+    }
+
+    /**
+     * Generate preview URL for images and PDFs
+     */
+    private function generatePreviewUrl(?string $filename): ?string
+    {
+        if (!$filename) return null;
+        
+        $fileType = $this->getFileType($filename);
+        
+        // For images and PDFs, return the same URL for preview
+        if (in_array($fileType, ['image', 'pdf'])) {
+            return $this->generateDocumentUrl($filename);
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get file type based on filename extension
+     */
+    private function getFileType(?string $filename): string
+    {
+        if (!$filename) return 'unknown';
+        
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        return match ($extension) {
+            'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp' => 'image',
+            'pdf' => 'pdf',
+            'doc', 'docx' => 'word',
+            'xls', 'xlsx' => 'excel',
+            'ppt', 'pptx' => 'powerpoint',
+            'txt' => 'text',
+            'zip', 'rar', '7z' => 'archive',
+            default => 'unknown'
+        };
+    }
+
+    /**
+     * Get file icon based on file type
+     */
+    public function getFileIcon(string $fileType): string
+    {
+        return match ($fileType) {
+            'image' => 'bx bx-image',
+            'pdf' => 'bx bx-file-pdf',
+            'word' => 'bx bx-file-doc',
+            'excel' => 'bx bx-file-spreadsheet',
+            'powerpoint' => 'bx bx-file-presentation',
+            'text' => 'bx bx-file-txt',
+            'archive' => 'bx bx-archive',
+            default => 'bx bx-file'
+        };
     }
 }

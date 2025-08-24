@@ -38,7 +38,7 @@
             <div class="col-md-12 mt-3">
                 <label
                     for="existing-bill">{{ __('businessregistration::businessregistration.uploaded_payment_photo') }}</label>
-                <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
+                <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local', 'tempUrl') }}"
                     alt="Uploaded Bill Image" class="img-thumbnail mt-2 clickable"
                     style="height: 300px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#billModal">
             </div>
@@ -53,7 +53,7 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center">
-                            <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
+                            <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local', 'tempUrl') }}"
                                 alt="Full-size Uploaded Bill" class="img-fluid" style="max-height: 90vh;">
                         </div>
                     </div>
