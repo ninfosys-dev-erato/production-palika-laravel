@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Src\Settings\Models\Form;
-use Spatie\Permission\Models\Role;
 
 class MapStep extends Model
 {
@@ -85,35 +84,36 @@ class MapStep extends Model
         return $this->belongsToMany(ConstructionType::class, 'ebps_construction_type_map_step');
     }
     
-    public function users(): BelongsToMany
+    // Group-based relationships
+    public function mapPassGroups(): BelongsToMany
     {
-        return $this->belongsToMany(MapPassGroup::class, 'ebps_map_pass_group_map_step');
-    }
-
-    // New role-based relationships
-    public function stepRoles(): HasMany
-    {
-        return $this->hasMany(StepRole::class, 'map_step_id');
-    }
-
-    public function submitterRoles(): HasMany
-    {
-        return $this->hasMany(StepRole::class, 'map_step_id')->submitters()->active();
-    }
-
-    public function approverRoles(): HasMany
-    {
-        return $this->hasMany(StepRole::class, 'map_step_id')->approvers()->active();
-    }
-
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'ebps_step_roles', 'map_step_id', 'role_id')
-                    ->withPivot('role_type', 'position', 'is_active')
+        return $this->belongsToMany(MapPassGroup::class, 'ebps_map_pass_group_map_step', 'map_step_id', 'map_pass_group_id')
+                    ->withPivot('type', 'position')
                     ->withTimestamps();
     }
 
-    // Methods for checking user access
+    public function submitterGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(MapPassGroup::class, 'ebps_map_pass_group_map_step', 'map_step_id', 'map_pass_group_id')
+                    ->withPivot('type', 'position')
+                    ->wherePivot('type', 'submitter')
+                    ->orderBy('position');
+    }
+
+    public function approverGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(MapPassGroup::class, 'ebps_map_pass_group_map_step', 'map_step_id', 'map_pass_group_id')
+                    ->withPivot('type', 'position')
+                    ->wherePivot('type', 'approver')
+                    ->orderBy('position');
+    }
+
+    public function mapPassGroupMapSteps(): HasMany
+    {
+        return $this->hasMany(MapPassGroupMapStep::class, 'map_step_id');
+    }
+
+    // Methods for checking user access based on groups
     public function canUserSubmit($user): bool
     {
         if ($this->form_submitter === 'Consultancy' || $this->form_submitter === 'Ghardhani') {
@@ -121,9 +121,9 @@ class MapStep extends Model
         }
 
         if ($this->form_submitter === 'Palika') {
-            return $this->submitterRoles()
-                ->whereHas('role', function ($query) use ($user) {
-                    $query->whereIn('name', $user->getRoleNames()->toArray());
+            return $this->submitterGroups()
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
                 })
                 ->exists();
         }
@@ -133,9 +133,9 @@ class MapStep extends Model
 
     public function canUserApprove($user): bool
     {
-        return $this->approverRoles()
-            ->whereHas('role', function ($query) use ($user) {
-                $query->whereIn('name', $user->getRoleNames()->toArray());
+        return $this->approverGroups()
+            ->whereHas('users', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
             })
             ->exists();
     }
@@ -145,12 +145,36 @@ class MapStep extends Model
         return $this->canUserSubmit($user) || $this->canUserApprove($user);
     }
 
-    // Scopes for filtering steps based on user roles
+    // Get users who can submit this step
+    public function getSubmitterUsers()
+    {
+        return $this->submitterGroups()
+            ->with('users.user')
+            ->get()
+            ->flatMap(function ($group) {
+                return $group->users->pluck('user');
+            })
+            ->unique('id');
+    }
+
+    // Get users who can approve this step
+    public function getApproverUsers()
+    {
+        return $this->approverGroups()
+            ->with('users.user')
+            ->get()
+            ->flatMap(function ($group) {
+                return $group->users->pluck('user');
+            })
+            ->unique('id');
+    }
+
+    // Scopes for filtering steps based on user groups
     public function scopeAccessibleByUser($query, $user)
     {
-        return $query->whereHas('stepRoles', function ($q) use ($user) {
-            $q->active()->whereHas('role', function ($roleQuery) use ($user) {
-                $roleQuery->whereIn('name', $user->getRoleNames()->toArray());
+        return $query->whereHas('mapPassGroupMapSteps', function ($q) use ($user) {
+            $q->whereHas('mapPassGroup.users', function ($userQuery) use ($user) {
+                $userQuery->where('user_id', $user->id);
             });
         });
     }
@@ -163,5 +187,38 @@ class MapStep extends Model
     public function scopeActive($query)
     {
         return $query->whereNull('deleted_at')->whereNull('deleted_by');
+    }
+
+    // Helper methods for step management
+    public function assignSubmitterGroup($groupId, $position = 1)
+    {
+        // Remove existing submitter groups
+        $this->mapPassGroupMapSteps()
+            ->where('type', 'submitter')
+            ->delete();
+
+        // Add new submitter group
+        return $this->mapPassGroupMapSteps()->create([
+            'map_pass_group_id' => $groupId,
+            'type' => 'submitter',
+            'position' => $position,
+        ]);
+    }
+
+    public function assignApproverGroups(array $groupIds)
+    {
+        // Remove existing approver groups
+        $this->mapPassGroupMapSteps()
+            ->where('type', 'approver')
+            ->delete();
+
+        // Add new approver groups
+        foreach ($groupIds as $position => $groupId) {
+            $this->mapPassGroupMapSteps()->create([
+                'map_pass_group_id' => $groupId,
+                'type' => 'approver',
+                'position' => $position + 1,
+            ]);
+        }
     }
 }

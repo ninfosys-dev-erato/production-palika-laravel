@@ -1,7 +1,7 @@
 <x-layout.app header="{{ __('ebps::ebps.building_registration_steps') }}">
 
     @php
-        $isRoleFilteringEnabled = Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled();
+        $roleFilterService = new Src\Ebps\Service\ApplicationRoleFilterService();
     @endphp
 
     <div class="d-flex justify-content-end gap-2">
@@ -72,8 +72,10 @@
                             <h4 class="fw-bold text-dark mb-0">{{ __('ebps::ebps.steps_for_application') }}</h4>
                         </div>
 
-                        <!-- Approve All Steps Button -->
-                        <livewire:ebps.building_registration_approve_all_steps :mapApply="$mapApply" />
+                        <!-- Approve All Steps Button - Only for superadmin or users with approver permissions -->
+                        @if (isSuperAdmin() || $roleFilterService->isUserApproverForCurrentStep($mapApply))
+                            <livewire:ebps.building_registration_approve_all_steps :mapApply="$mapApply" />
+                        @endif
                     </div>
 
                     @php
@@ -103,6 +105,15 @@
                                     $beforeStepsApproved = false;
                                 }
 
+                                // Check if this is the current step
+                                $currentStep = $roleFilterService->getCurrentStep($mapApply);
+                                $isCurrentStep = $currentStep && $currentStep->id === $mapStep->id;
+
+                                // Check user permissions for this step
+                                $canUserSubmit = $mapStep->canUserSubmit(auth()->user());
+                                $canUserApprove = $mapStep->canUserApprove(auth()->user());
+                                $canUserAccess = $mapStep->canUserAccess(auth()->user());
+
                                 $statusColors = [
                                     'accepted' => [
                                         'bg' => 'bg-success',
@@ -129,7 +140,7 @@
                                 $statusColor = $statusColors[$status] ?? $statusColors['Not Applied'];
                             @endphp
 
-                            <div class="timeline-step mb-3">
+                            <div class="timeline-step mb-3 {{ $isCurrentStep ? 'border-primary border-2' : '' }}">
                                 <div class="row g-0">
                                     <div class="col-auto">
                                         <div class="timeline-step-marker">
@@ -151,7 +162,10 @@
                                         <div class="card shadow-sm border-0 ms-3 h-100">
                                             <div class="card-body p-3">
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <h5 class="card-title fw-semibold mb-0">{{ $mapStep->title }}</h5>
+                                                    <h5 class="card-title fw-semibold mb-0">
+                                                        {{ $mapStep->title }}
+
+                                                    </h5>
                                                     <span
                                                         class="badge {{ $statusColor['bg'] }} rounded-pill px-3 py-2">
                                                         <i class="bx {{ $statusColor['icon'] }} me-1"></i>
@@ -160,7 +174,6 @@
                                                 </div>
 
                                                 @php
-
                                                     $submitterEnum = Src\Ebps\Enums\FormSubmitterEnum::tryFrom(
                                                         $mapStep->form_submitter,
                                                     );
@@ -171,25 +184,38 @@
                                                     {{ __('ebps::ebps.submitter') }}:
                                                     {{ $submitterEnum ? $submitterEnum->label() : ucfirst($mapStep->form_submitter) }}
                                                 </p>
+                                                {{-- 
+                                                <!-- User Permissions Info -->
+                                                @if ($isCurrentStep)
+                                                    <div class="alert alert-info py-2 px-3 mb-3">
+                                                        <small>
+                                                            <strong>Your Permissions:</strong>
+                                                            @if ($canUserSubmit)
+                                                                <span class="badge bg-success me-1">Can Submit</span>
+                                                            @endif
+                                                            @if ($canUserApprove)
+                                                                <span class="badge bg-info me-1">Can Approve</span>
+                                                            @endif
+                                                            @if (!$canUserSubmit && !$canUserApprove)
+                                                                <span class="badge bg-secondary">View Only</span>
+                                                            @endif
+                                                        </small>
+                                                    </div>
+                                                @endif --}}
 
                                                 @if ($mapApplyStep && $mapApplyStep->reason)
                                                     <div class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
                                                         <div class="d-flex align-items-center">
-
-
                                                             <small
                                                                 class="text-dark">{{ $mapApplyStep->reason }}</small>
-
                                                         </div>
                                                     </div>
                                                 @endif
 
                                                 <div class="d-flex justify-content-end mt-2">
                                                     @php
-                                                        $canUserAccessStep = $roleFilterService->canUserPerformStepAction(
-                                                            $mapStep,
-                                                            $mapApply,
-                                                        );
+                                                        // Check if user can perform actions on this step
+                                                        $canUserAccessStep = $canUserAccess && $isCurrentStep;
                                                     @endphp
 
                                                     @if ($canUserAccessStep && ($status !== 'accepted' || isSuperAdmin()))
@@ -211,7 +237,6 @@
                                                     @endif
 
                                                     @if ($mapApplyStep)
-
                                                         <a href="{{ route('admin.ebps.building-registrations.preview', ['mapApplyStep' => $mapApplyStep]) }}"
                                                             class="btn btn-outline-primary btn-sm d-flex align-items-center me-2">
                                                             <i class="bx bx-show me-1"></i> {{ __('ebps::ebps.view') }}
@@ -286,6 +311,10 @@
 
         .badge {
             font-weight: 500;
+        }
+
+        .border-primary {
+            border-color: var(--bs-primary) !important;
         }
     </style>
 </x-layout.app>

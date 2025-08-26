@@ -4,8 +4,10 @@ namespace Src\Ebps\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use App\Models\User;
 
 class MapPassGroupUser extends Model
 {
@@ -28,32 +30,34 @@ class MapPassGroupUser extends Model
     public function casts():array
     {
       return [
-    'map_pass_group_id' => 'string',
-    'user_id' => 'string',
-    'ward_no' => 'string',
-    'id' => 'int',
-    'created_at' => 'datetime',
-    'created_by' => 'string',
-    'updated_at' => 'datetime',
-    'updated_by' => 'string',
-    'deleted_at' => 'datetime',
-    'deleted_by' => 'string',
-];
+        'map_pass_group_id' => 'int',
+        'user_id' => 'int',
+        'ward_no' => 'string',
+        'id' => 'int',
+        'created_at' => 'datetime',
+        'created_by' => 'string',
+        'updated_at' => 'datetime',
+        'updated_by' => 'string',
+        'deleted_at' => 'datetime',
+        'deleted_by' => 'string',
+    ];
     }
 
+    public function mapPassGroup(): BelongsTo
+    {
+        return $this->belongsTo(MapPassGroup::class, 'map_pass_group_id', 'id');
+    }
 
-public function mapPassGroup()
-{
-    return $this->belongsTo(MapPassGroup::class, 'map_pass_group_id', 'id');
-}
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
-
-        public function getActivitylogOptions(): LogOptions
-        {
-            return LogOptions::defaults()
-                ->logFillable()
-                ->logOnlyDirty()
-                ->setDescriptionForEvent(fn(string $eventName) => "This MapPassGroupUser has been {$eventName}");
-        }
-
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(fn(string $eventName) => "This MapPassGroupUser has been {$eventName}");
+    }
 }

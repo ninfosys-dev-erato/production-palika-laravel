@@ -56,13 +56,13 @@ class MapApplyTable extends DataTableComponent
     {
         $query = MapApply::query()
             ->with(['fiscalYear', 'customer', 'landDetail', 'constructionType', 'mapApplySteps', 'houseOwner', 'localBody', 'district'])
-            ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id', 'application_type')
+            ->select('ebps_map_applies.id', 'full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id', 'application_type', 'submission_id')
             ->where('application_type', ApplicationTypeEnum::MAP_APPLIES)
             ->where('ebps_map_applies.deleted_at', null)
             ->where('ebps_map_applies.deleted_by', null)
             ->orderBy('ebps_map_applies.created_at', 'DESC');
 
-        // Apply enhanced role-based filtering based on current step access
+      
         return $this->roleFilterService->filterApplicationsByCurrentStepAccess(
             $query, 
             ApplicationTypeEnum::MAP_APPLIES->value
@@ -130,9 +130,9 @@ class MapApplyTable extends DataTableComponent
         $stepRecord = $application->mapApplySteps()
             ->where('map_step_id', $currentStep->id)
             ->first();
-            
+
         $status = $stepRecord ? $stepRecord->status : 'not_started';
-        
+     
         // Status mapping with icons and colors
         $statusConfig = [
             'pending' => ['label' => __('ebps::ebps.pending'), 'class' => 'bg-warning', 'icon' => '⏳'],
@@ -165,23 +165,29 @@ class MapApplyTable extends DataTableComponent
     {
         $buttons = '';
 
-        // Always show view button if user has permission
-        if (can('ebps_map_applies access')) {
+        // Check user access for the current step
+        $accessType = $this->roleFilterService->getUserAccessTypeForCurrentStep($application);
+        $canAccess = $this->roleFilterService->canUserAccessCurrentStep($application);
+        $canSubmit = $this->roleFilterService->isUserSubmitterForCurrentStep($application);
+        $canApprove = $this->roleFilterService->isUserApproverForCurrentStep($application);
+
+        // Always show view button if user has access to the current step
+        if ($canAccess) {
             $buttons .= '<button class="btn btn-success btn-sm" wire:click="view(' . $application->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
         }
 
-        // Always show edit button if user has permission
-        if (can('ebps_map_applies edit')) {
+        // Show edit button if user is submitter for the current step
+        if ($canSubmit) {
             $buttons .= '<button class="btn btn-primary btn-sm" wire:click="edit(' . $application->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
         }
 
-        // Always show delete button if user has permission
-        if (can('ebps_map_applies delete')) {
+        // Show delete button if user has delete permission (only for superadmin or specific roles)
+        if (can('ebps_map_applies delete') && isSuperAdmin()) {
             $buttons .= '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $application->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
         }
 
-        // Always show move forward button if user has permission
-        if (can('ebps_map_applies edit')) {
+        // Show move forward button if user is approver for the current step
+        if ($canApprove) {
             $buttons .= '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $application->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
         }
 

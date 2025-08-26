@@ -3,17 +3,17 @@
 namespace Src\Ebps\Traits;
 
 use Src\Ebps\Models\MapStep;
-use Src\Ebps\Service\StepRoleService;
+use Src\Ebps\Service\GroupStepService;
 
-trait StepRoleFilterTrait
+trait GroupStepFilterTrait
 {
     /**
      * Get accessible steps for a user
      */
     public function getAccessibleSteps($user, $applicationType = null)
     {
-        $stepRoleService = new StepRoleService();
-        return $stepRoleService->getAccessibleSteps($user, $applicationType);
+        $groupStepService = new GroupStepService();
+        return $groupStepService->getAccessibleSteps($user, $applicationType);
     }
 
     /**
@@ -21,8 +21,8 @@ trait StepRoleFilterTrait
      */
     public function canUserAccessStep($user, MapStep $step): bool
     {
-        $stepRoleService = new StepRoleService();
-        return $stepRoleService->canUserAccessStep($user, $step);
+        $groupStepService = new GroupStepService();
+        return $groupStepService->canUserAccessStep($user, $step);
     }
 
     /**
@@ -30,8 +30,8 @@ trait StepRoleFilterTrait
      */
     public function canUserSubmitStep($user, MapStep $step): bool
     {
-        $stepRoleService = new StepRoleService();
-        return $stepRoleService->canUserSubmitStep($user, $step);
+        $groupStepService = new GroupStepService();
+        return $groupStepService->canUserSubmitStep($user, $step);
     }
 
     /**
@@ -39,14 +39,14 @@ trait StepRoleFilterTrait
      */
     public function canUserApproveStep($user, MapStep $step): bool
     {
-        $stepRoleService = new StepRoleService();
-        return $stepRoleService->canUserApproveStep($user, $step);
+        $groupStepService = new GroupStepService();
+        return $groupStepService->canUserApproveStep($user, $step);
     }
 
     /**
-     * Filter applications based on user's role access to steps
+     * Filter applications based on user's group access to steps
      */
-    public function filterApplicationsByUserRole($applications, $user, $applicationType = null)
+    public function filterApplicationsByUserGroup($applications, $user, $applicationType = null)
     {
         $accessibleSteps = $this->getAccessibleSteps($user, $applicationType);
         $accessibleStepIds = $accessibleSteps->pluck('id')->toArray();
@@ -82,20 +82,44 @@ trait StepRoleFilterTrait
     }
 
     /**
-     * Get steps that require submitter roles
+     * Get steps that require submitter groups
      */
-    public function getStepsRequiringSubmitterRoles()
+    public function getStepsRequiringSubmitterGroups()
     {
-        $stepRoleService = new StepRoleService();
-        return $stepRoleService->getStepsRequiringSubmitterRoles();
+        $groupStepService = new GroupStepService();
+        return $groupStepService->getStepsRequiringSubmitterGroups();
     }
 
     /**
-     * Get steps that don't require submitter roles
+     * Get steps that don't require submitter groups
+     */
+    public function getStepsNotRequiringSubmitterGroups()
+    {
+        $groupStepService = new GroupStepService();
+        return $groupStepService->getStepsNotRequiringSubmitterGroups();
+    }
+
+    /**
+     * Legacy method for backward compatibility
+     */
+    public function filterApplicationsByUserRole($applications, $user, $applicationType = null)
+    {
+        return $this->filterApplicationsByUserGroup($applications, $user, $applicationType);
+    }
+
+    /**
+     * Legacy method for backward compatibility
+     */
+    public function getStepsRequiringSubmitterRoles()
+    {
+        return $this->getStepsRequiringSubmitterGroups();
+    }
+
+    /**
+     * Legacy method for backward compatibility
      */
     public function getStepsNotRequiringSubmitterRoles()
     {
-        $stepRoleService = new StepRoleService();
-        return $stepRoleService->getStepsNotRequiringSubmitterRoles();
+        return $this->getStepsNotRequiringSubmitterGroups();
     }
 } 

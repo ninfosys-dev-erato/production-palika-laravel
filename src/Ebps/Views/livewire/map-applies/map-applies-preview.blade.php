@@ -11,8 +11,16 @@
                 @if (isset($mapApplySteps) && $mapApplySteps->isNotEmpty())
                     @php
                         $firstStep = $mapApplySteps->first();
+                        $roleFilterService = new Src\Ebps\Service\ApplicationRoleFilterService();
+                        
+                        // Check if user can approve this step
+                        $canUserApprove = false;
+                        if ($firstStep && $firstStep->mapStep) {
+                            $canUserApprove = $firstStep->mapStep->canUserApprove(auth()->user());
+                        }
                     @endphp
-                    @if (isSuperAdmin() || $firstStep->status != 'accepted')
+                    
+                    @if (isSuperAdmin() || ($canUserApprove && $firstStep->status != 'accepted'))
                         <button type="button" class="btn btn-info" wire:click="changeStatus({{ $firstStep->id }})">
                             {{ $selectedStatus }} <i class="bx bx-chevron-down text-muted"></i>
                             {{ __('ebps::ebps.change_status') }}
@@ -97,11 +105,26 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-danger btn-sm" 
-                                                    wire:click="deleteFile({{ $file->id }})"
-                                                    wire:confirm="{{ __('ebps::ebps.are_you_sure_you_want_to_delete_this_file') }}">
-                                                    <i class="bx bx-trash"></i> {{ __('ebps::ebps.delete') }}
-                                                </button>
+                                                @php
+                                                    // Check if user can delete files (only approvers or superadmin)
+                                                    $canUserApprove = false;
+                                                    if (isset($mapApplySteps) && $mapApplySteps->isNotEmpty()) {
+                                                        $firstStep = $mapApplySteps->first();
+                                                        if ($firstStep && $firstStep->mapStep) {
+                                                            $canUserApprove = $firstStep->mapStep->canUserApprove(auth()->user());
+                                                        }
+                                                    }
+                                                @endphp
+                                                
+                                                @if (isSuperAdmin() || $canUserApprove)
+                                                    <button type="button" class="btn btn-danger btn-sm" 
+                                                        wire:click="deleteFile({{ $file->id }})"
+                                                        wire:confirm="{{ __('ebps::ebps.are_you_sure_you_want_to_delete_this_file') }}">
+                                                        <i class="bx bx-trash"></i> {{ __('ebps::ebps.delete') }}
+                                                    </button>
+                                                @else
+                                                    <span class="text-muted small">No permission to delete</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Permission\Models\Role;
 
 class MapPassGroupMapStep extends Model
 {
@@ -16,55 +15,40 @@ class MapPassGroupMapStep extends Model
     protected $table = 'ebps_map_pass_group_map_step';
 
     protected $fillable = [
-'map_step_id',
-'map_pass_group_id',
-'type',
-'position',
-        'submitter_role_id',
-        'approver_role_id',
-'created_at',
-'created_by',
-'deleted_at',
-'deleted_by',
-'updated_at',
-'updated_by'
-];
+        'map_step_id',
+        'map_pass_group_id',
+        'type',
+        'position',
+        'created_at',
+        'created_by',
+        'deleted_at',
+        'deleted_by',
+        'updated_at',
+        'updated_by'
+    ];
 
     public function casts():array{
       return [
         'map_step_id' => 'int',
         'map_pass_group_id' => 'int',
-    'type' => 'string',
+        'type' => 'string',
         'position' => 'int',
-        'submitter_role_id' => 'int',
-        'approver_role_id' => 'int',
-    'id' => 'int',
-    'created_at' => 'datetime',
-    'created_by' => 'string',
-    'updated_at' => 'datetime',
-    'updated_by' => 'string',
-    'deleted_at' => 'datetime',
-    'deleted_by' => 'string',
-];
+        'id' => 'int',
+        'created_at' => 'datetime',
+        'created_by' => 'string',
+        'updated_at' => 'datetime',
+        'updated_by' => 'string',
+        'deleted_at' => 'datetime',
+        'deleted_by' => 'string',
+    ];
     }
 
-        public function getActivitylogOptions(): LogOptions
-        {
-            return LogOptions::defaults()
-                ->logFillable()
-                ->logOnlyDirty()
-                ->setDescriptionForEvent(fn(string $eventName) => "This MapPassGroupMapStep has been {$eventName}");
-        }
-
-    // New role relationships
-    public function submitterRole(): BelongsTo
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->belongsTo(Role::class, 'submitter_role_id');
-    }
-
-    public function approverRole(): BelongsTo
-    {
-        return $this->belongsTo(Role::class, 'approver_role_id');
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(fn(string $eventName) => "This MapPassGroupMapStep has been {$eventName}");
     }
 
     public function mapStep(): BelongsTo
@@ -75,5 +59,21 @@ class MapPassGroupMapStep extends Model
     public function mapPassGroup(): BelongsTo
     {
         return $this->belongsTo(MapPassGroup::class, 'map_pass_group_id');
+    }
+
+    // Scopes for filtering by type
+    public function scopeSubmitters($query)
+    {
+        return $query->where('type', 'submitter');
+    }
+
+    public function scopeApprovers($query)
+    {
+        return $query->where('type', 'approver');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->whereNull('deleted_at')->whereNull('deleted_by');
     }
 }
