@@ -242,7 +242,7 @@
                                             <label
                                                 class="form-label-peaceful">{{ __('businessregistration::businessregistration.fiscal_year') }}</label>
                                             <div class="form-control-plaintext">
-                                                {{ $businessRegistration->fiscalYear->year ?? '-' }}</div>
+                                                {{ $businessRegistration->fiscalYear?->year ?? '-' }}</div>
                                         </div>
                                         <div class="col-md-6">
                                             <label

@@ -145,7 +145,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.fiscal_year') }}:</strong>
-                                    {{ $businessRegistration->fiscalYear->year }}</p>
+                                    {{ $businessRegistration->fiscalYear?->year }}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong>{{ __('businessregistration::businessregistration.registration_date') }}:</strong>
