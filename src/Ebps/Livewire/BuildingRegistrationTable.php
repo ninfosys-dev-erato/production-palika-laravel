@@ -20,11 +20,11 @@ use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class BuildingRegistrationTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
-    
+    use SessionFlash, IsSearchable;
+
     protected $model = MapApply::class;
     protected ApplicationRoleFilterService $roleFilterService;
-    
+
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
@@ -39,11 +39,11 @@ class BuildingRegistrationTable extends DataTableComponent
     {
         $this->setPrimaryKey('ebps_map_applies.id')
             ->setTableAttributes([
-                'class' =>"table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline"
             ])
             ->setAdditionalSelects(['ebps_map_applies.id'])
             ->setBulkActionsDisabled()
-            ->setPerPageAccepted([10, 25, 50, 100,500])
+            ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
             ->setRefreshMethod('refresh')
             ->setBulkActionConfirms([
@@ -62,7 +62,7 @@ class BuildingRegistrationTable extends DataTableComponent
 
         // Apply enhanced role-based filtering based on current step access
         return $this->roleFilterService->filterApplicationsByCurrentStepAccess(
-            $query, 
+            $query,
             ApplicationTypeEnum::BUILDING_DOCUMENTATION->value
         );
     }
@@ -72,22 +72,22 @@ class BuildingRegistrationTable extends DataTableComponent
     }
     public function columns(): array
     {
-     $columns = [
+        $columns = [
 
-            Column::make(__('ebps::ebps.submission_no'), "submission_id") ->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ebps::ebps.fiscal_year'), "fiscalYear.year") ->sortable()->searchable()->collapseOnTablet(),
-             Column::make(__('ebps::ebps.house_owner'))->label(
+            Column::make(__('ebps::ebps.submission_no'), "submission_id")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ebps::ebps.fiscal_year'), "fiscalYear.year")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ebps::ebps.house_owner'))->label(
                 fn($row, Column $column) => view('Ebps::livewire.table.col-house-owner-detail', [
                     'row' => $row,
                 ])->render()
             )->html(),
-            Column::make(__('ebps::ebps.applied_date'), "applied_date") ->sortable()->searchable()->collapseOnTablet(),
-            
+            Column::make(__('ebps::ebps.applied_date'), "applied_date")->sortable()->searchable()->collapseOnTablet(),
+
             // Add current step and status column
             Column::make(__('ebps::ebps.step_and_status'), "id")->label(
                 fn($row, Column $column) => $this->getCurrentStepLabel($row)
             )->html(),
-     ];
+        ];
         if (can('ebps_map_applies edit') || can('ebps_map_applies delete')) {
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
                 return $this->getActionButtons($row);
@@ -97,13 +97,14 @@ class BuildingRegistrationTable extends DataTableComponent
         }
 
         return $columns;
-
     }
 
     protected function getCurrentStepLabel($application): string
     {
+
         $currentStep = $this->roleFilterService->getCurrentStep($application);
-        
+
+
         if (!$currentStep) {
             return '
                 <div class="text-center">
@@ -114,15 +115,15 @@ class BuildingRegistrationTable extends DataTableComponent
         }
 
         // Get step number from form_position
-        $stepNumber = $currentStep->form_position ?? 'N/A';
-        
+        $stepNumber = $currentStep->position ?? 'N/A';
+
         // Get current step record to determine status
         $stepRecord = $application->mapApplySteps()
             ->where('map_step_id', $currentStep->id)
             ->first();
-            
+
         $status = $stepRecord ? $stepRecord->status : 'not_started';
-        
+
         // Status mapping with icons and colors
         $statusConfig = [
             'pending' => ['label' => __('ebps::ebps.pending'), 'class' => 'bg-warning', 'icon' => '⏳'],
@@ -131,10 +132,11 @@ class BuildingRegistrationTable extends DataTableComponent
             'rejected' => ['label' => __('ebps::ebps.rejected'), 'class' => 'bg-danger', 'icon' => '❌'],
             'not_started' => ['label' => __('ebps::ebps.not_started'), 'class' => 'bg-secondary', 'icon' => '⚪'],
         ];
-        
+
         $statusInfo = $statusConfig[$status] ?? $statusConfig['not_started'];
 
-        return sprintf('
+        return sprintf(
+            '
             <div class="text-center">
                 <div class="mb-1">
                     <strong class="text-primary">Step: %s</strong>
@@ -181,12 +183,12 @@ class BuildingRegistrationTable extends DataTableComponent
 
         return $buttons;
     }
-    
-    public function refresh(){}
+
+    public function refresh() {}
 
     public function edit($id)
     {
-        return redirect()->route('admin.ebps.building-registrations.edit',['id'=>$id]);
+        return redirect()->route('admin.ebps.building-registrations.edit', ['id' => $id]);
     }
     public function chooseOrganization($id)
     {
@@ -196,39 +198,41 @@ class BuildingRegistrationTable extends DataTableComponent
 
     public function moveFurther($id)
     {
-        return redirect()->route('admin.ebps.building-registrations.step', ['id'=>$id]);
+        return redirect()->route('admin.ebps.building-registrations.step', ['id' => $id]);
     }
 
     public function view($id)
     {
-        if(!can('ebps_map_applies access')){
+        if (!can('ebps_map_applies access')) {
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
-               return false;
+            return false;
         }
-        return redirect()->route('admin.ebps.building-registrations.view',['id'=>$id]);
+        return redirect()->route('admin.ebps.building-registrations.view', ['id' => $id]);
     }
 
 
     public function delete($id)
     {
-        if(!can('ebps_map_applies delete')){
+        if (!can('ebps_map_applies delete')) {
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
-                return false;
+            return false;
         }
         $service = new MapApplyAdminService();
         $service->delete(MapApply::findOrFail($id));
         $this->successFlash(__('ebps::ebps.map_apply_deleted_successfully'));
     }
-    public function deleteSelected(){
-        if(!can('ebps_map_applies delete')){
+    public function deleteSelected()
+    {
+        if (!can('ebps_map_applies delete')) {
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
-                    return false;
+            return false;
         }
         $service = new MapApplyAdminService();
         $service->collectionDelete($this->getSelected());
         $this->clearSelected();
     }
-    public function exportSelected(){
+    public function exportSelected()
+    {
         $records = $this->getSelected();
         $this->clearSelected();
         return Excel::download(new MapAppliesExport($records), 'map_applies.xlsx');

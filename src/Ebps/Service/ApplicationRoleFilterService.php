@@ -17,7 +17,7 @@ class ApplicationRoleFilterService
     {
         // Role filtering is always enabled - no setting check needed
         $user = Auth::user();
-        
+
         if (!$user) {
             return $query->whereRaw('1 = 0'); // Return no results if no user
         }
@@ -64,10 +64,10 @@ class ApplicationRoleFilterService
     {
         // Get all defined steps for this application type, ordered by position
         $allSteps = MapStep::where('application_type', $application->application_type)
-            ->orderBy('position')
+            ->orderByRaw('CAST(position AS UNSIGNED)')
             ->get();
 
-        
+
         if ($allSteps->isEmpty()) {
             return null;
         }
@@ -76,24 +76,29 @@ class ApplicationRoleFilterService
         $applicationSteps = $application->mapApplySteps()
             ->with('mapStep')
             ->get()
-            ->keyBy('map_step_id');
+            ->keyBy(fn($item) => $item->mapStep->id);
+
+
+
         // Go through steps in order to find the current one
         foreach ($allSteps as $step) {
             $stepRecord = $applicationSteps->get($step->id);
-            
+
+
             if (!$stepRecord) {
                 // This step hasn't been started yet - this is the current step
                 return $step;
             }
-            
+
             if ($stepRecord->status !== 'accepted') {
+
                 // This step exists but is not accepted - this is the current step
                 return $step;
             }
-            
+
             // This step is accepted, continue to next step
         }
-        
+
         // All steps are completed
         return null;
     }
@@ -104,7 +109,7 @@ class ApplicationRoleFilterService
     public function canUserAccessApplication(MapApply $application, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
@@ -115,7 +120,7 @@ class ApplicationRoleFilterService
         }
 
         $currentStep = $this->getCurrentStep($application);
-        
+
         if (!$currentStep) {
             return false;
         }
@@ -129,7 +134,7 @@ class ApplicationRoleFilterService
     public function canUserAccessStep(MapStep $step, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
@@ -149,7 +154,7 @@ class ApplicationRoleFilterService
     public function canUserPerformStepAction(MapStep $step, MapApply $application, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
@@ -170,7 +175,7 @@ class ApplicationRoleFilterService
     {
         // Role filtering is always enabled - no setting check needed
         $user = Auth::user();
-        
+
         if (!$user) {
             return $query->whereRaw('1 = 0'); // Return no results if no user
         }
@@ -186,7 +191,8 @@ class ApplicationRoleFilterService
 
         foreach ($allApplications as $application) {
             $currentStep = $this->getCurrentStep($application);
-            
+
+
             // If no current step (all steps completed), skip this application
             if (!$currentStep) {
                 continue;
@@ -195,7 +201,7 @@ class ApplicationRoleFilterService
             // Check if user has access to the current step
             $canSubmit = $currentStep->canUserSubmit($user);
             $canApprove = $currentStep->canUserApprove($user);
-            
+
             if ($canSubmit || $canApprove) {
                 $accessibleApplicationIds[] = $application->id;
             }
@@ -215,13 +221,13 @@ class ApplicationRoleFilterService
     public function canUserSubmitApplication(MapApply $application, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
 
         $currentStep = $this->getCurrentStep($application);
-        
+
         if (!$currentStep) {
             return false;
         }
@@ -230,9 +236,9 @@ class ApplicationRoleFilterService
         $stepRecord = $application->mapApplySteps()
             ->where('map_step_id', $currentStep->id)
             ->first();
-            
+
         $status = $stepRecord ? $stepRecord->status : null;
-        
+
         // Can submit if step doesn't exist or is pending/rejected
         $canSubmitBasedOnStatus = !$stepRecord || in_array($status, ['pending', 'rejected', null]);
 
@@ -245,13 +251,13 @@ class ApplicationRoleFilterService
     public function canUserApproveApplication(MapApply $application, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
 
         $currentStep = $this->getCurrentStep($application);
-        
+
         if (!$currentStep) {
             return false;
         }
@@ -260,9 +266,9 @@ class ApplicationRoleFilterService
         $stepRecord = $application->mapApplySteps()
             ->where('map_step_id', $currentStep->id)
             ->first();
-            
+
         $status = $stepRecord ? $stepRecord->status : null;
-        
+
         // Can approve if step is submitted or pending
         $canApproveBasedOnStatus = in_array($status, ['submitted', 'pending']);
 
@@ -368,29 +374,29 @@ class ApplicationRoleFilterService
     {
         $user = $user ?: Auth::user();
         $debug = [];
-        
+
         $debug['application_id'] = $application->id;
         $debug['submission_id'] = $application->submission_id;
         $debug['application_type'] = $application->application_type;
-        
+
         if (!$user) {
             $debug['error'] = 'No authenticated user';
             return $debug;
         }
-        
+
         $userGroups = $user->mapPassGroupUsers()->with('mapPassGroup')->get();
-        $debug['user_groups'] = $userGroups->map(function($userGroup) {
+        $debug['user_groups'] = $userGroups->map(function ($userGroup) {
             return [
                 'group_id' => $userGroup->mapPassGroup->id,
                 'group_title' => $userGroup->mapPassGroup->title,
             ];
         })->toArray();
-        
+
         if ($userGroups->isEmpty()) {
             $debug['error'] = 'User has no groups assigned';
             return $debug;
         }
-        
+
         // Get current step
         $currentStep = $this->getCurrentStep($application);
         $debug['current_step'] = $currentStep ? [
@@ -398,15 +404,15 @@ class ApplicationRoleFilterService
             'title' => $currentStep->title,
             'position' => $currentStep->position,
         ] : null;
-        
+
         if (!$currentStep) {
             $debug['error'] = 'No current step found';
             return $debug;
         }
-        
+
         // Check step groups
         $stepGroups = $currentStep->mapPassGroupMapSteps()->with('mapPassGroup')->get();
-        $debug['step_groups'] = $stepGroups->map(function($stepGroup) {
+        $debug['step_groups'] = $stepGroups->map(function ($stepGroup) {
             return [
                 'group_id' => $stepGroup->mapPassGroup->id,
                 'group_title' => $stepGroup->mapPassGroup->title,
@@ -414,23 +420,23 @@ class ApplicationRoleFilterService
                 'position' => $stepGroup->position,
             ];
         })->toArray();
-        
+
         // Check access
         $debug['can_access'] = $this->canUserAccessApplication($application, $user);
         $debug['can_submit'] = $this->canUserSubmitApplication($application, $user);
         $debug['can_approve'] = $this->canUserApproveApplication($application, $user);
-        
+
         // Check if any of user's groups match step groups
         $userGroupIds = $userGroups->pluck('map_pass_group_id')->toArray();
         $stepGroupIds = $stepGroups->pluck('map_pass_group_id')->toArray();
         $debug['matching_groups'] = array_intersect($userGroupIds, $stepGroupIds);
-        
+
         // Get step record status
         $stepRecord = $application->mapApplySteps()
             ->where('map_step_id', $currentStep->id)
             ->first();
         $debug['step_status'] = $stepRecord ? $stepRecord->status : 'not_created';
-        
+
         return $debug;
     }
 
@@ -448,7 +454,7 @@ class ApplicationRoleFilterService
     public function isUserSubmitterForCurrentStep(MapApply $application, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
@@ -459,7 +465,7 @@ class ApplicationRoleFilterService
         }
 
         $currentStep = $this->getCurrentStep($application);
-        
+
         if (!$currentStep) {
             return false;
         }
@@ -473,7 +479,7 @@ class ApplicationRoleFilterService
     public function isUserApproverForCurrentStep(MapApply $application, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
@@ -484,7 +490,7 @@ class ApplicationRoleFilterService
         }
 
         $currentStep = $this->getCurrentStep($application);
-        
+
         if (!$currentStep) {
             return false;
         }
@@ -498,7 +504,7 @@ class ApplicationRoleFilterService
     public function canUserAccessCurrentStep(MapApply $application, $user = null): bool
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return false;
         }
@@ -509,7 +515,7 @@ class ApplicationRoleFilterService
         }
 
         $currentStep = $this->getCurrentStep($application);
-        
+
         if (!$currentStep) {
             return false;
         }
@@ -523,7 +529,7 @@ class ApplicationRoleFilterService
     public function getUserAccessTypeForCurrentStep(MapApply $application, $user = null): array
     {
         $user = $user ?: Auth::user();
-        
+
         if (!$user) {
             return ['submitter' => false, 'approver' => false];
         }
@@ -534,7 +540,7 @@ class ApplicationRoleFilterService
         }
 
         $currentStep = $this->getCurrentStep($application);
-        
+
         if (!$currentStep) {
             return ['submitter' => false, 'approver' => false];
         }
@@ -544,4 +550,4 @@ class ApplicationRoleFilterService
             'approver' => $currentStep->canUserApprove($user)
         ];
     }
-} 
+}
