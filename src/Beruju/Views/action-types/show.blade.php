@@ -7,11 +7,11 @@
                 <p class="text-muted">{{ __('beruju::beruju.view_comprehensive_information') }}</p>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ route('admin.beruju.action-types.index') }}" class="btn btn-outline-secondary border-radius-0">
+                <a href="{{ route('admin.beruju.action-types.index') }}" class="btn btn-outline-secondary rounded-0">
                     <i class="bx bx-arrow-back me-1"></i> {{ __('beruju::beruju.back_to_list') }}
                 </a>
                 @can('beruju edit')
-                <a href="{{ route('admin.beruju.action-types.edit', $actionType->id) }}" class="btn btn-primary border-radius-0">
+                <a href="{{ route('admin.beruju.action-types.edit', $actionType->id) }}" class="btn btn-primary rounded-0">
                     <i class="bx bx-edit me-1"></i> {{ __('beruju::beruju.edit_action_type') }}
                 </a>
                 @endcan
@@ -23,7 +23,7 @@
             <!-- Left Column - Main Details -->
             <div class="col-lg-8">
                 <!-- Basic Information Card -->
-                <div class="card shadow-sm mb-4 border-radius-0">
+                <div class="card shadow-sm mb-4 rounded-0">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="bx bx-info-circle me-2"></i>{{ __('beruju::beruju.basic_information') }}
@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- Additional Details Card -->
-                <div class="card shadow-sm mb-4 border-radius-0">
+                <div class="card shadow-sm mb-4 rounded-0">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="bx bx-file-text me-2"></i>{{ __('beruju::beruju.additional_details') }}
@@ -76,7 +76,7 @@
             <!-- Right Column - Status & Actions -->
             <div class="col-lg-4">
                 <!-- Audit Trail Card -->
-                <div class="card shadow-sm mb-4 border-radius-0">
+                <div class="card shadow-sm mb-4 rounded-0">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
                             <i class="bx bx-history me-2"></i>{{ __('beruju::beruju.audit_trail') }}

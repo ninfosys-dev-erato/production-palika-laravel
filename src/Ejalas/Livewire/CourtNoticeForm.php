@@ -7,6 +7,7 @@ use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Livewire\Component;
 use Src\Ejalas\DTO\CourtNoticeAdminDto;
+use Src\Ejalas\Enum\PlaceOfRegistration;
 use Src\Ejalas\Models\ComplaintRegistration;
 use Src\Ejalas\Models\CourtNotice;
 use Src\Ejalas\Models\ReconciliationCenter;
@@ -61,7 +62,7 @@ class CourtNoticeForm extends Component
                 $partyNames = $complaint->parties->pluck('name')->implode(', ');
                 return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
             });
-        $this->reconciliationCenters = ReconciliationCenter::whereNull('deleted_at')->pluck('reconciliation_center_title', 'id');
+        $this->reconciliationCenters = PlaceOfRegistration::getForWeb();
 
         if ($action == Action::UPDATE) {
             $this->getComplaintRegistration();

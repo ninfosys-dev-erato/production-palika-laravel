@@ -16,7 +16,8 @@
                             </a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="#" class="text-decoration-none">{{ __('ejalas::ejalas.complaint_registration') }}</a>
+                            <a href="#"
+                                class="text-decoration-none">{{ __('ejalas::ejalas.complaint_registration') }}</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">{{ __('ejalas::ejalas.view') }}</li>
                     </ol>
@@ -32,7 +33,8 @@
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 fw-bold">
-                            <i class="bx bx-info-circle text-primary me-2"></i>{{ __('ejalas::ejalas.complaint_summary') }}
+                            <i
+                                class="bx bx-info-circle text-primary me-2"></i>{{ __('ejalas::ejalas.complaint_summary') }}
                         </h5>
 
                         <div>
@@ -82,7 +84,7 @@
                         <div class="row g-4">
                             <div class="col-md-6 col-lg-3">
                                 <p class="text-muted small mb-1">{{ __('ejalas::ejalas.registration_address') }}</p>
-                                <p class="fw-bold">{{ $complaintRegistration->reg_address }}</p>
+                                <p class="fw-bold">{{ $complaintRegistration->reg_address->label() }}</p>
                             </div>
                             <div class="col-md-6 col-lg-3">
                                 <p class="text-muted small mb-1">{{ __('ejalas::ejalas.priority') }}</p>
@@ -138,7 +140,8 @@
                 <div class="card border-0 shadow-sm rounded-3 h-100">
                     <div class="card-header bg-white py-3">
                         <h5 class="card-title mb-0 fw-bold">
-                            <i class="bx bx-list-check text-primary me-2"></i>{{ __('ejalas::ejalas.complainer_details') }}
+                            <i
+                                class="bx bx-list-check text-primary me-2"></i>{{ __('ejalas::ejalas.complainer_details') }}
                             <span class="badge bg-primary">{{ count($complainerDetails) }}</span>
                         </h5>
                         <hr>
@@ -146,7 +149,7 @@
                     <div class="card-body" style="height: 300px; overflow-y: auto;">
                         @foreach ($complainerDetails as $complainer)
                             <div class="row mb-2">
-                                <div class="col-6"><strong> {{__('ejalas::ejalas.name')}}:</strong></div>
+                                <div class="col-6"><strong> {{ __('ejalas::ejalas.name') }}:</strong></div>
                                 <div class="col-6">{{ $complainer->name }}</div>
                             </div>
                             <div class="row mb-2">
@@ -236,7 +239,7 @@
                     <div class="card-body" style="height: 300px; overflow-y: auto;">
                         @foreach ($defenderDetails as $defender)
                             <div class="row mb-2">
-                                <div class="col-6"><strong> {{__('ejalas::ejalas.name')}}:</strong></div>
+                                <div class="col-6"><strong> {{ __('ejalas::ejalas.name') }}:</strong></div>
                                 <div class="col-6">{{ $defender->name }}</div>
                             </div>
                             <div class="row mb-2">

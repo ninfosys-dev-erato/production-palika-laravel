@@ -76,7 +76,7 @@ class ComplaintRegistrationForm extends Component
         $this->action = $action;
         $this->from = $from;
         $nextId = ComplaintRegistration::max('id') + 1;
-        $this->placeOfRegistration = PlaceOfRegistration::cases();
+        $this->placeOfRegistration = PlaceOfRegistration::getForWeb();
 
 
         // $this->complaintRegistration->fiscal_year_id = getSetting('fiscal-year');
@@ -136,10 +136,7 @@ class ComplaintRegistrationForm extends Component
                     break;
             }
 
-            // return redirect()->route(
-            //     $this->from == 'reconciliationcenter' ? 'admin.ejalas.reconciliation.complaint_registrations.reconciliationIndex'
-            //         : 'admin.ejalas.complaint_registrations.index'
-            // );
+
             return redirect()->route('admin.ejalas.complaint_registrations.index', ['from' => $this->from]);
         } catch (\Throwable $e) {
             logger($e->getMessage());
@@ -209,12 +206,12 @@ class ComplaintRegistrationForm extends Component
     {
         $this->dispatch('newPartyAdded', $this->selectedParties);
     }
-    public function checkRegAddress()
-    {
-        if ($this->complaintRegistration->reg_address === PlaceOfRegistration::MEDIATION_CENTER->value) {
-            $this->showField = true;
-        } else {
-            $this->showField = false;
-        }
-    }
+    // public function checkRegAddress()
+    // {
+    //     if ($this->complaintRegistration->reg_address === PlaceOfRegistration::MEDIATION_CENTER->value) {
+    //         $this->showField = true;
+    //     } else {
+    //         $this->showField = false;
+    //     }
+    // }
 }

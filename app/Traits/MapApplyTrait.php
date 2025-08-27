@@ -9,12 +9,13 @@ trait MapApplyTrait
 {
     use HelperTemplate;
     const EMPTY_LINES = '____________________';
-    
-    public function resolveMapStepTemplate($mapApply, $mapStep, $form): string
+
+    public function resolveMapStepTemplate($mapApply, $mapStep, $form, $submittedDynamicData = null): string
     {
         if (!$mapApply || !$form) {
             return '';
         }
+
 
         $mapApply?->load('customer.kyc', 'fiscalYear', 'landDetail.fourBoundaries', 'constructionType', 'mapApplySteps', 'houseOwner');
 
@@ -24,6 +25,7 @@ trait MapApplyTrait
             'header' => $this->getLetterHeader(null),
             // 'footer' => $this->getLetterFooter(null),
         ];
+        $submittedDynamicData = $submittedDynamicData ?? [];
 
         $template = MapApplyStepTemplate::where('form_id', $form->id)->first();
         $submittedData = [];
@@ -32,7 +34,7 @@ trait MapApplyTrait
                 ? $template->data
                 : json_decode($template->data, true) ?? [];
         }
-        
+
         $data = [
             '{{global.letter-head}}' => $letter['header'] ?? self::EMPTY_LINES,
             // '{{global.letter-head-footer}}' => $letter['footer'] ?? self::EMPTY_LINES,
@@ -49,36 +51,55 @@ trait MapApplyTrait
             ...getResolvedFormData($submittedData)
         ];
 
-        if($mapApply?->customer && $mapApply?->customer->kyc)
-        {
+        if ($mapApply?->customer && $mapApply?->customer->kyc) {
             $data = array_merge($data, $this->resolveCustomerData($mapApply));
         }
-        
-        if($mapApply?->landDetail)
-        {
+
+        if ($mapApply?->landDetail) {
             $data = array_merge($data, $this->resolveLandDetails($mapApply));
         }
-        
-        if($mapApply?->houseOwner || $mapApply?->landOwner)
-        {
+
+        if ($mapApply?->houseOwner || $mapApply?->landOwner) {
             $data = array_merge($data, $this->resolveHouseOwnerDetails($mapApply));
             $data = array_merge($data, $this->resolveLandOwnerDetails($mapApply));
-        }      
-          
-        
+        }
+
+
         $data = array_merge($data, $this->resolveApplicantDetails($mapApply));
-        
-        if($mapApply?->signature)
-        {
+
+        if ($mapApply?->signature) {
             $data = array_merge($data, [
                 '{{mapApply.signature}}' => '<img src="data:image/jpeg;base64,' . base64_encode(\App\Facades\ImageServiceFacade::getImage(config('src.Ebps.ebps.path'), $mapApply?->signature, getStorageDisk('private'))) . '" alt="Signature" width="80">',
                 '{{form.approver.signature}}' => $signatures,
             ]);
         }
 
+        $formTemplate = $form->template ?? '';
+
+        $dynamicInputs = [];
+
+        preg_match_all('/{{input-([a-zA-Z0-9_]+)-(.+?)}}/', $formTemplate, $matches, PREG_SET_ORDER);
+
+
+        foreach ($matches as $match) {
+            $type = $match[1];
+            $name = $match[2];
+            $value = $submittedDynamicData[$name] ?? '';
+
+            $dynamicInputs[$match[0]] = [
+                'type' => $type,
+                'name' => $name,
+                'value' => $value,
+            ];
+        }
+
+        $data = array_merge($data, $this->resolveDynamicInputs($dynamicInputs));
+
+
+
         $data = array_map(fn($value) => is_array($value) ? json_encode($value) : (string) $value, $data);
 
-        return \Illuminate\Support\Str::replace(array_keys($data), array_values($data), $form->template ?? '');
+        return \Illuminate\Support\Str::replace(array_keys($data), array_values($data), $formTemplate);
     }
 
     private function resolveCustomerData($mapApply)
@@ -88,7 +109,7 @@ trait MapApplyTrait
         }
 
         $kyc = $mapApply?->customer->kyc;
-        
+
         return [
             '{{customer.nepali_date_of_birth}}' => $kyc?->nepali_date_of_birth ?? self::EMPTY_LINES,
             '{{customer.english_date_of_birth}}' => $kyc?->english_date_of_birth ?? self::EMPTY_LINES,
@@ -115,7 +136,7 @@ trait MapApplyTrait
             '{{customer.expiry_date_english}}' => $kyc?->expiry_date_english ?? self::EMPTY_LINES,
         ];
     }
-    
+
     private function resolveHouseOwnerDetails($mapApply)
     {
         if (!$mapApply?->houseOwner) {
@@ -123,7 +144,7 @@ trait MapApplyTrait
         }
 
         $houseOwner = $mapApply?->houseOwner ?? self::EMPTY_LINES;
-        
+
         return [
             '{{mapApply.houseOwnerName}}' => $houseOwner?->owner_name ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerMobileNo}}' => replaceNumbers($houseOwner?->mobile_no, true) ?? self::EMPTY_LINES,
@@ -139,9 +160,9 @@ trait MapApplyTrait
     }
     private function resolveLandOwnerDetails($mapApply)
     {
-    
+
         $landOwner = $mapApply?->landOwner ?? $mapApply?->houseOwner;
-        
+
         return [
             '{{mapApply.landOwnerName}}' => $landOwner?->owner_name ?? self::EMPTY_LINES,
             '{{mapApply.landOwnerMobileNo}}' => replaceNumbers($landOwner?->mobile_no, true) ?? self::EMPTY_LINES,
@@ -176,7 +197,7 @@ trait MapApplyTrait
 
         $landDetail = $mapApply?->landDetail;
         $fourBoundaries = $landDetail->fourBoundaries ?? collect();
-        
+
         $fourBoundariesTable = '';
         if ($fourBoundaries->isNotEmpty()) {
             $fourBoundariesTable = '<table style="width:100%; border-collapse: collapse;" border="1" cellpadding="8" cellspacing="0">
@@ -194,7 +215,7 @@ trait MapApplyTrait
                     "<tr>
                         <td style='border: 1px solid #000;'>" . (isset($fort?->title) ? $fort?->title : self::EMPTY_LINES) . "</td>
                         <td style='border: 1px solid #000;'>" . (isset($fort?->direction) ? $fort?->direction : self::EMPTY_LINES) . "</td>
-                        <td style='border: 1px solid #000;'>" . (isset($fort?->distance) ? replaceNumbers($fort?->distance, true): self::EMPTY_LINES) . "</td>
+                        <td style='border: 1px solid #000;'>" . (isset($fort?->distance) ? replaceNumbers($fort?->distance, true) : self::EMPTY_LINES) . "</td>
                         <td style='border: 1px solid #000;'>" . (isset($fort?->lot_no) ? replaceNumbers($fort?->lot_no, true) : self::EMPTY_LINES) . "</td>
                     </tr>"
                 )->implode('') .
@@ -207,16 +228,16 @@ trait MapApplyTrait
             '{{mapApply.landDetail.tole}}' => isset($landDetail->tole) ? $landDetail->tole : self::EMPTY_LINES,
             '{{mapApply.landDetail.plot_no}}' => isset($landDetail->lot_no) ? replaceNumbers($landDetail->lot_no, true) : self::EMPTY_LINES,
             '{{mapApply.landDetail.area}}' => isset($landDetail->area_sqm) ? replaceNumbers($landDetail->area_sqm, true) : self::EMPTY_LINES,
-            '{{mapApply.landDetail.ownership_type}}' => $landDetail->ownership ?  \Src\Ebps\Enums\LandOwernshipEnum::from($landDetail->ownership )->label() : self::EMPTY_LINES,
+            '{{mapApply.landDetail.ownership_type}}' => $landDetail->ownership ?  \Src\Ebps\Enums\LandOwernshipEnum::from($landDetail->ownership)->label() : self::EMPTY_LINES,
             '{{mapApply.landDetail.ward}}' => isset($landDetail->ward) ? replaceNumbers($landDetail->ward, true) : self::EMPTY_LINES,
             '{{mapApply.landDetail.former_ward}}' => isset($landDetail->former_ward_no) ? replaceNumbers($landDetail->former_ward_no, true) : self::EMPTY_LINES,
             '{{mapApply.landDetail.local_body}}' => isset($landDetail->localBody, $landDetail->localBody->title) ? $landDetail->localBody->title : self::EMPTY_LINES,
             '{{mapApply.landDetail.former_localBody}}' => isset($landDetail->formerLocalBody, $landDetail->formerLocalBody->title) ? $landDetail->formerLocalBody->title : self::EMPTY_LINES,
-            '{{mapApply.usage}}' => $mapApply?->usage ?  \Src\Ebps\Enums\PurposeOfConstructionEnum::from($mapApply?->usage )->label() : self::EMPTY_LINES,
+            '{{mapApply.usage}}' => $mapApply?->usage ?  \Src\Ebps\Enums\PurposeOfConstructionEnum::from($mapApply?->usage)->label() : self::EMPTY_LINES,
             '{{mapApply.landDetail.fourForts:name,direction,distance_to,plot_no}}' => $fourBoundariesTable,
             '{{mapApply.constructionType.title}}' => isset($mapApply?->constructionType, $mapApply?->constructionType->title) ? $mapApply?->constructionType->title : self::EMPTY_LINES,
             '{{mapApply.customer.age}}' => isset($mapApply?->customer, $mapApply?->customer->customerDetail, $mapApply?->customer->customerDetail->age) ? $mapApply?->customer->customerDetail->age : self::EMPTY_LINES,
-            '{{customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->phone) ? replaceNumbers($mapApply?->customer->phone, true): self::EMPTY_LINES,
+            '{{customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->phone) ? replaceNumbers($mapApply?->customer->phone, true) : self::EMPTY_LINES,
             '{{mapApply.customer.phone}}' => isset($mapApply?->customer, $mapApply?->customer->mobile_no) ? replaceNumbers($mapApply?->customer->mobile_no, true) : self::EMPTY_LINES,
             '{{mapApply.appliedDate}}' => isset($mapApply?->applied_date, $mapApply?->applied_date) ? replaceNumbers($mapApply?->applied_date, true) : self::EMPTY_LINES,
             '{{mapApply.year_of_house_built}}' => isset($mapApply?->year_of_house_built, $mapApply?->year_of_house_built) ? replaceNumbers($mapApply?->year_of_house_built, true) : self::EMPTY_LINES,
@@ -224,5 +245,76 @@ trait MapApplyTrait
             '{{mapApply.storey_no}}' => isset($mapApply?->storey_no, $mapApply?->storey_no) ? replaceNumbers($mapApply?->storey_no, true) : self::EMPTY_LINES,
             '{{mapApply.area_of_building_plinth}}' => isset($mapApply?->area_of_building_plinth, $mapApply?->area_of_building_plinth) ? replaceNumbers($mapApply?->area_of_building_plinth, true) : self::EMPTY_LINES,
         ];
+    }
+
+
+    private function resolveDynamicInputs($dynamicInputs)
+    {
+        foreach ($dynamicInputs as $id => $input) {
+            $dynamicInputs[$id] = $this->renderDynamicInputField($input);
+        }
+        return $dynamicInputs;
+    }
+    private function renderDynamicInputField($input)
+    {
+        $html = '';
+        $type = $input['type'];
+        $name = $input['name'];
+        $value = $input['value'];
+        $placeholder = ucfirst(str_replace('_', ' ', $name));
+
+        switch ($type) {
+            case 'textarea':
+                $html .= '<textarea wire:model.defer="placeholders.' . $name . '" 
+                                  class="form-control" 
+                                  placeholder="' . $placeholder . '">' . e($value) . '</textarea>';
+                break;
+
+            case 'text':
+                $html .= '<input type="' . $type . '" 
+                                   wire:model.defer="placeholders.' . $name . '"
+                                   placeholder="' . $placeholder . '" 
+                                   class="form-control d-inline-block w-25 mb-1">';
+                break;
+            case 'date':
+                $html .= '<input type="' . $type . '" 
+                                 wire:model.defer="placeholders.' . $name . '"
+                                 placeholder="' . $placeholder . '" 
+                                 class="form-control">';
+                break;
+            default:
+                $html .= '<input type="' . $type . '" 
+                                 wire:model.defer="placeholders.' . $name . '"
+                                 placeholder="' . $placeholder . '" 
+                                 class="form-control">';
+                break;
+        }
+        return $html;
+    }
+    private function renderInputsFromTemplate($template, $placeholders)
+    {
+        return preg_replace_callback('/{{input-([a-z]+)-(.+?)}}/', function ($matches) use ($placeholders) {
+            $type = $matches[1];
+            $name = $matches[2];
+            $value = $placeholders[$name] ?? '';
+
+            switch ($type) {
+                case 'textarea':
+                    return '<textarea name="placeholders[' . $name . ']" class="form-control">' . e($value) . '</textarea>';
+                case 'text':
+                    return '<input type="' . $type . '" name="placeholders[' . $name . ']" value="' . e($value) . '" class="form-control w-25 d-inline-block mb-1">';
+                case 'date':
+                default:
+                    return '<input type="' . $type . '" name="placeholders[' . $name . ']" value="' . e($value) . '" class="form-control w-25 d-inline-block mb-1">';
+            }
+        }, $template);
+    }
+
+    private function renderPreviewFromTemplate($template, $placeholders)
+    {
+        return preg_replace_callback('/{{input-([a-z]+)-(.+?)}}/', function ($matches) use ($placeholders) {
+            $name = $matches[2];
+            return e($placeholders[$name] ?? '');
+        }, $template);
     }
 }

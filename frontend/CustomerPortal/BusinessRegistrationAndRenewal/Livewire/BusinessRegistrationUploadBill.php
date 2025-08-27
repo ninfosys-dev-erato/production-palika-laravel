@@ -2,7 +2,7 @@
 
 namespace Frontend\CustomerPortal\BusinessRegistrationAndRenewal\Livewire;
 
-use App\Facades\ImageServiceFacade;
+use App\Facades\FileFacade;
 use App\Traits\SessionFlash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -31,14 +31,26 @@ class BusinessRegistrationUploadBill extends Component
         $this->validate([
             'bill' => 'required|file|mimes:pdf,jpg,png|max:2048'
         ]);
-        $path = ImageServiceFacade::compressAndStoreImage($this->bill, config('src.BusinessRegistration.businessRegistration.bill'), getStorageDisk('public'));
-        $this->businessRegistration->bill = $path;
-        $this->businessRegistration->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
-        $dto = BusinessRegistrationShowDto::fromModel($this->businessRegistration);
-        $service = new BusinessRegistrationAdminService();
-        $service->uploadBill($this->businessRegistration, $dto, false);
-        $this->successFlash(__("Bill uploaded successfully."));
-        return redirect()->route('customer.business-registration.business-registration.show', $this->businessRegistration->id);
+        try {
+            // Use FileFacade for all file types to avoid disk configuration issues
+            $path = FileFacade::saveFile(
+                path: config('src.BusinessRegistration.businessRegistration.bill'),
+                filename: '',
+                file: $this->bill,
+                disk: 'local'
+            );
+            
+            $this->businessRegistration->bill = $path;
+            $this->businessRegistration->application_status = ApplicationStatusEnum::BILL_UPLOADED->value;
+            $dto = BusinessRegistrationShowDto::fromModel($this->businessRegistration);
+            $service = new BusinessRegistrationAdminService();
+            $service->uploadBill($this->businessRegistration, $dto, false);
+            $this->successFlash(__("Bill uploaded successfully."));
+            return redirect()->route('customer.business-registration.business-registration.show', $this->businessRegistration->id);
+        } catch (\Exception $e) {
+            logger()->error($e);
+            $this->errorFlash('Something went wrong while uploading bill.', $e->getMessage());
+        }
     }
 
     public function render()

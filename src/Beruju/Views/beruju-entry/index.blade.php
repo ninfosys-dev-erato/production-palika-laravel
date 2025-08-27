@@ -1,10 +1,10 @@
 <x-layout.app header="{{ __('beruju::beruju.beruju_management') }}">
-    <div class="card">
+    <div class="card rounded-0">
         <div class="card-header d-flex justify-content-between">
             <h5 class="text-primary fw-bold">{{ __('beruju::beruju.beruju_entries') }}</h5>
             <div>
                 @perm('beruju create')
-                    <a href="{{ route('admin.beruju.registration.create') }}" class="btn btn-info">
+                    <a href="{{ route('admin.beruju.registration.create') }}" class="btn btn-info rounded-0">
                         <i class="bx bx-plus"></i> {{ __('beruju::beruju.add_beruju') }}
                     </a>
                 @endperm

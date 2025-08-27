@@ -1,21 +1,21 @@
 <x-layout.app header="{{ __('beruju::beruju.document_type_details') }}">
     <div class="row">
         <div class="col-12">
-            <div class="card border-radius-0">
-                <div class="card-header border-radius-0">
+            <div class="card rounded-0">
+                <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">{{ __('beruju::beruju.document_type_details') }}</h4>
                         <div>
-                            <a href="{{ route('admin.beruju.document-types.index') }}" class="btn btn-outline-secondary border-radius-0">
+                            <a href="{{ route('admin.beruju.document-types.index') }}" class="btn btn-outline-secondary rounded-0">
                                 <i class="fas fa-arrow-left"></i> {{ __('beruju::beruju.back') }}
                             </a>
-                            <a href="{{ route('admin.beruju.document-types.edit', $documentType->id) }}" class="btn btn-primary border-radius-0">
+                            <a href="{{ route('admin.beruju.document-types.edit', $documentType->id) }}" class="btn btn-primary rounded-0">
                                 <i class="fas fa-edit"></i> {{ __('beruju::beruju.edit') }}
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="card-body border-radius-0">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold text-muted">{{ __('beruju::beruju.name_eng') }}</label>
@@ -61,12 +61,12 @@
                         @endif
                     </div>
                 </div>
-                <div class="card-footer border-radius-0">
+                <div class="card-footer">
                     <div class="d-flex justify-content-between">
-                        <a href="{{ route('admin.beruju.document-types.edit', $documentType->id) }}" class="btn btn-outline-primary border-radius-0">
+                        <a href="{{ route('admin.beruju.document-types.edit', $documentType->id) }}" class="btn btn-outline-primary rounded-0">
                             <i class="fas fa-edit"></i> {{ __('beruju::beruju.edit_document_type') }}
                         </a>
-                        <a href="{{ route('admin.beruju.document-types.index') }}" class="btn btn-outline-secondary border-radius-0">
+                        <a href="{{ route('admin.beruju.document-types.index') }}" class="btn btn-outline-secondary rounded-0">
                             <i class="fas fa-arrow-left"></i> {{ __('beruju::beruju.back_to_list') }}
                         </a>
                     </div>
@@ -74,9 +74,6 @@
             </div>
         </div>
     </div>
-    <style>
-    .border-radius-0 { border-radius: 0 !important; }
-    .container-fluid { max-width: 100% !important; }
-    </style>
+
 </x-layout.app>
 

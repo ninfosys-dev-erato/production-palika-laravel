@@ -29,12 +29,13 @@ trait EjalashTemplateTrait
             '{{global.ward_ne}}' => getSetting('palika-ward-ne'),
             '{{global.palika_name}}' => getSetting('palika-name'),
             '{{global.address}}' => getSetting('palika-address'),
+            '{{global.office_name}}' => getSetting('palika-name'),
             '{{global.officeName}}' => getSetting('palika-name'),
             '{{global.district}}' => getSetting('palika-district'),
             '{{global.local-body}}' => getSetting('palika-local-body'),
             '{{global.ward}}' => getSetting('palika-ward'),
             '{{global.today_date_ad}}' => today()->toDateString(),
-            '{{global.today_date_bs}}' => today()->toDateString(),
+            '{{global.today_date_bs}}' => $this->adToBs(today()->toDateString(), 'yyyy-mm-dd'),
         ];
 
         switch ($modelName) {
@@ -304,17 +305,17 @@ trait EjalashTemplateTrait
 
             case "JudicialMeeting":
                 $model->load(['employees.designation']);
-                $inivitedMember = $model->members;
+                $invitedMember = $model->members;
                 $presentEmployee = $model->employees;
-                $firstPresent = $inivitedMember->first();
+                $firstPresent = $invitedMember->first();
 
                 $presentText = "";
                 foreach ($presentEmployee as $member) {
                     $presentText .= "श्री {$member->name} - {$member->designation->title}<br/>";
                 }
                 $invitedText = "";
-                foreach ($inivitedMember as $member) {
-                    $invitedText .= "श्री {$member->title} - {$member->elected_position}<br/>";
+                foreach ($invitedMember as $member) {
+                    $invitedText .= "श्री {$member->title} - {$member->elected_position->label()}<br/>";
                 }
 
                 $data = array_merge($data, [

@@ -24,7 +24,7 @@ class HearingScheduleAdminDto
             hearing_date: $hearingSchedule->hearing_date,
             hearing_time: $hearingSchedule->hearing_time,
             reference_no: $hearingSchedule->reference_no,
-            reconciliation_center_id: $hearingSchedule->reconciliation_center_id,
+            reconciliation_center_id: $hearingSchedule->reconciliation_center_id->value,
             complaint_registration_id: $hearingSchedule->complaint_registration_id,
 
         );

@@ -17,6 +17,9 @@ class EvidenceDocumentUpload extends Component
     use WithFileUploads, SessionFlash;
 
     public $berujuEntryId;
+    public $actionId;
+    public $type;
+    public $berujuAction;
 
     public Evidence $evidence;
 
@@ -26,7 +29,13 @@ class EvidenceDocumentUpload extends Component
     public $uploadedFileUrls = [];
     public $savedDocuments = [];
 
-    protected $listeners = ['saveAllDocumentsfunction' => 'saveAllDocuments'];
+    protected $listeners = [
+        'saveAllDocumentsfunction' => 'saveAllDocuments',
+        'action-updated' => 'refreshComponent',
+        'load-existing-documents' => 'refreshComponent'
+    ];
+    
+
 
     protected $rules = [
         'evidenceData.*.name' => 'required|string|max:255',
@@ -39,27 +48,48 @@ class EvidenceDocumentUpload extends Component
         'uploadedFiles.*.required' => 'Please select a file.',
     ];
 
-    public function mount(Evidence $evidence = null, $berujuEntry = null)
+    public function mount(Evidence $evidence = null, $berujuEntry = null, $berujuAction = null, $type = null)
     {
+        $this->type = $type;
+        $this->berujuAction = $berujuAction;
+        
         if ($evidence) {
             $this->evidence = $evidence;
         } else {
             $this->evidence = new Evidence();
         }
 
-
         if ($berujuEntry) {
             $this->berujuEntryId = $berujuEntry->id;
             $this->evidence->beruju_entry_id = $berujuEntry->id;
-            $this->loadExistingDocuments($this->berujuEntryId);
+            
+            if ($type === 'action') {
+                if ($berujuAction && $berujuAction->id) {
+                    $this->actionId = $berujuAction->id;
+                    $this->evidence->action_id = $berujuAction->id;
+                    $this->loadExistingDocuments($this->berujuEntryId, $this->actionId, $this->type);
+                } else {
+                    $this->addDocument();
+                }
+            } else {
+                $this->loadExistingDocuments($this->berujuEntryId, $this->type);
+            }
         } else {
             // Initialize with one empty document
             $this->addDocument();
         }
     }
-    private function loadExistingDocuments($berujuEntryId)
+    private function loadExistingDocuments($berujuEntryId, $actionId = null, $type = null)
     {
-        $existingEvidences = Evidence::where('beruju_entry_id', $berujuEntryId)->whereNull('deleted_at')->get();
+        $existingEvidences = Evidence::where('beruju_entry_id', $berujuEntryId)
+            ->when($actionId, function ($query) use ($actionId) {
+                $query->where('action_id', $actionId);
+            })
+            ->when($type === 'beruju', function ($query)  {
+                $query->where('action_id', null);
+            })
+            ->whereNull('deleted_at')
+            ->get();
 
 
         if ($existingEvidences->isEmpty()) {
@@ -167,17 +197,27 @@ class EvidenceDocumentUpload extends Component
         return [$savedFileName, $tempUrl];
     }
 
+    public function updatedUploadedFiles($value, $key)
+{
+    // $key will be like "0", "1", etc. depending on $index
+    $index = $key;
+
+    $this->saveDocuments($index);
+}
+
     public function saveDocuments($index)
     {
 
         $this->validate([
-            "evidenceData.{$index}.name" => 'required|string|max:255',
-            "evidenceData.{$index}.description" => 'nullable|string',
+            // "evidenceData.{$index}.name" => 'required|string|max:255',
+            // "evidenceData.{$index}.description" => 'nullable|string',
             "uploadedFiles.{$index}" => 'required',
         ]);
+       
 
         try {
             $file = $this->uploadedFiles[$index] ?? null;
+            // dd($this->uploadedFiles,$file);
 
             if ($file) {
 
@@ -200,10 +240,21 @@ class EvidenceDocumentUpload extends Component
 
     public function render()
     {
+        // Debug: Log the berujuAction to see what's available
+        if ($this->berujuAction) {
+            \Log::info('EvidenceDocumentUpload - berujuAction:', [
+                'id' => $this->berujuAction->id ?? 'null',
+                'attributes' => $this->berujuAction->getAttributes(),
+                'type' => $this->type,
+                'berujuEntryId' => $this->berujuEntryId,
+                'actionId' => $this->actionId ?? 'null'
+            ]);
+        }
+        
         return view('Beruju::livewire.evidence-document-upload');
     }
 
-    public function saveAllDocuments($berujuEntryId = null)
+    public function saveAllDocuments($berujuEntryId = null, $berujuActionId = null)
     {
         if (empty($this->savedDocuments)) {
             return; // No documents to save
@@ -220,6 +271,7 @@ class EvidenceDocumentUpload extends Component
             foreach ($this->savedDocuments as $document) {
                 $evidenceDto = EvidenceDto::fromArray([
                     'beruju_entry_id' => $berujuEntryId, // Use the passed parameter
+                    'action_id' => $berujuActionId ?? null,
                     'name' => $document['name'] ?? null,
                     'description' => $document['description'] ?? null,
                     'evidence_document_name' => $document['evidence_document_name'] ?? null,
@@ -252,4 +304,24 @@ class EvidenceDocumentUpload extends Component
         $this->savedDocuments = [];
         $this->addDocument(); // Add one empty document
     }
+    
+    public function refreshComponent()
+    {
+        // When action data changes, reload existing documents if this is for an action
+        if ($this->type === 'action' && $this->berujuAction && $this->berujuAction->id) {
+            $this->actionId = $this->berujuAction->id;
+            $this->evidence->action_id = $this->berujuAction->id;
+            
+            // Clear existing data and reload
+            $this->evidenceDocuments = [];
+            $this->evidenceData = [];
+            $this->uploadedFiles = [];
+            $this->uploadedFileUrls = [];
+            $this->savedDocuments = [];
+            
+            $this->loadExistingDocuments($this->berujuEntryId, $this->actionId);
+        }
+    }
+    
+
 }

@@ -36,3 +36,10 @@
         <div data-i18n="DocumentTypes">{{ __('beruju::beruju.document_types') }}</div>
     </a>
 </li>
+
+<li class="menu-item {{ \Illuminate\Support\Facades\Route::is('admin.beruju.reports.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.beruju.reports.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
+        <div data-i18n="Reports">{{ __('beruju::beruju.beruju_reports') }}</div>
+    </a>
+</li>

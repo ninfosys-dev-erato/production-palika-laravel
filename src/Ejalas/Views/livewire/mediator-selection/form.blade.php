@@ -43,8 +43,8 @@
                     <select wire:model='mediatorSelection.mediator_type' name='mediator_type' class="form-select">
                         <option value="" hidden>{{ __('ejalas::ejalas.select_a_mediator_selection_type') }}
                         </option>
-                        @foreach ($mediatorSelectionTypes as $mediatorSelectionType)
-                            <option value="{{ $mediatorSelectionType }}">{{ $mediatorSelectionType }}</option>
+                        @foreach ($mediatorSelectionTypes as $id => $value)
+                            <option value="{{ $id }}">{{ $value }}</option>
                         @endforeach
                     </select>
 

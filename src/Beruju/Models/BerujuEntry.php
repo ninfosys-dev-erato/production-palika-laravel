@@ -31,8 +31,9 @@ class BerujuEntry extends Model
         'audit_type',
         'entry_date',
         'reference_number',
+        'contract_number',
         'branch_id',
-        'project_id',
+        'project',
         'beruju_category',
         'sub_category_id',
         'amount',
@@ -40,6 +41,9 @@ class BerujuEntry extends Model
         'legal_provision',
         'action_deadline',
         'description',
+        'beruju_description',
+        'owner_name',
+        'dafa_number',
         'notes',
         // Additional fields
         'status',
@@ -56,7 +60,7 @@ class BerujuEntry extends Model
         'entry_date' => 'string',
         'reference_number' => 'string',
         'branch_id' => 'string',
-        'project_id' => 'string',
+        'project' => 'string',
         'beruju_category' => BerujuCategoryEnum::class,
         'sub_category_id' => 'string',
         'amount' => 'string',
@@ -64,6 +68,9 @@ class BerujuEntry extends Model
         'legal_provision' => 'string',
         'action_deadline' => 'string',
         'description' => 'string',
+        'beruju_description' => 'string',
+        'owner_name' => 'string',
+        'dafa_number' => 'string',
         'notes' => 'string',
 
 
@@ -113,6 +120,43 @@ class BerujuEntry extends Model
     public function resolutionCycles() : HasMany
     {
         return $this->hasMany(ResolutionCycle::class, 'beruju_id');
+    }
+
+    /**
+     * Get the latest resolution cycle for this beruju entry
+     */
+    public function latestResolutionCycle()
+    {
+        return $this->hasOne(ResolutionCycle::class, 'beruju_id')->latestOfMany();
+    }
+
+    /**
+     * Calculate the total resolved amount from the latest resolution cycle
+     */
+    public function getResolvedAmountAttribute()
+    {
+        $latestCycle = $this->latestResolutionCycle;
+        
+        if (!$latestCycle) {
+            return 0;
+        }
+
+        // Use the already loaded actions relationship if available
+        if ($latestCycle->relationLoaded('actions')) {
+            return $latestCycle->actions
+                ->whereNotNull('resolved_amount')
+                ->sum('resolved_amount');
+        }
+
+        // Fallback to query if relationship not loaded
+        return $latestCycle->actions()
+            ->whereNotNull('resolved_amount')
+            ->sum('resolved_amount');
+    }
+
+    public function getRemainingAmountAttribute()
+    {
+        return $this->amount - $this->resolved_amount;
     }
 
 }

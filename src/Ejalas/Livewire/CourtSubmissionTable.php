@@ -97,10 +97,10 @@ class CourtSubmissionTable extends DataTableComponent
                     $buttons .= $delete;
                 }
 
-                if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                    $buttons .= $preview;
-                }
+                // if (can('jms_judicial_management print')) {
+                //     $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                //     $buttons .= $preview;
+                // }
 
                 return $buttons;
             })->html();

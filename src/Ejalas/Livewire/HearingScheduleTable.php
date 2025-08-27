@@ -61,7 +61,7 @@ class HearingScheduleTable extends DataTableComponent
     {
         return HearingSchedule::query()
             ->select('*')
-            ->with(['complaintRegistration', 'fiscalYear', 'reconciliationCenter', 'complaintRegistration.parties', 'complaintRegistration.disputeMatter'])
+            ->with(['complaintRegistration', 'fiscalYear', 'complaintRegistration.parties', 'complaintRegistration.disputeMatter'])
             ->where('jms_hearing_schedules.deleted_at', null)
             ->where('jms_hearing_schedules.deleted_by', null)
             ->orderBy('jms_hearing_schedules.created_at', 'DESC')

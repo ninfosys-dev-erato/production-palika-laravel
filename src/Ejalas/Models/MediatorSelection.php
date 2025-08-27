@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Ejalas\Enum\MediatorSelectionType;
 
 class MediatorSelection extends Model
 {
@@ -32,7 +33,7 @@ class MediatorSelection extends Model
         return [
             'complaint_registration_id' => 'string',
             'mediator_id' => 'string',
-            'mediator_type' => 'string',
+            'mediator_type' => MediatorSelectionType::class,
             'selection_date' => 'string',
             'id' => 'int',
             'created_at' => 'datetime',

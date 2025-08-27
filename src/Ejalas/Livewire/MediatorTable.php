@@ -39,7 +39,6 @@ class MediatorTable extends DataTableComponent
     {
         return Mediator::query()
             ->select(
-                'fiscal_year_id',
                 'listed_no',
                 'mediator_name',
                 'mediator_address',
@@ -61,9 +60,9 @@ class MediatorTable extends DataTableComponent
     public function columns(): array
     {
         $columns = [
-            Column::make(__('ejalas::ejalas.fiscal_year'))
+            Column::make(__('ejalas::ejalas.listed_no'))
                 ->label(function ($row) {
-                    return "<strong>" . (__('ejalas::ejalas.fiscal_year')) . ":" . "</strong> " . ($row->fiscalYear->year ?? "N/A") . "<br>
+                    return "
                         <strong>" . (__('ejalas::ejalas.listed_no')) . ":" . "</strong> " . ($row->listed_no ?? "N/A");
                 })
                 ->html()->sortable()->searchable()->collapseOnTablet(),

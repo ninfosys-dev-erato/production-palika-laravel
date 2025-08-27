@@ -91,7 +91,7 @@
             </div>
 
             <!-- Conditional Fields for Consultant -->
-            @if (!$isConsultant)
+            {{-- @if (!$isConsultant) --}}
                 <div class="col-md-6 mb-4">
                     <div class="form-group">
                         <label class="form-label font-semibold text-lg" for='submitter'>{{ __('ebps::ebps.submitter') }}</label>
@@ -114,11 +114,11 @@
                             placeholder="{{ __('ebps::ebps.enter_position') }}">
                     </div>
                 </div>
-            @endif
+            {{-- @endif --}}
 
             <!-- Submitter and Reviewer for Non-Consultant -->
 
-            <div class="col-md-6 mb-4">
+            {{-- <div class="col-md-6 mb-4">
                 <div class="form-group">
                     <label class="form-label font-semibold text-lg" for='reviewer'>{{ __('ebps::ebps.reviewer') }}</label>
 
@@ -140,7 +140,7 @@
                         class='form-control p-2 border-2 rounded-md focus:ring-2 focus:ring-indigo-400'
                         placeholder="{{ __('ebps::ebps.enter_position') }}">
                 </div>
-            </div>
+            </div> --}}
 
 
             <!-- Add Approver -->

@@ -28,7 +28,6 @@ class JudicialEmployeeForm extends Component
     {
         return [
             'judicialEmployee.name' => ['required'],
-            'judicialEmployee.local_level_id' => ['required'],
             'judicialEmployee.ward_id' => ['required'],
             'judicialEmployee.level_id' => ['required'],
             'judicialEmployee.designation_id' => ['required'],
@@ -48,7 +47,6 @@ class JudicialEmployeeForm extends Component
         $this->judicialEmployee = $judicialEmployee;
         $this->action = $action;
 
-        $this->localLevels = LocalLevel::whereNull('deleted_at')->pluck('title', 'id');
         $this->levels = Level::whereNull('deleted_at')->pluck('title_en', 'id');
         $this->designations = Designation::whereNull('deleted_at')->pluck('title_en', 'id');
 

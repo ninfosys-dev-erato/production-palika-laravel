@@ -57,7 +57,9 @@ class MediatorSelectionTable extends DataTableComponent
         $columns = [
             Column::make(__('ejalas::ejalas.complaint_no'), "complaintRegistration.reg_no")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.mediator_name'), "mediator.mediator_name")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.mediator_type'), "mediator_type")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ejalas::ejalas.mediator_type'), "mediator_type")->sortable()->searchable()->collapseOnTablet()->format(function ($value) {
+                return $value ? $value->label() : '';
+            }),
             Column::make(__('ejalas::ejalas.mediator_selection_date'), "selection_date")->sortable()->searchable()->collapseOnTablet(),
         ];
         if (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print')) {

@@ -13,7 +13,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6'>
+            {{-- <div class='col-md-6'>
                 <div class='form-group'>
                     <label class="form-label" for='local_level_id'>{{ __('ejalas::ejalas.local_level') }}</label>
                     <select wire:model='judicialEmployee.local_level_id' name='local_level_id' class="form-select">
@@ -22,15 +22,13 @@
                             <option value="{{ $id }}">{{ $value }}</option>
                         @endforeach
                     </select>
-                    {{-- <input wire:model='judicialEmployee.local_level_id' name='local_level_id' type='text'
-                        class='form-control' placeholder="{{ __('ejalas::ejalas.enter_local_level_id') }}"> --}}
                     <div>
                         @error('judicialEmployee.local_level_id')
                             <small class='text-danger'>{{ __($message) }}</small>
                         @enderror
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class='col-md-6'>
                 <div class='form-group'>
                     <label class="form-label" for='ward_id'>{{ __('ejalas::ejalas.ward') }}</label>
@@ -89,7 +87,7 @@
                 <div class='form-group'>
                     <label class="form-label"
                         for='join_date'>{{ __('ejalas::ejalas.ejalashemployeerestorationdate') }}</label>
-                    <input wire:model='judicialEmployee.join_date' name='join_date' type='date'
+                    <input wire:model='judicialEmployee.join_date' name='join_date' type='text'
                         class='form-control nepali-date' placeholder="{{ __('ejalas::ejalas.enter_join_date') }}">
                     <div>
                         @error('judicialEmployee.join_date')

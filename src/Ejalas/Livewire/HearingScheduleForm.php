@@ -7,6 +7,7 @@ use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Livewire\Component;
 use Src\Ejalas\DTO\HearingScheduleAdminDto;
+use Src\Ejalas\Enum\PlaceOfRegistration;
 use Src\Ejalas\Models\ComplaintRegistration;
 use Src\Ejalas\Models\HearingSchedule;
 use Src\Ejalas\Models\Party;
@@ -67,7 +68,9 @@ class HearingScheduleForm extends Component
                 $partyNames = $complaint->parties->pluck('name')->implode(', ');
                 return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
             });
-        $this->reconciliationCenters = ReconciliationCenter::whereNull('deleted_at')->pluck('reconciliation_center_title', 'id');
+
+        $this->reconciliationCenters = PlaceOfRegistration::getForWeb();
+
 
         if ($this->hearingSchedule->complaint_registration_id) {
             $this->getComplaintRegistration();

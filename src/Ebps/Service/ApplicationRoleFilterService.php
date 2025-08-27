@@ -11,41 +11,27 @@ use Src\Ebps\Models\MapApplyStep;
 class ApplicationRoleFilterService
 {
     /**
-     * Filter applications query based on current user's roles and step access
+     * Filter applications query based on current user's groups and step access
      */
-    public function filterApplicationsByUserRoles(Builder $query, $applicationType = null): Builder
+    public function filterApplicationsByUserGroups(Builder $query, $applicationType = null): Builder
     {
-        // Check if role filtering is enabled for this municipality
-        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
-            // Role filtering is disabled, return all applications
-            return $query;
-        }
-
-        // Role filtering is enabled, apply the strict filtering
+        // Role filtering is always enabled - no setting check needed
         $user = Auth::user();
         
         if (!$user) {
             return $query->whereRaw('1 = 0'); // Return no results if no user
         }
 
-        // Superadmin should see everything regardless of role filtering
+        // Superadmin should see everything
         if (isSuperAdmin()) {
             return $query;
         }
 
-        $userRoles = $user->getRoleNames()->toArray();
-        
-        
-        if (empty($userRoles)) {
-            return $query->whereRaw('1 = 0'); // Return no results if user has no roles
-        }
-
-        // Get steps that user can access (either submit or approve)
-        $accessibleSteps = MapStep::whereHas('stepRoles', function ($stepRoleQuery) use ($userRoles) {
-            $stepRoleQuery->active()
-                ->whereHas('role', function ($roleQuery) use ($userRoles) {
-                    $roleQuery->whereIn('name', $userRoles);
-                });
+        // Get steps that user can access (either submit or approve) based on groups
+        $accessibleSteps = MapStep::whereHas('mapPassGroupMapSteps', function ($stepGroupQuery) use ($user) {
+            $stepGroupQuery->whereHas('mapPassGroup.users', function ($userQuery) use ($user) {
+                $userQuery->where('user_id', $user->id);
+            });
         });
 
         if ($applicationType) {
@@ -78,11 +64,10 @@ class ApplicationRoleFilterService
     {
         // Get all defined steps for this application type, ordered by position
         $allSteps = MapStep::where('application_type', $application->application_type)
-            ->orderBy('form_position')
+            ->orderBy('position')
             ->get();
 
-         
-            
+        
         if ($allSteps->isEmpty()) {
             return null;
         }
@@ -92,7 +77,6 @@ class ApplicationRoleFilterService
             ->with('mapStep')
             ->get()
             ->keyBy('map_step_id');
-
         // Go through steps in order to find the current one
         foreach ($allSteps as $step) {
             $stepRecord = $applicationSteps->get($step->id);
@@ -130,11 +114,6 @@ class ApplicationRoleFilterService
             return true;
         }
 
-        // If role filtering is disabled, allow access
-        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
-            return true;
-        }
-
         $currentStep = $this->getCurrentStep($application);
         
         if (!$currentStep) {
@@ -160,12 +139,7 @@ class ApplicationRoleFilterService
             return true;
         }
 
-        // If role filtering is disabled, allow access
-        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
-            return true;
-        }
-
-        // Check if user has any role that can access this step (submit or approve)
+        // Check if user has any group that can access this step (submit or approve)
         return $step->canUserAccess($user);
     }
 
@@ -185,84 +159,54 @@ class ApplicationRoleFilterService
             return true;
         }
 
-        // If role filtering is disabled, allow action
-        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
-            return true;
-        }
-
         // Check if user can submit or approve this specific step
         return $step->canUserSubmit($user) || $step->canUserApprove($user);
     }
 
     /**
-     * Enhanced method to filter applications based on current step and user roles
+     * Enhanced method to filter applications based on current step and user groups
      */
     public function filterApplicationsByCurrentStepAccess(Builder $query, $applicationType = null): Builder
     {
-        // Check if role filtering is enabled for this municipality
-        if (!\Src\Ebps\Models\EbpsFilterSetting::isRoleFilteringEnabled()) {
-            // Role filtering is disabled, return all applications
-            return $query;
-        }
-
-        // Role filtering is enabled, apply the strict filtering
+        // Role filtering is always enabled - no setting check needed
         $user = Auth::user();
         
         if (!$user) {
             return $query->whereRaw('1 = 0'); // Return no results if no user
         }
 
-        // Superadmin should see everything regardless of role filtering
+        // Superadmin should see everything
         if (isSuperAdmin()) {
             return $query;
         }
 
-        $userRoles = $user->getRoleNames()->toArray();
-        
-        if (empty($userRoles)) {
-            return $query->whereRaw('1 = 0'); // Return no results if user has no roles
+        // Get all applications and filter them based on current step access
+        $allApplications = $query->get();
+        $accessibleApplicationIds = [];
+
+        foreach ($allApplications as $application) {
+            $currentStep = $this->getCurrentStep($application);
+            
+            // If no current step (all steps completed), skip this application
+            if (!$currentStep) {
+                continue;
+            }
+
+            // Check if user has access to the current step
+            $canSubmit = $currentStep->canUserSubmit($user);
+            $canApprove = $currentStep->canUserApprove($user);
+            
+            if ($canSubmit || $canApprove) {
+                $accessibleApplicationIds[] = $application->id;
+            }
         }
 
-        // Filter applications where user can access the current step
-        return $query->whereExists(function ($subQuery) use ($userRoles, $applicationType) {
-            $subQuery->selectRaw('1')
-                ->from('ebps_map_applies as current_app')
-                ->whereColumn('current_app.id', 'ebps_map_applies.id')
-                ->whereExists(function ($stepQuery) use ($userRoles, $applicationType) {
-                    $stepQuery->selectRaw('1')
-                        ->from('ebps_map_steps as current_step')
-                        ->where('current_step.application_type', $applicationType)
-                        ->whereExists(function ($roleQuery) use ($userRoles) {
-                            $roleQuery->selectRaw('1')
-                                ->from('ebps_step_roles as sr')
-                                ->whereColumn('sr.map_step_id', 'current_step.id')
-                                ->where('sr.is_active', true)
-                                ->whereExists(function ($userRoleQuery) use ($userRoles) {
-                                    $userRoleQuery->selectRaw('1')
-                                        ->from('roles as r')
-                                        ->whereColumn('r.id', 'sr.role_id')
-                                        ->whereIn('r.name', $userRoles);
-                                });
-                        })
-                        ->where(function ($currentStepQuery) {
-                            // This step is the current step (either not started or not accepted)
-                            $currentStepQuery->whereNotExists(function ($appliedStepQuery) {
-                                $appliedStepQuery->selectRaw('1')
-                                    ->from('ebps_map_apply_steps as applied')
-                                    ->whereColumn('applied.map_step_id', 'current_step.id')
-                                    ->whereColumn('applied.map_apply_id', 'current_app.id');
-                            })->orWhereExists(function ($pendingStepQuery) {
-                                $pendingStepQuery->selectRaw('1')
-                                    ->from('ebps_map_apply_steps as pending')
-                                    ->whereColumn('pending.map_step_id', 'current_step.id')
-                                    ->whereColumn('pending.map_apply_id', 'current_app.id')
-                                    ->where('pending.status', '!=', 'accepted');
-                            });
-                        })
-                        ->orderBy('current_step.form_position')
-                        ->limit(1);
-                });
-        });
+        // Return query filtered to only accessible applications
+        if (empty($accessibleApplicationIds)) {
+            return $query->whereRaw('1 = 0'); // No accessible applications
+        }
+
+        return $query->whereIn('ebps_map_applies.id', $accessibleApplicationIds);
     }
 
     /**
@@ -326,7 +270,7 @@ class ApplicationRoleFilterService
     }
 
     /**
-     * Get action buttons for an application based on user roles
+     * Get action buttons for an application based on user groups
      */
     public function getActionButtonsForApplication(MapApply $application, $user = null): array
     {
@@ -362,7 +306,7 @@ class ApplicationRoleFilterService
     {
         // Find steps that are pending or not yet created
         $allSteps = MapStep::where('application_type', $application->application_type)
-            ->orderBy('form_position')
+            ->orderBy('position')
             ->get();
 
         foreach ($allSteps as $step) {
@@ -434,11 +378,16 @@ class ApplicationRoleFilterService
             return $debug;
         }
         
-        $userRoles = $user->getRoleNames()->toArray();
-        $debug['user_roles'] = $userRoles;
+        $userGroups = $user->mapPassGroupUsers()->with('mapPassGroup')->get();
+        $debug['user_groups'] = $userGroups->map(function($userGroup) {
+            return [
+                'group_id' => $userGroup->mapPassGroup->id,
+                'group_title' => $userGroup->mapPassGroup->title,
+            ];
+        })->toArray();
         
-        if (empty($userRoles)) {
-            $debug['error'] = 'User has no roles assigned';
+        if ($userGroups->isEmpty()) {
+            $debug['error'] = 'User has no groups assigned';
             return $debug;
         }
         
@@ -447,7 +396,7 @@ class ApplicationRoleFilterService
         $debug['current_step'] = $currentStep ? [
             'id' => $currentStep->id,
             'title' => $currentStep->title,
-            'form_position' => $currentStep->form_position,
+            'position' => $currentStep->position,
         ] : null;
         
         if (!$currentStep) {
@@ -455,13 +404,14 @@ class ApplicationRoleFilterService
             return $debug;
         }
         
-        // Check step roles
-        $stepRoles = $currentStep->stepRoles()->active()->with('role')->get();
-        $debug['step_roles'] = $stepRoles->map(function($stepRole) {
+        // Check step groups
+        $stepGroups = $currentStep->mapPassGroupMapSteps()->with('mapPassGroup')->get();
+        $debug['step_groups'] = $stepGroups->map(function($stepGroup) {
             return [
-                'role_name' => $stepRole->role->name,
-                'role_type' => $stepRole->role_type,
-                'position' => $stepRole->position,
+                'group_id' => $stepGroup->mapPassGroup->id,
+                'group_title' => $stepGroup->mapPassGroup->title,
+                'type' => $stepGroup->type,
+                'position' => $stepGroup->position,
             ];
         })->toArray();
         
@@ -470,9 +420,10 @@ class ApplicationRoleFilterService
         $debug['can_submit'] = $this->canUserSubmitApplication($application, $user);
         $debug['can_approve'] = $this->canUserApproveApplication($application, $user);
         
-        // Check if any of user's roles match step roles
-        $stepRoleNames = $stepRoles->pluck('role.name')->toArray();
-        $debug['matching_roles'] = array_intersect($userRoles, $stepRoleNames);
+        // Check if any of user's groups match step groups
+        $userGroupIds = $userGroups->pluck('map_pass_group_id')->toArray();
+        $stepGroupIds = $stepGroups->pluck('map_pass_group_id')->toArray();
+        $debug['matching_groups'] = array_intersect($userGroupIds, $stepGroupIds);
         
         // Get step record status
         $stepRecord = $application->mapApplySteps()
@@ -481,5 +432,116 @@ class ApplicationRoleFilterService
         $debug['step_status'] = $stepRecord ? $stepRecord->status : 'not_created';
         
         return $debug;
+    }
+
+    /**
+     * Legacy method for backward compatibility
+     */
+    public function filterApplicationsByUserRoles(Builder $query, $applicationType = null): Builder
+    {
+        return $this->filterApplicationsByUserGroups($query, $applicationType);
+    }
+
+    /**
+     * Check if user is a submitter for the current step of an application
+     */
+    public function isUserSubmitterForCurrentStep(MapApply $application, $user = null): bool
+    {
+        $user = $user ?: Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        // Superadmin can always submit
+        if (isSuperAdmin()) {
+            return true;
+        }
+
+        $currentStep = $this->getCurrentStep($application);
+        
+        if (!$currentStep) {
+            return false;
+        }
+
+        return $currentStep->canUserSubmit($user);
+    }
+
+    /**
+     * Check if user is an approver for the current step of an application
+     */
+    public function isUserApproverForCurrentStep(MapApply $application, $user = null): bool
+    {
+        $user = $user ?: Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        // Superadmin can always approve
+        if (isSuperAdmin()) {
+            return true;
+        }
+
+        $currentStep = $this->getCurrentStep($application);
+        
+        if (!$currentStep) {
+            return false;
+        }
+
+        return $currentStep->canUserApprove($user);
+    }
+
+    /**
+     * Check if user can access the current step of an application
+     */
+    public function canUserAccessCurrentStep(MapApply $application, $user = null): bool
+    {
+        $user = $user ?: Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        // Superadmin can always access
+        if (isSuperAdmin()) {
+            return true;
+        }
+
+        $currentStep = $this->getCurrentStep($application);
+        
+        if (!$currentStep) {
+            return false;
+        }
+
+        return $currentStep->canUserAccess($user);
+    }
+
+    /**
+     * Get the type of access the user has for the current step (submitter, approver, or both)
+     */
+    public function getUserAccessTypeForCurrentStep(MapApply $application, $user = null): array
+    {
+        $user = $user ?: Auth::user();
+        
+        if (!$user) {
+            return ['submitter' => false, 'approver' => false];
+        }
+
+        // Superadmin has all access
+        if (isSuperAdmin()) {
+            return ['submitter' => true, 'approver' => true];
+        }
+
+        $currentStep = $this->getCurrentStep($application);
+        
+        if (!$currentStep) {
+            return ['submitter' => false, 'approver' => false];
+        }
+
+        return [
+            'submitter' => $currentStep->canUserSubmit($user),
+            'approver' => $currentStep->canUserApprove($user)
+        ];
     }
 } 

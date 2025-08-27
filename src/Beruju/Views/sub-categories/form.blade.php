@@ -15,14 +15,14 @@
     </nav>
     <div class="row g-6">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card rounded-0">
                 <div class="card-header d-flex justify-content-between">
                     @if (!isset($subCategory))
                         <h5 class="text-primary fw-bold mb-0">
                             {{ !isset($subCategory) ? __('beruju::beruju.create_sub_category') : __('beruju::beruju.edit_sub_category') }}</h5>
                     @endif
                     <div>
-                        <a href="{{ route('admin.beruju.sub-categories.index') }}" class="btn btn-info">
+                        <a href="{{ route('admin.beruju.sub-categories.index') }}" class="btn btn-info rounded-0">
                             <i class="bx bx-list-ol"></i>{{ __('beruju::beruju.back_to_list') }}
                         </a>
                     </div>

@@ -37,13 +37,9 @@ class MapStepForm extends Component
     public array $formSelects = [];
     public array $constructionTypeSelects = [];
     public array $constructionTypePosition = [];
-    public $reviewer;
-    public  $reviewer_position;
     public ?string $submitter = null;
-
-    public  $submitter_position = 0;
-
-    public $applicationTypes ;
+    public $submitter_position = 0;
+    public $applicationTypes;
 
     public function rules(): array
     {
@@ -54,12 +50,12 @@ class MapStepForm extends Component
             'mapStep.step_for' => ['required'],
             'mapStep.application_type' => ['required'],
             'approverSelects' => ['array'],
-            'approverPosition' => ['array'],
+            'approverPosition' => ['nullable'],
             'constructionTypeSelects' => ['array'],
-            'approverPosition.*' => ['numeric'],
-            'constructionTypePosition.*' => ['numeric'],
-            'reviewer' => ['nullable'],
-            'reviewer_position' => ['nullable', 'numeric'],
+            'approverPosition.*' => ['nullable'],
+            'constructionTypePosition.*' => ['nullable'],
+            'submitter' => ['nullable'],
+            'submitter_position' => ['nullable'],
         ];
 
         if ($this->isConsultant) {
@@ -86,12 +82,10 @@ class MapStepForm extends Component
         $this->constructionTypes = ConstructionType::whereNull('deleted_at')->get()->toArray();
         $this->applicationTypes = ApplicationTypeEnum::cases();
 
-
         if ($action === Action::UPDATE) {
             $this->loadConstructionData($mapStep);
             $this->loadFormData($mapStep);
             $this->loadApproverData($mapStep);
-            $this->loadReviwerData($mapStep);
             $this->loadSubmitterData($mapStep);
 
             $this->isPublic = $mapStep->is_public;
@@ -129,19 +123,7 @@ class MapStepForm extends Component
             $this->approverPosition[] = $approverRecords->pluck('position')->toArray();
         }
     }
-    private function loadReviwerData(MapStep $mapStep)
-    {
-        $reviewer = MapPassGroupMapStep::where('map_step_id', $mapStep->id)
-            ->where('type', 'reviewer')
-            ->get()
-            ->groupBy('map_pass_group_id');
 
-            foreach ($reviewer as $reviewerId => $reviewerRecords) {
-
-                $this->reviewer = $reviewerId;
-                $this->reviewer_position = $reviewerRecords->pluck('position')->toArray();
-            }
-    }
     private function loadSubmitterData(MapStep $mapStep)
     {
         $submitter = MapPassGroupMapStep::where('map_step_id', $mapStep->id)
@@ -149,20 +131,18 @@ class MapStepForm extends Component
             ->get()
             ->groupBy('map_pass_group_id');
 
-            if ($submitter->isEmpty()) {
-                $this->isConsultant = true;
-            } else {
-                foreach ($submitter as $submitterId => $submitterRecords) {
-                    $this->submitter = $submitterId;
-                    $this->submitter_position = $submitterRecords->pluck('position')->toArray();
-                }
+        if ($submitter->isEmpty()) {
+            $this->isConsultant = true;
+        } else {
+            foreach ($submitter as $submitterId => $submitterRecords) {
+                $this->submitter = $submitterId;
+                $this->submitter_position = $submitterRecords->pluck('position')->toArray();
             }
+        }
     }
-
 
     public function checkFormSubmitter()
     {
-
         if ($this->mapStep->form_submitter === 'house_owner' || $this->mapStep->form_submitter === 'consultant_supervisor') {
             $this->isConsultant = true;
         } else {
@@ -174,70 +154,78 @@ class MapStepForm extends Component
     {
         $this->approverSelects[] = '';
         $index = array_key_last($this->approverSelects);
-
     }
 
     public function removeApprover($index)
     {
         unset($this->approverSelects[$index]);
         $this->approverSelects = array_values($this->approverSelects);
-
     }
+
     public function addForm()
     {
         $this->formSelects[] = '';
         $index = array_key_last($this->formSelects);
-
     }
 
     public function removeForm($index)
     {
         unset($this->formSelects[$index]);
         $this->formSelects = array_values($this->formSelects);
-
     }
+
     public function addConstructionType()
     {
         $this->constructionTypeSelects[] = '';
         $index = array_key_last($this->constructionTypeSelects);
-
     }
 
     public function removeConstructionType($index)
     {
         unset($this->constructionTypeSelects[$index]);
         $this->constructionTypeSelects = array_values($this->constructionTypeSelects);
-
     }
+
     public function save()
     {
-        $this->validate();
+        try {
+            // Define your validation rules
+            $this->validate();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Catch validation exceptions and dd the errors
+            dd($e->errors()); // Returns an array of validation error messages
+        } catch (\Exception $e) {
+            // Catch any other exceptions and dd the message
+            dd($e->getMessage());
+        }
 
         $this->mapStep->can_skip = $this->canSkip;
         $this->mapStep->is_public = $this->isPublic;
         $dto = MapStepAdminDto::fromLiveWireModel($this->mapStep);
         $service = new MapStepAdminService();
+        
         DB::beginTransaction();
-        try{
-            switch ($this->action){
-            case Action::CREATE:
-                $this->createMapStep($service, $dto);
-                DB::commit();
-                $this->successFlash(__('ebps::ebps.map_step_created_successfully'));
-                return redirect()->route('admin.ebps.map_steps.index');
-                break;
-            case Action::UPDATE:
-                $this->updateMapStep($service, $dto);
-                DB::commit();
-                $this->successFlash(__('ebps::ebps.map_step_updated_successfully'));
-                return redirect()->route('admin.ebps.map_steps.index');
-                break;
-            default:
-                return redirect()->route('admin.ebps.map_steps.index');
-                break;
+        try {
+            switch ($this->action) {
+                case Action::CREATE:
+                    $this->createMapStep($service, $dto);
+                    DB::commit();
+                    $this->successFlash(__('ebps::ebps.map_step_created_successfully'));
+                    return redirect()->route('admin.ebps.map_steps.index');
+                    break;
+                case Action::UPDATE:
+                    $this->updateMapStep($service, $dto);
+                    DB::commit();
+                    $this->successFlash(__('ebps::ebps.map_step_updated_successfully'));
+                    return redirect()->route('admin.ebps.map_steps.index');
+                    break;
+                default:
+                    return redirect()->route('admin.ebps.map_steps.index');
+                    break;
             }
         } catch (\Exception $e) {
             logger($e);
+            dd($e);
             DB::rollBack();
             $this->errorFlash(__('ebps::ebps.an_error_occurred_during_operation_please_try_again_later'));
         }
@@ -252,7 +240,10 @@ class MapStepForm extends Component
 
     private function updateMapStep($service, $dto)
     {
-        $this->mapStep->users()->detach();
+        // Remove old group assignments
+        $this->mapStep->mapPassGroupMapSteps()->delete();
+        
+        // Remove old construction type and form assignments
         $this->mapStep->constructionTypes()->detach();
         $this->mapStep->form()->detach();
 
@@ -263,26 +254,64 @@ class MapStepForm extends Component
 
     private function syncRelations($mapStep)
     {
+        // Sync forms
         $mapStep->form()->sync($this->formSelects);
 
+        // Sync construction types
         $mapStep->constructionTypes()->sync($this->prepareConstructionData());
-        $mapStep->users()->sync($this->prepareApproverData());
+        
+        // Sync group assignments using the new group-based system
+        $this->syncGroupAssignments($mapStep);
+    }
 
-        if ($this->reviewer) {
-            $mapStep->users()->syncWithoutDetaching([
-                $this->reviewer => [
-                    'position' => $this->reviewer_position ?? 0,
-                    'type' => 'reviewer'
-                ]
-            ]);
+    private function syncGroupAssignments($mapStep)
+    {
+        // Clear existing group assignments
+        $mapStep->mapPassGroupMapSteps()->delete();
+
+        // Add approver groups
+        foreach ($this->approverSelects as $index => $groupId) {
+            if ($groupId && !empty($groupId)) {
+                // Get the position value - handle both array and single value cases
+                $position = $index + 1; // Default position
+                if (isset($this->approverPosition[$index])) {
+                    if (is_array($this->approverPosition[$index])) {
+                        // If it's an array, take the first value
+                        $position = $this->approverPosition[$index][0] ?? ($index + 1);
+                    } else {
+                        // If it's a single value
+                        $position = $this->approverPosition[$index];
+                    }
+                }
+                
+                MapPassGroupMapStep::create([
+                    'map_step_id' => $mapStep->id,
+                    'map_pass_group_id' => $groupId,
+                    'type' => 'approver',
+                    'position' => (int) $position,
+                ]);
+            }
         }
 
-        if ($this->submitter) {
-            $mapStep->users()->syncWithoutDetaching([
-                $this->submitter => [
-                    'position' => $this->submitter_position ?? 0,
-                    'type' => 'submitter'
-                ]
+        // Add submitter group (only one allowed)
+        if ($this->submitter && !empty($this->submitter)) {
+            // Get the position value for submitter - handle both array and single value cases
+            $position = 1; // Default position
+            if (isset($this->submitter_position)) {
+                if (is_array($this->submitter_position)) {
+                    // If it's an array, take the first value
+                    $position = $this->submitter_position[0] ?? 1;
+                } else {
+                    // If it's a single value
+                    $position = $this->submitter_position;
+                }
+            }
+            
+            MapPassGroupMapStep::create([
+                'map_step_id' => $mapStep->id,
+                'map_pass_group_id' => $this->submitter,
+                'type' => 'submitter',
+                'position' => (int) $position,
             ]);
         }
     }
@@ -291,20 +320,22 @@ class MapStepForm extends Component
     {
         $constructionData = [];
         foreach ($this->constructionTypeSelects as $index => $constructionTypeId) {
-            $constructionData[$constructionTypeId] = ['position' => $this->constructionTypePosition[$index] ?? 0];
+            if ($constructionTypeId && !empty($constructionTypeId)) {
+                // Get the position value - handle both array and single value cases
+                $position = 0;
+                if (isset($this->constructionTypePosition[$index])) {
+                    if (is_array($this->constructionTypePosition[$index])) {
+                        // If it's an array, take the first value
+                        $position = $this->constructionTypePosition[$index][0] ?? 0;
+                    } else {
+                        // If it's a single value
+                        $position = $this->constructionTypePosition[$index];
+                    }
+                }
+                
+                $constructionData[$constructionTypeId] = ['position' => (int) $position];
+            }
         }
         return $constructionData;
-    }
-
-    private function prepareApproverData()
-    {
-        $approverData = [];
-        foreach ($this->approverSelects as $index => $approverId) {
-            $approverData[$approverId] = [
-                'position' => $this->approverPosition[$index] ?? 0,
-                'type' => 'approver'
-            ];
-        }
-        return $approverData;
     }
 }

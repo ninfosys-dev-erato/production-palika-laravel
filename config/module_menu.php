@@ -118,7 +118,7 @@ return [
         'route' => 'admin.beruju.dashboard.dashboard',
         'icon' => 'bx bx-book text-orange',
         'logo' => 'RajaswaSankalanIcon.png',
-        'label' => 'Beruju System',
+        'label' => 'Beruju Management System',
         'perm' => 'brj access',
     ],
 ];

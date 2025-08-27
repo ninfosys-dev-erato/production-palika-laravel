@@ -51,8 +51,7 @@ class ReconciliationCenterTable extends DataTableComponent
         $columns = [
             Column::make(__('ejalas::ejalas.ejalasheconciliationcentername'), "reconciliation_center_title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.surname'), "surname")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.title'), "title")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.subtile'), "subtile")->sortable()->searchable()->collapseOnTablet(),
+
             Column::make(__('ejalas::ejalas.ward_no'), "ward_id")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.established_date'), "established_date")->sortable()->searchable()->collapseOnTablet(),
         ];

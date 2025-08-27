@@ -39,7 +39,7 @@ class JudicialEmployeeTable extends DataTableComponent
     {
         return JudicialEmployee::query()
             ->select('*')
-            ->with(['localLevel', 'level', 'designation'])
+            ->with(['level', 'designation'])
             ->where('jms_judicial_employees.deleted_at', null)
             ->where('jms_judicial_employees.deleted_by', null)
             ->orderBy('jms_judicial_employees.created_at', 'DESC'); // Select some things
@@ -53,7 +53,6 @@ class JudicialEmployeeTable extends DataTableComponent
     {
         $columns = [
             Column::make(__('ejalas::ejalas.ejalashemployeename'), "name")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.local_level'), "localLevel.title")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.ward'), "ward_id")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.level'), "level.title_en")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.designation'), "designation.title_en")->sortable()->searchable()->collapseOnTablet(),

@@ -4,13 +4,17 @@ namespace Src\Beruju\Controllers;
 
 use App\Enums\Action;
 use App\Http\Controllers\Controller;
+use App\Traits\HelperDate;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Src\Beruju\Models\BerujuEntry;
+use Src\Beruju\Enums\BerujuStatusEnum;
+use Src\Beruju\Enums\BerujuCategoryEnum;
 
 class BerujuDashboardController extends Controller implements HasMiddleware
 {
+    use HelperDate;
     public static function middleware()
     {
         return [

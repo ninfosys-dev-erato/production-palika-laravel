@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Ejalas\Enum\PlaceOfRegistration;
 use Src\Settings\Models\FiscalYear;
 
 class CourtNotice extends Model
@@ -39,7 +40,7 @@ class CourtNotice extends Model
             'reference_no' => 'string',
             'notice_date' => 'string',
             'notice_time' => 'string',
-            'reconciliation_center_id' => 'string',
+            'reconciliation_center_id' => PlaceOfRegistration::class,
             'id' => 'int',
             'created_at' => 'datetime',
             'created_by' => 'string',
@@ -64,9 +65,5 @@ class CourtNotice extends Model
     public function fiscalYear()
     {
         return $this->belongsTo(FiscalYear::class, 'fiscal_year_id', 'id');
-    }
-    public function reconciliationCenter()
-    {
-        return $this->belongsTo(ReconciliationCenter::class, 'reconciliation_center_id', 'id');
     }
 }

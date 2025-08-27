@@ -42,7 +42,7 @@ return [
     'add_map_step' => 'Add Map Step',
     'create_map_step' => 'Create Map Step',
     'update_map_step' => 'Update Map Step',
-    'ward_tole'=>'Ward and Tole',
+    'ward_tole' => 'Ward and Tole',
     'map_step_list' => 'Map Step List',
     'mapapply' => 'MapApply',
     'create_mapapply' => 'Create MapApply',
@@ -655,19 +655,19 @@ return [
     'businessregistrationbusinessregistrationdocument_saved_successfully' => 'businessregistration::businessregistration.document_saved_successfully',
     'businessregistrationbusinessregistrationdocument_saving_failed' => 'businessregistration::businessregistration.document_saving_failed',
     'more_documents' => 'More Documents',
-    'add_documents' =>'Add Dcouments',
+    'add_documents' => 'Add Dcouments',
     'document_status' => 'Document Status',
     'enter_document_name' => 'Enter Document Name',
     'other_documents' => 'Other Documents',
     'no_documents_uploaded' => 'No Documents Uploaded',
-    
+
     // Tax Clearance related translations
     'tax_clearances' => 'Tax Clearances',
     'tax_clearances_and_renewal' => 'Tax Clearances and Renewal',
     'tax_clearance_document' => 'Tax Clearance Document',
     'no_tax_clearances_found' => 'No Tax Clearances Found',
     'upload_your_first_tax_clearance_above' => 'Upload your first tax clearance document above',
-    
+
     'year' => 'Year',
     'upload_date' => 'Upload Date',
     'view_document' => 'View Document',
@@ -702,4 +702,29 @@ return [
     'are_you_sure_you_want_to_delete_this_file' => 'Are you sure you want to delete this file?',
     'delete' => 'Delete',
     'actions' => 'Actions',
+    // Additional Form Settings
+    'additional_form_settings' => 'Additional Form Settings',
+    'create_additional_form_setting' => 'Create Additional Form Setting',
+    'edit_additional_form_setting' => 'Edit Additional Form Setting',
+    'additional_form_setting_details' => 'Additional Form Setting Details',
+    'additional_form_created_successfully' => 'Additional form setting created successfully',
+    'additional_form_updated_successfully' => 'Additional form setting updated successfully',
+    'additional_form_deleted_successfully' => 'Additional form setting deleted successfully',
+    'additional_form_not_found' => 'Additional form setting not found',
+    'additional_form_activated_successfully' => 'Additional form setting activated successfully',
+    'additional_form_deactivated_successfully' => 'Additional form setting deactivated successfully',
+    'something_went_wrong_while_updating_status' => 'Something went wrong while updating status',
+    'enter_name' => 'Enter name',
+    'enter_form_id' => 'Enter form ID',
+    'active' => 'Active',
+
+    'add_additional_form_setting' => 'Add Additional Form Setting',
+
+    'additional_form_setting' => 'Additional Form Setting',
+    'additional_form_setting_list' => 'Additional Form Setting List',
+
+    'additional_form_setting_created_successfully' => 'Additional Form Setting Created Successfully',
+    'additional_form_setting_updated_successfully' => 'Additional Form Setting Updated Successfully',
+    'additional_form_setting_deleted_successfully' => 'Additional Form Setting Deleted Successfully',
+
 ];

@@ -476,7 +476,7 @@
                                 </div>
 
 
-                                {{-- @if ($action == Action::CREATE && !$isCustomer)
+                                @if ($action === Action::CREATE && !$isCustomer)
                                     <div class="col-md-12">
                                         <label class="form-label-peaceful d-block">
                                             {{ __('businessregistration::businessregistration.do_you_want_to_enter_custom_registration_number?') }}
@@ -503,9 +503,10 @@
                                             <div class="invalid-message">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                @endif --}}
+                                @endif
                                 @if (
-                                    $businessRegistrationType == BusinessRegistrationType::ARCHIVING ||
+                                    $showRegistrationDetailsFields ||
+                                        $businessRegistrationType == BusinessRegistrationType::ARCHIVING ||
                                         $businessRegistration->registration_type == BusinessRegistrationType::ARCHIVING)
                                     <!-- Registration Date -->
                                     <div class="col-md-6">

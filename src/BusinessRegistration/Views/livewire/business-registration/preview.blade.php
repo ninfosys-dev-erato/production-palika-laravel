@@ -39,6 +39,10 @@
                         {{ __('businessregistration::businessregistration.print') }}
                     </button>
                 @endif
+                <button class="btn btn-outline-primary" type="button" wire:click="pratilipiEntry">
+                    <i class="bx bx-file"></i>
+                    {{ __('businessregistration::businessregistration.pratilipi') }}
+                </button>
             </div>
 
         </div>
@@ -62,19 +66,42 @@
             </div>
         </div>
 
+        <div wire:ignore class="modal fade" id="indexModal" tabindex="-1" aria-labelledby="ModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLabel">
+                            {{ __('businessregistration::businessregistration.create_pratilipi') }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetForm()"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="damage_reason" class="form-label-peaceful">
+                                    {{ __('businessregistration::businessregistration.damage_reason') }}
+                                </label>
+                                <input wire:model="certificatePratilipiLog.damage_reason" name="damage_reason"
+                                    type="text" class="form-control" id="damage_reason"
+                                    placeholder="{{ __('businessregistration::businessregistration.damage_reason') }}">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-start mt-3">
+                            <button class="btn btn-primary" type="button" wire:click="savePratilipiEntry">
+                                {{ __('businessregistration::businessregistration.save') }}
+                            </button>
+                            <button class="btn btn-danger ms-2" type="button" data-bs-dismiss="modal">
+                                {{ __('businessregistration::businessregistration.cancel') }}
+                            </button>
+                        </div>
 
-        {{-- <div class="col-md-12">
-            <div style="border-radius: 10px; text-align: center; padding: 20px;">
-
-
-                <div id="printContent" class="a4-container">
-                    <style>
-                        {{ $style }}
-                    </style>
-                    {!! $template !!}
+                    </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
+
     </div>
 
     <style>
@@ -89,27 +116,29 @@
             text-align: left;
             position: relative;
         }
-
-        /* Print Styling */
-        /* @media print {
-            body {
-                background: white !important;
-            }
-
-            .btn {
-                display: none;
-            }
-
-            .a4-container {
-                width: 210mm;
-                height: 297mm;
-                box-shadow: none;
-                margin: 0;
-                padding: 20mm;
-                page-break-after: always;
-            }
-        } */
     </style>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('close-modal', () => {
+                $('#indexModal').modal('hide');
+                $('.modal-backdrop').remove();
+            });
+        });
+
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('open-modal', () => {
+                var modal = new bootstrap.Modal(document.getElementById('indexModal'));
+                modal.show();
+            });
+        });
+
+        function resetForm() {
+            Livewire.dispatch('reset-form');
+        }
+        document.getElementById('indexModal').addEventListener('hidden.bs.modal', () => {
+            Livewire.dispatch('reset-form');
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 

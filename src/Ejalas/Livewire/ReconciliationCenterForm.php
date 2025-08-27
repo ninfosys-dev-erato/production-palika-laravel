@@ -22,8 +22,7 @@ class ReconciliationCenterForm extends Component
         return [
             'reconciliationCenter.reconciliation_center_title' => ['required'],
             'reconciliationCenter.surname' => ['required'],
-            'reconciliationCenter.title' => ['nullable'],
-            'reconciliationCenter.subtile' => ['nullable'],
+
             'reconciliationCenter.ward_id' => ['required'],
             'reconciliationCenter.established_date' => ['required'],
         ];
