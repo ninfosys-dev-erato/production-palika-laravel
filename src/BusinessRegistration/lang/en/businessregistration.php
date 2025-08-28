@@ -413,6 +413,7 @@ return [
     'Search' => 'Search',
     'search' => 'Search',
     'Enter company name' => 'Enter company name',
+    'registration_type_id_is_required' => 'Registration type id is required',
 
 
     'name' => 'Name',

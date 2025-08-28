@@ -740,11 +740,10 @@ class BusinessDeRegistrationForm extends Component
 
     public function save()
     {
-
+        $this->validate();
         DB::beginTransaction();
         try {
 
-            $this->validate();
             $this->businessDeRegistration['data'] = $this->getFormattedData();
             $this->businessDeRegistration['application_date_en'] = $this->bsToAd($this->businessDeRegistration['application_date']);
             $this->businessDeRegistration['brs_registration_data_id'] = $this->businessRegistration->id;
@@ -767,6 +766,7 @@ class BusinessDeRegistrationForm extends Component
             }
         } catch (\Throwable $e) {
             DB::rollBack();
+           
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }

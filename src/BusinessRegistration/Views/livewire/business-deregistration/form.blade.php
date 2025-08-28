@@ -624,10 +624,9 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @error('businessRegistration.registration_type_id')
-                                                <div class="invalid-feedback">
-                                                    {{ $errors->first('businessRegistration.registration_type_id') }}
-                                                </div>
+
+                                            @error('businessDeRegistration.registration_type_id')
+                                                <div class="invalid-message">{{ $message }}</div>
                                             @enderror
                                         </div>
                                         <div class="divider divider-primary text-start text-primary">
@@ -649,6 +648,9 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                @error('businessDeRegistration.fiscal_year')
+                                                    <div class="invalid-message">{{ $message }}</div>
+                                                @enderror
 
                                             </div>
                                             <div class="col-md-6">
@@ -658,6 +660,9 @@
                                                     name="application_date" type="text"
                                                     class="form-control nepali-date"
                                                     placeholder="{{ __('businessregistration::businessregistration.application_date') }}">
+                                                @error('businessDeRegistration.application_date')
+                                                    <div class="invalid-message">{{ $message }}</div>
+                                                @enderror
                                             </div>
 
                                         </div>
