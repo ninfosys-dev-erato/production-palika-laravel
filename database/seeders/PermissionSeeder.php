@@ -47,6 +47,7 @@ class PermissionSeeder extends Seeder
             // -------------------
             // BUSINESS REGISTRATION MODULE
             // -------------------
+            ['name' => 'business_registration status', 'guard' => 'web'],
             ['name' => 'business_registration access', 'guard' => 'web'],
             ['name' => 'business_registration create', 'guard' => 'web'],
             ['name' => 'business_registration delete', 'guard' => 'web'],
