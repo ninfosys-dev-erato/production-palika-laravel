@@ -108,7 +108,7 @@ class BusinessRegistrationShow extends Component
     public function sendForPayment()
     {
         $this->validate([
-            'amount' => 'required|numeric|min:0',
+            'amount' => 'required',
         ]);
         $this->businessRegistration->amount = $this->amount;
         $this->businessRegistration->application_status = ApplicationStatusEnum::SENT_FOR_PAYMENT->value;

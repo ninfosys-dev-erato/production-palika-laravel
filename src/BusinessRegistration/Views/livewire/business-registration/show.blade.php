@@ -89,7 +89,7 @@
                                 <a href="{{ App\Facades\FileFacade::getTemporaryUrl(
                                     path: config('src.BusinessRegistration.businessRegistration.registration'),
                                     filename: $businessRegistration->rentagreement,
-                                    disk: 'local',
+                                    disk: getStorageDisk('private'),
                                 ) }}"
                                     target="_blank">
                                     {{ __('businessregistration::businessregistration.view_uploaded_file') }}

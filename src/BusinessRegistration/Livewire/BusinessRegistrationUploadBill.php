@@ -35,7 +35,7 @@ class BusinessRegistrationUploadBill extends Component
 
     public function uploadBill()
     {
-        try {  
+        try {
 
             $path = $this->businessRegistration->bill;
             if ($this->bill) {
@@ -43,7 +43,7 @@ class BusinessRegistrationUploadBill extends Component
                     config('src.BusinessRegistration.businessRegistration.bill'),
                     '',
                     $this->bill,
-                    'local',
+                    getStorageDisk('private'),
                 );
             }
 
