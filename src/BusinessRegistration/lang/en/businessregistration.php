@@ -411,6 +411,7 @@ return [
     'Remove Personal Info' => 'Remove Personal Info',
     'Add New Personal Info' => 'Add New Personal Info',
     'Search' => 'Search',
+    'search' => 'Search',
     'Enter company name' => 'Enter company name',
 
 

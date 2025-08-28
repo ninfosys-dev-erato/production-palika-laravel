@@ -45,7 +45,7 @@
                     $fileUrl = customFileAsset(
                         config('src.BusinessRegistration.businessRegistration.bill'),
                         $businessRenewal->payment_receipt,
-                        'local',
+                        getStorageDisk('private'),
                         'tempUrl',
                     );
                 @endphp
