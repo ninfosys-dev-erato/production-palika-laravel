@@ -12,25 +12,25 @@ use Src\Settings\Models\Form;
 
 class MapStep extends Model
 {
-    use HasFactory,LogsActivity;
+    use HasFactory, LogsActivity;
 
     protected $table = 'ebps_map_steps';
 
     /**
-    * @property int $title
-    * @property bool $is_public
-    * @property bool $can_skip
-    * @property string $form_submitter
-    * @property string $form_position
-    * @property string $step_for
-    * @property string $application_type
-    * @property int $created_by
-    * @property int $updated_by
-    * @property int $deleted_by
-    * @property \Carbon\Carbon|null $created_at
-    * @property \Carbon\Carbon|null $updated_at
-    * @property \Carbon\Carbon|null $deleted_at
-    */
+     * @property int $title
+     * @property bool $is_public
+     * @property bool $can_skip
+     * @property string $form_submitter
+     * @property string $form_position
+     * @property string $step_for
+     * @property string $application_type
+     * @property int $created_by
+     * @property int $updated_by
+     * @property int $deleted_by
+     * @property \Carbon\Carbon|null $created_at
+     * @property \Carbon\Carbon|null $updated_at
+     * @property \Carbon\Carbon|null $deleted_at
+     */
     protected $fillable = [
         'title',
         'is_public',
@@ -44,10 +44,12 @@ class MapStep extends Model
         'deleted_at',
         'deleted_by',
         'updated_at',
-        'updated_by'
+        'updated_by',
+        'position'
     ];
 
-    public function casts():array{
+    public function casts(): array
+    {
         return [
             'title' => 'string',
             'is_public' => 'string',
@@ -63,6 +65,7 @@ class MapStep extends Model
             'updated_by' => 'string',
             'deleted_at' => 'datetime',
             'deleted_by' => 'string',
+            'position' => 'int',
         ];
     }
 
@@ -73,39 +76,39 @@ class MapStep extends Model
             ->logOnlyDirty()
             ->setDescriptionForEvent(fn(string $eventName) => "This MapStep has been {$eventName}");
     }
-    
+
     public function form(): BelongsToMany
     {
         return $this->belongsToMany(Form::class, 'ebps_form_map_step');
     }
-    
+
     public function constructionTypes(): BelongsToMany
     {
         return $this->belongsToMany(ConstructionType::class, 'ebps_construction_type_map_step');
     }
-    
+
     // Group-based relationships
     public function mapPassGroups(): BelongsToMany
     {
         return $this->belongsToMany(MapPassGroup::class, 'ebps_map_pass_group_map_step', 'map_step_id', 'map_pass_group_id')
-                    ->withPivot('type', 'position')
-                    ->withTimestamps();
+            ->withPivot('type', 'position')
+            ->withTimestamps();
     }
 
     public function submitterGroups(): BelongsToMany
     {
         return $this->belongsToMany(MapPassGroup::class, 'ebps_map_pass_group_map_step', 'map_step_id', 'map_pass_group_id')
-                    ->withPivot('type', 'position')
-                    ->wherePivot('type', 'submitter')
-                    ->orderBy('position');
+            ->withPivot('type', 'position')
+            ->wherePivot('type', 'submitter')
+            ->orderBy('position');
     }
 
     public function approverGroups(): BelongsToMany
     {
         return $this->belongsToMany(MapPassGroup::class, 'ebps_map_pass_group_map_step', 'map_step_id', 'map_pass_group_id')
-                    ->withPivot('type', 'position')
-                    ->wherePivot('type', 'approver')
-                    ->orderBy('position');
+            ->withPivot('type', 'position')
+            ->wherePivot('type', 'approver')
+            ->orderBy('position');
     }
 
     public function mapPassGroupMapSteps(): HasMany
