@@ -16,12 +16,13 @@
                     <h5 class="text-primary fw-bold mb-0">
                         {{ __('ebps::ebps.building_registration') }}
                     </h5>
-
-                    <div>
-                        <a href="{{ route('organization.ebps.building-registrations.create') }}" class="btn btn-info"><i
-                                class="bx bx-plus"></i>
-                            {{ __('ebps::ebps.add_building_registration') }}</a>
-                    </div>
+                    @if (!config('settings.hide_button'))
+                        <div>
+                            <a href="{{ route('organization.ebps.building-registrations.create') }}"
+                                class="btn btn-info"><i class="bx bx-plus"></i>
+                                {{ __('ebps::ebps.add_building_registration') }}</a>
+                        </div>
+                    @endif
 
                 </div>
                 <div class="card-body">
