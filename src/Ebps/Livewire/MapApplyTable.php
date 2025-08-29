@@ -17,7 +17,7 @@ use Src\Ebps\Exports\MapAppliesExport;
 use Src\Ebps\Models\MapApply;
 use Src\Ebps\Service\MapApplyAdminService;
 use Src\Ebps\Service\ApplicationRoleFilterService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 
 class MapApplyTable extends DataTableComponent
 {

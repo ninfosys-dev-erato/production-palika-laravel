@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\GrantManagement\Exports\GrantManagementExport;
 use Src\GrantManagement\Models\EnterpriseFarmer;
 use Src\GrantManagement\Service\EnterpriseFarmerAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class EnterpriseFarmerTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = EnterpriseFarmer::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

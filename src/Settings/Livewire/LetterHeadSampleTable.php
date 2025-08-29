@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Settings\Models\LetterHeadSample;
 use Src\Settings\Service\LetterHeadSampleAdminService;
 
 class LetterHeadSampleTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = LetterHeadSample::class;
     public array $bulkActions = [

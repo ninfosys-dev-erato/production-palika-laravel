@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 use Src\TaskTracking\Exports\CriteriaExport;
 use Src\TaskTracking\Models\Criterion;
 use Src\TaskTracking\Service\CriterionAdminService;
 
 class CriterionTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Criterion::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

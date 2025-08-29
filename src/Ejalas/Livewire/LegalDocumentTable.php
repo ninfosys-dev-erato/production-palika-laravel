@@ -14,7 +14,7 @@ use Src\Ejalas\Service\LegalDocumentAdminService;
 
 class LegalDocumentTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable, HelperDate;
+    use SessionFlash, HelperDate;
     protected $model = LegalDocument::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

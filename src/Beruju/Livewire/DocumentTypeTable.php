@@ -10,13 +10,13 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 use Src\Beruju\Models\DocumentType;
 use Illuminate\Database\Eloquent\Builder;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 use Src\Beruju\Service\DocumentTypeAdminService;
 use Illuminate\Support\Str;
 
 class DocumentTypeTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = DocumentType::class;
     public array $bulkActions = [

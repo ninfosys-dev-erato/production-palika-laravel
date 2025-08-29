@@ -14,11 +14,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\TokenTracking\Exports\TokenTrackingExport;
 use Src\TokenTracking\Models\RegisterTokenLog;
 use Src\TokenTracking\Service\RegisterTokenLogAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 
 class RegisterTokenLogTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = RegisterTokenLog::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

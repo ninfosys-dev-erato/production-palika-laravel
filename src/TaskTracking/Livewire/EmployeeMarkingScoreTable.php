@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 use Src\EmployeeMarkingScores\Exports\EmployeeMarkingScoresExport;
 use Src\TaskTracking\Models\EmployeeMarkingScore;
 use Src\TaskTracking\Service\EmployeeMarkingScoreAdminService;
 
 class EmployeeMarkingScoreTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = EmployeeMarkingScore::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

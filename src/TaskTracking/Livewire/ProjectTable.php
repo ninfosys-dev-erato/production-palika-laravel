@@ -14,11 +14,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\TaskTracking\Exports\ProjectsExport;
 use Src\TaskTracking\Models\Project;
 use Src\TaskTracking\Service\ProjectAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 
 class ProjectTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = Project::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

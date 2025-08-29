@@ -14,11 +14,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\GrantManagement\Exports\GrantManagementExport;
 use Src\GrantManagement\Models\EnterpriseType;
 use Src\GrantManagement\Service\EnterpriseTypeAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 
 class EnterpriseTypeTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
     protected $model = EnterpriseType::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

@@ -58,6 +58,7 @@ class MapApplyForm extends Component
     public $uploadedImage;
     public $mapDocuments;
     public $uploadedFiles = [];
+    public $uploadedFilesUrls = [];
     public $customer_id;
     public bool $openModal = false;
     public bool $isModalForm = true;
@@ -73,6 +74,7 @@ class MapApplyForm extends Component
     public $houseOwnerLocalBodies = [];
     public $houseOwnerWards = [];
     public $houseOwnerPhoto;
+    public $houseOwnerPhotoUrl;
     public $usageOptions;
     public $buildingStructures;
     public $documents = [];
@@ -80,6 +82,7 @@ class MapApplyForm extends Component
     public $organizations;
     public $formerLocalBodies;
     public $formerWards;
+    public $uploadedImageUrl;
 
     public function rules(): array
     {
@@ -316,6 +319,11 @@ class MapApplyForm extends Component
 
             $this->houseOwnerDetail = HouseOwnerDetail::where('id', $this->mapApply->house_owner_id)->first();
             $this->houseOwnerPhoto = $this->houseOwnerDetail->photo;
+            $this->houseOwnerPhotoUrl = FileFacade::getTemporaryUrl(
+                path: config('src.Ebps.ebps.path'),
+                filename: $this->houseOwnerDetail->photo,
+                disk: getStorageDisk('private')
+            );
             $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->whereNotNull('map_document_id')->get();
             $this->documents = DocumentFile::where(
                 'map_apply_id',
@@ -336,6 +344,11 @@ class MapApplyForm extends Component
 
             foreach ($storedDocuments as $index => $document) {
                 $this->uploadedFiles[$index] = $document->file;
+                $this->uploadedFilesUrls[$index] = FileFacade::getTemporaryUrl(
+                    path: config('src.Ebps.ebps.path'),
+                    filename: $document->file,
+                    disk: getStorageDisk('private')
+                );
                 $this->mapDocuments[$index] = ['title' => $document->title];
             }
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
@@ -354,9 +367,58 @@ class MapApplyForm extends Component
             $this->fileUpload($index);
         }
 
+        // Handle houseOwnerPhoto file upload
+        if ($propertyName === 'houseOwnerPhoto') {
+            $this->handleFileUpload($value, 'photo', null, 'houseOwner');
+        }
+
+        // Handle uploadedImage file upload
+        if ($propertyName === 'uploadedImage') {
+            $this->handleFileUpload($value, 'signature', null, 'signature');
+        }
+
+        // Handle uploadedFiles file upload
+        if (preg_match('/^uploadedFiles\.(\d+)$/', $propertyName, $matches)) {
+            $index = (int) $matches[1];
+            $this->handleFileUpload($value, 'file', $index, 'uploadedFiles');
+        }
+
         // Handle former local body changes
         if ($propertyName === 'customerLandDetail.former_local_body') {
             $this->loadFormerWards();
+        }
+    }
+
+    private function handleFileUpload($file, $field, $index = null, $target = 'houseOwner')
+    {
+        if (!$file) return;
+
+        if (is_string($file)) {
+            $filename = $file;
+        } else {
+            $filename = FileFacade::saveFile(
+                path: config('src.Ebps.ebps.path'),
+                filename: '',
+                file: $file,
+                disk: getStorageDisk('private'),
+            );
+        }
+
+        $url = FileFacade::getTemporaryUrl(
+            path: config('src.Ebps.ebps.path'),
+            filename: $filename,
+            disk: getStorageDisk('private')
+        );
+
+        if ($target === 'houseOwner') {
+            $this->houseOwnerPhoto = $filename;
+            $this->houseOwnerPhotoUrl = $url;
+        } elseif ($target === 'signature') {
+            $this->uploadedImage = $filename;
+            $this->uploadedImageUrl = $url;
+        } elseif ($target === 'uploadedFiles') {
+            $this->uploadedFiles[$index] = $filename;
+            $this->uploadedFilesUrls[$index] = $url;
         }
     }
 
@@ -507,11 +569,8 @@ class MapApplyForm extends Component
         $this->mapApply->local_body_id = $this->houseOwnerDetail->local_body_id;
         $this->mapApply->ward_no = $this->houseOwnerDetail->ward_no;
         $this->houseOwnerDetail->ownership_type = OwnershipTypeEnum::HOUSE_OWNER->value;
-        $this->houseOwnerDetail->photo = $this->processFiles($this->houseOwnerPhoto);
-        $this->mapApply->signature =  $this->uploadedImage instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ?
-            $this->processFiles($this->uploadedImage)
-            :
-            $this->uploadedImage;
+        $this->houseOwnerDetail->photo = $this->houseOwnerPhoto;
+        $this->mapApply->signature = $this->uploadedImage;
 
         $this->mapApply->fiscal_year_id = FiscalYear::where('year', $this->mapApply->fiscal_year_id)
             ->value('id');
@@ -521,12 +580,11 @@ class MapApplyForm extends Component
     {
         DocumentFile::where('map_apply_id', $mapApplyId)->delete();
         foreach ($files as $index => $file) {
-            if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                $storedPath = $this->processFiles($file);
+            if (!empty($file)) {
                 DocumentFile::create([
                     'map_apply_id' => $mapApplyId,
                     'title'        => $mapDocuments[$index]->title,
-                    'file'         => $storedPath,
+                    'file'         => $file,
                     'status' =>  DocumentStatusEnum::UPLOADED,
                 ]);
             }
@@ -534,7 +592,7 @@ class MapApplyForm extends Component
 
         foreach ($documents as $index => $document) {
             if ($document['file']) {
-                $storedPath = $this->processFiles($document['file']);
+                $storedPath = $document['file'];
             } else {
                 $storedPath = null;
             }

@@ -14,12 +14,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ebps\Exports\BuildingConstructionTypesExport;
 use Src\Ebps\Models\BuildingConstructionType;
 use Src\Ebps\Service\AdditionalFormService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 use Src\Ebps\Models\AdditionalForm;
 
 class AdditionalFormSettingTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = AdditionalForm::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

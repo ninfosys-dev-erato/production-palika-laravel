@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Beruju\Models\SubCategory;
 use Src\Beruju\Service\SubCategoryAdminService;
 use Illuminate\Support\Str;
 
 class SubCategoryTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = SubCategory::class;
     public array $bulkActions = [
