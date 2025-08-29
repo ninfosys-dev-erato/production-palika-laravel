@@ -58,6 +58,9 @@ class OldMapApplicationForm extends Component
     public $fiscalYears;
     public $usageOptions;
     public $houseOwnerPhoto;
+    public $houseOwnerPhotoUrl;
+    public $uploadedImageUrl;
+    public $uploadedFilesUrls = [];
 
 
     public function rules(): array
@@ -144,17 +147,32 @@ class OldMapApplicationForm extends Component
         if ($this->action === Action::UPDATE) {
             $this->customer_id = $this->mapApply->customer_id;
             $this->uploadedImage = $this->mapApply->signature;
+            $this->uploadedImageUrl = FileFacade::getTemporaryUrl(
+                path: config('src.Ebps.ebps.path'),
+                filename: $this->mapApply->signature,
+                disk: getStorageDisk('private')
+            );
 
             $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->get();
 
             foreach ($storedDocuments as $index => $document) {
                 $this->uploadedFiles[$index] = $document->file;
+                $this->uploadedFilesUrls[$index] = FileFacade::getTemporaryUrl(
+                    path: config('src.Ebps.ebps.path'),
+                    filename: $document->file,
+                    disk: getStorageDisk('private')
+                );
                 $this->mapDocuments[$index] = [
                     'title' => $document->title,
                 ];
             }
             $this->houseOwnerDetail = $this->mapApply->houseOwner;
             $this->houseOwnerPhoto = $this->houseOwnerDetail->photo;
+            $this->houseOwnerPhotoUrl = FileFacade::getTemporaryUrl(
+                path: config('src.Ebps.ebps.path'),
+                filename: $this->houseOwnerDetail->photo,
+                disk: getStorageDisk('private')
+            );
             if($this->houseOwnerDetail)
             {
                 $this->getDistricts();
@@ -195,9 +213,61 @@ class OldMapApplicationForm extends Component
 
     }
 
+    public function updated($propertyName, $value)
+    {
+        // Handle houseOwnerPhoto file upload
+        if ($propertyName === 'houseOwnerPhoto') {
+            $this->handleFileUpload($value, 'photo', null, 'houseOwner');
+        }
+
+        // Handle uploadedImage file upload
+        if ($propertyName === 'uploadedImage') {
+            $this->handleFileUpload($value, 'signature', null, 'signature');
+        }
+
+        // Handle uploadedFiles file upload
+        if (preg_match('/^uploadedFiles\.(\d+)$/', $propertyName, $matches)) {
+            $index = (int) $matches[1];
+            $this->handleFileUpload($value, 'file', $index, 'uploadedFiles');
+        }
+    }
+
+    private function handleFileUpload($file, $field, $index = null, $target = 'houseOwner')
+    {
+        if (!$file) return;
+
+        if (is_string($file)) {
+            $filename = $file;
+        } else {
+            $filename = FileFacade::saveFile(
+                path: config('src.Ebps.ebps.path'),
+                filename: '',
+                file: $file,
+                disk: getStorageDisk('private'),
+            );
+        }
+
+        $url = FileFacade::getTemporaryUrl(
+            path: config('src.Ebps.ebps.path'),
+            filename: $filename,
+            disk: getStorageDisk('private')
+        );
+
+        if ($target === 'houseOwner') {
+            $this->houseOwnerPhoto = $filename;
+            $this->houseOwnerPhotoUrl = $url;
+        } elseif ($target === 'signature') {
+            $this->uploadedImage = $filename;
+            $this->uploadedImageUrl = $url;
+        } elseif ($target === 'uploadedFiles') {
+            $this->uploadedFiles[$index] = $filename;
+            $this->uploadedFilesUrls[$index] = $url;
+        }
+    }
+
     public function addDocument()
     {
-        $this->mapDocuments[] = (object)[
+        $this->mapDocuments[] = [
             'title' => "",
         ];
     }

@@ -49,22 +49,17 @@
                         class="form-control {{ $errors->has('uploadedImage') ? 'is-invalid' : '' }}"
                         style="{{ $errors->has('uploadedImage2') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                         accept="image/*,.pdf">
+                    <div wire:loading wire:target="uploadedImage">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Uploading...
+                    </div>
                     <div>
                         @error('uploadedImage')
                             <small class='text-danger'>{{ $message }}</small>
                         @enderror
-                        @if (
-                            ($uploadedImage && $uploadedImage instanceof \Livewire\TemporaryUploadedFile) ||
-                                $uploadedImage instanceof \Illuminate\Http\File ||
-                                $uploadedImage instanceof \Illuminate\Http\UploadedFile)
-                            <a href="{{ $uploadedImage->temporaryUrl() }}" target="_blank"
+                        @if (!empty($uploadedImageUrl))
+                            <a href="{{ $uploadedImageUrl }}" target="_blank"
                                 class="btn btn-outline-primary btn-sm">
-                                <i class="bx bx-file"></i>
-                                {{ __('yojana::yojana.view_uploaded_file') }}
-                            </a>
-                        @elseif (!empty(trim($uploadedImage)))
-                            <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $uploadedImage, 'local', 'tempUrl') }}"
-                                target="_blank" class="btn btn-outline-primary btn-sm">
                                 <i class="bx bx-file"></i>
                                 {{ __('yojana::yojana.view_uploaded_file') }}
                             </a>
@@ -372,23 +367,20 @@
                             <input wire:model="uploadedFiles.{{ $index }}" type="file"
                                 class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
                                 accept="image/*">
+                            <div wire:loading wire:target="uploadedFiles.{{ $index }}">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Uploading...
+                            </div>
                             <div>
                                 @error("uploadedFiles.$index")
                                     <small class='text-danger'>{{ $message }}</small>
                                 @enderror
-
-                                @if (isset($reindexedFiles[$index]) &&
-                                        ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
-                                    <img src="{{ $reindexedFiles[$index]->temporaryUrl() }}"
-                                        alt="Uploaded Image Preview" class="img-thumbnail mt-2"
-                                        style="height: 300px;">
-                                @elseif (!empty($filePath))
-                                    {{-- Show existing file if no new file is uploaded --}}
-                                    <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tempUrl') }}"
-                                        alt="Existing Document Preview" class="img-thumbnail mt-2"
-                                        style="height: 300px;">
+                                @if (isset($uploadedFilesUrls[$index]) && !empty($uploadedFilesUrls[$index]))
+                                    <a href="{{ $uploadedFilesUrls[$index] }}"
+                                        target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('yojana::yojana.view_uploaded_file') }}
+                                    </a>
                                 @endif
                             </div>
                         </div>
@@ -397,102 +389,109 @@
             @endforeach
 
             @if ($documents)
-
                 <div class="divider divider-primary text-start text-primary font-14">
                     <div class="divider-text">{{ __('More Documents') }}</div>
                 </div>
 
-                @if ($openModal)
-                    <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">{{ __('ebps::ebps.create_customer') }}</h5>
-                                    <button type="button" wire:click="closeCustomerKycModal"
-                                        class="btn btn-light d-flex justify-content-center align-items-center shadow-sm"
-                                        style="width: 40px; height: 40px; border: none; background-color: transparent;">
-                                        <span style="color: red; font-size: 20px;">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <livewire:customers.customer_form :$action :$isModalForm :isForGrievance="false" />
-                                </div>
-                            </div>
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-start mt-3 pb-2">
+                        <p class="btn btn-info" wire:click="addDocument"><i
+                                class="bx bx-plus"></i>{{ __('ebps::ebps.add_documents') }}</p>
+                    </div>
 
-                            <div class="col-md-12">
-                                <div class="list-group">
-                                    @foreach ($documents as $key => $document)
-                                        <div class="list-group-item list-group-item-action py-3 px-4 rounded shadow-sm"
-                                            wire:key="doc-{{ $key }}">
-                                            <div class="row align-items-center">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label
-                                                            class="font-weight-bold">{{ __('ebps::ebps.document_name') }}</label>
-                                                        <input
-                                                            dusk="businessregistration-documents.{{ $key }}.title-field"
-                                                            type="text" class="form-control"
-                                                            wire:model="documents.{{ $key }}.title"
-                                                            placeholder="Enter document name">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label
-                                                            class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
-                                                        <input type="file" class="form-control-file"
-                                                            wire:model.defer="documents.{{ $key }}.file">
-
-                                                        <div wire:loading
-                                                            wire:target="documents.{{ $key }}.file">
-                                                            <span class="spinner-border spinner-border-sm"
-                                                                role="status" aria-hidden="true"></span>
-                                                            Uploading...
-                                                        </div>
-
-                                                        @if (isset($documents[$key]['url']) && !empty($documents[$key]['url']))
-                                                            <p>
-                                                                <a href="{{ $documents[$key]['url'] }}"
-                                                                    target="_blank">
-                                                                    <i class="bx bx-file"></i>
-                                                                    {{ $documents[$key]['title'] }}
-                                                                </a>
-                                                            </p>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3"
-                                                    wire:target="documents.{{ $key }}.file">
-                                                    <div class="form-group">
-                                                        <label
-                                                            class="font-weight-bold">{{ __('ebps::ebps.document_status') }}</label>
-                                                        <select
-                                                            dusk="businessregistration-documents.{{ $key }}.status-field"
-                                                            wire:model.defer="documents.{{ $key }}.status"
-                                                            id="documents.{{ $key }}.status"
-                                                            class="form-control">
-                                                            @foreach ($options as $k => $v)
-                                                                <option value="{{ $k }}">
-                                                                    {{ $v }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <div class="btn-group-vertical">
-                                                        <button class="btn btn-danger"
-                                                            wire:click="removeDocument({{ $key }})">
-                                                            <i class="bx bx-trash"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                    <div class="list-group">
+                        @foreach ($documents as $key => $document)
+                            <div class="list-group-item list-group-item-action py-3 px-4 rounded shadow-sm"
+                                wire:key="doc-{{ $key }}">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label
+                                                class="font-weight-bold">{{ __('ebps::ebps.document_name') }}</label>
+                                            <input
+                                                dusk="businessregistration-documents.{{ $key }}.title-field"
+                                                type="text" class="form-control"
+                                                wire:model="documents.{{ $key }}.title"
+                                                placeholder="Enter document name">
                                         </div>
-                                    @endforeach
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label
+                                                class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
+                                            <input type="file" class="form-control-file"
+                                                wire:model="documents.{{ $key }}.document">
+
+                                            <div wire:loading
+                                                wire:target="documents.{{ $key }}.document">
+                                                <span class="spinner-border spinner-border-sm"
+                                                    role="status" aria-hidden="true"></span>
+                                                Uploading...
+                                            </div>
+
+                                            @if (isset($documents[$key]['url']) && !empty($documents[$key]['url']))
+                                                <p>
+                                                    <a href="{{ $documents[$key]['url'] }}"
+                                                        target="_blank">
+                                                        <i class="bx bx-file"></i>
+                                                        {{ $documents[$key]['title'] }}
+                                                    </a>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"
+                                        wire:target="documents.{{ $key }}.document">
+                                        <div class="form-group">
+                                            <label
+                                                class="font-weight-bold">{{ __('ebps::ebps.document_status') }}</label>
+                                            <select
+                                                dusk="businessregistration-documents.{{ $key }}.status-field"
+                                                wire:model.defer="documents.{{ $key }}.status"
+                                                id="documents.{{ $key }}.status"
+                                                class="form-control">
+                                                @foreach ($options as $k => $v)
+                                                    <option value="{{ $k }}">
+                                                        {{ $v }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="btn-group-vertical">
+                                            <button class="btn btn-danger"
+                                                wire:click="removeDocument({{ $key }})">
+                                                <i class="bx bx-trash"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                @endif
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            @if ($openModal)
+                <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ __('ebps::ebps.create_customer') }}</h5>
+                                <button type="button" wire:click="closeCustomerKycModal"
+                                    class="btn btn-light d-flex justify-content-center align-items-center shadow-sm"
+                                    style="width: 40px; height: 40px; border: none; background-color: transparent;">
+                                    <span style="color: red; font-size: 20px;">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <livewire:customers.customer_form :$action :$isModalForm :isForGrievance="false" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
     <div class="card-footer">

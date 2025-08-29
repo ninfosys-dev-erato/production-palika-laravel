@@ -55,6 +55,7 @@ class BuildingRegistrationForm extends Component
     public $landDetails = [];
     public $isSameCustomer = false;
     public $landOwnerPhoto;
+    public $landOwnerPhotoUrl;
 
     public $uploadedFiles = [];
     public $customer_id;
@@ -85,6 +86,7 @@ class BuildingRegistrationForm extends Component
     public $fiscalYears;
     public bool $isSame= false;
     public $houseOwnerPhoto;
+    public $houseOwnerPhotoUrl;
     public $landOwnerDetail = [];
     public $applicantTypes ;
     public bool $showNameAndNumber = true;
@@ -94,6 +96,7 @@ class BuildingRegistrationForm extends Component
     public ?OrganizationDetail $organizationDetail;
     public $documents = [];
     public $formerLocalBodies;
+    public $uploadedFilesUrls = [];
 
     public $formerWards;
 
@@ -417,6 +420,58 @@ class BuildingRegistrationForm extends Component
             $this->houseOwnerDetail->mobile_no = $result['mobile_no'];
         }
 
+    }
+
+    public function updated($propertyName, $value)
+    {
+        // Handle houseOwnerPhoto file upload
+        if ($propertyName === 'houseOwnerPhoto') {
+            $this->handleFileUpload($value, 'photo', null, 'houseOwner');
+        }
+
+        // Handle landOwnerPhoto file upload
+        if ($propertyName === 'landOwnerPhoto') {
+            $this->handleFileUpload($value, 'photo', null, 'landOwner');
+        }
+
+        // Handle uploadedFiles file upload
+        if (preg_match('/^uploadedFiles\.(\d+)$/', $propertyName, $matches)) {
+            $index = (int) $matches[1];
+            $this->handleFileUpload($value, 'file', $index, 'uploadedFiles');
+        }
+    }
+
+    private function handleFileUpload($file, $field, $index = null, $target = 'houseOwner')
+    {
+        if (!$file) return;
+
+        if (is_string($file)) {
+            $filename = $file;
+        } else {
+            $filename = FileFacade::saveFile(
+                path: config('src.Ebps.ebps.path'),
+                filename: '',
+                file: $file,
+                disk: getStorageDisk('private'),
+            );
+        }
+
+        $url = FileFacade::getTemporaryUrl(
+            path: config('src.Ebps.ebps.path'),
+            filename: $filename,
+            disk: getStorageDisk('private')
+        );
+
+        if ($target === 'houseOwner') {
+            $this->houseOwnerPhoto = $filename;
+            $this->houseOwnerPhotoUrl = $url;
+        } elseif ($target === 'landOwner') {
+            $this->landOwnerPhoto = $filename;
+            $this->landOwnerPhotoUrl = $url;
+        } elseif ($target === 'uploadedFiles') {
+            $this->uploadedFiles[$index] = $filename;
+            $this->uploadedFilesUrls[$index] = $url;
+        }
     }
 
     public function save()

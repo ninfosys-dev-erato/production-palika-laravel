@@ -60,6 +60,7 @@ class BuildingRegistrationForm extends Component
     public $landDetails = [];
     public $isSameCustomer = false;
     public $landOwnerPhoto;
+    public $landOwnerPhotoUrl;
     public $uploadedFiles = [];
     public $customer_id;  
     public $provinces = [];
@@ -84,6 +85,7 @@ class BuildingRegistrationForm extends Component
     public $fiscalYears;
     public bool $isSame= false;
     public $houseOwnerPhoto;
+    public $houseOwnerPhotoUrl;
     public $landOwnerDetail = [];
     public $applicantTypes ;
     public bool $showNameAndNumber = true;
@@ -96,6 +98,7 @@ class BuildingRegistrationForm extends Component
     public $options = [];
     public $formerLocalBodies;
     public $formerWards;
+    public $uploadedFilesUrls = [];
 
     
 
@@ -363,12 +366,27 @@ class BuildingRegistrationForm extends Component
 
         if ($this->action === Action::UPDATE) {
             $this->customer_id = $this->mapApply->customer_id;
-            $this->landOwnerPhoto = $this->mapApply->signature;
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
             $this->loadFourBoundaries($this->customerLandDetail);
             $this->houseOwnerDetail = HouseOwnerDetail::where('id', $this->mapApply->house_owner_id)->first();
+            $this->houseOwnerPhoto = $this->houseOwnerDetail->photo;
+            if (!empty($this->houseOwnerDetail->photo)) {
+                $this->houseOwnerPhotoUrl = FileFacade::getTemporaryUrl(
+                    path: config('src.Ebps.ebps.path'),
+                    filename: $this->houseOwnerDetail->photo,
+                    disk: getStorageDisk('private')
+                );
+            }
             $this->landOwnerDetail = HouseOwnerDetail::where('id', $this->mapApply->land_owner_id)->first();
+            $this->landOwnerPhoto = $this->landOwnerDetail->photo;
+            if (!empty($this->landOwnerDetail->photo)) {
+                $this->landOwnerPhotoUrl = FileFacade::getTemporaryUrl(
+                    path: config('src.Ebps.ebps.path'),
+                    filename: $this->landOwnerDetail->photo,
+                    disk: getStorageDisk('private')
+                );
+            }
             $this->getLandOwnerDistricts();
             $this->getLandOwnerLocalBodies();
             $this->getLandOwnerWards();
@@ -385,7 +403,11 @@ class BuildingRegistrationForm extends Component
             $this->documents = DocumentFile::where(
             'map_apply_id', $this->mapApply->id)->whereNull('map_document_id')->get()->map(function ($document) {
             return array_merge($document->toArray(), [
-                'url' => $document->url,
+                'url' => !empty($document->file) ? FileFacade::getTemporaryUrl(
+                    path: config('src.Ebps.ebps.path'),
+                    filename: $document->file,
+                    disk: getStorageDisk('private')
+                ) : null,
             ]);
             })
             ->toArray();
@@ -393,18 +415,41 @@ class BuildingRegistrationForm extends Component
 
             foreach ($storedDocuments as $index => $document) {
                 $this->uploadedFiles[$index] = $document->file;
+                if (!empty($document->file)) {
+                    $this->uploadedFilesUrls[$index] = FileFacade::getTemporaryUrl(
+                        path: config('src.Ebps.ebps.path'),
+                        filename: $document->file,
+                        disk: getStorageDisk('private')
+                    );
+                }
                 $this->mapDocuments[$index] = ['title' => $document->title];
             }
         }
     }
 
-    public function updated($propertyName,$value)
+    public function updated($propertyName, $value)
     {
         // Check if the property being updated is a file input
         if (preg_match('/^documents\.\d+\.document$/', $propertyName)) {
             $index = (int) filter_var($propertyName, FILTER_SANITIZE_NUMBER_INT);
             // Call the fileUpload method with the relevant index
             $this->fileUpload($index);
+        }
+
+        // Handle houseOwnerPhoto file upload
+        if ($propertyName === 'houseOwnerPhoto') {
+            $this->handleFileUpload($value, 'photo', null, 'houseOwner');
+        }
+
+        // Handle landOwnerPhoto file upload
+        if ($propertyName === 'landOwnerPhoto') {
+            $this->handleFileUpload($value, 'photo', null, 'landOwner');
+        }
+
+        // Handle uploadedFiles file upload
+        if (preg_match('/^uploadedFiles\.(\d+)$/', $propertyName, $matches)) {
+            $index = (int) $matches[1];
+            $this->handleFileUpload($value, 'file', $index, 'uploadedFiles');
         }
     }
 
@@ -426,6 +471,39 @@ class BuildingRegistrationForm extends Component
         );
        
         $this->documents = array_values($this->documents);
+    }
+
+    private function handleFileUpload($file, $field, $index = null, $target = 'houseOwner')
+    {
+        if (!$file) return;
+
+        if (is_string($file)) {
+            $filename = $file;
+        } else {
+            $filename = FileFacade::saveFile(
+                path: config('src.Ebps.ebps.path'),
+                filename: '',
+                file: $file,
+                disk: getStorageDisk('private'),
+            );
+        }
+
+        $url = FileFacade::getTemporaryUrl(
+            path: config('src.Ebps.ebps.path'),
+            filename: $filename,
+            disk: getStorageDisk('private')
+        );
+
+        if ($target === 'houseOwner') {
+            $this->houseOwnerPhoto = $filename;
+            $this->houseOwnerPhotoUrl = $url;
+        } elseif ($target === 'landOwner') {
+            $this->landOwnerPhoto = $filename;
+            $this->landOwnerPhotoUrl = $url;
+        } elseif ($target === 'uploadedFiles') {
+            $this->uploadedFiles[$index] = $filename;
+            $this->uploadedFilesUrls[$index] = $url;
+        }
     }
 
 
@@ -574,23 +652,33 @@ class BuildingRegistrationForm extends Component
         foreach ($files as $index => $file) {
             if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
                 $storedPath = $this->processFiles($file);
+                $title = '';
+                if (isset($mapDocuments[$index])) {
+                    if (is_object($mapDocuments[$index])) {
+                        $title = $mapDocuments[$index]->title ?? '';
+                    } else {
+                        $title = $mapDocuments[$index]['title'] ?? '';
+                    }
+                }
                 DocumentFile::create([
                     'map_apply_id' => $mapApplyId,
-                    'title'        => $mapDocuments[$index]->title,
+                    'title'        => $title,
                     'file'         => $storedPath,
                 ]);
             }
         }
 
         foreach($documents as $index => $document) {
-            if ($document['file']) {
+            if (isset($document['document']) && $document['document']) {
+                $storedPath = $this->processFiles($document['document']);
+            } elseif (isset($document['file']) && $document['file']) {
                 $storedPath = $this->processFiles($document['file']);
-            }else{
+            } else {
                 $storedPath = null;
             }
             DocumentFile::create([
                 'map_apply_id' => $mapApplyId,
-                'title'        => $document['title'],
+                'title'        => $document['title'] ?? '',
                 'file'         => $storedPath,
                 'status' => $storedPath ? ($document['status'] ?? DocumentStatusEnum::UPLOADED) : DocumentStatusEnum::REQUESTED,
             ]);

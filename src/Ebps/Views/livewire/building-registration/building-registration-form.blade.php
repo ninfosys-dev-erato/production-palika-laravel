@@ -601,22 +601,17 @@
                             class="form-control {{ $errors->has('landOwnerPhoto') ? 'is-invalid' : '' }}"
                             style="{{ $errors->has('landOwnerPhoto2') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                             accept="image/*,.pdf">
+                        <div wire:loading wire:target="landOwnerPhoto">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Uploading...
+                        </div>
                         <div>
                             @error('landOwnerPhoto')
                                 <small class='text-danger'>{{ $message }}</small>
                             @enderror
-                            @if (
-                                ($landOwnerPhoto && $landOwnerPhoto instanceof \Livewire\TemporaryUploadedFile) ||
-                                    $landOwnerPhoto instanceof \Illuminate\Http\File ||
-                                    $landOwnerPhoto instanceof \Illuminate\Http\UploadedFile)
-                                <a href="{{ $landOwnerPhoto->temporaryUrl() }}" target="_blank"
+                            @if (!empty($landOwnerPhotoUrl))
+                                <a href="{{ $landOwnerPhotoUrl }}" target="_blank"
                                     class="btn btn-outline-primary btn-sm">
-                                    <i class="bx bx-file"></i>
-                                    {{ __('yojana::yojana.view_uploaded_file') }}
-                                </a>
-                            @elseif (!empty(trim($landOwnerPhoto)))
-                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $landOwnerPhoto, 'local', 'tempUrl') }}"
-                                    target="_blank" class="btn btn-outline-primary btn-sm">
                                     <i class="bx bx-file"></i>
                                     {{ __('yojana::yojana.view_uploaded_file') }}
                                 </a>
@@ -866,22 +861,17 @@
                                 class="form-control {{ $errors->has('houseOwnerPhoto') ? 'is-invalid' : '' }}"
                                 style="{{ $errors->has('houseOwnerPhoto') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                                 accept="image/*,.pdf">
+                            <div wire:loading wire:target="houseOwnerPhoto">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Uploading...
+                            </div>
                             <div>
                                 @error('houseOwnerPhoto')
                                     <small class='text-danger'>{{ $message }}</small>
                                 @enderror
-                                @if (
-                                    ($houseOwnerPhoto && $houseOwnerPhoto instanceof \Livewire\TemporaryUploadedFile) ||
-                                        $houseOwnerPhoto instanceof \Illuminate\Http\File ||
-                                        $houseOwnerPhoto instanceof \Illuminate\Http\UploadedFile)
-                                    <a href="{{ $houseOwnerPhoto->temporaryUrl() }}" target="_blank"
+                                @if (!empty($houseOwnerPhotoUrl))
+                                    <a href="{{ $houseOwnerPhotoUrl }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-file"></i>
-                                        {{ __('yojana::yojana.view_uploaded_file') }}
-                                    </a>
-                                @elseif (!empty(trim($houseOwnerPhoto)))
-                                    <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $houseOwnerPhoto, 'local', 'tempUrl') }}"
-                                        target="_blank" class="btn btn-outline-primary btn-sm">
                                         <i class="bx bx-file"></i>
                                         {{ __('yojana::yojana.view_uploaded_file') }}
                                     </a>
@@ -1070,22 +1060,17 @@
                             <input wire:model="uploadedFiles.{{ $index }}" type="file"
                                 class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
                                 accept="image/*,.pdf">
+                            <div wire:loading wire:target="uploadedFiles.{{ $index }}">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Uploading...
+                            </div>
                             <div>
                                 @error("uploadedFiles.$index")
                                     <small class='text-danger'>{{ $message }}</small>
                                 @enderror
-                                @if (isset($reindexedFiles[$index]) &&
-                                        ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
-                                    <a href="{{ $reindexedFiles[$index]->temporaryUrl() }}" target="_blank"
+                                @if (isset($uploadedFilesUrls[$index]) && !empty($uploadedFilesUrls[$index]))
+                                    <a href="{{ $uploadedFilesUrls[$index] }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
-                                        <i class="bx bx-file"></i>
-                                        {{ __('yojana::yojana.view_uploaded_file') }}
-                                    </a>
-                                @elseif (!empty($filePath))
-                                    <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tempUrl') }}"
-                                        target="_blank" class="btn btn-outline-primary btn-sm">
                                         <i class="bx bx-file"></i>
                                         {{ __('yojana::yojana.view_uploaded_file') }}
                                     </a>

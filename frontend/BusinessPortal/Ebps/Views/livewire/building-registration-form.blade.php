@@ -577,19 +577,17 @@
                             class="form-control {{ $errors->has('landOwnerPhoto') ? 'is-invalid' : '' }}"
                             style="{{ $errors->has('landOwnerPhoto2') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                             accept="image/*">
+                        <div wire:loading wire:target="landOwnerPhoto">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Uploading...
+                        </div>
                         <div>
                             @error('landOwnerPhoto')
                                 <small class='text-danger'>{{ $message }}</small>
                             @enderror
-                            @if (
-                                ($landOwnerPhoto && $landOwnerPhoto instanceof \Livewire\TemporaryUploadedFile) ||
-                                    $landOwnerPhoto instanceof \Illuminate\Http\File ||
-                                    $landOwnerPhoto instanceof \Illuminate\Http\UploadedFile)
-                                <img src="{{ $landOwnerPhoto->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
+                            @if (!empty($landOwnerPhotoUrl))
+                                <img src="{{ $landOwnerPhotoUrl }}" alt="Land Owner Photo"
                                     class="img-thumbnail mt-2" style="height: 300px;">
-                            @elseif (!empty(trim($landOwnerPhoto)))
-                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $landOwnerPhoto, 'local', 'tempUrl') }}"
-                                    alt="Existing Image 2" class="img-thumbnail mt-2" style="height: 300px;">
                             @endif
                         </div>
                     </div>
@@ -837,19 +835,18 @@
                                 class="form-control {{ $errors->has('houseOwnerPhoto') ? 'is-invalid' : '' }}"
                                 style="{{ $errors->has('houseOwnerPhoto') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                                 accept="image/*">
+                            <div wire:loading wire:target="houseOwnerPhoto">
+                                <span class="spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
+                                Uploading...
+                            </div>
                             <div>
                                 @error('houseOwnerPhoto')
                                     <small class='text-danger'>{{ $message }}</small>
                                 @enderror
-                                @if (
-                                    ($houseOwnerPhoto && $houseOwnerPhoto instanceof \Livewire\TemporaryUploadedFile) ||
-                                        $houseOwnerPhoto instanceof \Illuminate\Http\File ||
-                                        $houseOwnerPhoto instanceof \Illuminate\Http\UploadedFile)
-                                    <img src="{{ $houseOwnerPhoto->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
+                                @if (!empty($houseOwnerPhotoUrl))
+                                    <img src="{{ $houseOwnerPhotoUrl }}" alt="House Owner Photo"
                                         class="img-thumbnail mt-2" style="height: 300px;">
-                                @elseif (!empty(trim($houseOwnerPhoto)))
-                                    <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $houseOwnerPhoto, 'local', 'tempUrl') }}"
-                                        alt="Existing Image 2" class="img-thumbnail mt-2" style="height: 300px;">
                                 @endif
                             </div>
                         </div>
@@ -1005,57 +1002,50 @@
                 </div>
             </div>
 
-            <div class="divider divider-primary text-start text-primary font-14">
-                <div class="divider-text">{{ __('ebps::ebps.required_documents') }}</div>
-            </div>
+            @if ($action === App\Enums\Action::CREATE)
+                <div class="divider divider-primary text-start text-primary font-14">
+                    <div class="divider-text">{{ __('ebps::ebps.required_documents') }}</div>
+                </div>
 
-            @php
-                $reindexedFiles = array_values($uploadedFiles);
-
-            @endphp
-
-            @foreach ($mapDocuments as $index => $document)
                 @php
-                    $filePath = $reindexedFiles[$index] ?? null;
+                    $reindexedFiles = array_values($uploadedFiles);
+
                 @endphp
 
-                <div class="row">
-                    <div class='col-md-6 mb-3'>
-                        <div class='form-group'>
-                            <label class="form-label">{{ __('ebps::ebps.document_name') }}</label>
-                            <input type="text" class="form-control" value="{{ $document->title }}" readonly>
+                @foreach ($mapDocuments as $index => $document)
+                    @php
+                        $filePath = $reindexedFiles[$index] ?? null;
+                    @endphp
+
+                    <div class="row">
+                        <div class='col-md-6 mb-3'>
+                            <div class='form-group'>
+                                <label class="form-label">{{ __('ebps::ebps.document_name') }}</label>
+                                <input type="text" class="form-control" value="{{ $document->title }}" readonly>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class='col-md-6 mb-3'>
-                        <div class='form-group'>
-                            <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
-                            <input type="file"
-                                class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
-                                wire:model="uploadedFiles.{{ $index }}" accept="image/*,application/pdf">
-                            <div>
-                                @error("uploadedFiles.$index")
-                                    <small class='text-danger'>{{ $message }}</small>
-                                @enderror
+                        <div class='col-md-6 mb-3'>
+                            <div class='form-group'>
+                                <label class="form-label">{{ __('ebps::ebps.upload_file') }}</label>
+                                <input type="file"
+                                    class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
+                                    wire:model="uploadedFiles.{{ $index }}" accept="image/*,application/pdf">
+                                <div>
+                                    @error("uploadedFiles.$index")
+                                        <small class='text-danger'>{{ $message }}</small>
+                                    @enderror
 
-                                @if (isset($reindexedFiles[$index]) &&
-                                        ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
-                                            $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
-                                    <img src="{{ $reindexedFiles[$index]->temporaryUrl() }}"
-                                        alt="Uploaded Image Preview" class="img-thumbnail mt-2"
-                                        style="height: 300px;">
-                                @elseif (!empty($filePath))
-                                    {{-- Show existing file if no new file is uploaded --}}
-                                    <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tempUrl') }}"
-                                        alt="Existing Document Preview" class="img-thumbnail mt-2"
-                                        style="height: 300px;">
-                                @endif
+                                    @if (isset($uploadedFilesUrls[$index]) && !empty($uploadedFilesUrls[$index]))
+                                        <img src="{{ $uploadedFilesUrls[$index] }}" alt="Uploaded Image Preview"
+                                            class="img-thumbnail mt-2" style="height: 300px;">
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            @endif
 
             @if ($documents)
 
@@ -1087,9 +1077,9 @@
                                             <label
                                                 class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
                                             <input type="file" class="form-control-file"
-                                                wire:model.defer="documents.{{ $key }}.file">
+                                                wire:model="documents.{{ $key }}.document">
 
-                                            <div wire:loading wire:target="documents.{{ $key }}.file">
+                                            <div wire:loading wire:target="documents.{{ $key }}.document">
                                                 <span class="spinner-border spinner-border-sm" role="status"
                                                     aria-hidden="true"></span>
                                                 Uploading...
@@ -1104,7 +1094,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-3" wire:target="documents.{{ $key }}.file">
+                                    <div class="col-md-3" wire:target="documents.{{ $key }}.document">
                                         <div class="form-group">
                                             <label
                                                 class="font-weight-bold">{{ __('ebps::ebps.document_status') }}</label>
