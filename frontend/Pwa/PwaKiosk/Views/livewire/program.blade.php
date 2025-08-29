@@ -98,7 +98,7 @@
                                     <div class="notice-card-wrapper">
                                         <div class="app-card h-100">
                                             <div class="card-img-container">
-                                                <img src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $program->photo) }}"
+                                                <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $program->photo, 'local', 'tempUrl') }}"
                                                     class="card-img-top" alt="{{ $program->title }}">
                                             </div>
                                             <div class="card-body">

@@ -7,7 +7,7 @@
         </div>
         <div class="slider w-100 overflow-hidden">
             <div class="slide-track d-flex">
-                @foreach(array_merge($notices->toArray(), $notices->toArray()) as $notice)
+                @foreach (array_merge($notices->toArray(), $notices->toArray()) as $notice)
                     <p class="mb-0 mx-3 text-nowrap" style="font-size: 0.7rem; color: var(--text-secondary)">
                         {{ $notice['title'] }}
                     </p>
@@ -36,22 +36,27 @@
             <div id="citizenCharterScroll" class="table-responsive" style="max-height: calc(85vh - 80px);">
                 <table class="table">
                     <tbody>
-                        @foreach($citizenharters as $index => $citizenharter)
+                        @foreach ($citizenharters as $index => $citizenharter)
                             <tr class="align-middle" style="color: var(--text-primary)">
-                                <td class="text-center" style="color: rgba(0, 0, 0, 0.788); width: 3%; font-size: 1rem;">
+                                <td class="text-center"
+                                    style="color: rgba(0, 0, 0, 0.788); width: 3%; font-size: 1rem;">
                                     {{ str_replace(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'], $index + 1) }}
                                 </td>
-                                <td class="align-middle" style="color: rgba(0, 0, 0, 0.788); width: 15%; font-size: 1rem;">
-                                    {{$citizenharter->service}}
+                                <td class="align-middle"
+                                    style="color: rgba(0, 0, 0, 0.788); width: 15%; font-size: 1rem;">
+                                    {{ $citizenharter->service }}
                                 </td>
-                                <td class="align-middle" style="color: rgba(0, 0, 0, 0.788); width: 40%; font-size: 1rem;">
+                                <td class="align-middle"
+                                    style="color: rgba(0, 0, 0, 0.788); width: 40%; font-size: 1rem;">
                                     {!! nl2br(e($citizenharter->required_document)) !!}
                                 </td>
-                                <td class="align-middle" style="color: rgba(0, 0, 0, 0.788); width: 19%; font-size: 1rem;">
-                                    {{$citizenharter->amount}}
+                                <td class="align-middle"
+                                    style="color: rgba(0, 0, 0, 0.788); width: 19%; font-size: 1rem;">
+                                    {{ $citizenharter->amount }}
                                 </td>
-                                <td class="align-middle" style="color: rgba(0, 0, 0, 0.788); width: 28%; font-size: 1rem;">
-                                    {{$citizenharter->time}}
+                                <td class="align-middle"
+                                    style="color: rgba(0, 0, 0, 0.788); width: 28%; font-size: 1rem;">
+                                    {{ $citizenharter->time }}
                                 </td>
                             </tr>
                         @endforeach
@@ -64,25 +69,25 @@
             <div class="border border-border p-2 mb-2 rounded" style="height: 25vh;">
                 <div id="videoCarousel" class="carousel slide h-100" data-bs-ride="false">
                     <div class="carousel-inner h-100">
-                        @foreach($videos as $index => $video)
-                                            <div class="carousel-item h-100 {{ $index == 0 ? 'active' : '' }}"
-                                                data-video-index="{{ $index }}">
-                                                @if ($video->file)
-                                                    <!-- Local video code remains the same -->
-                                                @elseif ($video->url)
-                                                                        @php
-                                                                            $urlParts = parse_url($video->url);
-                                                                            parse_str($urlParts['query'] ?? '', $params);
-                                                                            $videoId = $params['v'] ?? pathinfo($urlParts['path'] ?? '', PATHINFO_BASENAME);
-                                                                        @endphp
-                                                                        <iframe src="https://www.youtube.com/embed/{{ $videoId }}?autoplay=1&mute=1" frameborder="0"
-                                                                            class="w-100 h-100"
-                                                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                                                                            allowfullscreen loading="lazy"></iframe>
-                                                @else
-                                                    <p>No video available.</p>
-                                                @endif
-                                            </div>
+                        @foreach ($videos as $index => $video)
+                            <div class="carousel-item h-100 {{ $index == 0 ? 'active' : '' }}"
+                                data-video-index="{{ $index }}">
+                                @if ($video->file)
+                                    <!-- Local video code remains the same -->
+                                @elseif ($video->url)
+                                    @php
+                                        $urlParts = parse_url($video->url);
+                                        parse_str($urlParts['query'] ?? '', $params);
+                                        $videoId = $params['v'] ?? pathinfo($urlParts['path'] ?? '', PATHINFO_BASENAME);
+                                    @endphp
+                                    <iframe src="https://www.youtube.com/embed/{{ $videoId }}?autoplay=1&mute=1"
+                                        frameborder="0" class="w-100 h-100"
+                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                                        allowfullscreen loading="lazy"></iframe>
+                                @else
+                                    <p>No video available.</p>
+                                @endif
+                            </div>
                         @endforeach
                     </div>
                 </div>
@@ -99,19 +104,19 @@
                     <div id="programsCarousel" class="carousel slide h-100" data-bs-ride="carousel"
                         data-bs-interval="5000">
                         <div class="carousel-inner h-100">
-                            @foreach($programs as $index => $program)
+                            @foreach ($programs as $index => $program)
                                 <div class="carousel-item h-100 {{ $index == 0 ? 'active' : '' }} position-relative">
                                     <div class="h-100 d-flex flex-column">
                                         <div class="flex-grow-1 d-flex align-items-center justify-content-center p-2">
-                                            <img src="{{customAsset(config('src.DigitalBoard.program.photo_path'), $program->photo)}}"
-                                                alt="{{$program->title}}" class="d-block w-100"
+                                            <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $program->photo, 'local', 'tempUrl') }}"
+                                                alt="{{ $program->title }}" class="d-block w-100"
                                                 style="height: 100%; max-width: 100%; object-fit: contain;">
                                         </div>
                                         <!-- Title -->
                                         <div class="program-title-wrapper position-absolute start-50 translate-middle-x bottom-0 w-100 p-1 text-center"
                                             style="background: rgba(0, 0, 0, 0.55);">
                                             <p class="mb-0 program-title fw-semibold text-white">
-                                                {{$program->title}}
+                                                {{ $program->title }}
                                             </p>
                                         </div>
                                     </div>
@@ -133,20 +138,20 @@
                         </div>
                         <div class="profile-carousel representative-carousel h-100">
                             <div class="carousel-track h-100 align-items-center d-flex">
-                                @foreach($representatives as $rep)
+                                @foreach ($representatives as $rep)
                                     <div class="profile-card profile-card-single pb-1"
                                         wire:key="representative-{{ $rep->id }}" style="height: 90%">
                                         <div class="profile-image-container d-flex w-100 justify-content-center">
-                                            <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $rep->photo) }}"
+                                            <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $rep->photo, 'local', 'tempUrl') }}"
                                                 class="profile-image h-100 w-auto">
                                         </div>
                                         <div class="w-100 text-center mt-2">
                                             <h3 class="profile-name m-0">{{ $rep->name ?? 'N/A' }}</h3>
                                             <p class="profile-designation m-0">
-                                                {{$rep->designation->title ?? 'No Designation' }}
+                                                {{ $rep->designation->title ?? 'No Designation' }}
                                             </p>
                                             <p class="profile-designation m-0">
-                                                {{$rep->phone ?? 'No Number' }}
+                                                {{ $rep->phone ?? 'No Number' }}
                                             </p>
                                         </div>
                                     </div>
@@ -162,19 +167,20 @@
                         </div>
                         <div class="profile-carousel employee-carousel h-100 ">
                             <div class="carousel-track h-100 align-items-center">
-                                @foreach($employees as $emp)
-                                    <div class="profile-card pb-1" wire:key="employee-{{ $emp->id }} " style="height: 90%">
+                                @foreach ($employees as $emp)
+                                    <div class="profile-card pb-1" wire:key="employee-{{ $emp->id }} "
+                                        style="height: 90%">
                                         <div class="profile-image-container d-flex w-100 justify-content-center">
-                                            <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $emp->photo) }}"
+                                            <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $emp->photo, 'local', 'tempUrl') }}"
                                                 class="profile-image h-100 w-auto">
                                         </div>
                                         <div class="w-100 text-center mt-2">
                                             <h3 class="profile-name m-0">{{ $emp->name }}</h3>
                                             <p class="profile-designation m-0">
-                                                {{$emp->designation->title ?? 'No Designation'  }}
+                                                {{ $emp->designation->title ?? 'No Designation' }}
                                             </p>
                                             <p class="profile-designation m-0">
-                                                {{$rep->phone ?? 'No Number' }}
+                                                {{ $rep->phone ?? 'No Number' }}
                                             </p>
                                         </div>
                                     </div>
@@ -354,7 +360,7 @@
     </style>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             class Carousel {
                 constructor(selector, isRepresentative = false) {
                     this.container = document.querySelector(selector);
@@ -456,8 +462,8 @@
             }
 
             // Initialize carousels and program slider
-            new Carousel('.representative-carousel', true);  // true for representative carousel
-            new Carousel('.employee-carousel', false);       // false for employee carousel
+            new Carousel('.representative-carousel', true); // true for representative carousel
+            new Carousel('.employee-carousel', false); // false for employee carousel
 
 
             // Auto-scroll for Citizen Charter
@@ -522,7 +528,7 @@
             }
 
             // Handle carousel slide events
-            document.getElementById('videoCarousel').addEventListener('slid.bs.carousel', function (event) {
+            document.getElementById('videoCarousel').addEventListener('slid.bs.carousel', function(event) {
                 const activeIndex = event.to;
                 const activeItem = document.querySelectorAll('.carousel-item')[activeIndex];
 
@@ -569,7 +575,7 @@
 
             // Ensure that the sliding works smoothly by adjusting the timing if there are too few items
             if (slideTrack.scrollWidth <= noticeContainer.clientWidth) {
-                const animationDuration = (slideTrack.scrollWidth / 100) * 30;  // Adjusted from 80 to 40
+                const animationDuration = (slideTrack.scrollWidth / 100) * 30; // Adjusted from 80 to 40
                 slideTrack.style.animationDuration = `${animationDuration}s`;
             }
         });

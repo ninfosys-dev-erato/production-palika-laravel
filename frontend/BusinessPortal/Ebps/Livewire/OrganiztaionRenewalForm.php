@@ -65,14 +65,10 @@ class OrganiztaionRenewalForm extends Component
     private function processFiles($file)
     {
         if ($file instanceof TemporaryUploadedFile) {
-            return FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, 'local');
+            return FileFacade::saveFile(config('src.Ebps.ebps.path'), "", $file, getStorageDisk('private'));
         } else {
             return $file;
         }
     }
 
-    private function storeFile($file): string
-    {
-        return ImageServiceFacade::compressAndStoreImage($file, config('src.Ebps.ebps.path'));
-    }
 }

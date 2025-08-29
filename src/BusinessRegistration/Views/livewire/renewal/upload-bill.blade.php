@@ -66,7 +66,7 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center">
-                            <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
+                            <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local', 'tempUrl') }}"
                                 alt="Full-size Uploaded Bill" class="img-fluid" style="max-height: 90vh;">
                         </div>
                     </div>

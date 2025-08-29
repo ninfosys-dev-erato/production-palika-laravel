@@ -11,7 +11,8 @@
                 <form wire:submit.prevent="uploadBill">
                     <div class="mb-3">
                         <label for="bill" class="form-label fw-bold">{{ __('Payment Photo') }}</label>
-                        <input wire:model="bill" name="bill" type="file" class="form-control" accept="image/*,application/pdf">
+                        <input wire:model="bill" name="bill" type="file" class="form-control"
+                            accept="image/*,application/pdf">
                         @error('bill')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
@@ -45,7 +46,7 @@
                 </button>
             </div>
             <iframe
-                src="{{ customAsset(config('src.BusinessRegistrationAndRenewal.businessRegistration.bill'), $businessRegistration->bill, 'local') }}"
+                src="{{ customFileAsset(config('src.BusinessRegistrationAndRenewal.businessRegistration.bill'), $businessRegistration->bill, 'local', 'tempUrl') }}"
                 frameborder="0"
                 style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
             </iframe>
@@ -63,7 +64,7 @@
                 <div class="modal-body text-center">
                     @if ($businessRegistration->bill)
                         @if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $businessRegistration->bill))
-                            <img src="{{ customAsset(config('src.BusinessRegistrationAndRenewal.businessRegistration.bill'), $businessRegistration->bill, 'local') }}"
+                            <img src="{{ customFileAsset(config('src.BusinessRegistrationAndRenewal.businessRegistration.bill'), $businessRegistration->bill, 'local', 'tempUrl') }}"
                                 alt="Uploaded Payment" class="img-fluid rounded">
                         @else
                             <p>{{ __('No file uploaded.') }}</p>

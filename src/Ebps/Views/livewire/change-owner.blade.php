@@ -323,7 +323,7 @@
                                                     alt="Uploaded Image Preview" class="img-thumbnail mt-2"
                                                     style="height: 300px;">
                                             @elseif (!empty($filePath))
-                                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local') }}"
+                                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tempUrl') }}"
                                                     alt="Existing Document Preview" class="img-thumbnail mt-2"
                                                     style="height: 300px;">
                                             @endif

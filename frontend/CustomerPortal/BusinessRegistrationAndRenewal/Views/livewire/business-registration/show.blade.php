@@ -10,7 +10,7 @@
                             @if (is_array($field['value']))
                                 @foreach ($field['value'] as $index => $fileValue)
                                     <img width="50"
-                                        src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local') }}"
+                                        src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local', 'tempUrl') }}"
                                         alt="" class="rounded shadow-sm cursor-pointer" data-bs-toggle="modal"
                                         data-bs-target="#filePreviewModal{{ $key }}{{ $index }}">
 
@@ -24,7 +24,7 @@
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body text-center">
-                                                    <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local') }}"
+                                                    <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.registration'), $fileValue, 'local', 'tempUrl') }}"
                                                         alt="{{ __('File Preview') }}" class="img-fluid rounded">
                                                 </div>
                                                 <div class="modal-footer">
@@ -37,7 +37,7 @@
                                 @endforeach
                             @else
                                 <img width="50"
-                                    src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $field['value'], 'local') }}"
+                                    src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.registration'), $field['value'], 'local', 'tempUrl') }}"
                                     alt="" class="rounded shadow-sm cursor-pointer" data-bs-toggle="modal"
                                     data-bs-target="#filePreviewModal{{ $key }}">
 
@@ -51,7 +51,7 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center">
-                                                <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.registration'), $field['value'], 'local') }}"
+                                                <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.registration'), $field['value'], 'local', 'tempUrl') }}"
                                                     alt="{{ __('File Preview') }}" class="img-fluid rounded">
                                             </div>
                                             <div class="modal-footer">

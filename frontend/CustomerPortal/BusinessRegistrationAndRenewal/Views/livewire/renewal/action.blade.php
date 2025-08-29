@@ -45,7 +45,7 @@
     @if (!empty($businessRenewal->payment_receipt))
         <div class="col-md-12 mt-3">
             <label for="existing-bill">{{ __('Uploaded Payment Photo') }}</label>
-            <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
+            <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local', 'tempUrl') }}"
                 alt="Uploaded Bill Image" class="img-thumbnail mt-2 clickable" style="height: 300px; cursor: pointer;"
                 data-bs-toggle="modal" data-bs-target="#billModal">
         </div>
@@ -58,7 +58,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <img src="{{ customAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local') }}"
+                        <img src="{{ customFileAsset(config('src.BusinessRegistration.businessRegistration.bill'), $businessRenewal->payment_receipt, 'local', 'tempUrl') }}"
                             alt="Full-size Uploaded Bill" class="img-fluid" style="max-height: 90vh;">
                     </div>
                 </div>

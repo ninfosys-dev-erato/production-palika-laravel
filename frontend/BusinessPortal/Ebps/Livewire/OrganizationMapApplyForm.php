@@ -584,8 +584,4 @@ class OrganizationMapApplyForm extends Component
             return $file;
         }
     }
-    private function storeFile($file): string
-    {
-        return ImageServiceFacade::compressAndStoreImage($file, config('src.Ebps.ebps.path'), getStorageDisk('public'));
-    }
 }

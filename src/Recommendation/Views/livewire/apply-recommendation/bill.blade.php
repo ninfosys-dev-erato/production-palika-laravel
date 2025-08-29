@@ -12,7 +12,7 @@
                             @error('bill')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
-   
+
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -30,7 +30,7 @@
         <div class="col-md-12 mb-3">
             <div class="card-header text-white d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">{{ __('recommendation::recommendation.uploaded_payment') }}</h6>
-                <!-- <a href="{{ customAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local') }}"
+                <!-- <a href="{{ customFileAsset(config('src.Recommendation.recommendation.bill'), $applyRecommendation->bill, 'local', 'tempUrl') }}"
                     class="btn btn-sm btn-secondary">
                     <i class="bx bx-show-alt"></i>
                     {{ __('recommendation::recommendation.view') }}

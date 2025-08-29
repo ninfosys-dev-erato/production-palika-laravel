@@ -97,7 +97,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ __('digitalboard::digitalboard.pdf_file') }}</h5>
                                 <p class="card-text">{{ $uploadedImage }}</p>
-                                <a href="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $uploadedImage) }}"
+                                <a href="{{ customFileAsset(config('src.DigitalBoard.notice.notice_path'), $uploadedImage, 'local', 'tempUrl') }}"
                                     target="_blank" class="btn btn-primary btn-sm">
                                     {{ __('digitalboard::digitalboard.open_pdf') }}
                                 </a>

@@ -46,13 +46,13 @@
                             wire:key="representative-{{ $rep->id }}">
                             <div class="card rounded-1 shadow-sm border-0 overflow-hidden">
                                 <div class="w-100 d-flex justify-content-center" style="height: 4rem">
-                                    <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $rep->photo) }}"
+                                    <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $rep->photo, 'local', 'tempUrl') }}"
                                         class="h-100" style="width: fit-content;" alt="{{ $rep->name }}">
                                 </div>
                                 <div class="card-body text-center">
                                     <p class="mb-0 text-dark" style="font-size: 0.7rem;">{{ $rep->name }}</p>
                                     <p class="mb-0 text-muted" style="font-size: 0.6rem;">
-                                        {{$rep->designation->title ?? 'No Designation'  }}
+                                        {{ $rep->designation->title ?? 'No Designation' }}
                                     </p> <!-- Correct designation -->
                                     <p class="mb-0 text-muted" style="font-size: 0.5rem;">{{ $rep->phone }}</p>
                                     <!-- Correct phone -->
@@ -143,7 +143,7 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             showPage(0);
             updateButtonStates();
         });

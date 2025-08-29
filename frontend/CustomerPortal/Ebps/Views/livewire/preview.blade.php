@@ -59,7 +59,7 @@
                                             <td class="text-center">{{ $file->title }}</td>
                                             <td class="text-center">
                                                 @if ($file->file)
-                                                    <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $file->file, 'local') }}"
+                                                    <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $file->file, 'local', 'tempUrl') }}"
                                                         target="_blank" class="btn btn-sm btn-primary">
                                                         <i class="bx bx-show me-1"></i> {{ __('View') }}
                                                     </a>

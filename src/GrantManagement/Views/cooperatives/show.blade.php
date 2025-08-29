@@ -123,7 +123,7 @@
                                                         {{ __('grantmanagement::grantmanagement.pdf_file') }}
                                                     </h5>
                                                     <p class="card-text">{{ $cooperative->photo }}</p>
-                                                    <a href="{{ customFileAsset(config('src.GrantManagement.grant.photo'), $cooperative->photo) }}"
+                                                    <a href="{{ customFileAsset(config('src.GrantManagement.grant.photo'), $cooperative->photo, 'local', 'tempUrl') }}"
                                                         target="_blank" class="btn btn-primary btn-sm">
                                                         {{ __('grantmanagement::grantmanagement.open_pdf') }}
                                                     </a>

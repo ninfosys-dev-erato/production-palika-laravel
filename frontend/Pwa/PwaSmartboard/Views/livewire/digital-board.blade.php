@@ -8,34 +8,34 @@
             <p class="fw-medium fs-5 m-0 ms-1">मेनु</p>
         </div>
         <?php
-$menus = [
-    [
-        "id" => "१",
-        "title" => "सूचना",
-        "link" => "notices",
-    ],
-    [
-        "id" => "२",
-        "title" => "कार्यक्रमहरु",
-        "link" => "programs",
-    ],
-    [
-        "id" => "३",
-        "title" => "मिडिया",
-        "link" => "videos",
-    ],
-    [
-        "id" => "४",
-        "title" => "जनप्रतिनिधिहरु",
-        "link" => "representatives",
-    ],
-    [
-        "id" => "५",
-        "title" => "कर्मचारीहरु",
-        "link" => "employees",
-    ],
-];
-    ?>
+        $menus = [
+            [
+                'id' => '१',
+                'title' => 'सूचना',
+                'link' => 'notices',
+            ],
+            [
+                'id' => '२',
+                'title' => 'कार्यक्रमहरु',
+                'link' => 'programs',
+            ],
+            [
+                'id' => '३',
+                'title' => 'मिडिया',
+                'link' => 'videos',
+            ],
+            [
+                'id' => '४',
+                'title' => 'जनप्रतिनिधिहरु',
+                'link' => 'representatives',
+            ],
+            [
+                'id' => '५',
+                'title' => 'कर्मचारीहरु',
+                'link' => 'employees',
+            ],
+        ];
+        ?>
         @foreach ($menus as $menu)
             <a href="{{ route('smartboard.' . $menu['link']) }}" class="text-decoration-none mt-1">
                 <div class="w-100 d-flex justify-content-between align-items-center rounded-2 px-2 py-1 text-light"
@@ -61,16 +61,16 @@ $menus = [
 
             <div class="profile-carousel representative-carousel">
                 <div class="carousel-track">
-                    @foreach($representatives as $rep)
+                    @foreach ($representatives as $rep)
                         <div class="profile-card" wire:key="representative-{{ $rep->id }}">
                             <div class="profile-image-container d-flex w-100 justify-content-center">
-                                <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $rep->photo) }}"
+                                <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $rep->photo, 'local', 'tempUrl') }}"
                                     class="profile-image h-100" style="width: fit-content">
                             </div>
                             <div class="w-100 text-center mt-2">
                                 <h3 class="profile-name m-0">{{ $rep->name ?? 'N/A' }}</h3>
                                 <p class="profile-designation m-0">
-                                    {{$rep->designation->title ?? 'No Designation' }}
+                                    {{ $rep->designation->title ?? 'No Designation' }}
                                 </p>
                             </div>
 
@@ -87,16 +87,16 @@ $menus = [
 
             <div class="profile-carousel employee-carousel">
                 <div class="carousel-track">
-                    @foreach($employees as $emp)
+                    @foreach ($employees as $emp)
                         <div class="profile-card" wire:key="employee-{{ $emp->id }}">
                             <div class="profile-image-container d-flex w-100 justify-content-center">
-                                <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $emp->photo) }}"
+                                <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $emp->photo, 'local', 'tempUrl') }}"
                                     class="profile-image h-100" style="width: fit-content">
                             </div>
                             <div class="w-100 text-center mt-2">
                                 <h3 class="profile-name m-0">{{ $emp->name }}</h3>
                                 <p class="profile-designation m-0">
-                                    {{$emp->designation->title ?? 'No Designation'  }}
+                                    {{ $emp->designation->title ?? 'No Designation' }}
                                 </p>
                             </div>
                         </div>
@@ -111,14 +111,15 @@ $menus = [
         @if (!empty($programs) && count($programs) > 0)
             <div class="program-slider">
                 <div class="program-track">
-                    @foreach($programs as $program)
+                    @foreach ($programs as $program)
                         <div class="program-slide" wire:key="program-{{ $program->id }}">
-                            <div class="rounded-1 overflow-hidden d-flex justify-content-center w-100" style="height: 90%">
-                                <img src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $program->photo)}}"
-                                    alt="{{$program->title}}" class="h-100" style="width: fit-content;">
+                            <div class="rounded-1 overflow-hidden d-flex justify-content-center w-100"
+                                style="height: 90%">
+                                <img src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $program->photo, 'local', 'tempUrl') }}"
+                                    alt="{{ $program->title }}" class="h-100" style="width: fit-content;">
                             </div>
                             <p class="m-0 text-center mt-2 ms-2 fw-medium" style="color: var(--primary)">
-                                {{$program->title}}
+                                {{ $program->title }}
                             </p>
                         </div>
                     @endforeach
@@ -205,7 +206,7 @@ $menus = [
     </style>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             class Carousel {
                 constructor(selector) {
                     this.container = document.querySelector(selector);

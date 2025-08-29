@@ -20,9 +20,8 @@
                             class="flex-none w-[calc(50%-16px)] sm:w-[calc(33.33%-16px)] min-w-[150px] md:min-w-[180px]">
                             <div class="flex flex-col gap-2 md:gap-3">
                                 <div class="rounded-lg overflow-hidden h-32 md:h-40 relative group">
-                                    <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $representative->photo) }}"
-{
-                                        alt="{{ $representative->title }}"
+                                    <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $representative->photo, 'local', 'tempUrl') }}"
+                                        { alt="{{ $representative->title }}"
                                         class="w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-105">
                                     <div
                                         class="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -62,7 +61,7 @@
                             class="flex-none w-[calc(50%-16px)] sm:w-[calc(33.33%-16px)] min-w-[150px] md:min-w-[180px]">
                             <div class="flex flex-col gap-2 md:gap-3">
                                 <div class="rounded-lg overflow-hidden h-32 md:h-40 relative group">
-                                    <img src="{{ customAsset(config('src.Employees.employee.photo_path'), $employee->photo) }}"
+                                    <img src="{{ customFileAsset(config('src.Employees.employee.photo_path'), $employee->photo, 'local', 'tempUrl') }}"
                                         alt="{{ $employee->name }}"
                                         class="w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-105">
                                     <div

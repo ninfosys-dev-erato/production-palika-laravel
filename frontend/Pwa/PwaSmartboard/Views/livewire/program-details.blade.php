@@ -26,26 +26,27 @@
             @foreach ($programs as $key => $program)
                 <div wire:key="program-{{ $program->id }}" wire:click="showProgramDetail({{ $program->id }})"
                     class="w-100 mt-2 rounded-2 px-2 py-2 d-flex flex-column cursor-pointer shadow-sm program-item {{ $selectedProgram->id === $program->id ? 'active' : '' }}"
-                    data-program-id="{{$key}}" style="cursor: pointer">
-                    <p class="m-0" style="font-size: 0.8rem">{{$program->title}}</p>
+                    data-program-id="{{ $key }}" style="cursor: pointer">
+                    <p class="m-0" style="font-size: 0.8rem">{{ $program->title }}</p>
                 </div>
             @endforeach
         </div>
     </div>
     <!-- Replace the content section with this -->
     <div class="h-100 pb-3 d-flex flex-column ms-3" style="width: 75%">
-        @if($programs->isEmpty())
+        @if ($programs->isEmpty())
             <div class="w-100 h-100 d-flex justify-content-center align-items-center">
                 <div class="alert alert-info" style="width:70%" role="alert">
                     <h5 class="fw-bold text-center">कार्यक्रमहरू उपलब्ध छैनन्</h5>
-                    <p class="m-0 text-center">अहिलेसम्म कुनै कार्यक्रम अपलोड गरिएको छैन। कृपया पछि फेरि जाँच गर्नुहोस्।</p>
+                    <p class="m-0 text-center">अहिलेसम्म कुनै कार्यक्रम अपलोड गरिएको छैन। कृपया पछि फेरि जाँच गर्नुहोस्।
+                    </p>
                 </div>
             </div>
         @else
             <div class="w-100 h-100 d-flex justify-content-center rounded-1 overflow-hidden" style="height: 90%">
                 <img id="programPhoto"
-                    src="{{ customAsset(config('src.DigitalBoard.program.photo_path'), $selectedProgram->photo) }}"
-                    class="h-100" alt="{{$selectedProgram->title}}">
+                    src="{{ customFileAsset(config('src.DigitalBoard.program.photo_path'), $selectedProgram->photo, 'local', 'tempUrl') }}"
+                    class="h-100" alt="{{ $selectedProgram->title }}">
             </div>
             <p id="programTitle" class="m-0 d-flex mt-2 justify-content-center fw-medium" style="color: var(--primary)">
                 {{ $selectedProgram->title }}

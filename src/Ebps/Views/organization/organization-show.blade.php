@@ -320,7 +320,7 @@
                                                     @if ($taxClearance->document)
                                                         <a href="#" data-bs-toggle="modal"
                                                             data-bs-target="#taxImageModal"
-                                                            onclick="showTaxImageModal('{{ customAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local') }}')"
+                                                            onclick="showTaxImageModal('{{ customFileAsset(config('src.Ebps.ebps.path'), $taxClearance->document, 'local', 'tempUrl') }}')"
                                                             class="btn btn-sm btn-outline-primary">
                                                             <i class="bx bx-image me-1"></i>
                                                             {{ __('ebps::ebps.view_document') }}
