@@ -17,11 +17,13 @@
                         </h5>
                     </div>
 
-                    <div>
-                        <a href="{{ route('organization.ebps.map_apply.create') }}" class="btn btn-info"><i
-                                class="bx bx-plus"></i>
-                            {{ __('ebps::ebps.add_map_apply') }}</a>
-                    </div>
+                    @if (!config('settings.hide_button'))
+                        <div>
+                            <a href="{{ route('organization.ebps.map_apply.create') }}" class="btn btn-info"><i
+                                    class="bx bx-plus"></i>
+                                {{ __('ebps::ebps.add_map_apply') }}</a>
+                        </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     <livewire:business_portal.ebps.organization_map_apply_table theme="bootstrap-4" />
