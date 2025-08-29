@@ -14,6 +14,8 @@ use Src\Ebps\Models\MapStep;
 use Src\Settings\Enums\ModuleEnum;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Src\Ebps\Models\AdditionalForm;
 
 class Form extends Model
 {
@@ -75,5 +77,8 @@ class Form extends Model
     {
         return $this->belongsToMany(MapStep::class, 'ebps_form_map_step');
     }
-
+    public function additionalForm(): HasOne
+    {
+        return $this->hasOne(AdditionalForm::class);
+    }
 }

@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('distance_left')->nullable();
             $table->string('area_unit')->nullable();
             $table->string('length_unit')->nullable();
+            $table->string('construction_purpose_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

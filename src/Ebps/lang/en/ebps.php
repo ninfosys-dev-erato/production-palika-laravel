@@ -728,5 +728,8 @@ return [
     'additional_form_setting_deleted_successfully' => 'Additional Form Setting Deleted Successfully',
     'enter_former_local_body' => 'Enter Former Local Body',
     'enter_former_ward_no' => 'Enter Former Ward No',
+    'additional_form_template' => 'Additional Form Template',
+    'form_name' => 'Form Name',
+    'additional_form' => 'Additional Form',
 
 ];

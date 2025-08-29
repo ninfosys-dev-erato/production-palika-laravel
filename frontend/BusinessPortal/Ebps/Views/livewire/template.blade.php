@@ -88,15 +88,18 @@
                                 {{ __('Detail to be filled by consultancy') }}</h5>
                         </div>
                         <div class="card-body">
-                            <div class="mb-3">
-                                <p class="m-0 text-dark">1. जग्गाधनीको नाम, जात: <span
-                                        class="fw-bold">{{ $mapApply->full_name }}</span></p>
-                                <p class="m-0 text-dark">2. घरधनीको नाम, जात: <span
-                                        class="fw-bold">{{ $mapApply->full_name }}</span>
-                                </p>
-                            </div>
                             <div class="row mb-3">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">1. जग्गाधनीको नाम, जात:</label>
+                                    <input type="text" class="form-control d-inline-block fw-bold"
+                                        value="{{ $mapApply->full_name }}" readonly>
+                                </div>
                                 <div class="col-md-6">
+                                    <label class="form-label">2. घरधनीको नाम, जात:</label>
+                                    <input type="text" class="form-control d-inline-block fw-bold"
+                                        value="{{ $mapApply->full_name }}" readonly>
+                                </div>
+                                <div class="col-md-6 mb-2">
                                     <label class="form-label">3. भू-उपयोग क्षेत्र</label>
                                     <select
                                         class="form-select @error('mapApplyDetail.land_use_area_id') is-invalid @enderror"
@@ -114,8 +117,8 @@
                                 <div class="col-md-6">
                                     <label class="form-label">4. निर्माणको प्रयोजन</label>
                                     <select
-                                        class="form-select @error('mapApplyDetail.construction_purpose') is-invalid @enderror"
-                                        name="construction_purpose">
+                                        class="form-select @error('mapApplyDetail.construction_purpose_id') is-invalid @enderror"
+                                        name="construction_purpose" wire:model="mapApplyDetail.construction_purpose_id">
                                         <option value="">छानुहोस *</option>
                                         @foreach ($constructionPurposes as $constructionPurpose)
                                             <option value="{{ $constructionPurpose['value'] }}">
@@ -175,16 +178,20 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">7. निर्माणको लागि प्रस्तावित जग्गाको कित्ता नं. :-
-                                        <span class="fw-bold">{{ $mapApply->landDetail->lot_no }}</span></label>
+                                    <label for="form-label">7. निर्माणको लागि प्रस्तावित जग्गाको कित्ता नं.</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ $mapApply->landDetail->lot_no }}" readonly>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">8. जग्गाधनी प्रमाण पुर्जा अनुसारको जग्गाको क्षेत्रफल
-                                        sqm :- <span
-                                            class="fw-bold">{{ $mapApply->landDetail->area_sqm }}</span></label>
+
+                                    <label for="form-label">8. जग्गाधनी प्रमाण पुर्जा अनुसारको जग्गाको
+                                        क्षेत्रफल</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ $mapApply->landDetail->area_sqm }}" readonly>
+
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">9. फिल्ड नाप अनुसारको जग्गाको वास्तविक क्षेत्रफल
@@ -312,7 +319,7 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                    <tfoot>
+                                    {{-- <tfoot>
                                         <tr class="table-secondary">
                                             <th>कुल</th>
                                             <th>
@@ -329,7 +336,7 @@
                                             </th>
                                             <th></th>
                                         </tr>
-                                    </tfoot>
+                                    </tfoot> --}}
                                 </table>
                                 <div>
                                     <button type="button" class="btn btn-sm btn-primary add-row"
@@ -398,18 +405,15 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">15. भवनको गाह्रोमा प्रयोग सामाग्री (इँटा, ढंगा, ब्लक
-                                        आदि) को
-                                        विवरण</label>
+                                <div class="col-md-6 mb-1">
+                                    <label class="form-label">15. भवनको गाह्रोमा प्रयोग सामाग्री (इँटा, ढंगा, ब्लक आदि)
+                                        को विवरण</label>
                                     <input type="text"
                                         class="form-control @error('exterior_materials') is-invalid @enderror"
                                         name="exterior_materials"
-                                        placeholder="१७. भवनको गाह्रोमा प्रयोग सामाग्री (इँटा, ढंगा, ब्लक आदि) को विवरण*"
-                                        required>
+                                        placeholder="भवनको गाह्रोमा प्रयोग सामाग्री (इँटा, ढंगा, ब्लक
+                                        आदि) को विवरण"
+                                        wire:model="mapApplyDetail.material_used">
                                     @error('exterior_materials')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -450,7 +454,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table class="table table-bordered" style="min-width:1200px;">
                                     <thead class="table-light">
                                         <tr>
                                             <th class="align-middle" rowspan="2">जग्गाको</th>

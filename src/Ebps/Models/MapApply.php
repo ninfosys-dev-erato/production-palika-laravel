@@ -19,7 +19,7 @@ use Src\Ebps\Models\HouseOwnerDetail;
 
 class MapApply extends Model
 {
-    use HasFactory,LogsActivity;
+    use HasFactory, LogsActivity;
 
     protected $table = 'ebps_map_applies';
 
@@ -55,7 +55,7 @@ class MapApply extends Model
         'applicant_type',
         'mobile_no',
         'province_id',
-        'district_id', 
+        'district_id',
         'local_body_id',
         'ward_no',
         'application_date'
@@ -63,44 +63,45 @@ class MapApply extends Model
     ];
 
 
-    public function casts():array{
-      return [
-        'submission_id' => 'string',
-        'registration_date' => 'string',
-        'registration_no' => 'string',
-        'fiscal_year_id' => 'integer',
-        'customer_id' => 'string',
-        'land_detail_id' => 'string',
-        'construction_type_id' => 'string',
-        'usage' => 'string',
-        'is_applied_by_customer' => 'string',
-        'full_name' => 'string',
-        'age' => 'string',
-        'applied_date' => 'string',
-        'signature' => 'string',
-        'id' => 'int',
-        'created_at' => 'datetime',
-        'created_by' => 'string',
-        'updated_at' => 'datetime',
-        'updated_by' => 'string',
-        'deleted_at' => 'datetime',
-        'deleted_by' => 'string',
-        'application_type'=> 'string',
-        'house_owner_id'=> 'int',
-        'map_process_type'=> 'string',
-        'building_structure'=> 'string',
-        'area_of_building_plinth' => 'string',
-        'no_of_rooms' => 'string',
-        'storey_no' => 'string',
-        'year_of_house_built' => 'string',
-        'land_owner_id' => 'string',
-        'applicant_type' => 'string',
-        'mobile_no' => 'string',
-        'province_id' => 'string',
-        'district_id' => 'string', 
-        'local_body_id' => 'string',
-        'ward_no' => 'string',
-        'application_date' => 'string'
+    public function casts(): array
+    {
+        return [
+            'submission_id' => 'string',
+            'registration_date' => 'string',
+            'registration_no' => 'string',
+            'fiscal_year_id' => 'integer',
+            'customer_id' => 'string',
+            'land_detail_id' => 'string',
+            'construction_type_id' => 'string',
+            'usage' => 'string',
+            'is_applied_by_customer' => 'string',
+            'full_name' => 'string',
+            'age' => 'string',
+            'applied_date' => 'string',
+            'signature' => 'string',
+            'id' => 'int',
+            'created_at' => 'datetime',
+            'created_by' => 'string',
+            'updated_at' => 'datetime',
+            'updated_by' => 'string',
+            'deleted_at' => 'datetime',
+            'deleted_by' => 'string',
+            'application_type' => 'string',
+            'house_owner_id' => 'int',
+            'map_process_type' => 'string',
+            'building_structure' => 'string',
+            'area_of_building_plinth' => 'string',
+            'no_of_rooms' => 'string',
+            'storey_no' => 'string',
+            'year_of_house_built' => 'string',
+            'land_owner_id' => 'string',
+            'applicant_type' => 'string',
+            'mobile_no' => 'string',
+            'province_id' => 'string',
+            'district_id' => 'string',
+            'local_body_id' => 'string',
+            'ward_no' => 'string',
+            'application_date' => 'string'
         ];
     }
 
@@ -177,11 +178,11 @@ class MapApply extends Model
     {
         return $this->belongsTo(HouseOwnerDetail::class, 'house_owner_id');
     }
-    
+
     public function landOwner()
     {
         return $this->belongsTo(HouseOwnerDetail::class, 'land_owner_id')
-                    ->where('ownership_type', OwnershipTypeEnum::LAND_OWNER->value);
+            ->where('ownership_type', OwnershipTypeEnum::LAND_OWNER->value);
     }
 
     public function province(): BelongsTo
@@ -207,11 +208,14 @@ class MapApply extends Model
     public function buildingRoofType()
     {
         return $this->belongsTo(BuildingRoofType::class, 'building_roof_type_id');
-
     }
-    
+
     public function organizationDetails()
     {
         return $this->hasMany(OrganizationDetail::class);
+    }
+    public function additionalFormDynamicData()
+    {
+        return $this->hasMany(AdditionalFormDynamicData::class);
     }
 }
