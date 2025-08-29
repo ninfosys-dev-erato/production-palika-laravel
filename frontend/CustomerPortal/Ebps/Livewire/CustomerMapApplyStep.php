@@ -29,7 +29,7 @@ class CustomerMapApplyStep extends Component
 
     public function mount(MapStep $mapStep, MapApply $mapApply)
     {
-        $this->mapStep = MapStep::with(['form', 'constructionTypes', 'users'])->find($mapStep->id);
+        $this->mapStep = MapStep::with(['form', 'constructionTypes'])->find($mapStep->id);
         $this->mapApply = $mapApply;
 
         if (!$this->mapStep) {
