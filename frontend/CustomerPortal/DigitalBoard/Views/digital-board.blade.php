@@ -11,7 +11,7 @@
                     <a href="{{ route('digital-board.notice.show') }}"
                         class="bg-gradient-to-r from-blue-600 to-blue-800 hover:bg-blue-600 px-4 py-2 rounded-md flex items-center gap-2">
                         <span class="text-white text-sm">{{ __('View All') }}</span>
-                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" class="w-5 h-5">
+                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">                    
                     </a>
                 </div>
 
@@ -122,7 +122,7 @@
                     <a href="{{ route('digital-board.charter.showDetail', ['id' => \Src\DigitalBoard\Models\CitizenCharter::latest()?->first()?->id]) }}"
                         class="bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-2 rounded-md flex items-center gap-2 hover:scale-105 transition-transform">
                         <span class="text-white text-sm">{{ __('View All') }}</span>
-                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" class="w-5 h-5">
+                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">                    
                     </a>
                 </div>
 
@@ -143,9 +143,8 @@
                                     <a href="{{ route('digital-board.charter.showDetail', ['id' => $citizenCharter->id]) }}"
                                         class="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-blue-800 rounded-md px-3 py-1 text-white text-xs hover:scale-105 transition-transform">
                                         <span>{{ __('View') }}</span>
-                                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="arrow"
-                                            class="w-5 h-5">
-                                    </a>
+                                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">
+                                                                        </a>
                                 </div>
                             </div>
                         </div>
@@ -171,8 +170,7 @@
                     <button
                         class="bg-gradient-to-r from-blue-600 to-blue-800 px-3 py-1 rounded-[10px] text-white text-xs md:text-sm flex items-center gap-1">
                         {{ __('View') }}
-                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="right arrow"
-                            class="h-[10px] md:h-[12px] w-[18px] md:w-[20px]">
+                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">
                     </button>
                 </a>
             </div>
@@ -221,8 +219,7 @@
                     <button
                         class="bg-gradient-to-r from-blue-600 to-blue-800 px-3 py-1 rounded-[10px] text-white text-xs md:text-sm flex items-center gap-1">
                         {{ __('View') }}
-                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="right arrow"
-                            class="h-[10px] md:h-[12px] w-[18px] md:w-[20px]">
+                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">
                     </button>
                 </a>
             </div>
@@ -460,8 +457,7 @@
                     <button
                         class="bg-gradient-to-r from-[#103268b3] to-[#103268e6] px-3 py-1 rounded rounded-[10px] text-white py-2 px-1 rounded mt-2 text-sm flex items-center justify-center gap-1">
                         {{ __('View') }}
-                        <img src="{{ customFileAsset(config('src.DigitalBoard.icons_path'), 'arrowRight.png', 'local', 'tempUrl') }}" alt="right arrow"
-                            class="h-[12px] w-[20px]" />
+                        <img src="{{ asset('digitalBoard/icons/arrowRight.png') }}" class="w-5 h-5">
                     </button>
                 </a>
             </div>

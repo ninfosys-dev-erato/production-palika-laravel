@@ -306,22 +306,65 @@
     </div>
 </div>
 
+<!-- Send For Review Modal -->
+<div wire:ignore class="modal fade rounded-0" id="sendForReviewModal" tabindex="-1" aria-labelledby="sendForReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content rounded-0">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="sendForReviewModalLabel">{{ __('beruju::beruju.send_for_review') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <livewire:beruju.send_for_review :berujuEntry="$berujuEntry" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div wire:ignore class="modal fade rounded-0" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content rounded-0">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="reviewModalLabel">{{ __('beruju::beruju.review') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <livewire:beruju.review_form :berujuEntry="$berujuEntry" />
+            </div>
+        </div>
+    </div>
+    
+</div>
 <!-- JavaScript for Modal -->
 <script>
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('close-modal', () => {
-            const modal = bootstrap.Modal.getInstance(document.getElementById('resolutionCycleModal'));
-            if (modal) {
-                modal.hide();
+            const resolutionModal = bootstrap.Modal.getInstance(document.getElementById('resolutionCycleModal'));
+            if (resolutionModal) {
+                resolutionModal.hide();
+            }
+
+            const actionModal = bootstrap.Modal.getInstance(document.getElementById('actionModal'));
+            if (actionModal) {
+                actionModal.hide();
+            }
+
+            const reviewModal = bootstrap.Modal.getInstance(document.getElementById('sendForReviewModal'));
+            if (reviewModal) {
+                reviewModal.hide();
+            }
+
+            const decisionModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+            if (decisionModal) {
+                decisionModal.hide();
             }
             
-            // Clean up modal backdrop and body classes
-            setTimeout(() => {
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                $('body').css('padding-right', '');
-                $('body').css('overflow', '');
-            }, 150);
+            // No manual backdrop cleanup here; handled on hidden events
+        });
+
+        Livewire.on('reload-page', () => {
+            window.location.reload();
         });
     });
     
@@ -338,21 +381,6 @@
     
     // Action Modal Event Listeners
     document.addEventListener('livewire:initialized', () => {
-        Livewire.on('close-modal', () => {
-            const actionModal = bootstrap.Modal.getInstance(document.getElementById('actionModal'));
-            if (actionModal) {
-                actionModal.hide();
-            }
-            
-            // Clean up modal backdrop and body classes
-            setTimeout(() => {
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                $('body').css('padding-right', '');
-                $('body').css('overflow', '');
-            }, 150);
-        });
-        
         // Listen for open-action-modal event
         Livewire.on('open-action-modal', () => {
             const actionModal = new bootstrap.Modal(document.getElementById('actionModal'));
@@ -378,6 +406,21 @@
         
         // Reset modal title back to create mode
         resetModalTitle();
+    });
+
+    // Review Modal Event Listener
+    document.getElementById('sendForReviewModal').addEventListener('hidden.bs.modal', () => {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+        $('body').css('padding-right', '');
+        $('body').css('overflow', '');
+    });
+
+    document.getElementById('reviewModal').addEventListener('hidden.bs.modal', () => {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+        $('body').css('padding-right', '');
+        $('body').css('overflow', '');
     });
     
     function resetActionForm() {

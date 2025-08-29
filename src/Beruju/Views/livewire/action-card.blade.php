@@ -1,8 +1,18 @@
 <div class="card mb-4 rounded-0">
-    <div class="card-header bg-light">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
         <h6 class="card-title mb-0 fw-semibold">
             <i class="bx bx-list-check me-2"></i>{{ __('beruju::beruju.actions_taken') }}
         </h6>
+        @if($berujuEntry->status == \Src\Beruju\Enums\BerujuStatusEnum::SUBMITTED)
+            <button type="button" class="btn btn-primary btn-sm rounded-0" data-bs-target="#sendForReviewModal" data-bs-toggle="modal">
+                <i class="bx bx-plus me-1"></i>{{ __('beruju::beruju.send_for_review') }}
+            </button>
+        @endif
+        @if($berujuEntry->status == \Src\Beruju\Enums\BerujuStatusEnum::UNDER_REVIEW)
+            <button type="button" class="btn btn-primary btn-sm rounded-0" data-bs-target="#reviewModal" data-bs-toggle="modal">
+                <i class="bx bx-check-circle me-1"></i>{{ __('beruju::beruju.review_for_approval') }}
+            </button>
+        @endif
     </div>
     <div class="card-body p-3">
         @if($berujuEntry->resolutionCycles && $berujuEntry->resolutionCycles->where('status', 'active')->count() > 0)

@@ -113,7 +113,7 @@ class EvidenceDocumentUpload extends Component
                 ? FileFacade::getTemporaryUrl(
                     path: config('src.Beruju.beruju.uploads'),
                     filename: $evidence->evidence_document_name,
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 )
                 : null;
 
@@ -184,14 +184,14 @@ class EvidenceDocumentUpload extends Component
         $savedFileName = FileFacade::saveFile(
             path: config('src.Beruju.beruju.uploads'),
             file: $file,
-            disk: "local",
+            disk: getStorageDisk('private'),
             filename: ""
         );
 
         $tempUrl = FileFacade::getTemporaryUrl(
             path: config('src.Beruju.beruju.uploads'),
             filename: $savedFileName,
-            disk: 'local'
+            disk: getStorageDisk('private')
         );
 
         return [$savedFileName, $tempUrl];

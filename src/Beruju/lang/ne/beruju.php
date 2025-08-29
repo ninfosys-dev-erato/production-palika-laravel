@@ -579,4 +579,16 @@ return [
     'beruju_draft_saved_successfully' => 'बेरुजु मस्यौदा सफलतापूर्वक सुरक्षित गरियो',
     'beruju_draft_updated_successfully' => 'बेरुजु मस्यौदा सफलतापूर्वक अपडेट गरियो',
     'something_went_wrong_while_saving_draft' => 'मस्यौदा सुरक्षित गर्दा केही गलत भयो',
+
+    // Send for Review
+    'send_for_review' => 'समिक्षाका लागि पठाउनुहोस्',
+    'enter_remarks_for_reviewer' => 'समिक्षकका लागि टिप्पणी लेख्नुहोस्',
+    'sent_for_review_successfully' => 'समिक्षाका लागि सफलतापूर्वक पठाइयो',
+
+    // Review
+    'review' => 'समिक्षा',
+    'review_for_approval' => 'स्वीकृतिका लागि समिक्षा',
+    'decision' => 'निर्णय',
+    'submit_review' => 'समिक्षा पेश गर्नुहोस्',
+    'review_submitted_successfully' => 'समिक्षा सफलतापूर्वक पेश भयो',
 ];

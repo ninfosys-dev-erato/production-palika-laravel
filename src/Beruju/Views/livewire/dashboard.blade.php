@@ -336,7 +336,7 @@
                         datasets: [{
                             data: [{{ $resolvedCount }}, {{ $unresolvedCount }}],
                             backgroundColor: [
-                                '#007bff', // Blue for resolved
+                                '#003197', // Blue for resolved
                                 '#6c757d' // Gray for unresolved
                             ],
 

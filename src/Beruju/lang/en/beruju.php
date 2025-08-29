@@ -588,4 +588,16 @@ return [
     'beruju_draft_updated_successfully' => 'Beruju draft updated successfully',
     'something_went_wrong_while_saving_draft' => 'Something went wrong while saving draft',
 
+    // Send for Review
+    'send_for_review' => 'Send for Review',
+    'enter_remarks_for_reviewer' => 'Enter remarks for reviewer',
+    'sent_for_review_successfully' => 'Sent for review successfully',
+
+    // Review
+    'review' => 'Review',
+    'review_for_approval' => 'Review for Approval',
+    'decision' => 'Decision',
+    'submit_review' => 'Submit Review',
+    'review_submitted_successfully' => 'Review submitted successfully',
+
 ];
