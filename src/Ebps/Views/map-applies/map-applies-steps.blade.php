@@ -228,7 +228,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($canUserAccessStep && $status != 'accepted')
+                                                    @if ($canUserAccessStep || (isSuperAdmin() && $status != 'accepted'))
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -409,8 +409,7 @@
 
                                                     @if (
                                                         ($canUserAccessStep || isSuperAdmin()) &&
-                                                            $status != 'Not Applied' &&
-                                                            $status != 'accepted' &&
+                                                            ($status != 'Not Applied' || $status != 'accepted') &&
                                                             $canApply &&
                                                             !$isDisabled)
                                                         <button

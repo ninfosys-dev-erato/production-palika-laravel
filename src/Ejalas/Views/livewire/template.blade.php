@@ -64,6 +64,7 @@
             Livewire.on('open-pdf-in-new-tab', (event) => {
                 window.open(event.url, '_blank');
             });
+            console.log('open-pdf-in-new-tab');
 
         });
     </script>

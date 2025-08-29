@@ -96,6 +96,7 @@ class OrganizationCustomerDetailForm extends Component
             'mapApplyDetail.field_measurement_area'       => ['nullable', 'string'],
             'mapApplyDetail.building_plinth_area'         => ['nullable', 'string'],
             'mapApplyDetail.building_construction_type_id' => ['nullable', 'string'],
+            'mapApplyDetail.construction_purpose_id'      => ['nullable', 'string'],
             'mapApplyDetail.building_roof_type_id'        => ['nullable', 'string'],
             'mapApplyDetail.other_construction_area'      => ['nullable', 'string'],
             'mapApplyDetail.former_other_construction_area' => ['nullable', 'string'],
