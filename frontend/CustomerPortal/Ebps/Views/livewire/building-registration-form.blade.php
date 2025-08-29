@@ -586,22 +586,17 @@
                             class="form-control {{ $errors->has('landOwnerPhoto') ? 'is-invalid' : '' }}"
                             style="{{ $errors->has('landOwnerPhoto2') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                             accept="image/*,.pdf">
+                        <div wire:loading wire:target="landOwnerPhoto">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Uploading...
+                        </div>
                         <div>
                             @error('landOwnerPhoto')
                                 <small class='text-danger'>{{ $message }}</small>
                             @enderror
-                            @if (
-                                ($landOwnerPhoto && $landOwnerPhoto instanceof \Livewire\TemporaryUploadedFile) ||
-                                    $landOwnerPhoto instanceof \Illuminate\Http\File ||
-                                    $landOwnerPhoto instanceof \Illuminate\Http\UploadedFile)
-                                <a href="{{ $landOwnerPhoto->temporaryUrl() }}" target="_blank"
+                            @if (!empty($landOwnerPhotoUrl))
+                                <a href="{{ $landOwnerPhotoUrl }}" target="_blank"
                                     class="btn btn-outline-primary btn-sm">
-                                    <i class="bx bx-file"></i>
-                                    {{ __('yojana::yojana.view_uploaded_file') }}
-                                </a>
-                            @elseif (!empty(trim($landOwnerPhoto)))
-                                <a href="{{ customFileAsset(config('src.Ebps.ebps.path'), $landOwnerPhoto, 'local', 'tempUrl') }}"
-                                    target="_blank" class="btn btn-outline-primary btn-sm">
                                     <i class="bx bx-file"></i>
                                     {{ __('yojana::yojana.view_uploaded_file') }}
                                 </a>
@@ -852,19 +847,17 @@
                                 class="form-control {{ $errors->has('houseOwnerPhoto') ? 'is-invalid' : '' }}"
                                 style="{{ $errors->has('houseOwnerPhoto') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
                                 accept="image/*">
+                            <div wire:loading wire:target="houseOwnerPhoto">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Uploading...
+                            </div>
                             <div>
                                 @error('houseOwnerPhoto')
                                     <small class='text-danger'>{{ $message }}</small>
                                 @enderror
-                                @if (
-                                    ($houseOwnerPhoto && $houseOwnerPhoto instanceof \Livewire\TemporaryUploadedFile) ||
-                                        $houseOwnerPhoto instanceof \Illuminate\Http\File ||
-                                        $houseOwnerPhoto instanceof \Illuminate\Http\UploadedFile)
-                                    <img src="{{ $houseOwnerPhoto->temporaryUrl() }}" alt="Uploaded Image 1 Preview"
+                                @if (!empty($houseOwnerPhotoUrl))
+                                    <img src="{{ $houseOwnerPhotoUrl }}" alt="House Owner Photo"
                                         class="img-thumbnail mt-2" style="height: 300px;">
-                                @elseif (!empty(trim($houseOwnerPhoto)))
-                                    <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $houseOwnerPhoto, 'local', 'tempUrl') }}"
-                                        alt="Existing Image 2" class="img-thumbnail mt-2" style="height: 300px;">
                                 @endif
                             </div>
                         </div>
@@ -1048,22 +1041,17 @@
                         <input wire:model="uploadedFiles.{{ $index }}" type="file"
                             class="form-control {{ $errors->has('uploadedFiles.' . $index) ? 'is-invalid' : '' }}"
                             accept="image/*,application/pdf">
+                        <div wire:loading wire:target="uploadedFiles.{{ $index }}">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Uploading...
+                        </div>
                         <div>
                             @error("uploadedFiles.$index")
                                 <small class='text-danger'>{{ $message }}</small>
                             @enderror
-
-                            @if (isset($reindexedFiles[$index]) &&
-                                    ($reindexedFiles[$index] instanceof \Livewire\TemporaryUploadedFile ||
-                                        $reindexedFiles[$index] instanceof \Illuminate\Http\File ||
-                                        $reindexedFiles[$index] instanceof \Illuminate\Http\UploadedFile))
-                                <img src="{{ $reindexedFiles[$index]->temporaryUrl() }}"
+                            @if (isset($uploadedFilesUrls[$index]) && !empty($uploadedFilesUrls[$index]))
+                                <img src="{{ $uploadedFilesUrls[$index] }}"
                                     alt="Uploaded Image Preview" class="img-thumbnail mt-2" style="height: 300px;">
-                            @elseif (!empty($filePath))
-                                {{-- Show existing file if no new file is uploaded --}}
-                                <img src="{{ customFileAsset(config('src.Ebps.ebps.path'), $filePath, 'local', 'tempUrl') }}"
-                                    alt="Existing Document Preview" class="img-thumbnail mt-2"
-                                    style="height: 300px;">
                             @endif
                         </div>
                     </div>
@@ -1099,10 +1087,10 @@
                                         <label
                                             class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
                                         <input type="file" class="form-control-file"
-                                            wire:model.defer="documents.{{ $key }}.file"
+                                            wire:model="documents.{{ $key }}.document"
                                             accept="image/*,application/pdf">
 
-                                        <div wire:loading wire:target="documents.{{ $key }}.file">
+                                        <div wire:loading wire:target="documents.{{ $key }}.document">
                                             <span class="spinner-border spinner-border-sm" role="status"
                                                 aria-hidden="true"></span>
                                             Uploading...
@@ -1117,7 +1105,7 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-md-3" wire:target="documents.{{ $key }}.file">
+                                                                    <div class="col-md-3" wire:target="documents.{{ $key }}.document">
                                     <div class="form-group">
                                         <label
                                             class="font-weight-bold">{{ __('ebps::ebps.document_status') }}</label>

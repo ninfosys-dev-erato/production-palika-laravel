@@ -705,10 +705,10 @@
                                             <label
                                                 class="font-weight-bold">{{ __('ebps::ebps.upload_document') }}</label>
                                             <input type="file" class="form-control-file"
-                                                wire:model.defer="documents.{{ $key }}.file"
+                                                wire:model="documents.{{ $key }}.document"
                                                 accept="image/*,application/pdf">
 
-                                            <div wire:loading wire:target="documents.{{ $key }}.file">
+                                            <div wire:loading wire:target="documents.{{ $key }}.document">
                                                 <span class="spinner-border spinner-border-sm" role="status"
                                                     aria-hidden="true"></span>
                                                 Uploading...
@@ -723,7 +723,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-3" wire:target="documents.{{ $key }}.file">
+                                    <div class="col-md-3" wire:target="documents.{{ $key }}.document">
                                         <div class="form-group">
                                             <label
                                                 class="font-weight-bold">{{ __('ebps::ebps.document_status') }}</label>

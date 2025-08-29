@@ -245,112 +245,115 @@
                             </div>
                             <div class="data-row">
                                 <div class="data-label">२.७ फोटो:</div>
-                                <div class="data-value">
-                                    <a href="{{ $mapApply->houseOwner->photo }}" target="_blank"
-                                        class="btn btn-outline-primary btn-sm mt-2">
-                                        <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
-                                    </a>
-                                </div>
+                                @php
+                                    $fileUrl = customFileAsset(
+                                        config('src.Ebps.ebps.path'),
+                                        $mapApply->houseOwner->photo,
+                                        'local',
+                                        'tempUrl',
+                                    );
+                                @endphp
+
+                                <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary">
+                                    <i class="bx bx-file me-1"></i>
+                                    {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Address -->
-                    <div class="section-subheader mt-4 mb-3">
-                        <i class="fas fa-map-marker-alt me-2"></i> ठेगाना
-                    </div>
-                    <div class="col-md-6">
-                        <div class="data-row">
-                            <div class="data-label">प्रदेश:</div>
-                            <div class="data-value">{{ $mapApply->houseOwner->province->title ?? 'Not Provided' }}
-                            </div>
-                        </div>
-                        <div class="data-row">
-                            <div class="data-label">जिल्ला:</div>
-                            <div class="data-value">{{ $mapApply->houseOwner->district->title ?? 'Not Provided' }}
-                            </div>
+                <!-- Address -->
+                <div class="section-subheader mt-4 mb-3">
+                    <i class="fas fa-map-marker-alt me-2"></i> ठेगाना
+                </div>
+                <div class="col-md-6">
+                    <div class="data-row">
+                        <div class="data-label">प्रदेश:</div>
+                        <div class="data-value">{{ $mapApply->houseOwner->province->title ?? 'Not Provided' }}
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="data-row">
-                            <div class="data-label">पालिका:</div>
-                            <div class="data-value">{{ $mapApply->houseOwner->localBody->title ?? 'Not Provided' }}
-                            </div>
-                        </div>
-                        <div class="data-row">
-                            <div class="data-label">वडा नं.:</div>
-                            <div class="data-value">{{ $mapApply->houseOwner->ward_no ?? 'Not Provided' }}</div>
+                    <div class="data-row">
+                        <div class="data-label">जिल्ला:</div>
+                        <div class="data-value">{{ $mapApply->houseOwner->district->title ?? 'Not Provided' }}
                         </div>
                     </div>
                 </div>
-
-                <div class="section-subheader mt-5 d-flex align-items-center">
-                    <i class="fas fa-signature me-2 fs-4 text-primary"></i>
-                    <h5 class="mb-0 text-primary fw-semibold">{{ __('ebps::ebps.signature') }}</h5>
-                </div>
-
-                <div class="text-center border rounded p-4 bg-light mt-3">
-                    @if ($mapApply->signature)
-                        @php
-                            $fileUrl = customFileAsset(
-                                config('src.Ebps.ebps.path'),
-                                $mapApply->signature,
-                                'local',
-                                'tempUrl',
-                            );
-                        @endphp
-
-                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary">
-                            <i class="bx bx-file me-1"></i>
-                            {{ __('yojana::yojana.view_uploaded_file') }}
-                        </a>
-                    @else
-                        <div class="text-muted fst-italic">
-                            <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps._no_signature_uploaded') }}
+                <div class="col-md-6">
+                    <div class="data-row">
+                        <div class="data-label">पालिका:</div>
+                        <div class="data-value">{{ $mapApply->houseOwner->localBody->title ?? 'Not Provided' }}
                         </div>
-                    @endif
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">वडा नं.:</div>
+                        <div class="data-value">{{ $mapApply->houseOwner->ward_no ?? 'Not Provided' }}</div>
+                    </div>
                 </div>
-
-                <div class="section-subheader mt-4">
-                    <i class="fas fa-signature me-2"></i> {{ __('ebps::ebps.other_documents') }}
-                </div>
-
-                <div class="row">
-                    @forelse ($documents as $document)
-                        @php
-                            $fileUrl = customFileAsset(
-                                config('src.Ebps.ebps.path'),
-                                $document->file,
-                                'local',
-                                'tempUrl',
-                            );
-                            $extension = pathinfo($document->file, PATHINFO_EXTENSION);
-                            $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
-                        @endphp
-
-                        <div class="col-md-4 mb-3 text-center">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-body">
-                                    <h6 class="text-truncate" title="{{ $document->title }}">{{ $document->title }}
-                                    </h6>
-                                    <a href="{{ $fileUrl }}" target="_blank"
-                                        class="btn btn-outline-primary btn-sm mt-2">
-                                        <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="col-12 text-center text-muted fst-italic">
-                            <i class="ti ti-file-off fs-2 d-block mb-2"></i>
-                            {{ __('ebps::ebps.no_documents_uploaded') }}.
-                        </div>
-                    @endforelse
-                </div>
-
             </div>
+
+            <div class="section-subheader mt-5 d-flex align-items-center">
+                <i class="fas fa-signature me-2 fs-4 text-primary"></i>
+                <h5 class="mb-0 text-primary fw-semibold">{{ __('ebps::ebps.signature') }}</h5>
+            </div>
+
+            <div class="text-center border rounded p-4 bg-light mt-3">
+                @if ($mapApply->signature)
+                    @php
+                        $fileUrl = customFileAsset(
+                            config('src.Ebps.ebps.path'),
+                            $mapApply->signature,
+                            'local',
+                            'tempUrl',
+                        );
+                    @endphp
+
+                    <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary">
+                        <i class="bx bx-file me-1"></i>
+                        {{ __('yojana::yojana.view_uploaded_file') }}
+                    </a>
+                @else
+                    <div class="text-muted fst-italic">
+                        <i class="ti ti-file-off fs-2 d-block mb-2"></i>
+                        {{ __('ebps::ebps._no_signature_uploaded') }}
+                    </div>
+                @endif
+            </div>
+
+            <div class="section-subheader mt-4">
+                <i class="fas fa-signature me-2"></i> {{ __('ebps::ebps.other_documents') }}
+            </div>
+
+            <div class="row">
+                @forelse ($documents as $document)
+                    @php
+                        $fileUrl = customFileAsset(config('src.Ebps.ebps.path'), $document->file, 'local', 'tempUrl');
+                        $extension = pathinfo($document->file, PATHINFO_EXTENSION);
+                        $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                    @endphp
+
+                    <div class="col-md-4 mb-3 text-center">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h6 class="text-truncate" title="{{ $document->title }}">{{ $document->title }}
+                                </h6>
+                                <a href="{{ $fileUrl }}" target="_blank"
+                                    class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12 text-center text-muted fst-italic">
+                        <i class="ti ti-file-off fs-2 d-block mb-2"></i>
+                        {{ __('ebps::ebps.no_documents_uploaded') }}.
+                    </div>
+                @endforelse
+            </div>
+
         </div>
+    </div>
     </div>
 
 

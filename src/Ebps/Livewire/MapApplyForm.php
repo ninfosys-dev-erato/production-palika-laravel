@@ -314,6 +314,11 @@ class MapApplyForm extends Component
         if ($this->action === Action::UPDATE) {
             $this->customer_id = $this->mapApply->customer_id;
             $this->uploadedImage = $this->mapApply->signature;
+            $this->uploadedImageUrl = FileFacade::getTemporaryUrl(
+                path: config('src.Ebps.ebps.path'),
+                filename: $this->mapApply->signature,
+                disk: getStorageDisk('private')
+            );
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
 
 
@@ -330,7 +335,11 @@ class MapApplyForm extends Component
                 $this->mapApply->id
             )->whereNull('map_document_id')->get()->map(function ($document) {
                 return array_merge($document->toArray(), [
-                    'url' => $document->url,
+                    'url' => FileFacade::getTemporaryUrl(
+                        path: config('src.Ebps.ebps.path'),
+                        filename: $document->file,
+                        disk: getStorageDisk('private')
+                    ),
                 ]);
             })
                 ->toArray();
@@ -458,6 +467,15 @@ class MapApplyForm extends Component
         $this->successToast(__('ebps::ebps.businessregistrationbusinessregistrationdocument_successfully_removed'));
     }
 
+    public function removeDocuments($index)
+    {
+        unset($this->mapDocuments[$index]);
+        unset($this->uploadedFiles[$index]);
+
+        $this->mapDocuments = array_values($this->mapDocuments);
+        $this->uploadedFiles = array_values($this->uploadedFiles);
+    }
+
     public function loadFourBoundaries($customerLandDetail)
     {
         $fourBoundaries = FourBoundary::where('land_detail_id', $customerLandDetail->id)->get();
@@ -581,9 +599,17 @@ class MapApplyForm extends Component
         DocumentFile::where('map_apply_id', $mapApplyId)->delete();
         foreach ($files as $index => $file) {
             if (!empty($file)) {
+                $title = '';
+                if (isset($mapDocuments[$index])) {
+                    if (is_object($mapDocuments[$index])) {
+                        $title = $mapDocuments[$index]->title ?? '';
+                    } else {
+                        $title = $mapDocuments[$index]['title'] ?? '';
+                    }
+                }
                 DocumentFile::create([
                     'map_apply_id' => $mapApplyId,
-                    'title'        => $mapDocuments[$index]->title,
+                    'title'        => $title,
                     'file'         => $file,
                     'status' =>  DocumentStatusEnum::UPLOADED,
                 ]);
@@ -591,14 +617,16 @@ class MapApplyForm extends Component
         }
 
         foreach ($documents as $index => $document) {
-            if ($document['file']) {
+            if (isset($document['document']) && $document['document']) {
+                $storedPath = $document['document'];
+            } elseif (isset($document['file']) && $document['file']) {
                 $storedPath = $document['file'];
             } else {
                 $storedPath = null;
             }
             DocumentFile::create([
                 'map_apply_id' => $mapApplyId,
-                'title'        => $document['title'],
+                'title'        => $document['title'] ?? '',
                 'file'         => $storedPath,
                 'status' => $storedPath ? ($document['status'] ?? DocumentStatusEnum::UPLOADED) : DocumentStatusEnum::REQUESTED,
             ]);
