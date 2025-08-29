@@ -22,7 +22,7 @@ use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 class MapApplyTable extends DataTableComponent
 {
     use SessionFlash;
-
+    
     protected $model = MapApply::class;
     protected ApplicationRoleFilterService $roleFilterService;
 

@@ -4,6 +4,8 @@ namespace Src\Ebps\Livewire;
 
 use App\Facades\FileFacade;
 use App\Facades\ImageServiceFacade;
+use App\Traits\HelperTemplate;
+use App\Traits\MapApplyTrait;
 use App\Traits\SessionFlash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -16,11 +18,13 @@ use Illuminate\Database\Eloquent\Collection;
 use Src\Ebps\Models\MapApplyStepTemplate;
 use Src\Ebps\Service\MapApplyAdminService;
 use Livewire\Attributes\On;
+use Src\Ebps\Models\AdditionalFormDynamicData;
+use Src\Ebps\Models\MapApply;
 use Src\Ebps\Service\MapApplyStepApproverAdminService;
 
 class MapApplyPreview extends Component
 {
-    use SessionFlash;
+    use SessionFlash, HelperTemplate, MapApplyTrait;
     public ?MapApplyStep $mapApplyStep = null;
 
     public $mapApplySteps;
@@ -31,6 +35,8 @@ class MapApplyPreview extends Component
     public ?string $letter = null;
     public $files;
     public bool $openStatusModal = false;
+    public $additionalForms;
+    public $placeholders = [];
 
     public function render()
     {
@@ -44,10 +50,17 @@ class MapApplyPreview extends Component
         $mapStepId = $mapApplyStep->map_step_id;
         $mapApplyId = $mapApplyStep->map_apply_id;
 
-        $this->mapApplySteps = MapApplyStep::with('mapApplyStepTemplates')
+        $this->mapApplySteps = MapApplyStep::with('mapApplyStepTemplates', 'mapStep', 'mapApply', 'mapApply.additionalFormDynamicData')
             ->where('map_apply_id', $mapApplyId)
             ->where('map_step_id', $mapStepId)
             ->get();
+        $this->additionalForms = $this->mapApplySteps->first()
+            ->mapApply
+            ->additionalFormDynamicData()
+            ->whereNotNull('form_data')
+            ->with(['form', 'form.additionalForm'])
+            ->get();
+
 
         $this->letters = $this->mapApplySteps->flatMap(function ($step) {
             return $step->mapApplyStepTemplates;
@@ -66,7 +79,7 @@ class MapApplyPreview extends Component
     {
         try {
             $file = BuildingRegistrationDocument::findOrFail($fileId);
-            
+
             $file->update([
                 'deleted_at' => now(),
             ]);
@@ -146,5 +159,39 @@ class MapApplyPreview extends Component
     {
         $service = new MapApplyAdminService();
         return $service->getLetter($mapApplyStepTemplate, 'web');
+    }
+
+    public function viewAdditionalForm($additionalFormId)
+    {
+        $additionalForm = AdditionalFormDynamicData::with(['form', 'mapApply'])
+            ->findOrFail($additionalFormId);
+        $styles = $additionalForm->form->styles;
+
+        $submittedDynamicData = json_decode($additionalForm->form_data, true) ?? [];
+        $this->placeholders = $submittedDynamicData;
+
+
+        $template = $this->resolveMapStepTemplate(
+            $additionalForm->mapApply,
+            null,
+            $additionalForm->form,
+            $submittedDynamicData
+        );
+
+        $template = $this->replaceInputFieldsWithValues($template);
+        $service = new MapApplyAdminService();
+        $url = $service->getAdditionalFormLetter($template, $styles);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    private function replaceInputFieldsWithValues($template)
+    {
+        return preg_replace_callback('/<input[^>]*wire:model\.defer="placeholders\.([^"]+)"[^>]*>/', function ($matches) {
+            $fieldName = $matches[1];
+            $value = $this->placeholders[$fieldName] ?? '';
+
+            // Return just the value as plain text
+            return e($value ?: '________________');
+        }, $template);
     }
 }

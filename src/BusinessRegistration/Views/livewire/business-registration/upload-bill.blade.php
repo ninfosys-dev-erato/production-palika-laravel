@@ -22,7 +22,7 @@
                     </div>
 
                     @if ($bill)
-                        <a href="{{ $bill }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ $bill->temporaryUrl() }}" target="_blank" class="btn btn-outline-primary btn-sm">
                             <i class="bx bx-file"></i>
                             {{ __('yojana::yojana.view_uploaded_file') }}
                         </a>
@@ -51,19 +51,19 @@
                     {{ __('businessregistration::businessregistration.view') }}
                 </button>
             </div>
-             @php
-                    $fileUrl = customFileAsset(
-                        config('src.BusinessRegistration.businessRegistration.bill'),
-                        $businessRegistration->bill,
-                        'local',
-                        'tempUrl',
-                    );
-                @endphp
+            @php
+                $fileUrl = customFileAsset(
+                    config('src.BusinessRegistration.businessRegistration.bill'),
+                    $businessRegistration->bill,
+                    'local',
+                    'tempUrl',
+                );
+            @endphp
 
-                <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                    <i class="bx bx-file"></i>
-                    {{ __('yojana::yojana.view_uploaded_file') }}
-                </a>
+            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                <i class="bx bx-file"></i>
+                {{ __('yojana::yojana.view_uploaded_file') }}
+            </a>
         </div>
     @endif
 

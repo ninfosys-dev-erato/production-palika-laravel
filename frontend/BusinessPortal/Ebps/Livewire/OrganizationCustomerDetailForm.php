@@ -96,6 +96,7 @@ class OrganizationCustomerDetailForm extends Component
             'mapApplyDetail.field_measurement_area'       => ['nullable', 'string'],
             'mapApplyDetail.building_plinth_area'         => ['nullable', 'string'],
             'mapApplyDetail.building_construction_type_id' => ['nullable', 'string'],
+            'mapApplyDetail.construction_purpose_id'      => ['nullable', 'string'],
             'mapApplyDetail.building_roof_type_id'        => ['nullable', 'string'],
             'mapApplyDetail.other_construction_area'      => ['nullable', 'string'],
             'mapApplyDetail.former_other_construction_area' => ['nullable', 'string'],
@@ -183,6 +184,7 @@ class OrganizationCustomerDetailForm extends Component
             })->toArray()
             : [];
 
+
         $this->cantileverDetails = $this->mapApply->cantileverDetails->isNotEmpty()
             ? $this->mapApply->cantileverDetails->mapWithKeys(function ($item) {
                 return [$item['direction'] => $item];
@@ -268,6 +270,7 @@ class OrganizationCustomerDetailForm extends Component
     public function save()
     {
         $this->validate();
+
         DB::beginTransaction();
         try {
             $dto = MapApplyDetailAdminDto::fromLiveWireModel($this->mapApplyDetail);
@@ -300,6 +303,7 @@ class OrganizationCustomerDetailForm extends Component
                 $distacneToWallservice->store($wallDto);
             }
             foreach ($this->roads as $direction => $roadData) {
+
                 $roadData['map_apply_id'] = $mapApplyId;
                 $roadData['direction'] = $direction;
                 $roadDto = RoadAdminDto::fromArray($roadData);
@@ -318,15 +322,12 @@ class OrganizationCustomerDetailForm extends Component
                 $highTensionService->store($highTensionDto);
             }
 
-
-            $this->processDynamicFormData($mapApplyId);
-
             DB::commit();
-            $this->successFlash("Map Apply Detail Created Successfully");
+            $this->successToast("Map Apply Detail Created Successfully");
         } catch (\Exception $e) {
-            logger($e);
+            dd($e);
             DB::rollBack();
-            $this->errorFlash(__("An error occurred during operation. Please try again later"));
+            $this->errorToast(__("An error occurred during operation. Please try again later"));
         }
     }
 
@@ -364,12 +365,12 @@ class OrganizationCustomerDetailForm extends Component
             ->implode("\n");
 
         if (!empty($this->additionalFormsTemplate)) {
-            $this->activeFormId = array_key_first($this->additionalFormsTemplate);
+            $this->activeFormId = 'custom';
 
             // Initialize placeholders with the first form's data
-            $this->placeholders = $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] ?? [];
-            $template = $this->additionalFormsTemplate[$this->activeFormId]['template'] ?? '';
-            $this->currentEditingTemplate = $this->preview ? $this->replaceInputFieldsWithValues($template) : $template;
+            // $this->placeholders = $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] ?? [];
+            // $template = $this->additionalFormsTemplate[$this->activeFormId]['template'] ?? '';
+            // $this->currentEditingTemplate = $this->preview ? $this->replaceInputFieldsWithValues($template) : $template;
         }
     }
 
@@ -401,17 +402,24 @@ class OrganizationCustomerDetailForm extends Component
         // Switch to new form
         $this->activeFormId = $formId;
 
-        // Load the submitted data for this form into placeholders
-        $this->placeholders = $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] ?? [];
-
-        // Get the template
-        $template = $this->additionalFormsTemplate[$this->activeFormId]['template'] ?? '';
-
-        // Apply preview mode if needed
-        if ($this->preview) {
-            $this->currentEditingTemplate = $this->replaceInputFieldsWithValues($template);
+        if ($formId === 'custom') {
+            // Load custom form template
+            $template = $this->customFormTemplate ?? '';
+            $this->placeholders = $this->customFormData ?? [];
         } else {
-            $this->currentEditingTemplate = $template;
+
+            // Load the submitted data for this form into placeholders
+            $this->placeholders = $this->additionalFormsTemplate[$this->activeFormId]['submitted_data'] ?? [];
+
+            // Get the template
+            $template = $this->additionalFormsTemplate[$this->activeFormId]['template'] ?? '';
+
+            // Apply preview mode if needed
+            if ($this->preview) {
+                $this->currentEditingTemplate = $this->replaceInputFieldsWithValues($template);
+            } else {
+                $this->currentEditingTemplate = $template;
+            }
         }
 
         // $this->dispatch('update-editor', ['currentEditingTemplate' => $this->currentEditingTemplate]);
