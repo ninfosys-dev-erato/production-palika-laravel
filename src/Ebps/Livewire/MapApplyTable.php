@@ -21,7 +21,7 @@ use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class MapApplyTable extends DataTableComponent
 {
-    use SessionFlash,IsSearchable;
+    use SessionFlash;
 
     protected $model = MapApply::class;
     protected ApplicationRoleFilterService $roleFilterService;
