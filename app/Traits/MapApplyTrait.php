@@ -284,7 +284,7 @@ trait MapApplyTrait
                 $html .= '<input type="' . $type . '" 
                                    wire:model.defer="placeholders.' . $name . '"
                                    placeholder="' . $placeholder . '" 
-                                   class="form-control d-inline-block w-25 mb-1">';
+                                   class="form-control d-inline-block mb-1" style="min-width:200px; width:25%;">';
                 break;
             case 'date':
                 $html .= '<input type="' . $type . '" 
@@ -312,10 +312,10 @@ trait MapApplyTrait
                 case 'textarea':
                     return '<textarea name="placeholders[' . $name . ']" class="form-control">' . e($value) . '</textarea>';
                 case 'text':
-                    return '<input type="' . $type . '" name="placeholders[' . $name . ']" value="' . e($value) . '" class="form-control w-25 d-inline-block mb-1">';
+                    return '<input type="' . $type . '" name="placeholders[' . $name . ']" value="' . e($value) . '" class="form-control d-inline-block mb-1">';
                 case 'date':
                 default:
-                    return '<input type="' . $type . '" name="placeholders[' . $name . ']" value="' . e($value) . '" class="form-control w-25 d-inline-block mb-1">';
+                    return '<input type="' . $type . '" name="placeholders[' . $name . ']" value="' . e($value) . '" class="form-control d-inline-block mb-1">';
             }
         }, $template);
     }

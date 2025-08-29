@@ -74,7 +74,7 @@
                         </div>
 
                         <!-- Approve All Steps Button - Only for superadmin or users with approver permissions -->
-                        @if(isSuperAdmin() || $roleFilterService->isUserApproverForCurrentStep($mapApply))
+                        @if (isSuperAdmin() || $roleFilterService->isUserApproverForCurrentStep($mapApply))
                             <livewire:ebps.map_applies_approve_all_steps :mapApply="$mapApply" />
                         @endif
                     </div>
@@ -179,17 +179,17 @@
                                                 </p>
 
                                                 <!-- User Permissions Info -->
-                                                {{-- @if($isCurrentStep)
+                                                {{-- @if ($isCurrentStep)
                                                     <div class="alert alert-info py-2 px-3 mb-3">
                                                         <small>
                                                             <strong>Your Permissions:</strong>
-                                                            @if($canUserSubmit)
+                                                            @if ($canUserSubmit)
                                                                 <span class="badge bg-success me-1">Can Submit</span>
                                                             @endif
-                                                            @if($canUserApprove)
+                                                            @if ($canUserApprove)
                                                                 <span class="badge bg-info me-1">Can Approve</span>
                                                             @endif
-                                                            @if(!$canUserSubmit && !$canUserApprove)
+                                                            @if (!$canUserSubmit && !$canUserApprove)
                                                                 <span class="badge bg-secondary">View Only</span>
                                                             @endif
                                                         </small>
@@ -199,7 +199,8 @@
                                                 @if ($mapApplyStep && $mapApplyStep->reason)
                                                     <div class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
                                                         <div class="d-flex align-items-center">
-                                                            <small class="text-dark">{{ $mapApplyStep->reason }}</small>
+                                                            <small
+                                                                class="text-dark">{{ $mapApplyStep->reason }}</small>
                                                         </div>
                                                     </div>
                                                 @endif
@@ -210,11 +211,12 @@
                                                         $canUserAccessStep = $canUserAccess && $isCurrentStep;
                                                     @endphp
 
-                                                    @if ($canUserAccessStep && ($status != 'accepted' || isSuperAdmin()))
+                                                    @if ($canUserAccessStep || (isSuperAdmin() && $status != 'accepted'))
                                                         @if ($mapStep->form && $mapStep->form->isNotEmpty())
                                                             <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                                 class="btn btn-primary btn-sm me-2">
-                                                                <i class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
+                                                                <i
+                                                                    class="bx bx-edit me-1"></i>{{ __('ebps::ebps.apply') }}
                                                             </a>
                                                         @endif
                                                     @endif
@@ -226,7 +228,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($canUserAccessStep && $status != 'accepted')
+                                                    @if ($canUserAccessStep || (isSuperAdmin() && $status != 'accepted'))
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -317,7 +319,8 @@
                                 $isDisabled = !$beforeStepsApproved && $status === 'Not Applied';
                             @endphp
 
-                            <div class="timeline-step mb-3 {{ $isDisabled ? 'opacity-50' : '' }} {{ $isCurrentStep ? 'border-primary border-2' : '' }}">
+                            <div
+                                class="timeline-step mb-3 {{ $isDisabled ? 'opacity-50' : '' }} {{ $isCurrentStep ? 'border-primary border-2' : '' }}">
                                 <div class="row g-0">
                                     <div class="col-auto">
                                         <div class="timeline-step-marker">
@@ -356,17 +359,17 @@
                                                 </p>
 
                                                 <!-- User Permissions Info -->
-                                                {{-- @if($isCurrentStep)
+                                                {{-- @if ($isCurrentStep)
                                                     <div class="alert alert-info py-2 px-3 mb-3">
                                                         <small>
                                                             <strong>Your Permissions:</strong>
-                                                            @if($canUserSubmit)
+                                                            @if ($canUserSubmit)
                                                                 <span class="badge bg-success me-1">Can Submit</span>
                                                             @endif
-                                                            @if($canUserApprove)
+                                                            @if ($canUserApprove)
                                                                 <span class="badge bg-info me-1">Can Approve</span>
                                                             @endif
-                                                            @if(!$canUserSubmit && !$canUserApprove)
+                                                            @if (!$canUserSubmit && !$canUserApprove)
                                                                 <span class="badge bg-secondary">View Only</span>
                                                             @endif
                                                         </small>
@@ -374,9 +377,11 @@
                                                 @endif --}}
 
                                                 @if ($mapApplyStep && $mapApplyStep->reason)
-                                                    <div class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
+                                                    <div
+                                                        class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
                                                         <div class="d-flex align-items-center">
-                                                            <small class="text-dark">{{ $mapApplyStep->reason }}</small>
+                                                            <small
+                                                                class="text-dark">{{ $mapApplyStep->reason }}</small>
                                                         </div>
                                                     </div>
                                                 @endif
@@ -387,7 +392,7 @@
                                                         $canUserAccessStep = $canUserAccess && $isCurrentStep;
                                                     @endphp
 
-                                                    @if ($canUserAccessStep && (($status !== 'accepted' && $canApply && !$isDisabled) || isSuperAdmin()))
+                                                    @if ($canUserAccessStep || (isSuperAdmin() && ($status !== 'accepted' && $canApply && !$isDisabled)))
                                                         <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i
@@ -402,7 +407,11 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($canUserAccessStep && $status != 'Not Applied' && $status != 'accepted' && $canApply && !$isDisabled)
+                                                    @if (
+                                                        ($canUserAccessStep || isSuperAdmin()) &&
+                                                            ($status != 'Not Applied' || $status != 'accepted') &&
+                                                            $canApply &&
+                                                            !$isDisabled)
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"

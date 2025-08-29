@@ -12,14 +12,14 @@
                     @php
                         $firstStep = $mapApplySteps->first();
                         $roleFilterService = new Src\Ebps\Service\ApplicationRoleFilterService();
-                        
+
                         // Check if user can approve this step
                         $canUserApprove = false;
                         if ($firstStep && $firstStep->mapStep) {
                             $canUserApprove = $firstStep->mapStep->canUserApprove(auth()->user());
                         }
                     @endphp
-                    
+
                     @if (isSuperAdmin() || ($canUserApprove && $firstStep->status != 'accepted'))
                         <button type="button" class="btn btn-info" wire:click="changeStatus({{ $firstStep->id }})">
                             {{ $selectedStatus }} <i class="bx bx-chevron-down text-muted"></i>
@@ -111,13 +111,15 @@
                                                     if (isset($mapApplySteps) && $mapApplySteps->isNotEmpty()) {
                                                         $firstStep = $mapApplySteps->first();
                                                         if ($firstStep && $firstStep->mapStep) {
-                                                            $canUserApprove = $firstStep->mapStep->canUserApprove(auth()->user());
+                                                            $canUserApprove = $firstStep->mapStep->canUserApprove(
+                                                                auth()->user(),
+                                                            );
                                                         }
                                                     }
                                                 @endphp
-                                                
+
                                                 @if (isSuperAdmin() || $canUserApprove)
-                                                    <button type="button" class="btn btn-danger btn-sm" 
+                                                    <button type="button" class="btn btn-danger btn-sm"
                                                         wire:click="deleteFile({{ $file->id }})"
                                                         wire:confirm="{{ __('ebps::ebps.are_you_sure_you_want_to_delete_this_file') }}">
                                                         <i class="bx bx-trash"></i> {{ __('ebps::ebps.delete') }}
@@ -136,6 +138,54 @@
                 </div>
             </div>
         @endif
+
+
+        @if ($mapApplySteps->first()?->mapStep?->position == '3' && $additionalForms)
+            <div class="mt-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header text-white"
+                        style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                        <h5 class="mb-0">
+                            <i class="bx bx-file me-2"></i>{{ __('ebps::ebps.additional_form') }}
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center" style="width: 80px;">{{ __('ebps::ebps.करस') }}</th>
+                                        <th class="text-center">{{ __('ebps::ebps.form_name') }}</th>
+                                        <th class="text-center">{{ __('ebps::ebps.actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($additionalForms as $index => $file)
+                                        <tr>
+                                            <td class="text-center">{{ replaceNumbersWithLocale($index + 1, true) }}
+                                            </td>
+                                            <td class="text-center">{{ $file->form->additionalForm->name }}</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-primary"
+                                                    wire:click="viewAdditionalForm({{ $file->id }})"
+                                                    class="btn btn-sm btn-primary">
+                                                    <i class="bx bx-show me-1"></i> {{ __('ebps::ebps.view') }}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+
+
+
     </div>
 
 
@@ -172,6 +222,15 @@
         }
     </style>
 
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('open-pdf-in-new-tab', (event) => {
+                window.open(event.url, '_blank');
+            });
+
+        });
+    </script>
+
     @if ($openStatusModal)
         <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0, 0, 0, 0.5);"
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -201,7 +260,8 @@
                                         <option value="{{ $status->value }}">{{ $status->label() }}</option>
                                     @endforeach
                                 </select>
-                                <div class="position-absolute top-50 end-0 translate-middle-y pe-3 pointer-events-none">
+                                <div
+                                    class="position-absolute top-50 end-0 translate-middle-y pe-3 pointer-events-none">
                                     <i class="bx bx-chevron-down text-muted"></i>
                                 </div>
                             </div>
@@ -224,7 +284,8 @@
                             <i class="bx bx-x me-1"></i>{{ __('ebps::ebps.cancel') }}
                         </button>
                         <button type="button" class="btn btn-primary px-4 ms-2"
-                            style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" wire:click="saveStatus">
+                            style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"
+                            wire:click="saveStatus">
                             <i class="bx bx-check me-1"></i>{{ __('ebps::ebps.save_changes') }}
                         </button>
                     </div>
