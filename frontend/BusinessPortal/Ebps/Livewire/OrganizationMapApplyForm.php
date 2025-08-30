@@ -346,27 +346,37 @@ class OrganizationMapApplyForm extends Component
                 'map_apply_id',
                 $this->mapApply->id
             )->whereNull('map_document_id')->get()->map(function ($document) {
-                return array_merge($document->toArray(), [
+                return [
+                    'title' => $document->title,
+                    'status' => $document->status,
+                    'document' => $document->file,
                     'url' => !empty($document->file) ? FileFacade::getTemporaryUrl(
                         path: config('src.Ebps.ebps.path'),
                         filename: $document->file,
                         disk: getStorageDisk('private')
                     ) : null,
-                ]);
+                ];
             })
                 ->toArray();
 
 
-            foreach ($storedDocuments as $index => $document) {
-                $this->uploadedFiles[$index] = $document->file;
-                if (!empty($document->file)) {
-                    $this->uploadedFilesUrls[$index] = FileFacade::getTemporaryUrl(
-                        path: config('src.Ebps.ebps.path'),
-                        filename: $document->file,
-                        disk: getStorageDisk('private')
-                    );
+            // Map stored documents to the correct mapDocuments indices
+            foreach ($storedDocuments as $storedDocument) {
+                // Find the index of the document in mapDocuments collection
+                $documentIndex = $this->mapDocuments->search(function ($doc) use ($storedDocument) {
+                    return $doc->id == $storedDocument->map_document_id;
+                });
+                
+                if ($documentIndex !== false) {
+                    $this->uploadedFiles[$documentIndex] = $storedDocument->file;
+                    if (!empty($storedDocument->file)) {
+                        $this->uploadedFilesUrls[$documentIndex] = FileFacade::getTemporaryUrl(
+                            path: config('src.Ebps.ebps.path'),
+                            filename: $storedDocument->file,
+                            disk: getStorageDisk('private')
+                        );
+                    }
                 }
-                $this->mapDocuments[$index] = ['title' => $document->title];
             }
 
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
@@ -430,7 +440,7 @@ class OrganizationMapApplyForm extends Component
             filename:""
         );
         $this->documents[$index]['document'] = $save;
-        $this->documents[$index]['document_status'] = DocumentStatusEnum::UPLOADED;
+        $this->documents[$index]['status'] = DocumentStatusEnum::UPLOADED;
         $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
             path:config('src.Ebps.ebps.path'),
             filename:$save,
@@ -479,7 +489,7 @@ class OrganizationMapApplyForm extends Component
         $this->documents[] = [
             'title' => null,
             'status' => null,
-            'file' => null,
+            'document' => null,
         ];
         $this->successToast(__('businessregistration::businessregistration.document_added_successfully'));
     }
@@ -627,33 +637,42 @@ class OrganizationMapApplyForm extends Component
     private function storeDocumentFiles(int $mapApplyId, array $files, $mapDocuments, $documents): void
     {
         DocumentFile::where('map_apply_id', $mapApplyId)->delete();
+        
+        // Handle mapDocuments (required documents)
         foreach ($files as $index => $file) {
-            if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            if ($file) {
                 $storedPath = $this->processFiles($file);
-                $title = '';
+                $documentTitle = '';
+                $mapDocumentId = null;
+                
+                // Handle different types of mapDocuments
                 if (isset($mapDocuments[$index])) {
                     if (is_object($mapDocuments[$index])) {
-                        $title = $mapDocuments[$index]->title ?? '';
-                    } else {
-                        $title = $mapDocuments[$index]['title'] ?? '';
+                        $documentTitle = $mapDocuments[$index]->title;
+                    } elseif (is_array($mapDocuments[$index])) {
+                        $documentTitle = $mapDocuments[$index]['title'] ?? '';
                     }
                 }
+                
                 DocumentFile::create([
                     'map_apply_id' => $mapApplyId,
-                    'title'        => $title,
+                    'map_document_id' => $mapDocumentId,
+                    'title'        => $documentTitle,
                     'file'         => $storedPath,
+                    'status' =>  DocumentStatusEnum::UPLOADED,
                 ]);
             }
         }
 
-        foreach ($documents as $index => $document) {
+        // Handle additional documents
+        foreach($documents as $index => $document) {
+            $storedPath = null;
             if (isset($document['document']) && $document['document']) {
                 $storedPath = $this->processFiles($document['document']);
             } elseif (isset($document['file']) && $document['file']) {
                 $storedPath = $this->processFiles($document['file']);
-            } else {
-                $storedPath = null;
             }
+            
             DocumentFile::create([
                 'map_apply_id' => $mapApplyId,
                 'title'        => $document['title'] ?? '',

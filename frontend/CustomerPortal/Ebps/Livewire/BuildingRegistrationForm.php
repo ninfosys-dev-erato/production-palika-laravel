@@ -17,11 +17,13 @@ use Src\Ebps\DTO\OrganizationDetailDto;
 use Src\Ebps\Enums\ApplicantTypeEnum;
 use Src\Ebps\Enums\ApplicationTypeEnum;
 use Src\Ebps\Enums\BuildingStructureEnum;
+use Src\Ebps\Enums\DocumentStatusEnum;
 use Src\Ebps\Enums\LandOwernshipEnum;
 use Src\Ebps\Enums\MapProcessTypeEnum;
 use Src\Ebps\Enums\OwnershipTypeEnum;
 use Src\Ebps\Enums\PurposeOfConstructionEnum;
 use Src\Ebps\Models\Document;
+use Src\Ebps\Models\DocumentFile;
 use Src\Ebps\Models\FourBoundary;
 use Src\Ebps\Models\HouseOwnerDetail;
 use Src\Ebps\Models\MapApply;
@@ -95,6 +97,7 @@ class BuildingRegistrationForm extends Component
     public $organizations;
     public ?OrganizationDetail $organizationDetail;
     public $documents = [];
+    public $options = [];
     public $formerLocalBodies;
     public $uploadedFilesUrls = [];
 
@@ -361,6 +364,8 @@ class BuildingRegistrationForm extends Component
         $this->usageOptions = PurposeOfConstructionEnum::cases();
         $this->issuedDistricts = District::whereNull('deleted_at')->get();
         $this->mapDocuments = Document::whereNull('deleted_at')->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)->get();
+        $this->options = DocumentStatusEnum::getForWeb();
+        $this->documents = [];
 
         $this->wards = [];
         $this->buildingStructures = BuildingStructureEnum::cases();
@@ -388,6 +393,42 @@ class BuildingRegistrationForm extends Component
             $this->getApplicantWards();
             $this->loadWards();
             $this->loadFormerWards();
+
+            // Load stored documents
+            $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->whereNotNull('map_document_id')->get();
+            $this->documents = DocumentFile::where(
+                'map_apply_id', $this->mapApply->id)->whereNull('map_document_id')->get()->map(function ($document) {
+                return [
+                    'title' => $document->title,
+                    'status' => $document->status,
+                    'document' => $document->file,
+                    'url' => !empty($document->file) ? FileFacade::getTemporaryUrl(
+                        path: config('src.Ebps.ebps.path'),
+                        filename: $document->file,
+                        disk: getStorageDisk('private')
+                    ) : null,
+                ];
+            })
+                ->toArray();
+
+            // Map stored documents to the correct mapDocuments indices
+            foreach ($storedDocuments as $storedDocument) {
+                // Find the index of the document in mapDocuments collection
+                $documentIndex = $this->mapDocuments->search(function ($doc) use ($storedDocument) {
+                    return $doc->id == $storedDocument->map_document_id;
+                });
+                
+                if ($documentIndex !== false) {
+                    $this->uploadedFiles[$documentIndex] = $storedDocument->file;
+                    if (!empty($storedDocument->file)) {
+                        $this->uploadedFilesUrls[$documentIndex] = FileFacade::getTemporaryUrl(
+                            path: config('src.Ebps.ebps.path'),
+                            filename: $storedDocument->file,
+                            disk: getStorageDisk('private')
+                        );
+                    }
+                }
+            }
         }
     }
 
@@ -439,6 +480,13 @@ class BuildingRegistrationForm extends Component
             $index = (int) $matches[1];
             $this->handleFileUpload($value, 'file', $index, 'uploadedFiles');
         }
+
+        // Check if the property being updated is a file input
+        if (preg_match('/^documents\.\d+\.document$/', $propertyName)) {
+            $index = (int) filter_var($propertyName, FILTER_SANITIZE_NUMBER_INT);
+            // Call the fileUpload method with the relevant index
+            $this->fileUpload($index);
+        }
     }
 
     private function handleFileUpload($file, $field, $index = null, $target = 'houseOwner')
@@ -472,6 +520,41 @@ class BuildingRegistrationForm extends Component
             $this->uploadedFiles[$index] = $filename;
             $this->uploadedFilesUrls[$index] = $url;
         }
+    }
+
+    public function addDocument(): void
+    {
+        $this->documents[] = [
+            'title' => null,
+            'status' => null,
+            'document' => null,
+        ];
+        $this->successToast(__('businessregistration::businessregistration.document_added_successfully'));
+    }
+
+    public function removeDocument(int $index): void
+    {
+        unset($this->documents[$index]);
+        $this->successToast(__('businessregistration::businessregistration.document_successfully_removed'));
+    }
+
+    public function fileUpload($index)
+    {
+        $save = FileFacade::saveFile(
+            path:config('src.Ebps.ebps.path'),
+            file:$this->documents[$index]['document'],
+            disk:getStorageDisk('private'),
+            filename:""
+        );
+        $this->documents[$index]['document'] = $save;
+        $this->documents[$index]['status'] = DocumentStatusEnum::UPLOADED;
+        $this->documents[$index]['url'] = FileFacade::getTemporaryUrl(
+            path:config('src.Ebps.ebps.path'),
+            filename:$save,
+            disk:getStorageDisk('private')
+        );
+
+        $this->documents = array_values($this->documents);
     }
 
     public function save()
@@ -519,6 +602,7 @@ class BuildingRegistrationForm extends Component
                 $mapApplyDetailService->store($mapApplyDetailDto);
                 $organizationDetailDto->map_apply_id = $mapApply->id;
                 $organizationDetailService->store($organizationDetailDto);
+                $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
 
                 DB::commit();
                 $this->successFlash(__("Application Created Successfully"));
@@ -538,6 +622,7 @@ class BuildingRegistrationForm extends Component
                 $mapApply = $service->update($this->mapApply,$dto);
                 $mapApplyDetailService->update($this->mapApplyDetail, $mapApplyDetailDto);
                 $organizationDetailService->update($this->organizationDetail, $organizationDetailDto);
+                $this->storeDocumentFiles($mapApply->id, $this->uploadedFiles, $this->mapDocuments, $this->documents);
 
                 DB::commit();
                 $this->successFlash(__("Application Updated Successfully"));
@@ -592,6 +677,55 @@ class BuildingRegistrationForm extends Component
         $this->organizationDetail->name = $organization->org_name_ne;
         $this->organizationDetail->contact_no = $organization->org_contact;
         $this->organizationDetail->email = $organization->org_email;
+    }
+
+    private function storeDocumentFiles(int $mapApplyId, array $files, $mapDocuments, $documents): void
+    {
+        DocumentFile::where('map_apply_id', $mapApplyId)->delete();
+        
+        // Handle mapDocuments (required documents)
+        foreach ($files as $index => $file) {
+            if ($file) {
+                $storedPath = $this->processFiles($file);
+                $documentTitle = '';
+                $mapDocumentId = null;
+                
+                // Handle different types of mapDocuments
+                if (isset($mapDocuments[$index])) {
+                    if (is_object($mapDocuments[$index])) {
+                        $documentTitle = $mapDocuments[$index]->title;
+                        //$mapDocumentId = $mapDocuments[$index]->id;
+                    } elseif (is_array($mapDocuments[$index])) {
+                        $documentTitle = $mapDocuments[$index]['title'] ?? '';
+                    }
+                }
+                
+                DocumentFile::create([
+                    'map_apply_id' => $mapApplyId,
+                    'map_document_id' => $mapDocumentId,
+                    'title'        => $documentTitle,
+                    'file'         => $storedPath,
+                    'status' =>  DocumentStatusEnum::UPLOADED,
+                ]);
+            }
+        }
+
+        // Handle additional documents
+        foreach($documents as $index => $document) {
+            $storedPath = null;
+            if (isset($document['document']) && $document['document']) {
+                $storedPath = $this->processFiles($document['document']);
+            } elseif (isset($document['file']) && $document['file']) {
+                $storedPath = $this->processFiles($document['file']);
+            }
+            
+            DocumentFile::create([
+                'map_apply_id' => $mapApplyId,
+                'title'        => $document['title'] ?? '',
+                'file'         => $storedPath,
+                'status' => $storedPath ? ($document['status'] ?? DocumentStatusEnum::UPLOADED) : DocumentStatusEnum::REQUESTED,
+            ]);
+        }
     }
 
     private function processFiles($file)

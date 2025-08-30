@@ -30,6 +30,7 @@ class BuildingRegistrationPreview extends Component
     public $files;
 
     public $mapApplySteps;
+    public $additionalForms;
 
     public function render(){
         return view("Ebps::livewire.map-applies.map-applies-preview");
@@ -50,6 +51,13 @@ class BuildingRegistrationPreview extends Component
            $this->letters = $this->mapApplySteps->flatMap(function ($step) {
             return $step->mapApplyStepTemplates;
         });
+
+        $this->additionalForms = $this->mapApplySteps->first()
+            ->mapApply
+            ->additionalFormDynamicData()
+            ->whereNotNull('form_data')
+            ->with(['form', 'form.additionalForm'])
+            ->get();
 
         $this->selectedStatus = $mapApplyStep->status;
         $this->mapApplyStatusEnum = MapApplyStatusEnum::cases();

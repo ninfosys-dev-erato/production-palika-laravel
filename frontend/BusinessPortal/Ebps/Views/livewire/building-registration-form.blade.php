@@ -1047,15 +1047,15 @@
                 @endforeach
             @endif
 
-            @if ($documents)
+            <div class="divider divider-primary text-start text-primary font-14">
+                <div class="divider-text">{{ __('ebps::ebps.more_documents') }}</div>
+            </div>
 
-                <div class="divider divider-primary text-start text-primary font-14">
-                    <div class="divider-text">{{ __('ebps::ebps.more_documents') }}</div>
+            <div class="col-md-12">
+                <div class="d-flex justify-content-start mt-3 pb-2">
+                    <p class="btn btn-info" wire:click="addDocument"><i class="bx bx-plus"></i> Add Document</p>
                 </div>
-
-
-                <div class="col-md-12">
-                    <div class="list-group">
+                <div class="list-group">
                         @foreach ($documents as $key => $document)
                             <div class="list-group-item list-group-item-action py-3 px-4 rounded shadow-sm"
                                 wire:key="doc-{{ $key }}">
@@ -1121,7 +1121,7 @@
                         @endforeach
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">{{ __('ebps::ebps.save') }}</button>

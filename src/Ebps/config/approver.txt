@@ -1,0 +1,191 @@
+Title: (step 1) दरखास्त फारम निबेदन
+
+Submitter: राजस्व (Revenue)
+
+Approver: प्रमुख प्रशासकीय अधिकृत (CAO)
+
+map_step_id = 28
+
+Title: (step 2) अमिन रिपोर्ट सहित प्रतिवेदन पेश गर्ने
+
+Submitter: इन्जीनियर (Engineer)
+
+Approver: इन्जीनियर (Engineer), सब-इन्जीनियर (Sub-Engineer)
+
+map_step_id = 29
+
+Title: (step 3) अमिन रिपोर्ट
+
+Submitter: अमिन (Amin)
+
+Approver: अमिन (Amin)
+
+map_step_id = 30
+
+Title: (Step 4) संधियारको नाममा जारी भएको सूचना ... मुचुल्का पेश गर्ने बारे
+
+Submitter: वडा (Ward)
+
+Approver: इन्जीनियर (Engineer), सब-इन्जीनियर (Sub-Engineer)
+
+map_step_id = 31
+
+Title: (Step 5) १५ दिने सन्धी सर्पन सम्बन्धि ... मुचुल्का
+
+Submitter: वडा (Ward)
+
+Approver: वडा (Ward)
+
+map_step_id = 32
+
+Title: (Step 6) नक्सा सर्जमिन गराई ... प्रतिवेदन पेश गर्ने
+
+Submitter: वडा (Ward)
+
+Approver: इन्जीनियर (Engineer)
+
+map_step_id = 33
+
+Title: (Step 7) नक्सापासको सर्जमिन प्रतिवेदन पेश गरेको
+
+Submitter: वडा (Ward)
+
+Approver: वडा (Ward)
+
+map_step_id = 34
+
+Title: (Step 8) नक्सा पास सम्बन्धी भएको सर्जमिन मुचुल्का
+
+Submitter: वडा (Ward)
+
+Approver: इन्जीनियर (Engineer)
+
+map_step_id = 35
+
+Title: (Step 9) राजस्व/ठेकदार र घरधनीको सम्झौतापत्र
+
+Submitter: राजस्व (Revenue)
+
+Approver: इन्जीनियर (Engineer), सब-इन्जीनियर (Sub-Engineer)
+
+map_step_id = 36
+
+Title: (Step 10) प्राविधिक/प्रशासनिक प्रतिवेदन ... टिप्पणी आदेश
+
+Submitter: सब-इन्जीनियर (Sub-Engineer)
+
+Approver: इन्जीनियर, सब-इन्जीनियर, प्रमुख प्रशासकीय अधिकृत (CAO), अमिन
+
+map_step_id = 37
+
+Title: (Step 11) प्लिन्थ लेभलसम्म निर्माण कार्यको इजाजत पत्र
+
+Submitter: दर्ता/प्रशासन (Registration/Admin)
+
+Approver: प्रमुख प्रशासकीय अधिकृत (CAO)
+
+map_step_id = 38
+
+Title: (Step 12) सुपरस्ट्रक्चरको निर्माण कार्यको लागि इजाजत ... प्रतिवेदन
+
+Submitter: इन्जीनियर (Engineer)
+
+Approver: इन्जीनियर (Engineer)
+
+map_step_id = 39
+
+Title: (Step 13) सुपरस्ट्रक्चरको निर्माण ... टिप्पणी आदेश
+
+Submitter: सब-इन्जीनियर (Sub-Engineer)
+
+Approver: इन्जीनियर, प्रमुख प्रशासकीय अधिकृत (CAO), सब-इन्जीनियर, अमिन
+
+map_step_id = 40
+
+Title: (Step 14) सुपरस्ट्रक्चरको निर्माण कार्यको इजाजत पत्र
+
+Submitter: दर्ता/प्रशासन (Registration/Admin)
+
+Approver: प्रमुख प्रशासकीय अधिकृत (CAO), अमिन, इन्जीनियर, सब-इन्जीनियर
+
+map_step_id = 41
+
+Title: (Step 15) तला थपको निर्माण कार्यको निमित्त टिप्पणी आदेश
+
+Submitter: सब-इन्जीनियर (Sub-Engineer)
+
+Approver: इन्जीनियर, प्रमुख प्रशासकीय अधिकृत (CAO)
+
+map_step_id = 42
+
+Title: (Step 16) निर्माण कार्य सम्पन्न प्रमाण-पत्र ... प्रतिवेदन
+
+Submitter: इन्जीनियर (Engineer)
+
+Approver: इन्जीनियर (Engineer)
+
+map_step_id = 43
+
+Title: (Step 17) निर्माण कार्य सम्पन्न प्रमाण-पत्र प्रदान गर्न टिप्पणी आदेश
+Submitter: सब-इन्जीनियर (Sub-Engineer)
+Approver: इन्जीनियर (Engineer)
+
+Title: (Step 18) निर्माण कार्य सम्पन्न प्रमाण-पत्र
+
+Submitter: दर्ता/प्रशासन (Registration/Admin)
+
+Approver: प्रमुख प्रशासकीय अधिकृत (CAO)
+
+
+Building Registration
+Title: (step 1) घर नक्सा अभिलेखिकरणका लागि सिफारिस पाउँ
+Submitter: कन्सल्टेन्ट सुपरिवेक्षक (Consultant Supervisor)
+Approver: प्रमुख प्रशासकीय अधिकृत (CAO)
+
+Title: (step 2) जग्गा नाप जाँच गरी नक्सा मुचुल्का सहित प्रतिवेदन पेश गर्ने बारे
+Submitter: वडा (Ward)
+Approver: इन्जिनियर (Engineer), सब-इन्जिनियर (Sub-Engineer)
+
+Title: (Step 3) नक्सा नाप जाँच फाराम
+Submitter: अमिन (Amin)
+Approver: अमिन (Amin)
+
+Title: (Step 4) संधियारको नाममा जारी भएको सूचना/सँधियारहरूका नाममा जारी भएको सूचना बुझाउने/टाँस गरी सोको मुचुल्का पेश गर्ने बारे
+Submitter: वडा (Ward)
+Approver: इन्जिनियर (Engineer)
+
+Title: (Step 5) १५ दिने सन्धि सर्पन सम्बन्धी संधियारको नाममा जारी भएको सूचना बुझि गरिदिएको भरपाई/टाँस मुचुल्का
+Submitter: वडा (Ward)
+Approver: वडा (Ward)
+
+Title: (Step 6) नक्सा सर्जमिन गराई नक्सा सर्जमिन मुचुल्का र प्रतिवेदन पेश गर्ने
+Submitter: वडा (Ward)
+Approver: इन्जिनियर (Engineer)
+
+Title: (Step 7) नक्सा अभिलेखको सर्जमिन प्रतिवेदन पेश गरेको
+Submitter: वडा (Ward)
+Approver: वडा (Ward)
+
+Title: (Step 8) नगर कार्यपालिकाको कार्यालय घोराही, दाङद्वारा नक्सा अभिलेखसम्बन्धी भएको सर्जमिन मुचुल्का
+Submitter: वडा (Ward)
+Approver: इन्जिनियर (Engineer)
+
+Title: (Step 9) नक्सापास शाखाको प्रयोजनको लागि
+Submitter: राजस्व (Revenue)
+Approver: इन्जिनियर (Engineer), सब-इन्जिनियर (Sub-Engineer)
+
+Title: (Step10) प्राविधिक/प्रशासनिक प्रतिवेदन
+Submitter: सब-इन्जिनियर (Sub-Engineer)
+Approver: इन्जिनियर (Engineer), सब-इन्जिनियर (Sub-Engineer), प्रमुख प्रशासकीय अधिकृत (CAO), अमिन (Amin)
+
+Title: (Step 11) सुपरस्ट्रक्चरको निर्माण कार्य सम्पन्न बारे घरधनीको तर्फबाट राखिएको कन्सल्टेन्ट सुपरिवेक्षकको प्रतिवेदन / निर्मित संरचनाको फोटो
+Submitter: दर्ता/प्रशासन (Registration/Admin)
+Approver: प्रमुख प्रशासकीय अधिकृत (CAO)
+
+Title: (Step 12) घर अभिलेख निर्माण कार्य सम्पन्न बारे स्थलगत निरीक्षण गर्ने उप-महा न.पा. प्राविधिकको राय/घर अभिलेख प्रदान गर्न टिप्पणी आदेश
+Submitter: इन्जिनियर (Engineer)
+Approver: इन्जिनियर (Engineer)
+
+Title: (Step 13) घर नक्सा अभिलेख प्रमाण-पत्र
+Submitter: सब-इन्जिनियर (Sub-Engineer)
+Approver: इन्जिनियर (Engineer)
