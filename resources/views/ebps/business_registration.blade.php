@@ -268,7 +268,8 @@
 
                         <div class="data-row">
                             <div class="data-label">२.४ कित्ताको साबिक गा.वि.स:</div>
-                            <div class="data-value">{{ $mapApply->landDetail->localBody->name ?? 'Not Provided' }}</div>
+                            <div class="data-value">{{ $mapApply->landDetail->localBody->name ?? 'Not Provided' }}
+                            </div>
                         </div>
 
                         <div class="data-row">
@@ -297,7 +298,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($mapApply->landDetail->fourBoundaries)
+                                @if ($mapApply?->landDetail?->fourBoundaries)
                                     @foreach ($mapApply->landDetail->fourBoundaries as $index => $detail)
                                         <tr>
                                             <td class="text-dark">{{ $index + 1 }}</td>
@@ -319,7 +320,7 @@
                     </div>
 
                     <div class="px-3 mb-4">
-                        @if(isset($mapApply) && $mapApply->landOwner)
+                        @if (isset($mapApply) && $mapApply->landOwner)
                             <div class="data-row">
                                 <div class="data-label">३.१ नाम:</div>
                                 <div class="data-value">{{ $mapApply->landOwner->owner_name ?? 'Not Provided' }}</div>
@@ -330,7 +331,8 @@
                             </div>
                             <div class="data-row">
                                 <div class="data-label">३.३ नागरिकता नं:</div>
-                                <div class="data-value">{{ $mapApply->landOwner->citizenship_no ?? 'Not Provided' }}</div>
+                                <div class="data-value">{{ $mapApply->landOwner->citizenship_no ?? 'Not Provided' }}
+                                </div>
                             </div>
                             <div class="data-row">
                                 <div class="data-label">३.५ जारी मिति:</div>
@@ -340,7 +342,8 @@
                             </div>
                             <div class="data-row">
                                 <div class="data-label">३.६ जारी जिल्ला:</div>
-                                <div class="data-value">{{ $mapApply->landOwner->citizenship_issued_at ?? 'Not Provided' }}
+                                <div class="data-value">
+                                    {{ $mapApply->landOwner->citizenship_issued_at ?? 'Not Provided' }}
                                 </div>
                             </div>
                             <div class="data-row">
@@ -362,13 +365,14 @@
                             <div class="data-row">
                                 <div class="data-label">३.१० फोटो:</div>
                                 <div class="data-value">
-                                    @if(isset($mapApply->landOwner->photo) && $mapApply->landOwner->photo)
+                                    @if (isset($mapApply->landOwner->photo) && $mapApply->landOwner->photo)
                                         @php
                                             $photoPath = public_path('storage/' . $mapApply->landOwner->photo);
                                         @endphp
-                                        @if(file_exists($photoPath))
-                                            <img src="{{ asset('storage/' . $mapApply->landOwner->photo) }}" alt="Land Owner Photo"
-                                                class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                                        @if (file_exists($photoPath))
+                                            <img src="{{ asset('storage/' . $mapApply->landOwner->photo) }}"
+                                                alt="Land Owner Photo" class="img-thumbnail"
+                                                style="max-width: 100px; max-height: 100px;">
                                         @else
                                             <span class="text-muted">Photo not available</span>
                                         @endif
@@ -391,10 +395,11 @@
                         <i class="fas fa-building me-2"></i> ३. घर धनी विवरण
                     </div>
                     <div class="px-3 mb-4">
-                        @if(isset($mapApply) && $mapApply->houseOwner)
+                        @if (isset($mapApply) && $mapApply->houseOwner)
                             <div class="data-row">
                                 <div class="data-label">३.१ नाम:</div>
-                                <div class="data-value">{{ $mapApply->houseOwner->owner_name ?? 'Not Provided' }}</div>
+                                <div class="data-value">{{ $mapApply->houseOwner->owner_name ?? 'Not Provided' }}
+                                </div>
                             </div>
                             <div class="data-row">
                                 <div class="data-label">३.२ फोन नं:</div>
@@ -402,7 +407,8 @@
                             </div>
                             <div class="data-row">
                                 <div class="data-label">३.३ नागरिकता नं:</div>
-                                <div class="data-value">{{ $mapApply->houseOwner->citizenship_no ?? 'Not Provided' }}</div>
+                                <div class="data-value">{{ $mapApply->houseOwner->citizenship_no ?? 'Not Provided' }}
+                                </div>
                             </div>
                             <div class="data-row">
                                 <div class="data-label">३.५ जारी मिति:</div>
@@ -412,7 +418,8 @@
                             </div>
                             <div class="data-row">
                                 <div class="data-label">३.६ जारी जिल्ला:</div>
-                                <div class="data-value">{{ $mapApply->houseOwner->citizenship_issued_at ?? 'Not Provided' }}
+                                <div class="data-value">
+                                    {{ $mapApply->houseOwner->citizenship_issued_at ?? 'Not Provided' }}
                                 </div>
                             </div>
                             <div class="data-row">
@@ -434,11 +441,11 @@
                             <div class="data-row">
                                 <div class="data-label">३.१० फोटो:</div>
                                 <div class="data-value">
-                                    @if(isset($mapApply->houseOwner->photo) && $mapApply->houseOwner->photo)
+                                    @if (isset($mapApply->houseOwner->photo) && $mapApply->houseOwner->photo)
                                         @php
                                             $photoPath = public_path('storage/' . $mapApply->houseOwner->photo);
                                         @endphp
-                                        @if(file_exists($photoPath))
+                                        @if (file_exists($photoPath))
                                             <img src="{{ asset('storage/' . $mapApply->houseOwner->photo) }}"
                                                 alt="House Owner Photo" class="img-thumbnail"
                                                 style="max-width: 100px; max-height: 100px;">
@@ -464,7 +471,7 @@
                         <i class="fas fa-building me-2"></i> ४. निवेदकको विवरण
                     </div>
                     <div class="px-3 mb-4">
-                        @if(isset($mapApply))
+                        @if (isset($mapApply))
                             <div class="data-row">
                                 <div class="data-label">४.१ निवेदकको प्रकार:</div>
                                 <div class="data-value">{{ $mapApply->applicant_type ?? 'Not Specified' }}</div>
@@ -476,7 +483,7 @@
                             <div class="data-row">
                                 <div class="data-label">४.३ फोन नं:</div>
                                 <div class="data-value">
-                                    {{ isset($mapApply->buildingDetail) ? ($mapApply->buildingDetail->mobile_no ?? 'Not Provided') : 'Not Provided' }}
+                                    {{ isset($mapApply->buildingDetail) ? $mapApply->buildingDetail->mobile_no ?? 'Not Provided' : 'Not Provided' }}
                                 </div>
                             </div>
                             <div class="data-row">
@@ -486,7 +493,7 @@
                             <div class="data-row">
                                 <div class="data-label">४.५ निर्माण मिति:</div>
                                 <div class="data-value">
-                                    {{ isset($mapApply->buildingDetail) ? ($mapApply->buildingDetail->build_date ?? 'Not Provided') : 'Not Provided' }}
+                                    {{ isset($mapApply->buildingDetail) ? $mapApply->buildingDetail->build_date ?? 'Not Provided' : 'Not Provided' }}
                                 </div>
                             </div>
                         @else
@@ -515,7 +522,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(isset($mapApply) && isset($mapApply->boundaries) && $mapApply->boundaries->count() > 0)
+                                @if (isset($mapApply) && isset($mapApply->boundaries) && $mapApply->boundaries->count() > 0)
                                     @foreach ($mapApply->boundaries as $index => $boundary)
                                         <tr>
                                             <td class="text-dark">{{ $index + 1 }}</td>

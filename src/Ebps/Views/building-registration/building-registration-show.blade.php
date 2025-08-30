@@ -309,7 +309,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if ($mapApply->landDetail->fourBoundaries)
+                                @if ($mapApply?->landDetail?->fourBoundaries)
                                     @foreach ($mapApply->landDetail->fourBoundaries as $index => $detail)
                                         <tr>
                                             <td class="text-dark">{{ $index + 1 }}</td>
