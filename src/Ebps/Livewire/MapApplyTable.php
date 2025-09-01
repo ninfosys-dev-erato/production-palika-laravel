@@ -31,6 +31,8 @@ class MapApplyTable extends DataTableComponent
         'deleteSelected' => 'Delete',
     ];
 
+    public string $search = '';
+
     public function boot(): void
     {
         $this->roleFilterService = new ApplicationRoleFilterService();
@@ -49,7 +51,9 @@ class MapApplyTable extends DataTableComponent
             ->setRefreshMethod('refresh')
             ->setBulkActionConfirms([
                 'delete',
-            ]);
+            ])
+            ->setSearchStatus(true)
+            ->setSearchDebounce(500);
     }
 
     public function builder(): Builder
@@ -85,11 +89,22 @@ class MapApplyTable extends DataTableComponent
             //     ->searchable()
             //     ->collapseOnTablet()
             //     ->format(fn($value) => PurposeOfConstructionEnum::tryFrom($value)?->label() ?? '-'),
-            Column::make(__('ebps::ebps.house_owner'))->label(
-                fn($row, Column $column) => view('Ebps::livewire.table.col-house-owner-detail', [
-                    'row' => $row,
-                ])->render()
-            )->html(),
+            Column::make(__('ebps::ebps.house_owner'))
+                ->label(function ($row) {
+                    return view('Ebps::livewire.table.col-house-owner-detail', [
+                        'row' => $row,
+                    ])->render();
+                })
+                ->html()
+                ->sortable()
+                ->collapseOnTablet()
+                ->searchable(function ($builder, $term) {
+                    $builder->orWhereHas('houseOwner', function ($query) use ($term) {
+                        $query->where('owner_name', 'like', "%{$term}%")
+                              ->orWhere('mobile_no', 'like', "%{$term}%");
+                    });
+                }),
+          
 
             Column::make(__('ebps::ebps.applied_date'), "applied_date") ->sortable()->searchable()->collapseOnTablet(),
 
