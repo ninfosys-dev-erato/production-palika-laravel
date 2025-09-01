@@ -97,7 +97,7 @@ class MapApplyAdminService
                 content: $html,
                 file_path: config('src.Recommendation.recommendation.certificate'),
                 file_name: $fileName,
-                disk: 'local',
+                disk: getStorageDisk('private'),
                 styles: $form?->styles ?? ""
             );
             if ($request === 'web') {

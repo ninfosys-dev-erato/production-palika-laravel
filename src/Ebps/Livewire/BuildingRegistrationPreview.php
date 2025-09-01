@@ -35,36 +35,48 @@ class BuildingRegistrationPreview extends Component
     public function render(){
         return view("Ebps::livewire.map-applies.map-applies-preview");
     }
+public function mount(MapApplyStep $mapApplyStep)
+{
+    $this->mapApplyStep = $mapApplyStep;
+    $mapStepId = $mapApplyStep->map_step_id;
+    $mapApplyId = $mapApplyStep->map_apply_id;
 
-    public function mount(MapApplyStep $mapApplyStep)
-    {
-        
-        $this->mapApplyStep = $mapApplyStep;
-        $mapStepId = $mapApplyStep->map_step_id;
-        $mapApplyId = $mapApplyStep->map_apply_id;
+    // ✅ Eager load everything you need
+   $this->mapApplySteps = MapApplyStep::with([
+        'mapApplyStepTemplates',
+        'mapApply.additionalFormDynamicData.form.additionalForm',
+        'mapStep' // 👈 eager load this
+    ])
+    ->where('map_apply_id', $mapApplyId)
+    ->where('map_step_id', $mapStepId)
+    ->get();
 
-        $this->mapApplySteps = MapApplyStep::with('mapApplyStepTemplates')
-            ->where('map_apply_id', $mapApplyId)
-            ->where('map_step_id', $mapStepId)
-            ->get();
 
-           $this->letters = $this->mapApplySteps->flatMap(function ($step) {
-            return $step->mapApplyStepTemplates;
-        });
+    // Flatten templates
+    $this->letters = $this->mapApplySteps->flatMap(function ($step) {
+        return $step->mapApplyStepTemplates;
+    });
 
-        $this->additionalForms = $this->mapApplySteps->first()
-            ->mapApply
+    // Since mapApply is already eager loaded, no lazy loading problem
+    $firstStep = $this->mapApplySteps->first();
+
+    $this->additionalForms = collect(); // default empty
+    if ($firstStep && $firstStep->mapApply) {
+        $this->additionalForms = $firstStep->mapApply
             ->additionalFormDynamicData()
             ->whereNotNull('form_data')
             ->with(['form', 'form.additionalForm'])
             ->get();
-
-        $this->selectedStatus = $mapApplyStep->status;
-        $this->mapApplyStatusEnum = MapApplyStatusEnum::cases();
-
-        $this->files = BuildingRegistrationDocument::where('map_step_id', $mapStepId)->where('map_apply_id', $mapApplyId)->get();
-
     }
+
+    $this->selectedStatus = $mapApplyStep->status;
+    $this->mapApplyStatusEnum = MapApplyStatusEnum::cases();
+
+    $this->files = BuildingRegistrationDocument::where('map_step_id', $mapStepId)
+        ->where('map_apply_id', $mapApplyId)
+        ->get();
+}
+
 
     public function changeStatus()
     {
