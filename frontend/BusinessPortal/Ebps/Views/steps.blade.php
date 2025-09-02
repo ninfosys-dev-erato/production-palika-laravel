@@ -154,12 +154,12 @@
                                                         @endif
                                                     @endif
 
-                                                    @if ($mapApplyStep)
+                                                    {{-- @if ($mapApplyStep || $status != 'Not Applied') --}}
                                                         <a href="{{ route('organization.ebps.map_apply.preview-map-step', ['mapApplyStep' => $mapApplyStep]) }}"
                                                             class="btn btn-outline-primary btn-sm">
                                                             <i class="bx bx-show me-1"></i>{{ __('ebps::ebps.view') }}
                                                         </a>
-                                                    @endif
+                                                    {{-- @endif --}}
                                                     @if ($status != 'accepted')
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"

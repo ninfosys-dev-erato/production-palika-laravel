@@ -315,6 +315,9 @@
                             {{ __('ebps::ebps.no_documents_uploaded') }}.
                         </div>
                     @endforelse
+
+                    <!-- Add Document Uploader -->
+                    <livewire:ebps.map_apply_document_uploader :mapApplyId="$mapApply->id" />
                 </div>
             </div>
         </div>
@@ -341,4 +344,12 @@
             })
             .catch(console.error);
     }
+
+    // Listen for document upload event and refresh the page
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('document-uploaded', () => {
+            // Refresh the page to show the newly uploaded document
+            window.location.reload();
+        });
+    });
 </script>

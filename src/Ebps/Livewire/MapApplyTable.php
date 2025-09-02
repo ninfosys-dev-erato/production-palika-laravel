@@ -213,12 +213,12 @@ class MapApplyTable extends DataTableComponent
 
         // Show move forward button if user is approver for the current step
         if ($canApprove || $canSubmit) {
-        if ($canApprove || $canSubmit) {
+       
             $buttons .= '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $application->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
         }
 
         return $buttons;
-    }
+        }
 
     public function refresh(){}
 
