@@ -199,6 +199,8 @@ class BusinessRegistrationTable extends DataTableComponent
                     $renewButton = '<button type="button" class="btn btn-secondary btn-sm" wire:click="renew(' . $row->id . ')"><i class="bx bx-refresh"></i></button>';
                     $buttons .= $renewButton;
                 }
+                // $ownershipTransfer = '<button type="button" class="btn btn-secondary btn-sm" wire:click="ownerShipTransfer(' . $row->id . ')"><i class="bx bx-transfer"></i></button>';
+                // $buttons .= $ownershipTransfer;
                 return $buttons . "</div>";
             })->html();
 
@@ -337,5 +339,10 @@ class BusinessRegistrationTable extends DataTableComponent
     public function customerPreview($id)
     {
         return redirect()->route('customer.business-registration.business-registration.preview', ['id' => $id]);
+    }
+
+    public function ownerShipTransfer($id)
+    {
+        return redirect()->route('admin.business-registration.business-registration.ownership-transfer', ['id' => $id]);
     }
 }
