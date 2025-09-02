@@ -39,6 +39,7 @@ Route::group(['prefix' => 'admin/business-registration-system', 'as' => 'admin.b
         Route::get('/edit/{id}', [BusinessRegistrationAdminController::class, 'edit'])->name('edit');
         Route::get('/show/{id}', [BusinessRegistrationAdminController::class, 'view'])->name('show');
         Route::get('/preview/{id}', [BusinessRegistrationAdminController::class, 'preview'])->name('preview');
+        Route::get('/ownership-transfer/{id}', [BusinessRegistrationAdminController::class, 'ownershipTransfer'])->name('ownership-transfer');
     });
 
     Route::group(['prefix' => 'renewals', 'as' => 'renewals.', 'middleware' => ['web', 'auth']], function () {

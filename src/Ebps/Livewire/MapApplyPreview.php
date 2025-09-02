@@ -47,6 +47,7 @@ class MapApplyPreview extends Component
     {
         $this->mapApplyStep = $mapApplyStep;
 
+
         $mapStepId = $mapApplyStep->map_step_id;
         $mapApplyId = $mapApplyStep->map_apply_id;
 

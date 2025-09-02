@@ -64,11 +64,13 @@
                     <div class="timeline-steps mb-4">
                         @foreach ($steps as $index => $mapStep)
                             @php
+
                                 $appliedStep = $mapApply->mapApplySteps->where('map_step_id', $mapStep->id)->first();
                                 $status = $appliedStep ? $appliedStep->status : __('ebps::ebps.not_applied');
                                 $mapApplyStep = Src\Ebps\Models\MapApplyStep::where('map_step_id', $mapStep->id)
                                     ->where('map_apply_id', $mapApply->id)
                                     ->first();
+
                                 $canApply = $previousStepApproved;
                                 $previousStepApproved = $status == 'accepted';
 

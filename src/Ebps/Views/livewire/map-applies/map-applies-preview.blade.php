@@ -161,9 +161,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td class="text-center">१</td>
+                                        <td class="text-center">कन्सल्टेन्सी द्वारा भरिएको विवरण</td>
+                                        <td class="text-center">
+                                            <a target="_blank"
+                                                href="{{ route('organization.ebps.map_apply.additionalFormPreview', ['id' => $mapApplyStep->map_apply_id]) }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="bx bx-show me-1"></i> {{ __('ebps::ebps.view') }}
+                                            </a>
+                                        </td>
+                                    </tr>
                                     @foreach ($additionalForms as $index => $file)
                                         <tr>
-                                            <td class="text-center">{{ replaceNumbersWithLocale($index + 1, true) }}
+                                            <td class="text-center">{{ replaceNumbersWithLocale($index + 2, true) }}
                                             </td>
                                             <td class="text-center">{{ $file->form->additionalForm->name }}</td>
                                             <td class="text-center">

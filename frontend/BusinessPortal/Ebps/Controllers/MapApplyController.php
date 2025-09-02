@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Src\Ebps\Enums\FormPositionEnum;
 use Src\Ebps\Models\DocumentFile;
 use Src\Ebps\Models\MapApply;
+use Src\Ebps\Models\MapApplyDetail;
 use Src\Ebps\Models\MapApplyStep;
 use Src\Ebps\Models\MapStep;
 use Src\Ebps\Models\Organization;
@@ -23,7 +24,8 @@ class MapApplyController extends Controller
         //$this->middleware('permission:map_steps create')->only('create');
     }
 
-    function index(Request $request){
+    function index(Request $request)
+    {
         $organizations = Organization::whereNull('deleted_at')->get();
         return view('BusinessPortal.Ebps::map-applies-index', compact('organizations'));
     }
@@ -31,7 +33,6 @@ class MapApplyController extends Controller
     function template()
     {
         return view('BusinessPortal.Ebps::template');
-
     }
 
     function create(Request $request, $customerId = null)
@@ -40,12 +41,13 @@ class MapApplyController extends Controller
         return view('BusinessPortal.Ebps::map-applies-form', compact('action', 'customerId'));
     }
 
-    function edit(Request $request){
+    function edit(Request $request)
+    {
         $mapApply = MapApply::find($request->route('id'));
         $action = Action::UPDATE;
-        return view('BusinessPortal.Ebps::map-applies-form')->with(compact('action','mapApply'));
+        return view('BusinessPortal.Ebps::map-applies-form')->with(compact('action', 'mapApply'));
     }
-  
+
     function show($id)
     {
         $mapApply = MapApply::with([
@@ -57,15 +59,14 @@ class MapApplyController extends Controller
         $documents = DocumentFile::where('map_apply_id', $mapApply->id)->get();
 
         return view('BusinessPortal.Ebps::map-applies-show')->with(compact('mapApply', 'documents'));
-
     }
 
     function moveForward(int $id)
     {
         $mapStepsBefore = MapStep::with('form')->whereNull('deleted_by')->where('form_position', FormPositionEnum::BEFORE_FILLING_APPLICATION)->get();
         $mapStepsAfter = MapStep::whereNull('deleted_by')->where('form_position', FormPositionEnum::AFTER_FILLING_APPLICATION)->get();
-        $mapApply= MapApply::where('id', $id)->with('mapApplySteps')->first();
-       
+        $mapApply = MapApply::where('id', $id)->with('mapApplySteps')->first();
+
         return view('BusinessPortal.Ebps::steps', compact('mapStepsBefore', 'mapStepsAfter', 'mapApply'));
     }
 
@@ -80,8 +81,61 @@ class MapApplyController extends Controller
     }
     public function additionalForm(int $id)
     {
-        $mapApply= MapApply::where('id', $id)->with('mapApplySteps')->first();
+        $mapApply = MapApply::where('id', $id)->with('mapApplySteps')->first();
         return view('BusinessPortal.Ebps::additional-form', compact('mapApply'));
     }
 
+    public function additionalFormPreview(int $id)
+    {
+        $mapApplyDetail = MapApplyDetail::where('map_apply_id', $id)
+            ->with([
+                'landUseArea',
+                'mapApply',
+                'mapApply.landDetail',
+                'mapApply.storeyDetails',
+                'mapApply.distanceToWalls',
+                'mapApply.roads',
+                'mapApply.cantileverDetails',
+                'mapApply.highTensionLineDetails',
+                'buildingConstructionType',
+                'buildingRoofType'
+            ])->first();
+
+        $constructionStoreyPurpose = $mapApplyDetail->mapApply->storeyDetails->isNotEmpty()
+            ? $mapApplyDetail->mapApply->storeyDetails->toArray()
+            : [];
+
+        $distanceToWall = $mapApplyDetail->mapApply->distanceToWalls->isNotEmpty()
+            ? $mapApplyDetail->mapApply->distanceToWalls->mapWithKeys(function ($item) {
+                return [$item['direction'] => $item];
+            })->toArray()
+            : [];
+
+        $roads = $mapApplyDetail->mapApply->roads->isNotEmpty()
+            ? $mapApplyDetail->mapApply->roads->mapWithKeys(function ($item) {
+                return [$item['direction'] => $item];
+            })->toArray()
+            : [];
+
+        $cantileverDetails = $mapApplyDetail->mapApply->cantileverDetails->isNotEmpty()
+            ? $mapApplyDetail->mapApply->cantileverDetails->mapWithKeys(function ($item) {
+                return [$item['direction'] => $item];
+            })->toArray()
+            : [];
+
+        $highTensionDetails = $mapApplyDetail->mapApply->highTensionLineDetails->isNotEmpty()
+            ? $mapApplyDetail->mapApply->highTensionLineDetails->mapWithKeys(function ($item) {
+                return [$item['direction'] => $item];
+            })->toArray()
+            : [];
+
+        return view('BusinessPortal.Ebps::map-applies-view', compact(
+            'mapApplyDetail',
+            'constructionStoreyPurpose',
+            'distanceToWall',
+            'roads',
+            'cantileverDetails',
+            'highTensionDetails'
+        ));
+    }
 }
