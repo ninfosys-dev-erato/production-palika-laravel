@@ -39,10 +39,10 @@ class MapPassGroup extends Model
     ];
     }
 
-    public function users(): HasMany
-    {
-        return $this->hasMany(MapPassGroupUser::class, 'map_pass_group_id', 'id');
-    }
+    // public function users(): HasMany
+    // {
+    //     return $this->hasMany(MapPassGroupUser::class, 'map_pass_group_id', 'id');
+    // }
 
     public function groupUsers(): HasMany
     {
@@ -108,4 +108,16 @@ class MapPassGroup extends Model
     {
         return $this->users()->where('user_id', $userId)->delete();
     }
+
+    // In MapPassGroup.php
+public function users(): BelongsToMany
+{
+    return $this->belongsToMany(
+        User::class,               // User model
+        'ebps_map_pass_group_user',     // Pivot table linking users to groups
+        'map_pass_group_id',       // This model key on pivot
+        'user_id'                  // User key on pivot
+    );
+}
+
 }
