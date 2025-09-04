@@ -70,9 +70,16 @@
                 </div>
                 <div class="col-md-10 mb-3" wire:ignore>
                     @if ($action === App\Enums\Action::CREATE)
-                        <x-form.select-input label="{{ __('recommendation::recommendation.customer') }}"
+                        {{-- <x-form.select-input label="{{ __('recommendation::recommendation.customer') }}"
                             id="customer_id" name="customer_id" wire:model="customer_id"
-                            placeholder="{{ __('recommendation::recommendation.choose_customer') }}" required />
+                            placeholder="{{ __('recommendation::recommendation.choose_customer') }}" required /> --}}
+                        <select class="form-control" wire:model="customer_id" id="customer_id">
+                            <option value="">{{ __('recommendation::recommendation.choose_customer') }}</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}">
+                                    {{ $customer->name . ' ( ' . $customer->mobile_no . ' ) ' }}</option>
+                            @endforeach
+                        </select>
                     @elseif($action === App\Enums\Action::UPDATE)
                         <label for="name">{{ __('recommendation::recommendation.customer') }}</label>
                         <input type="text" readonly class="form-control"
@@ -355,7 +362,7 @@
 </div>
 
 @push('scripts')
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             const ward = @json(App\Facades\GlobalFacade::ward());
 
@@ -404,7 +411,7 @@
                 @this.set('customer_id', $(this).val());
             });
         });
-    </script>
+    </script> --}}
 @endpush
 
 @script
@@ -418,7 +425,13 @@
             branchSelect.on('change', function() {
                 @this.set('recommendation_category_id', $(this).val());
                 @this.call('loadRecommendation', $(this).val());
+            })
+            const customerSelect = $('#customer_id');
 
+            customerSelect.select2();
+
+            customerSelect.on('change', function() {
+                @this.set('customer_id', $(this).val());
             })
         })
     </script>
