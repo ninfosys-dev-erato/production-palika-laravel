@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
-    <title>Login</title>
+    <title>Forgot Password</title>
     <meta name="description" content=""/>
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/favicon.ico')}}"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -21,7 +21,12 @@
     <link rel="stylesheet" href="{{asset('assets/vendor/css/pages/page-auth.css')}}"/>
     <script src="{{asset('assets/vendor/js/helpers.js')}}"></script>
     <script src="{{asset('assets/js/config.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @livewireStyles
+
 </head>
+@livewireScripts
 
 <body>
 <div class="container-xxl">
@@ -34,50 +39,50 @@
                             <span class="app-brand-logo demo">
 
                             </span>
-                            <span class="app-brand-text demo text-body fw-bolder mt-3">ई-पालिका</span>
+                            <span class="app-brand-text demo text-body fw-bolder mt-3 text-primary">ई-पालिका</span>
                         </a>
                     </div>
-                    <h4 class="mb-2">Welcome! 👋</h4>
-                    <p class="mb-4">Please sign in to your account</p>
-                    <form id="formAuthentication" class="mb-3" action="{{route('auth.authenticate')}}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email or Username</label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                   placeholder="Enter your email" autofocus/>
-                            @error('email')
-                            <div class="form-text text-danger">
-                                {{$message}}
-                            </div>
-                            @enderror
+                    
+               <!-- Content wrapper -->
+               <div class="content-wrapper">
+                <!-- Content -->
+
+                    @if (session()->has('alert'))
+                        <div class="alert alert m-2 bg bg-{{ session()->get('alert')['type'] }} p-4 text-white rounded alert-dismissible"
+                            role="alert">
+                            <h4 class="alert-heading d-flex align-items-center">
+                                <span class="alert-icon rounded-circle"
+                                    style="border: 2px solid white; padding: 8px; display: inline-flex; align-items: center; justify-content: center;">
+                                    @if (session()->get('alert')['type'] === 'success')
+                                        <i class="bx bx-coffee"></i>
+                                    @elseif(session()->get('alert')['type'] === 'danger')
+                                        <i class="bx bx-error"></i>
+                                    @else
+                                        <i class="bx bx-show"></i>
+                                    @endif
+                                </span>
+                                &nbsp;
+                                {{ session()->get('alert')['title'] }}
+                            </h4>
+                            <hr>
+                            <p class="mb-0">{{ session()->get('alert')['message'] }}</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
                         </div>
-                        <div class="mb-3 form-password-toggle">
-                            <div class="d-flex justify-content-between">
-                                <label class="form-label" for="password">Password</label>
-                                <a href="{{route('forgot-password')}}"><small>Forgot Password?</small></a>
-                            </div>
-                            <div class="input-group input-group-merge">
-                                <input type="password" id="password" class="form-control" name="password"
-                                       placeholder="•••••••••••" aria-describedby="password"/>
-                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                                @error('password')
-                                <div class="form-text text-danger">
-                                    {{$message}}
-                                </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember-me"/>
-                                <label class="form-check-label" for="remember-me"> Remember Me </label>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                        </div>
-                    </form>
+                    @endif
+
+
+
+                    <!-- Livewire componet form -->
+                    <livewire:forgot-password/>
+
+                    <div class="text-center">
+                        <a href="{{ route('login') }}">
+                            <i class="bx bx-chevron-left"></i> Back to Login
+                        </a>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
@@ -90,5 +95,7 @@
 <script src="{{asset('assets/vendor/js/menu.js')}}"></script>
 <script src="{{asset('assets/js/main.js')}}"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
+<script src="{{ asset('vendor/livewire-alert/livewire-alert.js') }}"></script>
+<x-livewire-alert::flash />
 </body>
 </html>

@@ -7,6 +7,8 @@ use App\Facades\ImageServiceFacade;
 use App\Models\User;
 use App\Services\ImageService;
 use App\Traits\SessionFlash;
+use App\Mail\EmailVerificationOTPMail;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Src\Agendas\DTO\AgendaAdminDto;
@@ -14,12 +16,16 @@ use Src\Agendas\Models\Agenda;
 use Src\Agendas\Service\AgendaAdminService;
 use Src\Profile\DTO\ProfileAdminDto;
 use Src\Profile\Service\ProfileAdminService;
+use App\Models\EmailOtp;
+use Carbon\Carbon;
+use App\Services\EmailVerificationService;
 
 class ProfileForm extends Component
 {
     use SessionFlash, WithFileUploads;
 
     public User $user;
+    public bool $emailVerified = false;
 
     public function rules(): array
     {
@@ -38,6 +44,8 @@ class ProfileForm extends Component
     public function mount()
     {
         $this->user = auth()->user();
+
+    
     }
 
     public function save()
@@ -56,5 +64,13 @@ class ProfileForm extends Component
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
+    }
+
+    public function sendEmailVerification()
+    {
+        $service = new EmailVerificationService();
+        $service->sendOtp();
+        $this->successFlash(__('Email Verification OTP Sent'));
+        $this->dispatch('open-email-verification-modal');
     }
 }

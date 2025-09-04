@@ -155,4 +155,12 @@ class User extends Authenticatable
         return false;
     }
 
+    /**
+     * Determine if the user has verified their email address.
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        return !is_null($this->email_verified_at);
+    }
+
 }

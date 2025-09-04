@@ -14,6 +14,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/login', [FrontController::class, 'login'])->name('digital-service');
 Route::post('/login', [AuthController::class, 'customerLogin'])->name('customer.authenticate');
 Route::get('/services', [FrontController::class, 'services'])->name('services');
+Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 
 
 Route::get('auth/login', [AuthController::class, 'login'])->name('login');

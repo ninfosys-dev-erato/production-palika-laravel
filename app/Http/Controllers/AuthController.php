@@ -31,6 +31,11 @@ class AuthController extends Controller
         return view('admin.register'); 
     }
 
+    public function forgotPassword()
+    {
+        return view('admin.forgot-password');
+    }
+
     public function register(RegisterCustomerRequest $request)
     {
         $data = $request->validated();
