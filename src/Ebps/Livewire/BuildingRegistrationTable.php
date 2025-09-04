@@ -76,11 +76,21 @@ class BuildingRegistrationTable extends DataTableComponent
 
             Column::make(__('ebps::ebps.submission_no'), "submission_id")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ebps::ebps.fiscal_year'), "fiscalYear.year")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ebps::ebps.house_owner'))->label(
-                fn($row, Column $column) => view('Ebps::livewire.table.col-house-owner-detail', [
-                    'row' => $row,
-                ])->render()
-            )->html(),
+            Column::make(__('ebps::ebps.house_owner'))
+                ->label(function ($row) {
+                    return view('Ebps::livewire.table.col-house-owner-detail', [
+                        'row' => $row,
+                    ])->render();
+                })
+                ->html()
+                ->sortable()
+                ->collapseOnTablet()
+                ->searchable(function ($builder, $term) {
+                    $builder->orWhereHas('houseOwner', function ($query) use ($term) {
+                        $query->where('owner_name', 'like', "%{$term}%")
+                              ->orWhere('mobile_no', 'like', "%{$term}%");
+                    });
+                }),
             Column::make(__('ebps::ebps.applied_date'), "applied_date")->sortable()->searchable()->collapseOnTablet(),
 
             // Add current step and status column
@@ -182,7 +192,7 @@ class BuildingRegistrationTable extends DataTableComponent
         }
 
         // Show move forward button if user is approver for the current step
-        if ($canApprove) {
+        if ($canApprove || $canSubmit) {
             $buttons .= '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $application->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
         }
 

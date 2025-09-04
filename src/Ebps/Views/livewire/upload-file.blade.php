@@ -8,7 +8,8 @@
     <div class="modal-body p-4">
 
         <div class="mb-4">
-            <label for="edit-title" class="form-label fw-medium text-gray-700">{{__('ebps::ebps.document_title')}}</label>
+            <label for="edit-title"
+                class="form-label fw-medium text-gray-700">{{ __('ebps::ebps.document_title') }}</label>
             <div class="input-group input-group-merge shadow-sm rounded">
                 <span class="input-group-text bg-light border-0">
                     <i class="bx bx-text text-primary"></i>
@@ -30,13 +31,23 @@
         </div>
 
     </div>
-    <div class="modal-footer bg-light">
+    <div class="modal-footer bg-light d-flex justify-content-between align-items-center">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="bx bx-x me-1"></i>{{ __('ebps::ebps.close') }}
         </button>
-        <button type="submit" class="btn btn-primary" wire:click="saveDocument">
-            <i class="bx bx-save me-1"></i>{{ __('ebps::ebps.upload') }}
-        </button>
+
+        <div class="d-flex align-items-center">
+          
+            <span wire:loading wire:target="saveDocument" class="text-muted me-2">
+                <i class="bx bx-loader bx-spin me-1"></i> {{ __('ebps::ebps.uploading') }}
+            </span>
+
+           
+            <button type="submit" class="btn btn-primary" wire:click="saveDocument" wire:loading.attr="disabled">
+                <i class="bx bx-save me-1" wire:loading.remove wire:target="saveDocument"></i>
+                {{ __('ebps::ebps.upload') }}
+            </button>
+        </div>
     </div>
 </div>
 

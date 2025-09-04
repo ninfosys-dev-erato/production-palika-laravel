@@ -81,11 +81,24 @@ class MapApplyDetail extends Model
 
     public function mapApply()
     {
-        $this->belongsTo(MapApply::class, 'map_apply_id');
+        return $this->belongsTo(MapApply::class, 'map_apply_id');
     }
 
     public function organization()
     {
         return $this->belongsTo(Organization::class, 'organization_id');
+    }
+    public function landUseArea()
+    {
+        return $this->belongsTo(LandUseArea::class, 'land_use_area_id');
+    }
+    public function buildingConstructionType()
+    {
+
+        return $this->belongsTo(BuildingConstructionType::class, 'building_construction_type_id');
+    }
+    public function buildingRoofType()
+    {
+        return $this->belongsTo(BuildingRoofType::class, 'building_roof_type_id');
     }
 }

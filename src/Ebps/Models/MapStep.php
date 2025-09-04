@@ -123,7 +123,7 @@ class MapStep extends Model
             return false; // No submitter needed for these types
         }
 
-        if ($this->form_submitter === 'Palika') {
+        if ($this->form_submitter === 'municipality') {
             return $this->submitterGroups()
                 ->whereHas('users', function ($query) use ($user) {
                     $query->where('user_id', $user->id);

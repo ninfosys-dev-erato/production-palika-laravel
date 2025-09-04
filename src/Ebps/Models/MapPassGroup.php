@@ -12,7 +12,7 @@ use App\Models\User;
 
 class MapPassGroup extends Model
 {
-    use HasFactory,LogsActivity;
+    use HasFactory, LogsActivity;
 
     protected $table = 'ebps_map_pass_groups';
 
@@ -26,23 +26,28 @@ class MapPassGroup extends Model
         'updated_by'
     ];
 
-    public function casts():array{
-      return [
-        'title' => 'string',
-        'id' => 'int',
-        'created_at' => 'datetime',
-        'created_by' => 'string',
-        'updated_at' => 'datetime',
-        'updated_by' => 'string',
-        'deleted_at' => 'datetime',
-        'deleted_by' => 'string',
-    ];
+    public function casts(): array
+    {
+        return [
+            'title' => 'string',
+            'id' => 'int',
+            'created_at' => 'datetime',
+            'created_by' => 'string',
+            'updated_at' => 'datetime',
+            'updated_by' => 'string',
+            'deleted_at' => 'datetime',
+            'deleted_by' => 'string',
+        ];
     }
 
-    public function users(): HasMany
-    {
-        return $this->hasMany(MapPassGroupUser::class, 'map_pass_group_id', 'id');
-    }
+    // public function users(): HasMany
+    // {
+    //     return $this->hasMany(MapPassGroupUser::class, 'map_pass_group_id', 'id');
+    // }
+    // public function users(): HasMany
+    // {
+    //     return $this->hasMany(MapPassGroupUser::class, 'map_pass_group_id', 'id');
+    // }
 
     public function groupUsers(): HasMany
     {
@@ -65,24 +70,24 @@ class MapPassGroup extends Model
     public function steps(): BelongsToMany
     {
         return $this->belongsToMany(MapStep::class, 'ebps_map_pass_group_map_step', 'map_pass_group_id', 'map_step_id')
-                    ->withPivot('type', 'position')
-                    ->withTimestamps();
+            ->withPivot('type', 'position')
+            ->withTimestamps();
     }
 
     public function submitterSteps(): BelongsToMany
     {
         return $this->belongsToMany(MapStep::class, 'ebps_map_pass_group_map_step', 'map_pass_group_id', 'map_step_id')
-                    ->withPivot('type', 'position')
-                    ->wherePivot('type', 'submitter')
-                    ->orderBy('position');
+            ->withPivot('type', 'position')
+            ->wherePivot('type', 'submitter')
+            ->orderBy('position');
     }
 
     public function approverSteps(): BelongsToMany
     {
         return $this->belongsToMany(MapStep::class, 'ebps_map_pass_group_map_step', 'map_pass_group_id', 'map_step_id')
-                    ->withPivot('type', 'position')
-                    ->wherePivot('type', 'approver')
-                    ->orderBy('position');
+            ->withPivot('type', 'position')
+            ->wherePivot('type', 'approver')
+            ->orderBy('position');
     }
 
     // Helper methods
@@ -108,4 +113,16 @@ class MapPassGroup extends Model
     {
         return $this->users()->where('user_id', $userId)->delete();
     }
+
+    // In MapPassGroup.php
+public function users(): BelongsToMany
+{
+    return $this->belongsToMany(
+        User::class,               // User model
+        'ebps_map_pass_group_user',     // Pivot table linking users to groups
+        'map_pass_group_id',       // This model key on pivot
+        'user_id'                  // User key on pivot
+    );
+}
+
 }

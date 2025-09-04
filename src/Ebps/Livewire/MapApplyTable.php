@@ -22,14 +22,17 @@ use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSortable;
 class MapApplyTable extends DataTableComponent
 {
     use SessionFlash;
-    
+
     protected $model = MapApply::class;
     protected ApplicationRoleFilterService $roleFilterService;
+
 
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+
+    public string $search = '';
 
     public function boot(): void
     {
@@ -40,17 +43,20 @@ class MapApplyTable extends DataTableComponent
     {
         $this->setPrimaryKey('ebps_map_applies.id')
             ->setTableAttributes([
-                'class' =>"table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline"
             ])
             ->setAdditionalSelects(['ebps_map_applies.id'])
             ->setBulkActionsDisabled()
-            ->setPerPageAccepted([10, 25, 50, 100,500])
+            ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
             ->setRefreshMethod('refresh')
             ->setBulkActionConfirms([
                 'delete',
-            ]);
+            ])
+            ->setSearchStatus(true)
+            ->setSearchDebounce(500);
     }
+
 
     public function builder(): Builder
     {
@@ -62,8 +68,9 @@ class MapApplyTable extends DataTableComponent
             ->where('ebps_map_applies.deleted_by', null)
             ->orderBy('ebps_map_applies.created_at', 'DESC');
 
-      
+
         return $this->roleFilterService->filterApplicationsByCurrentStepAccess(
+            $query,
             $query,
             ApplicationTypeEnum::MAP_APPLIES->value
         );
@@ -74,22 +81,34 @@ class MapApplyTable extends DataTableComponent
         return [];
     }
 
+
     public function columns(): array
     {
         $columns = [
-            Column::make(__('ebps::ebps.submission_no'), "submission_id") ->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ebps::ebps.fiscal_year'), "fiscalYear.year") ->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ebps::ebps.submission_no'), "submission_id")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ebps::ebps.fiscal_year'), "fiscalYear.year")->sortable()->searchable()->collapseOnTablet(),
             // Column::make(__('ebps::ebps.construction_type'), "constructionType.title") ->sortable()->searchable()->collapseOnTablet(),
             // Column::make(__('ebps::ebps.usage'), "usage")
             //     ->sortable()
             //     ->searchable()
             //     ->collapseOnTablet()
             //     ->format(fn($value) => PurposeOfConstructionEnum::tryFrom($value)?->label() ?? '-'),
-            Column::make(__('ebps::ebps.house_owner'))->label(
-                fn($row, Column $column) => view('Ebps::livewire.table.col-house-owner-detail', [
-                    'row' => $row,
-                ])->render()
-            )->html(),
+            Column::make(__('ebps::ebps.house_owner'))
+                ->label(function ($row) {
+                    return view('Ebps::livewire.table.col-house-owner-detail', [
+                        'row' => $row,
+                    ])->render();
+                })
+                ->html()
+                ->sortable()
+                ->collapseOnTablet()
+                ->searchable(function ($builder, $term) {
+                    $builder->orWhereHas('houseOwner', function ($query) use ($term) {
+                        $query->where('owner_name', 'like', "%{$term}%")
+                              ->orWhere('mobile_no', 'like', "%{$term}%");
+                    });
+                }),
+          
 
             Column::make(__('ebps::ebps.applied_date'), "applied_date") ->sortable()->searchable()->collapseOnTablet(),
 
@@ -98,6 +117,7 @@ class MapApplyTable extends DataTableComponent
                 fn($row, Column $column) => $this->getCurrentStepLabel($row)
             )->html(),
         ];
+
 
         if (can('ebps_map_applies edit') || can('ebps_map_applies delete')) {
             $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
@@ -114,6 +134,7 @@ class MapApplyTable extends DataTableComponent
     {
         $currentStep = $this->roleFilterService->getCurrentStep($application);
 
+
         if (!$currentStep) {
             return '
                 <div class="text-center">
@@ -126,6 +147,7 @@ class MapApplyTable extends DataTableComponent
         // Get step number from form_position
         $stepNumber = $currentStep->position ?? 'N/A';
 
+
         // Get current step record to determine status
         $stepRecord = $application->mapApplySteps()
             ->where('map_step_id', $currentStep->id)
@@ -133,7 +155,7 @@ class MapApplyTable extends DataTableComponent
 
 
         $status = $stepRecord ? $stepRecord->status : 'not_started';
-     
+
         // Status mapping with icons and colors
         $statusConfig = [
             'pending' => ['label' => __('ebps::ebps.pending'), 'class' => 'bg-warning', 'icon' => '⏳'],
@@ -143,9 +165,11 @@ class MapApplyTable extends DataTableComponent
             'not_started' => ['label' => __('ebps::ebps.not_started'), 'class' => 'bg-secondary', 'icon' => '⚪'],
         ];
 
+
         $statusInfo = $statusConfig[$status] ?? $statusConfig['not_started'];
 
-        return sprintf('
+        return sprintf(
+            '
             <div class="text-center">
                 <div class="mb-1">
                     <strong class="text-primary">Step: %s</strong>
@@ -158,8 +182,8 @@ class MapApplyTable extends DataTableComponent
             $statusInfo['icon'],
             $statusInfo['label']
 
-        );
 
+        );
     }
 
     protected function getActionButtons($application): string
@@ -188,19 +212,21 @@ class MapApplyTable extends DataTableComponent
         }
 
         // Show move forward button if user is approver for the current step
-        if ($canApprove) {
+        if ($canApprove || $canSubmit) {
+       
             $buttons .= '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $application->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
         }
 
         return $buttons;
-    }
+        }
 
     public function refresh(){}
 
     public function edit($id)
     {
-        return redirect()->route('admin.ebps.map_applies.edit',['id'=>$id]);
+        return redirect()->route('admin.ebps.map_applies.edit', ['id' => $id]);
     }
+
 
     public function chooseOrganization($id)
     {
@@ -209,23 +235,23 @@ class MapApplyTable extends DataTableComponent
 
     public function view($id)
     {
-        if(!can('ebps_map_applies access')){
+        if (!can('ebps_map_applies access')) {
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
-               return false;
+            return false;
         }
-        return redirect()->route('admin.ebps.map_applies.view',['id'=>$id]);
+        return redirect()->route('admin.ebps.map_applies.view', ['id' => $id]);
     }
 
     public function moveFurther($id)
     {
-        return redirect()->route('admin.ebps.map_applies.step', ['id'=>$id]);
+        return redirect()->route('admin.ebps.map_applies.step', ['id' => $id]);
     }
 
     public function delete($id)
     {
-        if(!can('ebps_map_applies delete')){
+        if (!can('ebps_map_applies delete')) {
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
-                return false;
+            return false;
         }
         $service = new MapApplyAdminService();
         $service->delete(MapApply::findOrFail($id));
@@ -235,7 +261,7 @@ class MapApplyTable extends DataTableComponent
     public function deleteSelected(){
         if(!can('ebps_map_applies delete')){
             $this->warningFlash(__('ebps::ebps.you_cannot_perform_this_action'));
-                    return false;
+            return false;
         }
         $service = new MapApplyAdminService();
         $service->collectionDelete($this->getSelected());

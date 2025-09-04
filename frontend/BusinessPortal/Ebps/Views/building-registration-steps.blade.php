@@ -64,11 +64,13 @@
                     <div class="timeline-steps mb-4">
                         @foreach ($steps as $index => $mapStep)
                             @php
+
                                 $appliedStep = $mapApply->mapApplySteps->where('map_step_id', $mapStep->id)->first();
                                 $status = $appliedStep ? $appliedStep->status : __('ebps::ebps.not_applied');
                                 $mapApplyStep = Src\Ebps\Models\MapApplyStep::where('map_step_id', $mapStep->id)
                                     ->where('map_apply_id', $mapApply->id)
                                     ->first();
+
                                 $canApply = $previousStepApproved;
                                 $previousStepApproved = $status == 'accepted';
 
@@ -155,14 +157,17 @@
                                                 @if ($mapApplyStep && $mapApplyStep->reason)
                                                     <div class="alert alert-info shadow-sm rounded-3 border-0 p-3 mb-3">
                                                         <div class="d-flex align-items-center">
-                                                            <small class="text-dark">{{ $mapApplyStep->reason }}</small>
+                                                            <small
+                                                                class="text-dark">{{ $mapApplyStep->reason }}</small>
                                                         </div>
                                                     </div>
                                                 @endif
 
                                                 <div class="d-flex justify-content-end mt-3 gap-2 flex-wrap">
-                                                    
-                                                    @if ($status !== 'accepted' && $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::CONSULTANT_SUPERVISOR->value)
+
+                                                    @if (
+                                                        $status !== 'accepted' &&
+                                                            $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::CONSULTANT_SUPERVISOR->value)
                                                         @if ($mapStep->form && $mapStep->form->isNotEmpty())
                                                             <a href="{{ route('organization.ebps.building-registrations.apply-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                                 class="btn btn-primary btn-sm d-flex align-items-center">
@@ -180,7 +185,7 @@
                                                         @endif
                                                     @endif
 
-                                                    @if ($mapApplyStep || $document->isNotEmpty())
+                                                    @if ($mapApplyStep)
                                                         <a href="{{ route('organization.ebps.building-registrations.preview', ['mapApplyStep' => $mapApplyStep]) }}"
                                                             class="btn btn-outline-primary btn-sm d-flex align-items-center">
                                                             <i class="bx bx-show me-1"></i> {{ __('ebps::ebps.view') }}

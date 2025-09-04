@@ -42,49 +42,59 @@ class EbpsUploadFile extends Component
     }
 
     public function saveDocument()
-    {
-        $this->validate();
-        try{
+{
+    $this->validate();
 
-            foreach ($this->files as $file) 
-            {
-                $processedFile = $this->processFiles($file);
+    try {
+        $documents = [];
 
-                BuildingRegistrationDocument::create([
-                    'map_step_id' => $this->mapStep->id,
-                    'map_apply_id' => $this->mapApply->id,
-                    'title' => $this->title,
-                    'file' => $processedFile,
-                ]);
-                if($this->mapStep->form && $this->mapStep->form->isEmpty())
-                {                  
-                    MapApplyStep::create([
-                        'map_apply_id' => $this->mapApply->id,
-                        'form_id' => null,
-                        'map_step_id' =>  $this->mapStep->id,
-                        'reviewed_by' =>null ,
-                        'template' => null,
-                        'status' =>  MapApplyStatusEnum::PENDING->value,
-                        'reason' => null,
-                        'sent_to_approver_at' => null,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ]);
-                }
+        foreach ($this->files as $file) {
+            $processedFile = $this->processFiles($file);
 
-                $this->successToast(__('ebps::ebps.document_added_sucessfully'));
-                $this->dispatch('document-uploaded');
-            }
-            $this->successToast(__("Document Added Sucessfully."));
-            $this->dispatch('document-uploaded', ['modalId' => 'documentEditModal' . $this->mapStep->id,]);
-
-             $this->reset(['title', 'files']);
-
-        }catch (\Throwable $e){
-            logger($e->getMessage());
-            $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
+            $documents[] = [
+                'map_step_id'   => $this->mapStep->id,
+                'map_apply_id'  => $this->mapApply->id,
+                'title'         => $this->title,
+                'file'          => $processedFile,
+                'created_at'    => now(),
+                'updated_at'    => now(),
+            ];
         }
-        
+
+        // ✅ Insert all documents at once
+        if (!empty($documents)) {
+            BuildingRegistrationDocument::insert($documents);
+        }
+
+        // ✅ Create MapApplyStep only once, not per file
+        if ($this->mapStep->form && $this->mapStep->form->isEmpty()) {
+            MapApplyStep::create([
+                'map_apply_id'       => $this->mapApply->id,
+                'form_id'            => null,
+                'map_step_id'        => $this->mapStep->id,
+                'reviewed_by'        => null,
+                'template'           => null,
+                'status'             => MapApplyStatusEnum::PENDING->value,
+                'reason'             => null,
+                'sent_to_approver_at'=> null,
+                'created_at'         => now(),
+            ]);
+        }
+
+        // ✅ Success feedback
+        $this->successToast(__('ebps::ebps.document_added_sucessfully'));
+        $this->dispatch('document-uploaded', [
+            'modalId' => 'documentEditModal' . $this->mapStep->id,
+        ]);
+
+        $this->reset(['title', 'files']);
+
+    } catch (\Throwable $e) {
+        logger($e->getMessage());
+        $this->errorFlash('Something went wrong while saving. ' . $e->getMessage());
     }
+}
+
 
     private function processFiles($file)
     {

@@ -96,4 +96,10 @@ class BusinessRegistrationAdminController extends Controller implements HasMiddl
 
         return view('BusinessRegistration::business-registration.preview')->with(compact('businessRegistration', 'type'));
     }
+
+    public function ownershipTransfer(Request $request)
+    {
+        $businessRegistration = BusinessRegistration::find($request->route('id'));
+        return view('BusinessRegistration::business-registration.ownership-transfer')->with(compact('businessRegistration'));
+    }
 }

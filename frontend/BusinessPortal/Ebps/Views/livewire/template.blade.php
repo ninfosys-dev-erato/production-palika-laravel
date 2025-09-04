@@ -199,7 +199,7 @@
                                     <div class="col-md-6">
                                         <label for="form-label">7. निर्माणको लागि प्रस्तावित जग्गाको कित्ता नं.</label>
                                         <input type="text" class="form-control"
-                                            value="{{ $mapApply->landDetail->lot_no }}" readonly>
+                                            value="{{ $mapApply->landDetail->lot_no }}">
                                     </div>
                                 </div>
 
@@ -209,7 +209,7 @@
                                         <label for="form-label">8. जग्गाधनी प्रमाण पुर्जा अनुसारको जग्गाको
                                             क्षेत्रफल</label>
                                         <input type="text" class="form-control"
-                                            value="{{ $mapApply->landDetail->area_sqm }}" readonly>
+                                            value="{{ $mapApply->landDetail->area_sqm }}">
 
                                     </div>
                                     <div class="col-md-6">

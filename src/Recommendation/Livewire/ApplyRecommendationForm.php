@@ -8,9 +8,11 @@ use App\Facades\GlobalFacade;
 use App\Facades\ImageServiceFacade;
 use App\Models\User;
 use App\Traits\SessionFlash;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Src\Customers\Models\Customer;
 use Src\Recommendation\DTO\ApplyRecommendationAdminDto;
 use Src\Recommendation\Enums\RecommendationStatusEnum;
 use Src\Recommendation\Models\ApplyRecommendation;
@@ -43,6 +45,7 @@ class ApplyRecommendationForm extends Component
     public $fiscalYears;
 
     public array $recommendations = [];
+    public $customers;
 
     public function rules(): array
     {
@@ -92,6 +95,8 @@ class ApplyRecommendationForm extends Component
         $this->applyRecommendation = $applyRecommendation->load('customer');
         $this->customer_id = $applyRecommendation->customer_id ?? null;
         $this->recommendation_id = $applyRecommendation->recommendation_id ?? $recommendation->id ?? null;
+
+
         $this->data = $applyRecommendation->data ?? [];
         if ($action !== Action::CREATE) {
             $recommendation = $applyRecommendation->recommendation;
@@ -106,7 +111,70 @@ class ApplyRecommendationForm extends Component
             $this->recommendation_id = $recommendation->id;
             $this->fiscal_year_id = $this->applyRecommendation->fiscal_year_id;
         }
+        $this->customers = $this->getCustomers();
     }
+
+    // public function getCustomers()
+    // {
+    //     $query = Customer::select('id', 'name', 'mobile_no')
+    //         ->whereNull('deleted_at')->whereNotNull('kyc_verified_at');
+
+    //     $user = auth()->user()->fresh();
+    //     if (!$user->hasRole('super-admin')) {
+    //         $query->where(function ($q) use ($user) {
+    //             $q->whereHas('kyc', function ($subQuery) {
+
+    //                 $subQuery->where('permanent_ward', GlobalFacade::ward());
+    //             })->orWhere('created_by', $user->id);
+    //         });
+    //     }
+    //     return $query->get();
+    // }
+
+    // #[On('customer-selected')]
+    // public function updatedCustomer()
+    // {
+    //     $this->customers = $this->getCustomers();
+    // }
+
+
+
+    public function getCustomers()
+    {
+        $user = auth()->user()->fresh();
+        $cacheKey = 'customers_' . $user->id . '_' . GlobalFacade::ward();
+
+        return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($user) {
+            $query = Customer::select('id', 'name', 'mobile_no')
+                ->whereNull('deleted_at')->whereNotNull('kyc_verified_at');
+
+            $user = auth()->user()->fresh();
+            if (!$user->hasRole('super-admin')) {
+                $query->where(function ($q) use ($user) {
+                    $q->whereHas('kyc', function ($subQuery) {
+
+                        $subQuery->where('permanent_ward', GlobalFacade::ward());
+                    })->orWhere('created_by', $user->id);
+                });
+            }
+            return $query
+                ->with('kyc')
+                ->limit(1000)
+                ->get();
+        });
+    }
+
+    #[On('customer-selected')]
+    public function refreshCustomers()
+    {
+        $user = auth()->user()->fresh();
+        $cacheKey = 'customers_' . $user->id . '_' . GlobalFacade::ward();
+
+        Cache::forget($cacheKey);
+
+        $this->customers = $this->getCustomers();
+    }
+
 
     public function loadRecommendation($categoryId)
     {
