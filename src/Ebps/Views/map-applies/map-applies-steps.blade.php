@@ -211,7 +211,7 @@
                                                         $canUserAccessStep = $canUserAccess && $isCurrentStep;
                                                     @endphp
 
-                                                    @if ($canUserAccessStep || (isSuperAdmin() && $status != 'accepted'))
+                                                    @if (($canUserAccessStep || isSuperAdmin()) && $status != 'accepted')
                                                         @if ($mapStep->form && $mapStep->form->isNotEmpty())
                                                             <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                                 class="btn btn-primary btn-sm me-2">
@@ -228,7 +228,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($canUserAccessStep || (isSuperAdmin() && $status != 'accepted'))
+                                                    @if (($canUserAccessStep || isSuperAdmin()) && $status != 'accepted')
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
@@ -392,7 +392,7 @@
                                                         $canUserAccessStep = $canUserAccess && $isCurrentStep;
                                                     @endphp
 
-                                                    @if ($canUserAccessStep || (isSuperAdmin() && ($status !== 'accepted' && $canApply && !$isDisabled)))
+                                                    @if (($canUserAccessStep || isSuperAdmin()) && ($status !== 'accepted' && $canApply && !$isDisabled))
                                                         <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i

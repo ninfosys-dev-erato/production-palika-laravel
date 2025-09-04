@@ -218,7 +218,7 @@
                                                         $canUserAccessStep = $canUserAccess && $isCurrentStep;
                                                     @endphp
 
-                                                    @if ($canUserAccessStep || (isSuperAdmin() && $status != 'accepted'))
+                                                    @if (($canUserAccessStep || isSuperAdmin()) && $status !== 'accepted')
                                                         @if ($mapStep->form && $mapStep->form->isNotEmpty())
                                                             <a href="{{ route('admin.ebps.building-registrations.apply-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                                 class="btn btn-primary btn-sm d-flex align-items-center me-2">
@@ -243,12 +243,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if (
-                                                        $canUserAccessStep &&
-                                                            $status != 'Not Applied' &&
-                                                            $status != 'accepted' &&
-                                                            $canApply &&
-                                                            $mapStep->form->isNotEmpty())
+                                                    @if (($canUserAccessStep || isSuperAdmin()) && $status != 'Not Applied' && $mapStep->form->isNotEmpty())
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
