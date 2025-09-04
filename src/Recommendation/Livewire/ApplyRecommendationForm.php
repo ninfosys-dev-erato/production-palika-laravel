@@ -116,17 +116,24 @@ class ApplyRecommendationForm extends Component
     public function getCustomers()
     {
         $query = Customer::select('id', 'name', 'mobile_no')
-            ->whereNull('deleted_at');
+            ->whereNull('deleted_at')->whereNotNull('kyc_verified_at');
 
         $user = auth()->user()->fresh();
         if (!$user->hasRole('super-admin')) {
             $query->where(function ($q) use ($user) {
                 $q->whereHas('kyc', function ($subQuery) {
+
                     $subQuery->where('permanent_ward', GlobalFacade::ward());
                 })->orWhere('created_by', $user->id);
             });
         }
         return $query->get();
+    }
+
+    #[On('customer-selected')]
+    public function updatedCustomer()
+    {
+        $this->customers = $this->getCustomers();
     }
 
     public function loadRecommendation($categoryId)

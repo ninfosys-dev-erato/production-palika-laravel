@@ -201,6 +201,7 @@ class CustomerForm extends Component
 
     public function mount(Customer $customer, Action $action, bool $isModalForm, bool $isForGrievance = false)
     {
+
         $this->customer = $customer;
         $this->action = $action;
         $this->isModalForm = $isModalForm;
@@ -226,6 +227,7 @@ class CustomerForm extends Component
             $this->customer->password = Str::random(10);
 
             $dto = CustomerAdminDto::fromAdminLiveWireModel($this->customer);
+
             $service = new CustomerAdminService();
             switch ($this->action) {
                 case Action::CREATE:
@@ -289,7 +291,7 @@ class CustomerForm extends Component
             );
             return $path ? basename($path) : null;
         }
-        
+
         // Fallback to original method for non-Livewire files - use proper storage disk
         return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, getStorageDisk('private'));
     }

@@ -19,7 +19,7 @@ class CustomerAdminService
 
     public function store(CustomerAdminDto $customerAdminDto)
     {
-	    
+
         $customer = Customer::create([
             'name' => $customerAdminDto->name,
             'email' => $customerAdminDto->email ?? null,
@@ -28,6 +28,7 @@ class CustomerAdminService
             'password' => Hash::make($customerAdminDto->password),
             'gender' => $customerAdminDto->gender,
             'created_by' => Auth::id(),
+            'kyc_verified_at' => $customerAdminDto->kyc_verified_at,
             'notification_preference' => json_encode(['mail' => true, 'sms' => true, 'expo' => false])
         ]);
 
@@ -59,7 +60,9 @@ class CustomerAdminService
                 'document_image2' => $customerAdminDto->document_image2,
                 'expiry_date_nepali' => $customerAdminDto->expiry_date_nepali,
                 'expiry_date_english' => $customerAdminDto->expiry_date_english,
-            ]); 
+                'status' => $customerAdminDto->status,
+            ]
+        );
 
         $appUrl = 'https://my-app-url.com';
         $customer->notify(new CustomerRegistrationNotification($appUrl, $customerAdminDto->password));
@@ -93,7 +96,7 @@ class CustomerAdminService
             'password' => $customerAdminDto->password,
             'gender' => $customerAdminDto->gender,
             'updated_by' => Auth::id(),
-       ]);
+        ]);
     }
     public function updateStatus(CustomerKyc $customerKyc, CustomerKycDto $dto): CustomerKyc
     {
@@ -111,13 +114,11 @@ class CustomerAdminService
             $customer->kyc_verified_at = now();
             $customer->save();
             $customer->notify(new KycVerificationNotification('approved'));
-        }elseif($customerKyc->status->value === KycStatusEnum::REJECTED->value)
-        {
+        } elseif ($customerKyc->status->value === KycStatusEnum::REJECTED->value) {
             $customerKyc->rejected_by = Auth::id();
             $reasons =  json_decode($customerKyc->reason_to_reject);
-           
-            $customer->notify(new KycVerificationNotification('rejected',$reasons ));
 
+            $customer->notify(new KycVerificationNotification('rejected', $reasons));
         }
         $newKycAttributes = $customerKyc->getAttributes();
         $newCustomerAttributes = $customerKyc->customer->getAttributes();
@@ -129,7 +130,7 @@ class CustomerAdminService
             $originalCustomerAttributes,
             $newCustomerAttributes
         );
-    
+
         return $customerKyc;
     }
 }
