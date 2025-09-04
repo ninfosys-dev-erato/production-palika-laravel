@@ -365,6 +365,7 @@
     {{-- <script>
         $(document).ready(function() {
             const ward = @json(App\Facades\GlobalFacade::ward());
+            const userId = @json(Auth::id());
 
             $('#customer_id').select2({
                 ajax: {
@@ -380,8 +381,9 @@
                             }
                         }
 
-                        query.push('ward=' + ward); // pass ward directly
-
+                        query.push('ward=' + ward); 
+                        query.push('user_id=' + userId);
+                       
                         return base + '?' + query.join('&');
                     },
                     delay: 250,
