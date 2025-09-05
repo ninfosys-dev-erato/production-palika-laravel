@@ -152,6 +152,80 @@ function getSetting(string $key)
         return $row ? $row->value : false;
     });
 }
+
+function getLetterHeaderTest(
+        ?int $ward_no = null,
+        string $date = '',     // default inside function if empty
+        string|null $reg_no = '',
+        bool $is_darta = true,
+        string|null $fiscal_year = ''
+    ): string {
+        $date = $date ?: getFormattedBsDate() ?? '';
+        $fiscal_year = $fiscal_year ?: (getSetting('fiscal-year'));
+
+
+
+        // Ward or fallback office name
+        $office_name = null;
+        if ($ward_no) {
+            $office_name = Ward::where('id', $ward_no)->value('ward_name_ne');
+        }
+        $office_name = $office_name ?: getSetting('office-name')  ;
+
+        $palika_name = getSetting('palika-name')  ;
+        $palika_logo = getSetting('palika-logo') ?: "";
+        $palika_campaign_logo = getSetting('palika-campaign-logo') ?: "";
+        $district = getSetting('palika-district')  ;
+        $province = getSetting('palika-province')  ;
+        $address = trim("{$district}, {$province}, नेपाल", ', ');
+
+        // Darta/Chalani label
+        $label = $is_darta ? 'दर्ता नं.' : 'चलानी नं.';
+
+        // Escape dynamic values
+        $palika_name = htmlspecialchars($palika_name, ENT_QUOTES, 'UTF-8');
+        $office_name = htmlspecialchars($office_name, ENT_QUOTES, 'UTF-8');
+        $address = htmlspecialchars($address, ENT_QUOTES, 'UTF-8');
+        $fiscal_year = htmlspecialchars($fiscal_year, ENT_QUOTES, 'UTF-8');
+        $date = htmlspecialchars($date, ENT_QUOTES, 'UTF-8');
+        $reg_no = htmlspecialchars(replaceNumbers($reg_no, true), ENT_QUOTES, 'UTF-8');
+        $label = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
+
+        return <<<HTML
+        <div class="main-container" style="">
+            <table class="main-table" width="100%" cellpadding="0" cellspacing="0" style="padding: 0; margin:0;">
+                <tr>
+                    <td width="80">
+                        <img class="logo" src="{$palika_logo}" alt="Logo" width="80">
+                    </td>
+                    <td class="title" align="center" valign="middle">
+                        <span style="color: red;">
+                            <span style="font-size: 1.6rem; font-weight: bold">{$palika_name}</span><br>
+                            <span style="font-size: 1.6rem; font-weight: bold">{$office_name}</span><br>
+                            <span style="font-size: 1.2rem">{$address}</span>
+                        </span>
+                    </td>
+                    <td width="80">
+                        <img class="campaign_logo" src="{$palika_campaign_logo}" alt="Campaign Logo" width="80">
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%" style="font-size: 0.9rem; margin-top: 0.3rem;">
+                <tr>
+                    <td width="34%">पत्र संख्या: {$fiscal_year}</td>
+                    <td width="33%" rowspan="2" style="text-align: right;">मिति: {$date}</td>
+
+                </tr>
+                <tr>
+                <td width="33%">चलानी नं./Dis. No.: {$reg_no}</td>
+    </tr>
+            </table>
+            <hr style="margin: 0.5rem 0;">
+        </div>
+    HTML;
+    }
+
 function getSettingWithKey(string $key): array
 {
     return Cache::remember("setting_with_key_{$key}", now()->addHour(), function () use ($key) {

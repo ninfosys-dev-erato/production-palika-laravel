@@ -29,6 +29,8 @@ use Src\Recommendation\Traits\RecommendationTemplate;
 use Src\Settings\Models\FiscalYear;
 use Src\Settings\Traits\AdminSettings;
 use Src\Wards\Models\Ward;
+use Illuminate\Support\Facades\Log;
+
 
 class ApplyRecommendationController extends Controller implements HasMiddleware
 {
@@ -76,32 +78,37 @@ class ApplyRecommendationController extends Controller implements HasMiddleware
         return view('Recommendation::apply-recommendation.show', compact('applyRecommendation', 'showBillUpload', 'revenue'));
     }
 
-   public function search(Request $request): JsonResponse
-    {
-        $ward = $request->get('ward');
-        $user = Auth::id();
-    
-        $query = QueryBuilder::for(Customer::class)
-            ->where(function ($q) use ($ward, $user) {
-                $q->where(function ($subQ) use ($ward) {
-                    $subQ->whereNotNull('kyc_verified_at')
-                        ->whereHas('kyc', function ($kycQ) use ($ward) {
-                            $kycQ->where('permanent_ward', $ward);
-                        });
-                })->orWhere('created_by', $user);
-            })
-            ->allowedFilters([
-                'name',
-                'mobile_no',
-            ])
-            ->paginate(50)
-            ->appends(request()->query());
-            
-        return $this->generalSuccess([
-            'data' => $query->items()
-        ]);
-    }
+    public function search(Request $request): JsonResponse
+{
+   
+    $ward = $request->get('ward');
+    $user = $request->get('user_id'); 
 
+    
+   $query = QueryBuilder::for(Customer::class)
+    ->where(function ($q) use ($ward) {
+        $q->whereNotNull('kyc_verified_at')
+          ->when($ward && $ward !== 'null', function ($kycQ) use ($ward) {
+              $kycQ->whereHas('kyc', function ($kycSubQ) use ($ward) {
+                  $kycSubQ->where('permanent_ward', $ward);
+              });
+          });
+    })
+    ->orWhere(function ($q) use ($user) {
+        $q->where('created_by', $user);
+    })
+    ->allowedFilters(['name', 'mobile_no']);
+
+
+
+    // Use standard Laravel pagination
+    $paginated = $query->paginate(50)->appends(request()->query());
+
+    return $this->generalSuccess([
+        'data' => $paginated->items()
+    ]);
+    Log::info('Total results found:', [$paginated->total()]);
+}
     public function report(Request $request)
     {
         $user = Auth::user('web');
