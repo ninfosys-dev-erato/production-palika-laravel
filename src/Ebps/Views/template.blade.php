@@ -18,7 +18,7 @@
                 <div id="printContent" class="a4-container">
 
                     <style>
-                        {{ $formStyle ?? '' }}
+                        {{ $form->styles ?? '' }}
                     </style>
 
                     {!! str_replace(
