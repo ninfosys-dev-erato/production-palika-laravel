@@ -16,7 +16,7 @@
             </div>
 
             <div class="col-md-7 d-flex align-items-end gap-2 mb-3">
-                <button type="button" class="btn bg-black text-white" wire:click="verifyOtp" wire:loading.attr="disabled">
+                <button type="button" class="btn btn-primary" wire:click="verifyOtp" wire:loading.attr="disabled">
                     {{ __('Verify OTP') }}
                 </button>
                 <button type="button" class="btn btn-secondary " wire:click="resendOtp" wire:loading.attr="disabled">

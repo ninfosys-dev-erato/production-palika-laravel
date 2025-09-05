@@ -12,7 +12,7 @@
                            placeholder="{{ __('Enter your email') }}" wire:model="user.email">
             
                     @if($user->hasVerifiedEmail())
-                    <span class="input-group-text bg-black text-white">
+                    <span class="input-group-text text-success">
                         <i class="bx bx-check"></i>
                     </span>
                     @endif

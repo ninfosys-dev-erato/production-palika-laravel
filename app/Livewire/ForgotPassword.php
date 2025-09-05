@@ -41,6 +41,12 @@ class ForgotPassword extends Component
             return;
         }
 
+         // Check if email is verified (Laravel default column: email_verified_at)
+        if (is_null($user->email_verified_at)) {
+            $this->addError('email', 'Please verify your email before resetting password.');
+            return;
+        }
+
         $this->service->sendOtp($user);
 
         $this->successFlash('OTP has been sent to your email.');

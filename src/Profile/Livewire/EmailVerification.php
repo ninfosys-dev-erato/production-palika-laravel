@@ -47,6 +47,7 @@ class EmailVerification extends Component
             $this->emailVerified = true;
             $this->successFlash(__('Email verified successfully'));
             $this->dispatch('close-modal');
+            $this->dispatch('reload-page');
         } else {
             $this->addError('otpInput', __('Invalid or expired OTP'));
         }

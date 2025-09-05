@@ -18,7 +18,7 @@ class PasswordResetService
 // dd(Cache::get('password_reset_otp_' . $user->email), $user->email);
         // Send OTP via email
         Mail::raw("Your password reset OTP is: {$otp}", function ($message) use ($user) {
-            $message->to("reganmaharjan.11@gmail.com")
+            $message->to($user->email)
                     ->subject('Password Reset OTP');
         });
 

@@ -1,4 +1,4 @@
-<x-layout.app header="Agenda List">
+<x-layout.app header="Profile">
 
     <nav aria-label="breadcrumb" class="d-flex justify-content-end">
         <ol class="breadcrumb">
@@ -56,6 +56,10 @@
                 var modal = new bootstrap.Modal(document.getElementById('emailVerificationModal'));
                 modal.show();
             });
+
+            Livewire.on('reload-page', function() {
+            location.reload();
+             });
         });
 
         document.addEventListener('livewire:close-modal', function() {
