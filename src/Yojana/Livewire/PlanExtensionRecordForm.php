@@ -37,6 +37,15 @@ class PlanExtensionRecordForm extends Component
 ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'planExtensionRecord.plan_id.required' => __('yojana::yojana.plan_id_is_required'),
+            'planExtensionRecord.extension_date.required' => __('yojana::yojana.extension_date_is_required'),
+            'planExtensionRecord.letter_submission_date.required' => __('yojana::yojana.letter_submission_date_is_required'),
+        ];
+    }
+
     public function render(){
         return view("Yojana::livewire.plan-extension-records-form");
     }
@@ -70,7 +79,7 @@ class PlanExtensionRecordForm extends Component
                 $this->planExtensionRecord->letter =  FileFacade::saveFile(
                     path: config('src.Yojana.yojana.evaluation'),
                     file: $this->planExtensionRecord->letter,
-                    disk: "local",
+                    disk: getStorageDisk('private'),
                     filename: ""
                 );
             }

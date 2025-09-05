@@ -85,7 +85,7 @@
                 <div class='form-group mb-3'>
                     <label for='plan_start_date' class='form-label'>{{ __('yojana::yojana.plan_start_date') }}</label>
                     <input wire:model='agreement.plan_start_date' name='plan_start_date' type='text'
-                        class='form-control nepali-date'
+                        class='form-control nepali-date {{ $errors->has('agreement.plan_start_date') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_plan_start_date') }}">
                     <div>
                         @error('agreement.plan_start_date')
@@ -99,7 +99,7 @@
                     <label for='plan_completion_date'
                         class='form-label'>{{ __('yojana::yojana.plan_completion_date') }}</label>
                     <input wire:model='agreement.plan_completion_date' name='plan_completion_date'
-                        type='text' class='form-control nepali-date'
+                        type='text' class='form-control nepali-date {{ $errors->has('agreement.plan_completion_date') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_plan_completion_date') }}">
                     <div>
                         @error('agreement.plan_completion_date')
@@ -112,7 +112,7 @@
             <div class='col-md-6'>
                 <div class='form-group mb-3'>
                     <label for='experience' class='form-label'>{{ __('yojana::yojana.experience') }}</label>
-                    <input wire:model='agreement.experience' name='experience' type='text' class='form-control'
+                    <input wire:model='agreement.experience' name='experience' type='text' class='form-control {{ $errors->has('agreement.experience') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_experience') }}">
                     <div>
                         @error('agreement.experience')
@@ -248,7 +248,7 @@
                     <div class='form-group mb-3'>
                         <label for='material_name' class='form-label'>{{ __('yojana::yojana.material_name') }}</label>
                         <input wire:model='agreementGrant.material_name' name='material_name' type='text'
-                            class='form-control' placeholder="{{ __('yojana::yojana.enter_material_name') }}">
+                            class='form-control {{ $errors->has('agreementGrant.material_name') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_material_name') }}">
                         <div>
                             @error('agreementGrant.material_name')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -259,7 +259,7 @@
                 <div class='col-md-6'>
                     <div class='form-group mb-3'>
                         <label for='unit' class='form-label'>{{ __('yojana::yojana.unit') }}</label>
-                        <input wire:model='agreementGrant.unit' name='unit' type='text' class='form-control'
+                        <input wire:model='agreementGrant.unit' name='unit' type='text' class='form-control {{ $errors->has('agreementGrant.unit') ? 'is-invalid' : '' }}'
                             placeholder="{{ __('yojana::yojana.enter_unit') }}">
                         <div>
                             @error('agreementGrant.unit')
@@ -271,7 +271,7 @@
                 <div class='col-md-6'>
                     <div class='form-group mb-3'>
                         <label for='amount' class='form-label'>{{ __('yojana::yojana.amount') }}</label>
-                        <input wire:model='agreementGrant.amount' name='amount' type='number' class='form-control'
+                        <input wire:model='agreementGrant.amount' name='amount' type='number' class='form-control {{ $errors->has('agreementGrant.amount') ? 'is-invalid' : '' }}'
                             placeholder="{{ __('yojana::yojana.enter_amount') }}">
                         <div>
                             @error('agreementGrant.amount')
@@ -367,7 +367,7 @@
                 <div class='form-group mb-3'>
                     <label for='total_count' class='form-label'>{{ __('yojana::yojana.total_count') }}</label>
                     <input wire:model='agreementBeneficiary.total_count' name='total_count' type='number'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_total_count') }}">
+                        class='form-control {{ $errors->has('agreementBeneficiary.total_count') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_total_count') }}">
                     <div>
                         @error('agreementBeneficiary.total_count')
                             <small class='text-danger'>{{ $message }}</small>
@@ -379,7 +379,7 @@
                 <div class='form-group mb-3'>
                     <label for='men_count' class='form-label'>{{ __('yojana::yojana.men_count') }}</label>
                     <input wire:model='agreementBeneficiary.men_count' name='men_count' type='number'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_men_count') }}">
+                        class='form-control {{ $errors->has('agreementBeneficiary.men_count') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_men_count') }}">
                     <div>
                         @error('agreementBeneficiary.men_count')
                             <small class='text-danger'>{{ $message }}</small>
@@ -391,7 +391,7 @@
                 <div class='form-group mb-3'>
                     <label for='women_count' class='form-label'>{{ __('yojana::yojana.women_count') }}</label>
                     <input wire:model='agreementBeneficiary.women_count' name='women_count' type='number'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_women_count') }}">
+                        class='form-control {{ $errors->has('agreementBeneficiary.women_count') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_women_count') }}">
                     <div>
                         @error('agreementBeneficiary.women_count')
                             <small class='text-danger'>{{ $message }}</small>
@@ -490,19 +490,31 @@
                                 <td>{{ $i + 1 }}</td>
                                 <td wire:ignore>
                                     <input wire:model="installmentDetails.{{ $i }}.release_date"
-                                        type="text" class="form-control nepali-date">
+                                        type="text" class="form-control nepali-date {{ $errors->has('installmentDetails.'.$i.'.release_date') ? 'is-invalid' : '' }}">
+                                    @error('installmentDetails.'.$i.'.release_date')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </td>
                                 <td>
                                     <input wire:model="installmentDetails.{{ $i }}.cash_amount"
-                                        type="number" class="form-control">
+                                        type="number" class="form-control {{ $errors->has('installmentDetails.'.$i.'.cash_amount') ? 'is-invalid' : '' }}">
+                                    @error('installmentDetails.'.$i.'.cash_amount')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </td>
                                 <td>
                                     <input wire:model="installmentDetails.{{ $i }}.goods_amount"
-                                        type="number" class="form-control">
+                                        type="number" class="form-control {{ $errors->has('installmentDetails.'.$i.'.goods_amount') ? 'is-invalid' : '' }}">
+                                    @error('installmentDetails.'.$i.'.goods_amount')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </td>
                                 <td>
                                     <input wire:model="installmentDetails.{{ $i }}.percentage"
-                                        type="number" class="form-control">
+                                        type="number" class="form-control {{ $errors->has('installmentDetails.'.$i.'.percentage') ? 'is-invalid' : '' }}">
+                                    @error('installmentDetails.'.$i.'.percentage')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </td>
                             </tr>
                         @endfor
@@ -525,7 +537,7 @@
             <div class='col-md-3'>
                 <div class='form-group mb-3'>
                     <label for='deposit_number' class='form-label'>{{ __('yojana::yojana.deposit_number') }}</label>
-                    <input wire:model='agreement.deposit_number' name='deposit_number' type='number' class='form-control' @if(!$isDepositRequired) disabled @endif>
+                    <input wire:model='agreement.deposit_number' name='deposit_number' type='number' class='form-control {{ $errors->has('agreement.deposit_number') ? 'is-invalid' : '' }}' @if(!$isDepositRequired) disabled @endif>
                     <div>
                         @error('agreement.deposit_number')
                         <small class='text-danger'>{{ $message }}</small>
@@ -557,7 +569,7 @@
                            class='form-label'>{{ __('yojana::yojana.signature_party') }}</label>
 
                     <select name="signature_party"
-                            class="form-control {{ $errors->has('agreement.consumer_committee_id') ? 'is-invalid' : '' }}"
+                            class="form-control {{ $errors->has('agreementSignatureDetail.signature_party') ? 'is-invalid' : '' }}"
                             wire:change="loadParty($event.target.value)">
                         <option value="">{{ __('yojana::yojana.select_signature_party') }}</option>
                         @foreach ($signatureParties as $signatureParty)
@@ -576,7 +588,7 @@
                 <div class='col-md-6'>
                     <div class='form-group mb-3'>
                         <label for='name' class='form-label'>{{ __('yojana::yojana.name') }}</label>
-                        <select name='name' type='text' wire:change="loadDetails($event.target.value)"
+                        <select name='name' type='text' wire:model="agreementSignatureDetail.name" wire:change="loadDetails($event.target.value)"
                                 class='form-control {{ $errors->has('agreementSignatureDetail.name') ? 'is-invalid' : '' }}'>
                             <option value="" hidden>{{ __('yojana::yojana.select') }}</option>
                             @foreach ($partyNames as $party)
@@ -602,7 +614,7 @@
                 <div class='form-group mb-3'>
                     <label for='name' class='form-label'>{{ __('yojana::yojana.name') }}</label>
                     <input wire:model='agreementSignatureDetail.name' name='name' type='text'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_name') }}">
+                        class='form-control {{ $errors->has('agreementSignatureDetail.name') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_name') }}">
                     <div>
                         @error('agreementSignatureDetail.name')
                             <small class='text-danger'>{{ $message }}</small>
@@ -615,7 +627,7 @@
                 <div class='form-group mb-3'>
                     <label for='position' class='form-label'>{{ __('yojana::yojana.position') }}</label>
                     <input wire:model='agreementSignatureDetail.position' name='position' type='text'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_position') }}">
+                        class='form-control {{ $errors->has('agreementSignatureDetail.position') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_position') }}">
                     <div>
                         @error('agreementSignatureDetail.position')
                             <small class='text-danger'>{{ $message }}</small>
@@ -627,7 +639,7 @@
                 <div class='form-group mb-3'>
                     <label for='address' class='form-label'>{{ __('yojana::yojana.address') }}</label>
                     <input wire:model='agreementSignatureDetail.address' name='address' type='text'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_address') }}">
+                        class='form-control {{ $errors->has('agreementSignatureDetail.address') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_address') }}">
                     <div>
                         @error('agreementSignatureDetail.address')
                             <small class='text-danger'>{{ $message }}</small>
@@ -639,7 +651,7 @@
                 <div class='form-group mb-3'>
                     <label for='contact_number' class='form-label'>{{ __('yojana::yojana.contact_number') }}</label>
                     <input wire:model='agreementSignatureDetail.contact_number' name='contact_number' type='text'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_contact_number') }}">
+                        class='form-control {{ $errors->has('agreementSignatureDetail.contact_number') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_contact_number') }}">
                     <div>
                         @error('agreementSignatureDetail.contact_number')
                             <small class='text-danger'>{{ $message }}</small>
@@ -651,7 +663,7 @@
                 <div class='form-group mb-3'>
                     <label for='date' class='form-label'>{{ __('yojana::yojana.date') }}</label>
                     <input wire:model='agreementSignatureDetail.date' name='date' type='text'
-                        class='form-control nepali-date' placeholder="{{ __('yojana::yojana.enter_date') }}">
+                        class='form-control nepali-date {{ $errors->has('agreementSignatureDetail.date') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_date') }}">
                     <div>
                         @error('agreementSignatureDetail.date')
                             <small class='text-danger'>{{ $message }}</small>

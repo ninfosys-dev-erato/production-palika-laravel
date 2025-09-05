@@ -258,7 +258,7 @@ class CostEstimationForm extends Component
             $this->cost_source = null;
             $this->cost_amount = null;
         } else {
-            $this->errorFlash('Total cost cannot be greater than total estimated amount');
+            $this->errorFlash(__('yojana::yojana.total_cost_cannot_exceed_estimated'), _(''));
         }
     }
 
@@ -372,7 +372,7 @@ class CostEstimationForm extends Component
             if ($save) {
                 return $save;
             } else {
-                $this->errorFlash("File Couldn't Be Uploaded");
+                $this->errorFlash('yojana::messages.file_could_not_be_uploaded');
             }
         } else {
             // If no file is provided (edit mode), load the existing file URL
@@ -433,11 +433,11 @@ class CostEstimationForm extends Component
 
     public function save()
     {
-        try {
-            $this->validate($this->secondaryRules());
-        } catch (\Exception $e) {
-            $this->validate();
+        if (count((array)$this->records) < 1){
+            $this->errorFlash(__('yojana::messages.please_add_cost_estimation_details_first'),'');
+            return;
         }
+        
         try {
             $this->costEstimation->rate_analysis_document = $this?->rate_analysis_saved ?? "";
             $this->costEstimation->cost_estimation_document = $this->cost_estimation_saved ?? "";
@@ -537,7 +537,7 @@ class CostEstimationForm extends Component
         $plan->load(['implementationLevel']);
 
 
-        $costEstimation->load(['costEstimationDetail', 'costDetails', 'configDetails', 'costEstimationDetail.activity']);
+        $costEstimation->load(['costEstimationDetail.unitRelation', 'costDetails', 'configDetails', 'costEstimationDetail.activity']);
         $totalConfig = 0;
         foreach ($costEstimation->configDetails as $configDetail) {
             $totalConfig += $configDetail->amount;
@@ -571,7 +571,7 @@ class CostEstimationForm extends Component
                 ->exists();
 
         if ($exists == false) {
-            $this->errorFlash(__('Template Not Found'));
+            $this->errorFlash(__('yojana::messages.template_not_found'));
             return false;
         }
         $estimation = $this->plan?->costEstimation;

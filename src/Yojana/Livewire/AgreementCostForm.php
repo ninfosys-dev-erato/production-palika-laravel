@@ -34,16 +34,16 @@ class AgreementCostForm extends Component
     {
         return [
             'agreementCost.agreement_id' => ['required'],
-            'agreementCost.total_amount' => ['required','min:1'],
+            'agreementCost.total_amount' => ['nullable','min:1'],
             'agreementCost.total_vat_amount' => ['nullable'],
-            'agreementCost.total_with_vat' => ['required','min:1'],
+            'agreementCost.total_with_vat' => ['nullable','min:1'],
 
             'agreementCostDetails' => ['required', 'array'],
             'agreementCostDetails.*.activity_id' => ['required', 'string'],
             'agreementCostDetails.*.unit' => ['required', 'string'],
             'agreementCostDetails.*.quantity' => ['required', 'numeric', 'gt:0'],
             'agreementCostDetails.*.estimated_rate' => ['nullable', 'numeric'],
-            'agreementCostDetails.*.contractor_rate' => ['required', 'numeric', 'gte:0'],
+            'agreementCostDetails.*.contractor_rate' => ['required', 'numeric', 'gte:1'],
             'agreementCostDetails.*.amount' => ['required', 'numeric'],
             'agreementCostDetails.*.vat' => ['boolean'],
             'agreementCostDetails.*.vat_amount' => ['nullable', 'numeric'],
@@ -72,13 +72,14 @@ class AgreementCostForm extends Component
             'agreementCostDetails.*.estimated_rate.numeric' => __('yojana::yojana.estimated_rate_must_be_a_number'),
             'agreementCostDetails.*.contractor_rate.required' => __('yojana::yojana.contractor_rate_is_required'),
             'agreementCostDetails.*.contractor_rate.numeric' => __('yojana::yojana.contractor_rate_must_be_a_number'),
-            'agreementCostDetails.*.contractor_rate.gte:0' => __('yojana::yojana.contractor_rate_has_invalid_validation_gte'),
+            'agreementCostDetails.*.contractor_rate.gte' => __('yojana::yojana.contractor_rate_should_be_greater_than_0'),
             'agreementCostDetails.*.amount.required' => __('yojana::yojana.amount_is_required'),
             'agreementCostDetails.*.amount.numeric' => __('yojana::yojana.amount_must_be_a_number'),
             'agreementCostDetails.*.vat.boolean' => __('yojana::yojana.vat_must_be_true_or_false'),
             'agreementCostDetails.*.vat_amount.nullable' => __('yojana::yojana.vat_amount_is_optional'),
             'agreementCostDetails.*.vat_amount.numeric' => __('yojana::yojana.vat_amount_must_be_a_number'),
             'agreementCostDetails.*.remarks.nullable' => __('yojana::yojana.remarks_is_optional'),
+
         ];
     }
 

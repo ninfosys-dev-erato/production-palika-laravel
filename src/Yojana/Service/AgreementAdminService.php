@@ -74,7 +74,7 @@ public function collectionDelete(array $ids){
             content: $this->resolveTemplate($plan,$agreement),
             file_path: config('src.Yojana.yojana.certificate'),
             file_name: "yojana_{$plan->id}",
-            disk: "local",
+            disk: getStorageDisk('private'),
             styles: $agreement?->styles ?? ""
         );
         return redirect()->away($url);

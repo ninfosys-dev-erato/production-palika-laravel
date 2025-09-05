@@ -92,7 +92,7 @@ class PlanAdminController extends Controller
             content: $html,
             file_path: config('src.Yojana.yojana.cost-estimation'),
             file_name: "token_{$user->email}" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
 
@@ -121,7 +121,7 @@ class PlanAdminController extends Controller
             content: $html,
             file_path: config('src.Yojana.yojana.plan'),
             file_name: "token_{$user->email}" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
 

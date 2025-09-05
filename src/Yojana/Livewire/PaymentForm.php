@@ -81,6 +81,62 @@ class PaymentForm extends Component
         return $rules;
     }
 
+    public function messages(): array
+    {
+        $messages = [
+            // Payment validation messages
+            'payment.plan_id.required' => __('yojana::yojana.plan_id_is_required'),
+            'payment.payment_date.required' => __('yojana::yojana.payment_date_is_required'),
+            'payment.estimated_cost.required' => __('yojana::yojana.estimated_cost_is_required'),
+            'payment.agreement_cost.required' => __('yojana::yojana.agreement_cost_is_required'),
+            'payment.total_paid_amount.required' => __('yojana::yojana.total_paid_amount_is_required'),
+            'payment.total_tax_deduction.required' => __('yojana::yojana.total_tax_deduction_is_required'),
+            'payment.total_deduction.required' => __('yojana::yojana.total_deduction_is_required'),
+            'payment.paid_amount.required' => __('yojana::yojana.paid_amount_is_required'),
+            'payment.paid_amount.min' => __('yojana::yojana.paid_amount_must_be_greater_than_zero'),
+            'budgetSourceDetails.*.amount.required' => __('yojana::yojana.budget_source_amount_is_required'),
+            'budgetSourceDetails.*.amount.min' => __('yojana::yojana.budget_source_amount_must_be_greater_than_zero'),
+            
+            // Tax validation messages
+            'tax.name.required' => __('yojana::yojana.tax_name_is_required'),
+            'tax.evaluation_amount.required' => __('yojana::yojana.tax_evaluation_amount_is_required'),
+            'tax.evaluation_amount.numeric' => __('yojana::yojana.tax_evaluation_amount_must_be_numeric'),
+            'tax.evaluation_amount.min' => __('yojana::yojana.tax_evaluation_amount_must_be_greater_than_zero'),
+            'tax.rate.required' => __('yojana::yojana.tax_rate_is_required'),
+            'tax.rate.numeric' => __('yojana::yojana.tax_rate_must_be_numeric'),
+            'tax.rate.min' => __('yojana::yojana.tax_rate_must_be_greater_than_zero'),
+            'tax.amount.required' => __('yojana::yojana.tax_amount_is_required'),
+            'tax.amount.numeric' => __('yojana::yojana.tax_amount_must_be_numeric'),
+            'tax.amount.min' => __('yojana::yojana.tax_amount_must_be_greater_than_zero'),
+        ];
+
+        if ($this->category === 'plan') {
+            $messages = array_merge($messages, $this->planMessages());
+        }
+
+        if ($this->category === 'program') {
+            $messages = array_merge($messages, $this->programMessages());
+        }
+
+        return $messages;
+    }
+
+    public function planMessages(): array
+    {
+        return [
+            'payment.evaluation_id.required' => __('yojana::yojana.evaluation_id_is_required'),
+            'payment.installment.required' => __('yojana::yojana.installment_is_required'),
+            'payment.evaluation_amount.required' => __('yojana::yojana.evaluation_amount_is_required'),
+        ];
+    }
+
+    public function programMessages(): array
+    {
+        return [
+            'payment.bill_amount.required' => __('yojana::yojana.bill_amount_is_required'),
+        ];
+    }
+
     public function programRules()
     {
         return [
@@ -231,8 +287,8 @@ class PaymentForm extends Component
             $this->payment['evaluation_id'] = $this->evaluation->id;
         }
 
+        $validated = $this->validate();
         try {
-            $validated = $this->validate();
             DB::beginTransaction();
 
             $dto = PaymentAdminDto::fromArrayData($this->payment);

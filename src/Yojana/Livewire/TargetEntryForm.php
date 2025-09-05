@@ -158,14 +158,14 @@ class TargetEntryForm extends Component
             $this->targetEntry->total_physical_progress != $this->targetEntry->last_year_physical_progress + $this->targetEntry->total_physical_goals
             || $this->targetEntry->total_physical_goals != $this->targetEntry->first_quarter_physical_progress + $this->targetEntry->second_quarter_physical_progress + $this->targetEntry->third_quarter_physical_progress
         ){
-            $this->errorFlash('The Physical Progress Calculation is not valid');
+            $this->errorFlash(__('yojana::messages.physical_progress_calculation_invalid'),'');
         }
 
         if (
             $this->targetEntry->total_financial_progress != $this->targetEntry->last_year_financial_progress + $this->targetEntry->total_financial_goals
             || $this->targetEntry->total_financial_goals != $this->targetEntry->first_quarter_financial_progress + $this->targetEntry->second_quarter_financial_progress + $this->targetEntry->third_quarter_financial_progress
         ){
-            $this->errorFlash('The Financial Progress Calculation is not valid');
+            $this->errorFlash(__('yojana::messages.financial_progress_calculation_invalid'),'');
         }
 
 

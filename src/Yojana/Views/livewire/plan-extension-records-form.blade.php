@@ -4,7 +4,7 @@
         <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label for='extension_date' class='form-label'>{{ __('yojana::yojana.planextensionrecordextension_date') }}</label>
-                    <input id="extension_date" wire:model='planExtensionRecord.extension_date' name='extension_date' type='text' class='form-control nepali-date' placeholder="{{ __('yojana::yojana.planextensionrecordextension_dateenter') }}">
+                    <input id="extension_date" wire:model='planExtensionRecord.extension_date' name='extension_date' type='text' class='form-control nepali-date {{ $errors->has('planExtensionRecord.extension_date') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.planextensionrecordextension_dateenter') }}">
                     <div>
                         @error('planExtensionRecord.extension_date')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -15,7 +15,7 @@
           <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label for='letter_submission_date' class='form-label'>{{ __('yojana::yojana.planextensionrecordletter_submission_date') }}</label>
-                    <input id="letter_submission_date" wire:model='planExtensionRecord.letter_submission_date' name='letter_submission_date' type='text' class='form-control nepali-date' placeholder="{{ __('yojana::yojana.planextensionrecordletter_submission_dateenter') }}">
+                    <input id="letter_submission_date" wire:model='planExtensionRecord.letter_submission_date' name='letter_submission_date' type='text' class='form-control nepali-date {{ $errors->has('planExtensionRecord.letter_submission_date') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.planextensionrecordletter_submission_dateenter') }}">
                     <div>
                         @error('planExtensionRecord.letter_submission_date')
                             <small class='text-danger'>{{ __($message) }}</small>
@@ -26,7 +26,7 @@
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label for='letter' class='form-label'>{{ __('yojana::yojana.planextensionrecordletter') }}</label>
-                    <input wire:model='planExtensionRecord.letter' name='letter' type='file' class='form-control' >
+                    <input wire:model='planExtensionRecord.letter' name='letter' type='file' class='form-control {{ $errors->has('planExtensionRecord.letter') ? 'is-invalid' : '' }}' >
                     <div>
                         @error('planExtensionRecord.letter')
                             <small class='text-danger'>{{ __($message) }}</small>

@@ -38,6 +38,9 @@ class TargetCompletionForm extends Component
     {
         return [
             'targetCompletion.plan_id.required' => __('yojana::yojana.plan_id_is_required'),
+            'targetCompletion.target_entry_id.required' => __('yojana::yojana.target_entry_id_is_required'),
+            'targetCompletion.completed_physical_goal.required' => __('yojana::yojana.completed_physical_goal_is_required'),
+            'targetCompletion.completed_financial_goal.required' => __('yojana::yojana.completed_financial_goal_is_required'),
         ];
     }
 
@@ -81,8 +84,8 @@ class TargetCompletionForm extends Component
     public function save()
     {
         $this->targetCompletion->plan_id = $this->plan->id;
+        $this->validate();
         try {
-            $this->validate();
             $dto = TargetCompletionAdminDto::fromLiveWireModel($this->targetCompletion);
             $service = new TargetCompletionAdminService();
 
@@ -107,10 +110,10 @@ class TargetCompletionForm extends Component
                     break;
             }
         } catch (ValidationException $e) {
-            dd($e->errors());
+            // dd($e->errors());
             $this->errorFlash(collect($e->errors())->flatten()->first());
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             $this->errorFlash(collect($e)->flatten()->first());
         }
     }

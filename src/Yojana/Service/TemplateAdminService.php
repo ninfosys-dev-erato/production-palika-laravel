@@ -14,9 +14,9 @@ class TemplateAdminService
                 content: $html,
                 file_path: config('src.Yojana.yojana.certificate'),
                 file_name: "yojana_{$model->id}",
-                disk: "local",
+                disk: getStorageDisk('private'),
             );
-
+            
            return $url;
         } catch (\Exception $exception) {
           return false;

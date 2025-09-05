@@ -13,7 +13,7 @@
             
                     @if($user->hasVerifiedEmail())
                     <span class="input-group-text text-success">
-                        <i class="bx bx-check"></i>
+                        <i class="bx bx-check-circle"></i>
                     </span>
                     @endif
                 </div>

@@ -29,23 +29,27 @@
             <tbody>
                 <tr>
                     <td>{{__('yojana::yojana.physical_progress')}}</td>
-                    <td>
+                    <td wire:ignore>
                         {{ $targetCompletion->physical_goals  }}
                     </td>
                     <td>
-                        <input wire:model='targetCompletion.completed_physical_goal' name='completed_physical_goal' type='number' class='form-control' placeholder="{{ __('yojana::yojana.enter_completed_physical_goal') }}">
-
+                        <input wire:model='targetCompletion.completed_physical_goal' name='completed_physical_goal' type='number' class='form-control {{ $errors->has('targetCompletion.completed_physical_goal') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_completed_physical_goal') }}">
+                        @error('targetCompletion.completed_physical_goal')
+                            <small class='text-danger'>{{ $message }}</small>
+                        @enderror
                     </td>
                 </tr>
                 <tr>
                     <td>{{__('yojana::yojana.financial_progress')}}</td>
 
-                    <td>
+                    <td wire:ignore>
                         {{ $targetCompletion->financial_goals }}
                     </td>
                     <td>
-                        <input wire:model='targetCompletion.completed_financial_goal' name='completed_financial_goal' type='number' class='form-control' placeholder="{{ __('yojana::yojana.enter_completed_financial_goal') }}">
-
+                        <input wire:model='targetCompletion.completed_financial_goal' name='completed_financial_goal' type='number' class='form-control {{ $errors->has('targetCompletion.completed_financial_goal') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_completed_financial_goal') }}">
+                        @error('targetCompletion.completed_financial_goal')
+                            <small class='text-danger'>{{ $message }}</small>
+                        @enderror
                     </td>
                 </tr>
             </tbody>

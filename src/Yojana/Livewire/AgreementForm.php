@@ -96,6 +96,61 @@ class AgreementForm extends Component
         );
     }
 
+    public function messages(): array
+    {
+        return [
+            // Agreement
+            'agreement.plan_id.required' => __('yojana::messages.agreement_plan_id_required'),
+            'agreement.consumer_committee_id.required' => __('yojana::messages.agreement_consumer_committee_id_required'),
+            'agreement.implementation_method_id.required' => __('yojana::messages.agreement_implementation_method_id_required'),
+            'agreement.plan_start_date.required' => __('yojana::messages.agreement_plan_start_date_required'),
+            'agreement.plan_completion_date.required' => __('yojana::messages.agreement_plan_completion_date_required'),
+            'agreement.experience.required' => __('yojana::messages.agreement_experience_required'),
+            'agreement.deposit_number.numeric' => __('yojana::messages.agreement_deposit_number_numeric'),
+            'agreement.deposit_number.min' => __('yojana::messages.agreement_deposit_number_min'),
+
+            // Cost Details
+            'costDetails.cost_source.required' => __('yojana::messages.cost_details_cost_source_required'),
+            'costDetails.cost_amount.required' => __('yojana::messages.cost_details_cost_amount_required'),
+            'costDetails.cost_amount.numeric' => __('yojana::messages.cost_details_cost_amount_numeric'),
+            'costDetails.cost_amount.min' => __('yojana::messages.cost_details_cost_amount_min'),
+
+            // Grant
+            'agreementGrant.source_type_id.required' => __('yojana::messages.agreement_grant_source_type_id_required'),
+            'agreementGrant.material_name.required' => __('yojana::messages.agreement_grant_material_name_required'),
+            'agreementGrant.unit.required' => __('yojana::messages.agreement_grant_unit_required'),
+            'agreementGrant.amount.required' => __('yojana::messages.agreement_grant_amount_required'),
+            'agreementGrant.amount.numeric' => __('yojana::messages.agreement_grant_amount_numeric'),
+            'agreementGrant.amount.min' => __('yojana::messages.agreement_grant_amount_min'),
+
+            // Beneficiary
+            'agreementBeneficiary.beneficiary_id.required' => __('yojana::messages.agreement_beneficiary_beneficiary_id_required'),
+            'agreementBeneficiary.total_count.required' => __('yojana::messages.agreement_beneficiary_total_count_required'),
+            'agreementBeneficiary.men_count.required' => __('yojana::messages.agreement_beneficiary_men_count_required'),
+            'agreementBeneficiary.women_count.required' => __('yojana::messages.agreement_beneficiary_women_count_required'),
+
+            // Signature Details
+            'agreementSignatureDetail.name.required' => __('yojana::messages.agreement_signature_name_required'),
+            'agreementSignatureDetail.address.required' => __('yojana::messages.agreement_signature_address_required'),
+            'agreementSignatureDetail.contact_number.required' => __('yojana::messages.agreement_signature_contact_number_required'),
+            'agreementSignatureDetail.contact_number.numeric' => __('yojana::messages.agreement_signature_contact_number_numeric'),
+            'agreementSignatureDetail.contact_number.digits' => __('yojana::messages.agreement_signature_contact_number_digits'),
+            'agreementSignatureDetail.date.required' => __('yojana::messages.agreement_signature_date_required'),
+
+            // Installment Details
+            'installmentDetails.*.release_date.required' => __('yojana::messages.installment_details_release_date_required'),
+            'installmentDetails.*.cash_amount.required' => __('yojana::messages.installment_details_cash_amount_required'),
+            'installmentDetails.*.cash_amount.numeric' => __('yojana::messages.installment_details_cash_amount_numeric'),
+            'installmentDetails.*.cash_amount.min' => __('yojana::messages.installment_details_cash_amount_min'),
+            'installmentDetails.*.goods_amount.required' => __('yojana::messages.installment_details_goods_amount_required'),
+            'installmentDetails.*.goods_amount.numeric' => __('yojana::messages.installment_details_goods_amount_numeric'),
+            'installmentDetails.*.goods_amount.min' => __('yojana::messages.installment_details_goods_amount_min'),
+            'installmentDetails.*.percentage.required' => __('yojana::messages.installment_details_percentage_required'),
+            'installmentDetails.*.percentage.numeric' => __('yojana::messages.installment_details_percentage_numeric'),
+            'installmentDetails.*.percentage.between' => __('yojana::messages.installment_details_percentage_between'),
+        ];
+    }
+
     protected function agreementRules(): array
     {
         return [
@@ -142,7 +197,7 @@ class AgreementForm extends Component
         return [
             'agreementSignatureDetail.signature_party' => 'nullable',
             'agreementSignatureDetail.name' => 'required',
-            'agreementSignatureDetail.position' => 'nullable',
+            'agreementSignatureDetail.position' => 'required',
             'agreementSignatureDetail.address' => 'required',
             'agreementSignatureDetail.contact_number' => 'required|numeric|digits:10',
             'agreementSignatureDetail.date' => 'required',
@@ -341,7 +396,7 @@ class AgreementForm extends Component
             $this->dispatch('open-agreementTable');
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            $this->errorFlash(collect($e->errors())->flatten()->first());
+            $this->errorFlash(collect($e->errors())->flatten()->first(),'');
         }
     }
 

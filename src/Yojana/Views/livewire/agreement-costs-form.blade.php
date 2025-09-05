@@ -36,7 +36,10 @@
                         <input wire:model="agreementCostDetails.{{ $index }}.estimated_rate" type="text" class="form-control form-control-sm" placeholder="{{__('yojana::yojana.estimated')}}" readonly>
                     </td>
                     <td>
-                        <input wire:model="agreementCostDetails.{{ $index }}.contractor_rate" wire:keydown="calculateAmount({{ $index }})" type="number" class="form-control form-control-sm" placeholder="{{__('yojana::yojana.contractor')}}">
+                        <input wire:model="agreementCostDetails.{{ $index }}.contractor_rate" wire:keydown="calculateAmount({{ $index }})" type="number" class="form-control form-control-sm {{ $errors->has('agreementCostDetails.'.$index.'.contractor_rate') ? 'is-invalid' : '' }}" placeholder="{{__('yojana::yojana.contractor')}}">
+                        @error('agreementCostDetails.'.$index.'.contractor_rate')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </td>
                     <td>
                         <input wire:model="agreementCostDetails.{{ $index }}.amount" type="text" class="form-control form-control-sm" placeholder="{{__('yojana::yojana.amount')}}" readonly>

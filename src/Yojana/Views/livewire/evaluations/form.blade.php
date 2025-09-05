@@ -34,7 +34,7 @@
                         <label for='evaluation_date'
                             class='form-label'>{{ __('yojana::yojana.evaluation_date') }}</label>
                         <input wire:model='evaluation.evaluation_date' name='evaluation_date' type='text'
-                            class='form-control nepali-date' id="evaluation_date"
+                            class='form-control nepali-date {{ $errors->has('evaluation.evaluation_date') ? 'is-invalid' : '' }}' id="evaluation_date"
                             placeholder="{{ __('yojana::yojana.enter_evaluation_date') }}">
                         <div>
                             @error('evaluation.evaluation_date')
@@ -48,7 +48,7 @@
                         <label for='completion_date'
                             class='form-label'>{{ __('yojana::yojana.completion_date') }}</label>
                         <input wire:model='evaluation.completion_date' id="evaluation_completion_date"
-                            name='completion_date' type='text' class='form-control nepali-date'
+                            name='completion_date' type='text' class='form-control nepali-date {{ $errors->has('evaluation.completion_date') ? 'is-invalid' : '' }}'
                             placeholder="{{ __('yojana::yojana.enter_completion_date') }}">
                         <div>
                             @error('evaluation.completion_date')
@@ -138,9 +138,13 @@
                                 <td>{{ replaceNumbersWithLocale($detail['agreement'] ?? '-', true) }}</td>
                                 <td><input type="text" class="form-control"
                                         wire:model="costEstimationData.{{ $index }}.before_this" readonly></td>
-                                <td><input type="number" class="form-control"
+                                <td><input type="number" class="form-control {{ $errors->has('costEstimationData.'.$index.'.up_to_date_amount') ? 'is-invalid' : '' }}"
                                         wire:model="costEstimationData.{{ $index }}.up_to_date_amount"
-                                        wire:input="calculateAmount({{ $index }})"></td>
+                                        wire:input="calculateAmount({{ $index }})">
+                                    @error('costEstimationData.'.$index.'.up_to_date_amount')
+                                        <small class='text-danger'>{{ $message }}</small>
+                                    @enderror
+                                </td>
                                 <td>{{ floatval($costEstimationData[$index]['up_to_date_amount'] ?? 0) }}</td>
                                 <td>{{ $detail['rate'] }}</td>
                                 <td>
@@ -191,12 +195,16 @@
                         <td><input type="text" class="form-control" readonly
                                 value="{{ $costTotal - $advancePayment }}"></td>
                         <td><select name="" id="" wire:model='evaluation.installment_no'
-                                class="form-select">
+                                class="form-select {{ $errors->has('evaluation.installment_no') ? 'is-invalid' : '' }}">
                                 <option value="">{{ __('yojana::yojana.select_an_option') }}</option>
                                 @foreach ($installments as $value => $label)
                                     <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
-                            </select></td>
+                            </select>
+                            @error('evaluation.installment_no')
+                                <small class='text-danger'>{{ $message }}</small>
+                            @enderror
+                        </td>
                         <td><input type="text" name="evaluation_amount" class="form-control"
                                 wire:model="evaluation.evaluation_amount" readonly>
                         </td>
@@ -262,7 +270,10 @@
                     class="col-sm-9 fw-semibold fs-6">{{replaceNumbersWithLocale('6. ',true). __('yojana::yojana.public_testing_date') }}</label>
                 <div class="col-sm-3">
                     <input type="text" wire:model='evaluation.testing_date' name='testing_date'
-                        class="form-control nepali-date" id="testing_date">
+                        class="form-control nepali-date {{ $errors->has('evaluation.testing_date') ? 'is-invalid' : '' }}" id="testing_date">
+                    @error('evaluation.testing_date')
+                        <small class='text-danger'>{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
 
@@ -271,7 +282,10 @@
                     class="col-sm-9 fw-semibold fs-6">{{replaceNumbersWithLocale('7. ',true). __('yojana::yojana.attendance_count') }}</label>
                 <div class="col-sm-3">
                     <input type="number" wire:model="evaluation.attendance_number" name="attendance_number"
-                        class="form-control">
+                        class="form-control {{ $errors->has('evaluation.attendance_number') ? 'is-invalid' : '' }}">
+                    @error('evaluation.attendance_number')
+                        <small class='text-danger'>{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
         </div>

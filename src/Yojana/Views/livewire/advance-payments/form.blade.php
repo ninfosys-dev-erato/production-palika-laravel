@@ -5,7 +5,7 @@
                 <div class='form-group'>
                     <label for='installment' class='form-label'>{{ __('yojana::yojana.installment') }}</label>
                     {{--        <input wire:model='advancePayment.installment' name='installment' type='text' class='form-control' placeholder="{{__('yojana::yojana.enter_installment')}}"> --}}
-                    <select wire:model='advancePayment.installment' name='installment' class="form-select">
+                    <select wire:model='advancePayment.installment' name='installment' class="form-select {{ $errors->has('advancePayment.installment') ? 'is-invalid' : '' }}">
                         <option value="" hidden>{{ __('yojana::yojana.select_an_option') }}</option>
                         @foreach ($installments as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
@@ -22,7 +22,7 @@
                 <div class='form-group'>
                     <label for='date' class='form-label'>{{ __('yojana::yojana.date') }}</label>
                     <input wire:model='advancePayment.date' name='date' type='text' id="payment_date"
-                        class='form-control nepali-date' placeholder="{{ __('yojana::yojana.enter_date') }}">
+                        class='form-control nepali-date {{ $errors->has('advancePayment.date') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_date') }}">
                     <div>
                         @error('advancePayment.date')
                             <small class='text-danger'>{{ $message }}</small>
@@ -34,7 +34,7 @@
                 <div class='form-group'>
                     <label for='clearance_date' class='form-label'>{{ __('yojana::yojana.clearance_date') }}</label>
                     <input wire:model='advancePayment.clearance_date' name='clearance_date' type='text'
-                        id="clearance_date" class='form-control nepali-date'
+                        id="clearance_date" class='form-control nepali-date {{ $errors->has('advancePayment.clearance_date') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_clearance_date') }}">
                     <div>
                         @error('advancePayment.clearance_date')
@@ -48,7 +48,7 @@
                     <label for='advance_deposit_number'
                         class='form-label'>{{ __('yojana::yojana.advance_deposit_number') }}</label>
                     <input wire:model='advancePayment.advance_deposit_number' name='advance_deposit_number'
-                        type='number' class='form-control'
+                        type='number' class='form-control {{ $errors->has('advancePayment.advance_deposit_number') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_advance_deposit_number') }}">
                     <div>
                         @error('advancePayment.advance_deposit_number')
@@ -61,7 +61,7 @@
                 <div class='form-group'>
                     <label for='paid_amount' class='form-label'>{{ __('yojana::yojana.paid_amount') }}</label>
                     <input wire:model='advancePayment.paid_amount' name='paid_amount' type='number'
-                        class='form-control' placeholder="{{ __('yojana::yojana.enter_paid_amount') }}">
+                        class='form-control {{ $errors->has('advancePayment.paid_amount') ? 'is-invalid' : '' }}' placeholder="{{ __('yojana::yojana.enter_paid_amount') }}">
                     <div>
                         @error('advancePayment.paid_amount')
                             <small class='text-danger'>{{ $message }}</small>

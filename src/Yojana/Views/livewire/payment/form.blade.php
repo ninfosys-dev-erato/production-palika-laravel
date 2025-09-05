@@ -51,7 +51,7 @@
                         <div class='form-group'>
                             <label for='completion_date' class='form-label'>{{ __('yojana::yojana.payment_date') }}</label>
                             <input wire:model='payment.payment_date' id="payment_date" name='payment_date'
-                                   type='date' class='form-control'>
+                                   type='date' class='form-control {{ $errors->has('payment.payment_date') ? 'is-invalid' : '' }}'>
                             <div>
                                 @error('payment.payment_date')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -147,7 +147,11 @@
                                 <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($payment['evaluation_amount_without_tax'] ?? 0), true) }}</td>
                             @endif
                             @if($category == 'program')
-                                <td><input  wire:model='payment.bill_amount' wire:input="calculateTotalAmount" type='number' value="0" class='form-control {{ $errors->has('bill_amount') ? 'is-invalid' : '' }}'>
+                                <td><input  wire:model='payment.bill_amount' wire:input="calculateTotalAmount" type='number' value="0" class='form-control {{ $errors->has('payment.bill_amount') ? 'is-invalid' : '' }}'>
+                                    @error('payment.bill_amount')
+                                        <small class='text-danger'>{{ $message }}</small>
+                                    @enderror
+                                </td>
                             @endif
                         </tr>
                         </tbody>
@@ -184,7 +188,7 @@
                                 <td>{{$budgetSource?->budgetDetail?->program ?? '-'}}</td>
                                 <td>{{$budgetSource?->fiscalYear?->year ?? '-'}}</td>
                                 <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($calculatedRemaining[$index] ?? $budgetSource?->remaining_amount ?? 0), true)}}</td>
-                                <td><input   wire:model="budgetSourceDetails.{{$index}}.amount"  wire:input="calculateRemainingBudget({{ $index }})" name='amount' type='number' value="0" class='form-control {{ $errors->has('budgetSource.amount') ? 'is-invalid' : '' }}'>
+                                <td><input   wire:model="budgetSourceDetails.{{$index}}.amount"  wire:input="calculateRemainingBudget({{ $index }})" name='amount' type='number' value="0" class='form-control {{ $errors->has('budgetSourceDetails.'.$index.'.amount') ? 'is-invalid' : '' }}'>
                                     @error('budgetSourceDetails.'.$index.'.amount')
                                     <small class='text-danger'>{{ $message }}</small>
                                     @enderror
@@ -218,7 +222,11 @@
                         <tr>
                             <td><input type="number" class="form-control" wire:model="payment.total_paid_amount" readonly></td>
                             <td><input type="number" class="form-control" wire:model="payment.previous_advance" readonly></td>
-                            <td><input type="number" class="form-control" wire:model="payment.current_advance" wire:input="calculateAdvanceDue" min="0" value="0"></td>
+                            <td><input type="number" class="form-control {{ $errors->has('payment.current_advance') ? 'is-invalid' : '' }}" wire:model="payment.current_advance" wire:input="calculateAdvanceDue" min="0" value="0">
+                                @error('payment.current_advance')
+                                    <small class='text-danger'>{{ $message }}</small>
+                                @enderror
+                            </td>
                             <td><input type="number" class="form-control" wire:model="payment.advance_due"  readonly></td>
                             <td><input type="number" class="form-control" wire:model="payment.advance_deduction" readonly></td>
                         </tr>
@@ -246,7 +254,11 @@
                         <tr>
                             <td><input type="text" class="form-control" wire:model="payment.total_deposit"  readonly></td>
                             <td><input type="text" class="form-control" wire:model="payment.previous_deposit"  readonly></td>
-                            <td><input type="text" class="form-control" wire:model="payment.current_deposit" wire:input="calculateDeposit"></td>
+                            <td><input type="text" class="form-control {{ $errors->has('payment.current_deposit') ? 'is-invalid' : '' }}" wire:model="payment.current_deposit" wire:input="calculateDeposit">
+                                @error('payment.current_deposit')
+                                    <small class='text-danger'>{{ $message }}</small>
+                                @enderror
+                            </td>
                             <td><input type="text" class="form-control" wire:model="payment.deposit_deduction" readonly></td>
                         </tr>
                         </tbody>
@@ -364,15 +376,27 @@
                         <tbody>
                         <tr>
                             <th>{{__('yojana::yojana.d_total_tax_deduction')}}</th>
-                            <td><input type="text" class="form-control" wire:model="payment.total_tax_deduction"></td>
+                            <td><input type="text" class="form-control {{ $errors->has('payment.total_tax_deduction') ? 'is-invalid' : '' }}" wire:model="payment.total_tax_deduction">
+                                @error('payment.total_tax_deduction')
+                                    <small class='text-danger'>{{ $message }}</small>
+                                @enderror
+                            </td>
                         </tr>
                         <tr>
                             <th>{{__('yojana::yojana.e_total_deduction__bcd')}}</th>
-                            <td><input type="text" class="form-control" wire:model="payment.total_deduction" ></td>
+                            <td><input type="text" class="form-control {{ $errors->has('payment.total_deduction') ? 'is-invalid' : '' }}" wire:model="payment.total_deduction" >
+                                @error('payment.total_deduction')
+                                    <small class='text-danger'>{{ $message }}</small>
+                                @enderror
+                            </td>
                         </tr>
                         <tr>
                             <th>{{__('yojana::yojana.f_paid_amount__ae')}}</th>
-                            <td><input type="text" class="form-control" wire:model="payment.paid_amount" ></td>
+                            <td><input type="text" class="form-control {{ $errors->has('payment.paid_amount') ? 'is-invalid' : '' }}" wire:model="payment.paid_amount" >
+                                @error('payment.paid_amount')
+                                    <small class='text-danger'>{{ $message }}</small>
+                                @enderror
+                            </td>
                         </tr>
                         </tbody>
                     </table>

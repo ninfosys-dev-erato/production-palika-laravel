@@ -122,7 +122,7 @@ class CostEstimationByDepartment extends Component
                 content: $html,
                 file_path: config('src.Yojana.yojana.certificate'),
                 file_name: "yojana" . date('YmdHis'),
-                disk: "local",
+                disk: getStorageDisk('private'),
             );
             $this->dispatch('open-pdf-in-new-tab', url: $url);
             //            return redirect()->away($url);

@@ -17,6 +17,7 @@ trait SessionFlash
             'toast' => false,
             'timer' => 3000,
             'showConfirmButton' => true,
+            'confirmButtonText' => __('ok'), // or whatever text you want
             'text'=>$message
         ]);
     }
@@ -48,6 +49,7 @@ trait SessionFlash
             'toast' => false,
             'timer' => 3000,
             'showConfirmButton' => true,
+            'confirmButtonText' => __('ok'), // or whatever text you want
             'text'=>$message
         ]);
     }
@@ -70,6 +72,7 @@ trait SessionFlash
             'toast' => false,
             'timer' => 3000,
             'showConfirmButton' => true,
+            'confirmButtonText' => __('ok'), // or whatever text you want
             'text'=>$message
         ]);
     }
