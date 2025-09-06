@@ -61,7 +61,7 @@ class EvaluationForm extends Component
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'evaluation.plan_id' => ['required'],
             'evaluation.evaluation_date' => ['required'],
             'evaluation.completion_date' => ['required'],
@@ -87,10 +87,19 @@ class EvaluationForm extends Component
             'evaluation.expense_report' => ['nullable'],
             'evaluation.other_document' => ['nullable'],
         ];
+
+        // Add validation for cost estimation data
+        if (!empty($this->costEstimationData)) {
+            foreach ($this->costEstimationData as $index => $data) {
+                $rules["costEstimationData.{$index}.up_to_date_amount"] = ['required', 'numeric', 'gt:0'];
+            }
+        }
+
+        return $rules;
     }
     public function messages(): array
     {
-        return [
+        $messages = [
             'evaluation.plan_id.required' => __('yojana::yojana.plan_id_is_required'),
             'evaluation.evaluation_date.required' => __('yojana::yojana.evaluation_date_is_required'),
             'evaluation.completion_date.required' => __('yojana::yojana.completion_date_is_required'),
@@ -115,6 +124,17 @@ class EvaluationForm extends Component
             'evaluation.expense_report.nullable' => __('yojana::yojana.expense_report_is_optional'),
             'evaluation.other_document.nullable' => __('yojana::yojana.other_document_is_optional'),
         ];
+
+        // Add validation messages for cost estimation data
+        if (!empty($this->costEstimationData)) {
+            foreach ($this->costEstimationData as $index => $data) {
+                $messages["costEstimationData.{$index}.up_to_date_amount.required"] = __('yojana::yojana.current_amount_required');
+                $messages["costEstimationData.{$index}.up_to_date_amount.numeric"] = __('yojana::yojana.current_amount_must_be_numeric');
+                $messages["costEstimationData.{$index}.up_to_date_amount.gt"] = __('yojana::yojana.current_amount_must_be_greater_than_zero');
+            }
+        }
+
+        return $messages;
     }
 
     public function render()
@@ -252,6 +272,7 @@ class EvaluationForm extends Component
                     $this->plan->save();
                     $this->dispatch('planStatusUpdate');
                     $this->dispatch('resetForm', 'open-evaluationTable');
+                    $this->dispatch('open-evaluationTable');
                     break;
                 case Action::UPDATE:
                     $updated = $service->update($this->evaluation, $dto);
@@ -263,6 +284,7 @@ class EvaluationForm extends Component
                     }
                     $this->successFlash(__('yojana::yojana.evaluation_updated_successfully'));
                     $this->dispatch('resetForm', 'open-evaluationTable');
+                    $this->dispatch('open-evaluationTable');
                     break;
                 default:
                     // return redirect()->route('admin.evaluations.index');

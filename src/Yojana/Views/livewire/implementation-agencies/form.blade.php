@@ -183,6 +183,13 @@
                         {{ __('yojana::yojana.quotation_details') }}
                     </div>
                 </div>
+                
+                @error('quotations')
+                    <div class="alert alert-danger mb-3">
+                        <i class="bx bx-error"></i> {{ $message }}
+                    </div>
+                @enderror
+                
                 @include('Yojana::livewire.implementation-agencies.quotation-form')
             @endif
 

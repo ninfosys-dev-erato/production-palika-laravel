@@ -7,6 +7,14 @@ class ImplementationAgencyQuotationForm extends Component
 {
     public array $quotations = [];
 
+    protected $validationAttributes = [
+        'quotations.*.name' => 'quotations name',
+        'quotations.*.address' => 'quotations address',
+        'quotations.*.amount' => 'quotations amount',
+        'quotations.*.date' => 'quotations date',
+        'quotations.*.percentage' => 'quotations percentage',
+    ];
+
     public function mount()
     {
         // Start with 3 empty rows

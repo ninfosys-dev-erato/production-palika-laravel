@@ -18,37 +18,87 @@
                     <td>
                         <input type="text" wire:model="quotations.{{ $index }}.name"
                             class="form-control form-control-sm" />
-                        @error("quotations.$index.name")
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @if(count($quotations) >= 4)
+                            @error("quotations.$index.name")
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        @else
+                            @error("quotations.$index.name")
+                                @if(str_contains($message, 'required'))
+                                    {{-- Don't show required errors when less than 4 quotations --}}
+                                @else
+                                    <small class="text-danger">{{ $message }}</small>
+                                @endif
+                            @enderror
+                        @endif
                     </td>
                     <td>
                         <input type="text" wire:model="quotations.{{ $index }}.address"
                             class="form-control form-control-sm" />
-                        @error("quotations.$index.address")
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @if(count($quotations) >= 4)
+                            @error("quotations.$index.address")
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        @else
+                            @error("quotations.$index.address")
+                                @if(str_contains($message, 'required'))
+                                    {{-- Don't show required errors when less than 4 quotations --}}
+                                @else
+                                    <small class="text-danger">{{ $message }}</small>
+                                @endif
+                            @enderror
+                        @endif
                     </td>
                     <td>
                         <input type="number" wire:model="quotations.{{ $index }}.amount"
                             class="form-control form-control-sm" />
-                        @error("quotations.$index.amount")
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @if(count($quotations) >= 4)
+                            @error("quotations.$index.amount")
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        @else
+                            @error("quotations.$index.amount")
+                                @if(str_contains($message, 'required'))
+                                    {{-- Don't show required errors when less than 4 quotations --}}
+                                @else
+                                    <small class="text-danger">{{ $message }}</small>
+                                @endif
+                            @enderror
+                        @endif
                     </td>
                     <td wire:ignore>
                         <input type="text" wire:model="quotations.{{ $index }}.date"
                             class="form-control form-control-sm nepali-date" />
-                        @error("quotations.$index.date")
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @if(count($quotations) >= 4)
+                            @error("quotations.$index.date")
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        @else
+                            @error("quotations.$index.date")
+                                @if(str_contains($message, 'required'))
+                                    {{-- Don't show required errors when less than 4 quotations --}}
+                                @else
+                                    <small class="text-danger">{{ $message }}</small>
+                                @endif
+                            @enderror
+                        @endif
                     </td>
                     <td>
                         <input type="number" wire:model="quotations.{{ $index }}.percentage" step="0.01"
                             class="form-control form-control-sm" />
-                        @error("quotations.$index.percentage")
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        @if(count($quotations) >= 4)
+                            @error("quotations.$index.percentage")
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        @else
+                            @error("quotations.$index.percentage")
+                                @if(str_contains($message, 'required'))
+                                    {{-- Don't show required errors when less than 4 quotations --}}
+                                @else
+                                    <small class="text-danger">{{ $message }}</small>
+                                @endif
+                            @enderror
+                        @endif
                     </td>
                     <td class="text-center">
                         @if (count($quotations) > 3)

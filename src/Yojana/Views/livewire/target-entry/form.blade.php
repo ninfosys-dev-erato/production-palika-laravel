@@ -4,7 +4,9 @@
         <div class="d-flex justify-content-between align-items-center mb-4 mt-4">
             <div class="d-flex align-items-center gap-2">
                 <label class="form-label">{{ __('yojana::yojana.progress_indicator') }}</label>
-                <select wire:model.lazy="targetEntry.progress_indicator_id" class="form-select" style="width: 300px;">
+                <select wire:model.lazy="targetEntry.progress_indicator_id" 
+                class="form-select @error('targetEntry.progress_indicator_id') is-invalid @enderror"
+                style="width: 300px;">
 
                     <option value="" hidden>-- {{__('yojana::yojana.select_progress_indicator')}} -- </option>
                     @foreach ($progressIndicators as $id => $title)

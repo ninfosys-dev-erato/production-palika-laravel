@@ -49,6 +49,17 @@ class ImplementationAgencyForm extends Component
     public $contractDetails = [];
     public $quotations = [];
 
+    protected $validationAttributes = [
+        'organization_id' => 'Organization',
+        'consumer_committee_id' => 'Consumer Committee',
+        'application_id' => 'Applicant',
+        'quotations.*.name' => 'Name',
+        'quotations.*.address' => 'Address',
+        'quotations.*.amount' => 'Amount',
+        'quotations.*.date' => 'Date',
+        'quotations.*.percentage' => 'Percentage',
+    ];
+
     public function rules(): array
     {
         return array_merge([
@@ -75,6 +86,18 @@ class ImplementationAgencyForm extends Component
             'implementationAgency.agreement_application.nullable' => __('yojana::yojana.agreement_application_is_optional'),
             'implementationAgency.agreement_recommendation_letter.nullable' => __('yojana::yojana.agreement_recommendation_letter_is_optional'),
             'implementationAgency.deposit_voucher.nullable' => __('yojana::yojana.deposit_voucher_is_optional'),
+            'implementationAgency.organization_id.required' => __('yojana::yojana.organization_required'),
+            // Quotation validation messages
+            'quotations.*.name.required' => __('yojana::yojana.quotation_name_required'),
+            'quotations.*.address.required' => __('yojana::yojana.quotation_address_required'),
+            'quotations.*.amount.required' => __('yojana::yojana.quotation_amount_required'),
+            'quotations.*.amount.numeric' => __('yojana::yojana.quotation_amount_numeric'),
+            'quotations.*.date.required' => __('yojana::yojana.quotation_date_required'),
+            'quotations.*.date.date' => __('yojana::yojana.quotation_date_date'),
+            'quotations.*.percentage.required' => __('yojana::yojana.quotation_percentage_required'),
+            'quotations.*.percentage.numeric' => __('yojana::yojana.quotation_percentage_numeric'),
+            'quotations.*.percentage.min' => __('yojana::yojana.quotation_percentage_min'),
+            'quotations.*.percentage.max' => __('yojana::yojana.quotation_percentage_max'),
         ];
     }
 
@@ -98,13 +121,19 @@ class ImplementationAgencyForm extends Component
                 break;
 
             case ImplementationMethods::OperatedByQuotation:
-                $dynamicRules['implementationAgency.organization_id'] = ['required'];
-                $dynamicRules['quotations'] = ['required', 'array', 'min:3'];
-                $dynamicRules['quotations.*.name'] = ['required', 'string', 'max:255'];
-                $dynamicRules['quotations.*.address'] = ['required', 'string', 'max:255'];
-                $dynamicRules['quotations.*.amount'] = ['required', 'numeric', 'min:0'];
-                $dynamicRules['quotations.*.date'] = ['required', 'string'];
-                $dynamicRules['quotations.*.percentage'] = ['required', 'numeric', 'between:0,100'];
+                // Only require organization_id if we have 4 or more quotations
+                if (count($this->quotations) >= 4) {
+                    $dynamicRules['implementationAgency.organization_id'] = ['required'];
+                    $dynamicRules['quotations'] = ['required', 'array', 'min:3'];
+                    $dynamicRules['quotations.*.name'] = ['required', 'string', 'max:255'];
+                    $dynamicRules['quotations.*.address'] = ['required', 'string', 'max:255'];
+                    $dynamicRules['quotations.*.amount'] = ['required', 'numeric', 'min:0'];
+                    $dynamicRules['quotations.*.date'] = ['required', 'string'];
+                    $dynamicRules['quotations.*.percentage'] = ['required', 'numeric', 'between:0,100'];
+                } else {
+                    // For less than 4 quotations, only require organization_id
+                    $dynamicRules['implementationAgency.organization_id'] = ['required'];
+                }
                 break;
 
             case ImplementationMethods::OperatedByNGO:
@@ -157,6 +186,28 @@ class ImplementationAgencyForm extends Component
         $this->implementationAgency->plan_id = $this->plan->id;
         $this->implementationAgency->model = $this->plan?->implementationMethod->id;
         $model = $this->plan?->implementationMethod?->model;
+        
+        // Custom validation for quotations
+        if ($model == ImplementationMethods::OperatedByQuotation) {
+            if (count($this->quotations) < 4) {
+                // Check if there are any required field errors in quotations
+                $hasRequiredErrors = false;
+                foreach ($this->quotations as $index => $quotation) {
+                    if (empty($quotation['name']) || empty($quotation['address']) || 
+                        empty($quotation['amount']) || empty($quotation['date']) || 
+                        empty($quotation['percentage'])) {
+                        $hasRequiredErrors = true;
+                        break;
+                    }
+                }
+                
+                if ($hasRequiredErrors) {
+                    $this->addError('quotations', __('yojana::yojana.details_required_for_at_least_3_quotations'));
+                    // Don't return here, let the normal validation run for organization_id
+                }
+            }
+        }
+        
         $validated = $this->validate();
         try {
             DB::beginTransaction();
