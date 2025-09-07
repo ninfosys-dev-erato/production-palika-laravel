@@ -356,31 +356,37 @@
 @endpush -->
 
 <script>
-    function initNepaliDatepicker() {
-    $('.nepali-date').each(function() {
+
+function initNepaliDatepicker() {
+    $('.nepali-date').each(function(index) {
         const input = $(this);
 
-        if (!input.data('nepaliDatePicker')) {
-            input.nepaliDatePicker({
-                language: "ne",
-                ndpYear: true,
-                ndpMonth: true,
-                container: '#implementationBodyModal',
-                npdInput: true,
-                npdDateFormat: 'YYYY-MM-DD',
-                ndpEnglishInput: false,
-                unicodeDate: true,
-                onChange: function() {
-                    // Trigger Livewire input event
-                    input.trigger('input'); 
-                    
-                    // Fallback: dispatch native JS event
-                    input[0].dispatchEvent(new Event('input', { bubbles: true }));
+        // Destroy any existing instance first
+        if (input.data('nepaliDatePicker')) {
+            input.nepaliDatePicker('destroy');
+        }
 
-                    // Optional: trigger change for Livewire validation
-                    input.trigger('change'); 
-                }
-            });
+        input.nepaliDatePicker({
+            language: "ne",
+            ndpYear: true,
+            ndpMonth: true,
+            container: '#implementationBodyModal', // modal container
+            npdInput: true,
+            npdDateFormat: 'YYYY-MM-DD',
+            ndpEnglishInput: false,
+            unicodeDate: true,
+            onChange: function() {
+            const id = input.attr('id'); // get the unique input ID
+            const el = document.getElementById(id);
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        });
+
+        // If the input already has a value, set it
+        if (input.val()) {
+            input.nepaliDatePicker('setDate', input.val());
+            input.trigger('input');
         }
     });
 }
@@ -390,6 +396,13 @@
     $('#implementationBodyModal').on('shown.bs.modal', function () {
         initNepaliDatepicker();
     });
+
+   document.addEventListener('livewire:init', () => {
+    Livewire.on('reinitialize-date-picker', () => {
+        console.log('hereeeeee'); // should fire now
+        initNepaliDatepicker();
+    });
+});
     
     // Re-initialize whenever Livewire updates the table (dynamic rows)
     Livewire.hook('message.processed', (message, component) => {

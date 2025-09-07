@@ -69,10 +69,16 @@
                     <td wire:ignore>
                         <!-- <input type="text" wire:model="quotations.{{ $index }}.date"
                             class="form-control form-control-sm nepali-date" /> -->
-                            <input type="text" 
+
+                            <!-- <input type="text" 
                                 wire:model="quotations.{{ $index }}.date" 
                                 class="form-control form-control-sm nepali-date" 
-                                placeholder="YYYY-MM-DD">
+                                placeholder="YYYY-MM-DD"> -->
+
+                        <input type="text"
+                            id="quotation-date-{{ $index }}"
+                            wire:model="quotations.{{ $index }}.date"
+                            class="form-control form-control-sm nepali-date"/>
 
                         @if(count($quotations) >= 4)
                             @error("quotations.$index.date")

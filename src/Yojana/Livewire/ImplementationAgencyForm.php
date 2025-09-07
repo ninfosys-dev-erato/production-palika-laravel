@@ -349,6 +349,8 @@ class ImplementationAgencyForm extends Component
             'date' => '',
             'percentage' => '',
         ];
+
+        $this->dispatch('reinitialize-date-picker');
     }
 
     public function removeQuotation($index)
