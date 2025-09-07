@@ -125,7 +125,8 @@ class AgreementTable extends DataTableComponent
             $this->errorFlash('Agreement Format Not Found');
         }
 
-        return $agreementFormat;
+        $this->dispatch('open-pdf-in-new-tab', url: $agreementFormat);
+        // return $agreementFormat;
     }
 
     public function deleteSelected(){

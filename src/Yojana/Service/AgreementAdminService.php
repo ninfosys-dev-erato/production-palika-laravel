@@ -77,7 +77,10 @@ public function collectionDelete(array $ids){
             disk: getStorageDisk('private'),
             styles: $agreement?->styles ?? ""
         );
-        return redirect()->away($url);
+
+        return $url;
+        
+        // return redirect()->away($url);
     }
 }
 
