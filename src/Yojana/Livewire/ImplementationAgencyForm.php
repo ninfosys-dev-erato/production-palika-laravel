@@ -148,6 +148,17 @@ class ImplementationAgencyForm extends Component
         return $dynamicRules;
     }
 
+    protected $listeners = ['setQuotationDate'];
+
+    public function setQuotationDate($inputId, $date)
+    {
+        dd('on func');
+        // Extract index from inputId, e.g., quotation-date-2
+        $index = (int) str_replace('quotation-date-', '', $inputId);
+        $this->quotations[$index]['date'] = $date;
+    }
+
+
 
     public function render()
     {

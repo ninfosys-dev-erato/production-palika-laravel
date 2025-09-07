@@ -307,3 +307,100 @@
     </div>
 </form>
 
+<!-- <script>
+    document.addEventListener("livewire:load", () => {
+    function initNepaliDatepicker() {
+        $('.nepali-date').nepaliDatePicker({
+            ndpYear: true,
+            ndpMonth: true,
+            container: '#implementationBodyModal' // 👈 bind calendar inside modal
+        });
+    }
+
+    // Init on page load
+    initNepaliDatepicker();
+
+    // Re-init after Livewire updates
+    Livewire.hook('message.processed', () => {
+        initNepaliDatepicker();
+    });
+});
+
+</script> -->
+
+<!-- @push('scripts')
+<script>
+    document.addEventListener('livewire:load', function () {
+
+        function initNepaliDatepicker() {
+            // Only select inputs inside this component's modal
+            $('#implementationBodyModal .nepali-date').nepaliDatePicker({
+                ndpYear: true,
+                ndpMonth: true,
+                container: '#implementationBodyModal' // keep calendar inside modal
+            });
+        }
+
+        // Init on first load
+        initNepaliDatepicker();
+
+        // Re-init after Livewire updates (like adding/removing quotation rows)
+        Livewire.hook('message.processed', (message, component) => {
+            // Only run if this component is updated
+            if (component.fingerprint.name === 'yojana.implementation-agency-form') {
+                initNepaliDatepicker();
+            }
+        });
+    });
+</script>
+@endpush -->
+
+<script>
+    function initNepaliDatepicker() {
+    $('.nepali-date').each(function() {
+        const input = $(this);
+
+        if (!input.data('nepaliDatePicker')) {
+            input.nepaliDatePicker({
+                language: "ne",
+                ndpYear: true,
+                ndpMonth: true,
+                container: '#implementationBodyModal',
+                npdInput: true,
+                npdDateFormat: 'YYYY-MM-DD',
+                ndpEnglishInput: false,
+                unicodeDate: true,
+                onChange: function() {
+                    // Trigger Livewire input event
+                    input.trigger('input'); 
+                    
+                    // Fallback: dispatch native JS event
+                    input[0].dispatchEvent(new Event('input', { bubbles: true }));
+
+                    // Optional: trigger change for Livewire validation
+                    input.trigger('change'); 
+                }
+            });
+        }
+    });
+}
+
+
+    // Initialize when modal is shown
+    $('#implementationBodyModal').on('shown.bs.modal', function () {
+        initNepaliDatepicker();
+    });
+    
+    // Re-initialize whenever Livewire updates the table (dynamic rows)
+    Livewire.hook('message.processed', (message, component) => {
+        // Check if modal is visible before initializing
+        if ($('#implementationBodyModal').hasClass('show')) {
+            initNepaliDatepicker();
+        }
+    });
+    </script>
+    
+
+
+
+

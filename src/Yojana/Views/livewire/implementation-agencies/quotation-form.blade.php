@@ -67,8 +67,13 @@
                         @endif
                     </td>
                     <td wire:ignore>
-                        <input type="text" wire:model="quotations.{{ $index }}.date"
-                            class="form-control form-control-sm nepali-date" />
+                        <!-- <input type="text" wire:model="quotations.{{ $index }}.date"
+                            class="form-control form-control-sm nepali-date" /> -->
+                            <input type="text" 
+                                wire:model="quotations.{{ $index }}.date" 
+                                class="form-control form-control-sm nepali-date" 
+                                placeholder="YYYY-MM-DD">
+
                         @if(count($quotations) >= 4)
                             @error("quotations.$index.date")
                                 <small class="text-danger">{{ $message }}</small>

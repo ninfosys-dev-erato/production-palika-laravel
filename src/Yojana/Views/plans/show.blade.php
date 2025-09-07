@@ -646,7 +646,9 @@
                                                 onclick="resetForm()" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <livewire:yojana.implementation_agency_form :action="App\Enums\Action::CREATE" :$plan />
+                                            <div id="implementation-agency-form-wrapper">
+                                                <livewire:yojana.implementation_agency_form :action="App\Enums\Action::CREATE" :$plan />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1016,6 +1018,7 @@
 </x-layout.app>
 
 <script>
+    
     document.addEventListener('DOMContentLoaded', function() {
         const tabContainer = document.querySelector('.nav.nav-pills.primary');
         if (!tabContainer) return;
@@ -1184,6 +1187,8 @@
         Livewire.dispatch('reset-form');
     }
 </script>
+
+
 @push('styles')
     <style>
         .divider {
