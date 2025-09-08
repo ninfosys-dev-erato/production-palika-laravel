@@ -136,7 +136,6 @@ class OrganizationForm extends Component
     public function nextStep($step): void
     {
 
-        $this->validate();
         $this->currentStep = $step;
         if($step === 2){
 
