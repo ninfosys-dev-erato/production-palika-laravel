@@ -1,4 +1,4 @@
-<form wire:submit.prevent="save" enctype="multipart/form-data" data-kyc-form>
+<form wire:submit.prevent="save" enctype="multipart/form-data">
     <div class="card shqdow-sm p-4 ">
         <div class="card mb-4">
             <div class="card-header bg-light text-dark">{{ __('Personal Details') }}</div>
@@ -239,18 +239,47 @@
                     <div class="col-md-6 mb-4">
                         <div class="form-group">
                             <label for="image">{{ __('Document Image 1') }}</label>
-                            <input name="uploadedImage1" type="file"
-                                class="form-control" accept="image/*,.pdf" data-kyc-upload data-upload-type="document">
+                            <input wire:model="uploadedImage1" name="uploadedImage1" type="file"
+                                class="form-control" accept="image/*,.pdf">
                             @error('uploadedImage1')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
 
-                            @if (!empty(trim($this->kyc->document_image1)))
+                            @if (
+                                ($uploadedImage1 && $uploadedImage1 instanceof \Livewire\TemporaryUploadedFile) ||
+                                    $uploadedImage1 instanceof \Illuminate\Http\File ||
+                                    $uploadedImage1 instanceof \Illuminate\Http\UploadedFile)
+                                @php
+                                    $mime = $uploadedImage1->getMimeType();
+                                    $isImage = str_starts_with($mime, 'image/');
+                                    $isPDF = $mime === 'application/pdf';
+                                @endphp
+
+                                <div class="col-md-3 col-sm-4 col-6 mb-3">
+                                    @if ($isImage)
+                                        <img src="{{ $uploadedImage1->temporaryUrl() }}" alt="Image Preview"
+                                            class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
+                                    @elseif ($isPDF)
+                                        <div class="border rounded p-3 d-flex align-items-center"
+                                            style="height: 60px;">
+                                            <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
+                                            <a href="{{ $uploadedImage1->temporaryUrl() }}" target="_blank"
+                                                class="text-primary fw-bold text-decoration-none">
+                                                {{ __('अपलोड गरिएको फाइल हेर्नुहोस्') }}
+                                            </a>
+                                        </div>
+                                    @else
+                                        <div class="border p-2 text-center" style="height: 150px;">
+                                            <p class="mb-1">Unsupported File</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            @elseif (!empty(trim($this->kyc->document_image1)))
                                 @php
                                     $fileUrl = customFileAsset(
                                         config('src.CustomerKyc.customerKyc.path'),
                                         $this->kyc->document_image1,
-                                        getStorageDisk('private'),
+                                        'local',
                                         'tempUrl',
                                     );
                                 @endphp
@@ -266,30 +295,60 @@
 
                     @if ($showDocumentBackInput)
                         <div class="col-md-6 mb-4">
-                                                    <div class="form-group">
-                            <label for="image">{{ __('Document Image 2') }}</label>
-                            <input name="uploadedImage2" type="file"
-                                class="form-control" accept="image/*,.pdf" data-kyc-upload data-upload-type="document">
-                            @error('uploadedImage2')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
-                            @if (!empty(trim($this->kyc->document_image2)))
-                                @php
-                                    $fileUrl = customFileAsset(
-                                        config('src.CustomerKyc.customerKyc.path'),
-                                        $this->kyc->document_image2,
-                                        getStorageDisk('private'),
-                                        'tempUrl',
-                                    );
-                                @endphp
+                            <div class="form-group">
+                                <label for="image">{{ __('Document Image 2') }}</label>
+                                <input wire:model="uploadedImage2" name="uploadedImage2" type="file"
+                                    class="form-control" accept="image/*,.pdf">
+                                @error('uploadedImage2')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                                @if (
+                                    ($uploadedImage2 && $uploadedImage2 instanceof \Livewire\TemporaryUploadedFile) ||
+                                        $uploadedImage2 instanceof \Illuminate\Http\File ||
+                                        $uploadedImage2 instanceof \Illuminate\Http\UploadedFile)
+                                    @php
+                                        $mime = $uploadedImage2->getMimeType();
+                                        $isImage = str_starts_with($mime, 'image/');
+                                        $isPDF = $mime === 'application/pdf';
+                                    @endphp
 
-                                <a href="{{ $fileUrl }}" target="_blank"
-                                    class="btn btn-outline-primary btn-sm">
-                                    <i class="bx bx-file"></i>
-                                    {{ __('yojana::yojana.view_uploaded_file') }}
-                                </a>
-                            @endif
-                        </div>
+                                    <div class="col-md-3 col-sm-4 col-6 mb-3">
+                                        @if ($isImage)
+                                            <img src="{{ $uploadedImage2->temporaryUrl() }}" alt="Image Preview"
+                                                class="img-thumbnail w-100"
+                                                style="height: 150px; object-fit: cover;" />
+                                        @elseif ($isPDF)
+                                            <div class="border rounded p-3 d-flex align-items-center"
+                                                style="height: 60px;">
+                                                <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
+                                                <a href="{{ $uploadedImage2->temporaryUrl() }}" target="_blank"
+                                                    class="text-primary fw-bold text-decoration-none">
+                                                    {{ __('अपलोड गरिएको फाइल हेर्नुहोस्') }}
+                                                </a>
+                                            </div>
+                                        @else
+                                            <div class="border p-2 text-center" style="height: 150px;">
+                                                <p class="mb-1">Unsupported File</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @elseif (!empty(trim($this->kyc->document_image2)))
+                                    @php
+                                        $fileUrl = customFileAsset(
+                                            config('src.CustomerKyc.customerKyc.path'),
+                                            $this->kyc->document_image2,
+                                            'local',
+                                            'tempUrl',
+                                        );
+                                    @endphp
+
+                                    <a href="{{ $fileUrl }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bx bx-file"></i>
+                                        {{ __('yojana::yojana.view_uploaded_file') }}
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     @endif
 

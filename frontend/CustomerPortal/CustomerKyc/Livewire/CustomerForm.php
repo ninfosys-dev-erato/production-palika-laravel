@@ -4,16 +4,16 @@ namespace Frontend\CustomerPortal\CustomerKyc\Livewire;
 
 use App\Enums\Action;
 use App\Facades\ActivityLogFacade;
-
-
+use App\Facades\FileFacade;
+use App\Facades\ImageServiceFacade;
 use App\Rules\MobileNumberIdentifierRule;
-
+use App\Services\ImageService;
 use App\Traits\HelperDate;
 use App\Traits\SessionFlash;
 use Frontend\CustomerPortal\CustomerKyc\DTO\CustomerKycDto;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
-
+use Livewire\WithFileUploads;
 use Src\Address\Models\District;
 use Src\CustomerKyc\Services\CustomerKycService;
 use Src\Customers\DTO\CustomerAdminDto;
@@ -25,12 +25,12 @@ use Src\Customers\Models\CustomerKyc;
 
 class CustomerForm extends Component
 {
-    use SessionFlash, HelperDate;
+    use SessionFlash, WithFileUploads, HelperDate;
 
     public ?Customer $customer;
     public ?Action $action;
     public $provinces;
-
+    public array $files = [];
     public $isSameAsPermanent = false;
     public array $temporaryDistricts = [];
     public array $permanentDistricts = [];
@@ -40,15 +40,13 @@ class CustomerForm extends Component
     public array $permanentWards = [];
     public bool $isModalForm = false;
     public bool $isProvinceSelected = false;
-
-    public  $uploadedImage1_key;
-    public  $uploadedImage2_key;
-    public  $uploadedImage1_upload_data;
-    public  $uploadedImage2_upload_data;
+    public  $uploadedImage1;
+    public  $uploadedImage2;
     public array $districts = [];
     public bool $showDocumentBackInput = false;
     public ?CustomerKyc $kyc;
-
+    public $existingImage1;
+    public $existingImage2;
 
     public function rules(): array
     {
@@ -76,21 +74,32 @@ class CustomerForm extends Component
             'kyc.document_issued_date_nepali' => ['required', 'string'],
             'kyc.document_issued_at' => ['required'],
             'kyc.document_number' => ['required', 'string'],
-            'uploadedImage1_key' => ['required', 'string'],
+            'uploadedImage1' => ['required', 'max:10240'],
             'kyc.expiry_date_english' => ['nullable', 'date'],
         ];
+        $rules['uploadedImage1'] = $this->getImageValidationRules($this->uploadedImage1);
 
         if ($this->showDocumentBackInput) {
-            $rules['uploadedImage2_key'] = ['required', 'string'];
+            $rules['uploadedImage2'] = $this->getImageValidationRules($this->uploadedImage2);
         } else {
-            $rules['uploadedImage2_key'] = ['nullable', 'string'];
+            $rules['uploadedImage2'] = ['nullable', 'max:10240'];
         }
-    
+
         return $rules;
     }
-    
 
-
+    /**
+     * Get validation rules for uploaded images.
+     *
+     * @param mixed $image
+     * @return array
+     */
+    private function getImageValidationRules($image): array
+    {
+        return is_string($image)
+            ? ['required', 'max:10240']
+            : ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:10240'];
+    }
 
     public function messages(): array
     {
@@ -195,20 +204,20 @@ class CustomerForm extends Component
     public function mount(Customer $customer, Action $action, bool $isModalForm = false)
     {
         $this->customer = $customer;
-        if($this->customer->kyc){
+        if ($this->customer->kyc) {
             $this->kyc = $this->customer->kyc;
-        }else{
+        } else {
             $this->kyc = new CustomerKyc();
         }
-        if($this->customer->kyc && $this->customer)
-        {
+        if ($this->customer->kyc && $this->customer) {
             $this->permanentLoadDistricts();
             $this->permanentLoadLocalBodies();
             $this->permanentLoadWards();
             $this->temporaryLoadDistricts();
             $this->temporaryLoadLocalBodies();
             $this->temporaryLoadWards();
-
+            $this->uploadedImage1 = $this->kyc->document_image1;
+            $this->uploadedImage2 = $this->kyc->document_image2;
             $this->updateDocumentNumber();
         }
         $this->action = $action;
@@ -226,10 +235,10 @@ class CustomerForm extends Component
     public function save()
     {
         $this->validate();
-        try{
+        try {
             $this->initializeDates($this->kyc['nepali_date_of_birth'], $this->kyc['document_issued_date_nepali'], $this->kyc['expiry_date_english']);
             if ($this->isSameAsPermanent) {
-            
+
                 $this->kyc->temporary_province_id = $this->kyc->permanent_province_id;
                 $this->kyc->temporary_district_id = $this->kyc->permanent_district_id;
                 $this->kyc->temporary_local_body_id = $this->kyc->permanent_local_body_id;
@@ -239,20 +248,19 @@ class CustomerForm extends Component
             if (
                 $this->kyc['document_type']->value === "national_id" ||
                 $this->kyc['document_type']->value === "citizenship"
-            ) {            
-                $this->kyc->document_image1 = $this->uploadedImage1_key;
-                $this->kyc->document_image2 = $this->uploadedImage2_key ?? null;
-            
+            ) {
+                $this->kyc->document_image1 = $this->handleFileIfValid($this->uploadedImage1);
+                $this->kyc->document_image2 = $this->uploadedImage2 ? $this->handleFileIfValid($this->uploadedImage2) : null;
             } else {
-            
-                $this->kyc->document_image1 = $this->uploadedImage1_key;
+
+                $this->kyc->document_image1 = $this->handleFileIfValid($this->uploadedImage1);
                 $this->kyc->document_image2 = null;
-            }    
-        
+            }
+
             $dto = CustomerAdminDto::fromLiveWireModel($this->customer, $this->kyc);
-        
+
             $service = new CustomerKycService();
-            
+
             $webCustomer = true;
             ActivityLogFacade::logForCustomer();
             $service->storeCustomerKyc($dto,  $this->customer, $webCustomer);
@@ -264,7 +272,22 @@ class CustomerForm extends Component
         }
     }
 
+    private function handleFileIfValid($file)
+    {
+        if (
+            $file instanceof \Illuminate\Http\File ||
+            $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ||
+            $file instanceof \Illuminate\Http\UploadedFile
+        ) {
+            return $this->handleFileUpload($file);
+        }
+        return $file;
+    }
 
+    public function handleFileUpload($file)
+    {
+        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, 'local');
+    }
 
     private function initializeDates(string | null $nepaliDob, string | null $nepaliDocIssuedDate, string | null $engExpiryDate): void
     {
