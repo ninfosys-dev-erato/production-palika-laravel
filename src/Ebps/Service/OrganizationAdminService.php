@@ -36,7 +36,7 @@ public function store(OrganizationAdminDto $organizationAdminDto){
         'status' => OrganizationStatusEnum::PENDING,
         'comment' => $organizationAdminDto->comment,
         'created_at' => date('Y-m-d H:i:s'),
-        'created_by' => Auth::user()->id,
+        // 'created_by' => Auth::user()->id,
     ]);
 }
 public function update(Organization $organization, OrganizationAdminDto $organizationAdminDto){

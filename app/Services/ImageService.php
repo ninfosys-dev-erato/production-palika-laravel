@@ -35,9 +35,14 @@ class ImageService
                 return self::storeAsRegularFile($image, $path, $disk, $desiredFilename);
             }
 
-            // Store the image temporarily
-            $tempPath = $image->store($path);
-            $tempFullPath = Storage::path($tempPath);
+            // Store the image temporarily on local disk to ensure filesystem path access
+            if ($image instanceof TemporaryUploadedFile) {
+                $tempPath = $image->store($path, 'local');
+                $tempFullPath = Storage::disk('local')->path($tempPath);
+            } else {
+                $tempPath = $image->store($path);
+                $tempFullPath = Storage::path($tempPath);
+            }
             
             // Verify the file exists and is readable
             if (!file_exists($tempFullPath) || !is_readable($tempFullPath)) {
@@ -72,8 +77,12 @@ class ImageService
             // Store the processed image
             Storage::disk($disk)->put("{$path}/{$finalFilename}", $imageInstance->encode());
             
-            // Clean up temporary file
-            Storage::delete($tempPath);
+            // Clean up temporary file (from the correct disk)
+            if ($image instanceof TemporaryUploadedFile) {
+                Storage::disk('local')->delete($tempPath);
+            } else {
+                Storage::delete($tempPath);
+            }
 
             return $finalFilename;
             

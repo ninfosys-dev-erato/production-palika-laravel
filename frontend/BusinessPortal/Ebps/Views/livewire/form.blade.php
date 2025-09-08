@@ -413,7 +413,7 @@
                                             </table>
                                         </div>
 
-                                        <div class="tab-pane" id="settings">
+                                        {{-- <div class="tab-pane" id="settings">
                                             <div class="">
                                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-x-3 gap-y-2">
                                                     <div class="w-full ">
@@ -464,7 +464,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
