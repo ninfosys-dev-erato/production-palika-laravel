@@ -314,7 +314,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply)
+                                                    @if ($status != 'accepted')
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"

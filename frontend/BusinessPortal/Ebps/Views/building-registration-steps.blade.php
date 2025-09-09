@@ -192,7 +192,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if ($status != 'Not Applied' && $status != 'accepted' && $canApply && $mapStep->form->isNotEmpty())
+                                                    @if ($status != 'accepted' && $mapStep->form->isNotEmpty())
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
