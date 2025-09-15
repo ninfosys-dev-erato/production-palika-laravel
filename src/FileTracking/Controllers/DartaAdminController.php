@@ -184,7 +184,7 @@ class DartaAdminController extends Controller implements HasMiddleware
         $palika_campaign_logo = $this->getConstant('palika-campaign-logo');
 
         $address = $this->getConstant('palika-district') . ', ' . $this->getConstant('palika-province') . ', ' . 'नेपाल';
-        $palika_ward = $ward->ward_name_ne;
+        $palika_ward = $ward?->ward_name_ne ?? getSetting('office-name');
         $nepaliDate = $this->convertEnglishToNepali($this->adToBs(now()->format('Y-m-d')));
 
         $html = view('FileTracking::darta.darta-pdf', compact('nepaliDate', 'filters', 'palika_name', 'palika_logo', 'palika_campaign_logo', 'address', 'palika_ward', 'reports'))->render();
@@ -192,7 +192,7 @@ class DartaAdminController extends Controller implements HasMiddleware
             content: $html,
             file_path: config('src.Recommendation.recommendation.certificate'),
             file_name: "register_file_{$user->email}" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
 

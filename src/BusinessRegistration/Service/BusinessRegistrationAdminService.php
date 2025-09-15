@@ -255,7 +255,7 @@ class BusinessRegistrationAdminService
                 content: $html,
                 file_path: config('src.BusinessRegistration.businessRegistration.certificate'),
                 file_name: "recommendation_{$businessRegistration->id}",
-                disk: "local",
+                disk: getStorageDisk('private'),
                 styles: $businessRegistration->registrationType?->form?->styles ?? ""
             );
             if ($request === 'web') {

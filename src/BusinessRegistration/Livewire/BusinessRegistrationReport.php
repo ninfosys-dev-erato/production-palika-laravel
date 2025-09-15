@@ -182,7 +182,7 @@ class BusinessRegistrationReport extends Component
                 content: $html,
                 file_path: config('src.BusinessRegistration.businessRegistration.pdf'),
                 file_name: "businessRegistration" . date('YmdHis'),
-                disk: "local",
+                disk: getStorageDisk('private'),
             );
 
             return redirect()->away($url);

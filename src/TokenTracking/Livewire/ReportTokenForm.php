@@ -206,7 +206,7 @@ class ReportTokenForm extends Component
             content: $html,
             file_path: config('src.TokenTracking.tokentracking.certificate'),
             file_name: "token_{$user->email}" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
     #[On('signee-selected')]
@@ -253,7 +253,7 @@ class ReportTokenForm extends Component
             content: $html,
             file_path: config('src.TokenTracking.tokentracking.certificate'),
             file_name: "token_{$user->email}" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
     public function branchPurposeCountPdf()
@@ -304,7 +304,7 @@ class ReportTokenForm extends Component
             content: $html,
             file_path: config('src.TokenTracking.tokentracking.certificate'),
             file_name: "token_{$user->email}" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
 }

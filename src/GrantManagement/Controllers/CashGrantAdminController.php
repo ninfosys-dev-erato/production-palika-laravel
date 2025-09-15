@@ -32,7 +32,7 @@ class CashGrantAdminController extends Controller
             $fileUrl = FileFacade::getTemporaryUrl(
                 path: config('src.GrantManagement.grant.file'),
                 filename: $cashGrant->file,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         }
 

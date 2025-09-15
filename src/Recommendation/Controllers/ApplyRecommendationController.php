@@ -250,7 +250,7 @@ class ApplyRecommendationController extends Controller implements HasMiddleware
             content: $html,
             file_path: config('src.Recommendation.recommendation.certificate'),
             file_name: "register_file_{$user->email}" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
 

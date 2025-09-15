@@ -403,12 +403,6 @@ trait HelperTemplate
             '{{customer.document_issued_date_nepali}}' => replaceNumbers($customer->kyc->document_issued_date_nepali) ?? self::EMPTY_LINES,
             '{{customer.document_issued_date_english}}' => $customer->kyc->document_issued_date_english ?? self::EMPTY_LINES,
             '{{customer.document_number}}' => $customer->kyc->document_number ?? self::EMPTY_LINES,
-            '{{customer.document_image1}}' => 'data:image/jpeg;base64,' . base64_encode(
-                FileFacade::getFile($imagePath, (string) $customer->kyc?->document_image1)
-            ),
-            '{{customer.document_image2}}' => 'data:image/jpeg;base64,' . base64_encode(
-                FileFacade::getFile($imagePath, (string) $customer->kyc?->document_image2)
-            ),
             '{{customer.expiry_date_nepali}}' => $customer->kyc->expiry_date_nepali ?? self::EMPTY_LINES,
             '{{customer.expiry_date_english}}' => $customer->kyc->expiry_date_english ?? self::EMPTY_LINES
         ];

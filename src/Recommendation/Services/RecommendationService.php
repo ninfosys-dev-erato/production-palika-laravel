@@ -210,7 +210,7 @@ class RecommendationService
                 content: $html,
                 file_path: config('src.Recommendation.recommendation.certificate'),
                 file_name: "recommendation_{$applyRecommendation->id}",
-                disk: "local",
+                disk: getStorageDisk('private'),
                 is_draft: false,
                 styles: $applyRecommendation->recommendation?->form?->styles
             );

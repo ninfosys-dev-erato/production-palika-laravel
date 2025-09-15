@@ -184,7 +184,7 @@ class EbpsReport extends Component
                 content: $html,
                 file_path: config('src.Ebps.ebps.pdf'),
                 file_name: "ebps" . date('YmdHis'),
-                disk: "local",
+                disk: getStorageDisk('private'),
             );
 
          $this->dispatch('open-pdf', url: $url);

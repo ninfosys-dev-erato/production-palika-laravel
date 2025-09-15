@@ -42,7 +42,7 @@ class BusinessDeRegistrationUploadBill extends Component
                     path: config('src.BusinessRegistration.businessRegistration.bill'),
                     filename: '',
                     file: $this->bill,
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
             $this->businessDeRegistration->bill = $path;

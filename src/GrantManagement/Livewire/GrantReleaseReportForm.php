@@ -164,7 +164,7 @@ class GrantReleaseReportForm extends Component
             content: $html,
             file_path: config('grantmanagement.certificate', 'pdfs/grants/'),
             file_name: "grantmanagement-" . date('YmdHis'),
-            disk: "local",
+            disk: getStorageDisk('private'),
         ));
     }
 

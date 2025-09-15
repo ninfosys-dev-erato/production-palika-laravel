@@ -72,7 +72,7 @@ class BusinessRenewalDocument extends Model
                 return FileFacade::getTemporaryUrl(
                     path:config("src.BusinessRegistration.businessRegistration.registration_document"),
                     filename:$this->document,
-                    disk:"local",
+                    disk: getStorageDisk('private'),
                     minutes:10,
                 );
             }

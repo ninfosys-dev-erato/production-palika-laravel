@@ -133,7 +133,7 @@ class BusinessRenewalAction extends Component
                 path: config('src.BusinessRegistration.businessRegistration.bill'),
                 filename: '',
                 file: $this->payment_receipt,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
 
             $this->businessRenewal->payment_receipt = $path;

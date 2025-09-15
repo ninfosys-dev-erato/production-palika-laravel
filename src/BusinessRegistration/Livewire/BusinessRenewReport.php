@@ -194,7 +194,7 @@ class BusinessRenewReport extends Component
                 content: $html,
                 file_path: config('src.BusinessRegistration.businessRegistration.pdf'),
                 file_name: "businessRenewal" . date('YmdHis'),
-                disk: "local",
+                disk: getStorageDisk('private'),
             );
 
             return redirect()->away($url);

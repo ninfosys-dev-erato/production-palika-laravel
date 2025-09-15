@@ -141,7 +141,7 @@ class UserForm extends Component
             $save = FileFacade::saveFile(
                 path: config('src.Profile.profile.path'),
                 file: $file,
-                disk: "local",
+                disk: getStorageDisk('private'),
                 filename: ""
             );
 
@@ -152,7 +152,7 @@ class UserForm extends Component
             $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                 path: config('src.Profile.profile.path'),
                 filename: $save,
-                disk: 'local'
+                disk: getStorageDisk('private')
             );
         } else {
             // If no file is provided (edit mode), load the existing file URL
@@ -160,7 +160,7 @@ class UserForm extends Component
                 $this->{$urlProperty} = FileFacade::getTemporaryUrl(
                     path: config('src.Profile.profile.path'),
                     filename: $this->user->{$modelField},
-                    disk: 'local'
+                    disk: getStorageDisk('private')
                 );
             }
         }

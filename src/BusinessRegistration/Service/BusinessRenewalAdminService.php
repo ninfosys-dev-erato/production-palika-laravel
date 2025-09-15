@@ -129,7 +129,7 @@ class BusinessRenewalAdminService
                 content: $html,
                 file_path: config('src.BusinessRegistration.businessRegistration.certificate'),
                 file_name: "recommendation_{$businessRenewal->id}",
-                disk: "local",
+                disk: getStorageDisk('private'),
                 styles:$businessRenewal->registration->registrationType?->form?->styles??""
 
             );

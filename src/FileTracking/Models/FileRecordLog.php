@@ -72,7 +72,7 @@ class FileRecordLog extends Model
         return FileFacade::getTemporaryUrl(
             path:config("src.FileTracking.fileTracking.file"),
             filename:$this->file,
-            disk:"local",
+            disk: getStorageDisk('private'),
             minutes:3,
         );
     }

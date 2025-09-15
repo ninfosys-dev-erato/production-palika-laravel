@@ -14,7 +14,7 @@ class TemplateAdminService
                 content: $html,
                 file_path: config('src.Ejalas.ejalas.certificate'),
                 file_name: "ejalas_" . class_basename($model) . "_{$model->id}",
-                disk: "local",
+                disk: getStorageDisk('private'),
                 styles: $style
             );
 

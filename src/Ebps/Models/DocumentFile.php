@@ -71,7 +71,7 @@ class DocumentFile extends Model
                 return FileFacade::getTemporaryUrl(
                     path:config('src.Ebps.ebps.path'),
                     filename:$this->file,
-                    disk:"local",
+                    disk: getStorageDisk('private'),
                     minutes:10,
                 );
             }

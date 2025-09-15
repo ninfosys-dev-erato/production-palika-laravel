@@ -204,7 +204,7 @@ class BusinessOwnershipTransfer extends Component
             $filename = FileFacade::saveFile(
                 path: config('src.BusinessRegistration.businessRegistration.registration'),
                 file: $file,
-                disk: 'local',
+                disk: getStorageDisk('private'),
                 filename: ''
             );
         }
@@ -212,7 +212,7 @@ class BusinessOwnershipTransfer extends Component
         $url = FileFacade::getTemporaryUrl(
             path: config('src.BusinessRegistration.businessRegistration.registration'),
             filename: $filename,
-            disk: 'local'
+            disk: getStorageDisk('private')
         );
 
         $this->personalDetails[$index][$field] = $filename;

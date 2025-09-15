@@ -713,7 +713,7 @@ class BusinessRegistrationForm extends Component
         // $filename = FileFacade::saveFile(
         //     path: config('src.BusinessRegistration.businessRegistration.registration'),
         //     file: $file,
-        //     disk: 'local',
+        //     disk: getStorageDisk('private'),
         //     filename: ''
         // );
 
@@ -1271,7 +1271,7 @@ class BusinessRegistrationForm extends Component
                         $filename = FileFacade::saveFile(
                             path: config('src.BusinessRegistration.businessRegistration.registration'),
                             file: $file,
-                            disk: 'local',
+                            disk: getStorageDisk('private'),
                             filename: ''
                         );
                         $filenames[] = $filename;

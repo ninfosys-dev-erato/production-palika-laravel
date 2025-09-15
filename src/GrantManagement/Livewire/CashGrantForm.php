@@ -177,7 +177,7 @@ class CashGrantForm extends Component
         //     $this->cashGrant->file = FileFacade::saveFile(
         //         $this->uploadedFile,
         //         config('src.GrantManagement.grant.file'),
-        //         disk: "local",
+        //         disk: getStorageDisk('private'),
         //         filename: ""
         //     );
         // }
@@ -185,7 +185,7 @@ class CashGrantForm extends Component
         // $this->cashGrant->file = FileFacade::saveFile(
         //     file: $this->uploadedFile,
         //     path: config('src.GrantManagement.grant.file'),
-        //     disk: "local",
+        //     disk: getStorageDisk('private'),
         //     filename: ""
         // );
 

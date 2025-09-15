@@ -57,7 +57,7 @@ class OwnerChangeShowTemplate extends Component
                 content: $fullHtml,
                 file_path: config('src.Ebps.ebps.pdf'),
                 file_name: "ejalas" . date('YmdHis'),
-                disk: "local",
+                disk: getStorageDisk('private'),
             );
 
             return redirect()->away($url);

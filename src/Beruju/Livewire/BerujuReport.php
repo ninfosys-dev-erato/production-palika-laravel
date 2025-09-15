@@ -226,7 +226,7 @@ class BerujuReport extends Component
                 content: $html,
                 file_path: config('src.Beruju.beruju.reports'),
                 file_name: "beruju-report-" . date('YmdHis'),
-                disk: "local",
+                disk: getStorageDisk('private'),
             );
             
             $this->dispatch('open-pdf-in-new-tab', url: $url);
