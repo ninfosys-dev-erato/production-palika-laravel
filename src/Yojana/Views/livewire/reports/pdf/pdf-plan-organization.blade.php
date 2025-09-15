@@ -163,7 +163,7 @@
                     <td>{{ $row->implementationAgency->organization->representative ?? 'N/A' }}</td>
                     <td>{{ $row->implementationAgency->organization->post ?? 'N/A' }}</td>
                     <td>{{ $row->implementationAgency->organization->address ?? 'N/A' }}</td>
-                    <td>{{ replaceNumbers($row->implementationAgency->organization->mobile_number, true) ?? 'N/A' }}
+                    <td>{{ replaceNumbers($row->implementationAgency?->organization?->mobile_number, true) ?? 'N/A' }}
                     </td>
                 </tr>
             @endforeach
