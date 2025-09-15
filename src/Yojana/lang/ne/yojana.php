@@ -710,7 +710,7 @@ return [
     'search' => 'खोजी गर्नुहोस्',
     'clear' => 'सफा गर्नुहोस्',
     'extended_plans' => 'विस्तारित योजनाहरू',
-    'agreed_plans' => 'स्वीकृत योजनाहरू',
+    'agreed_plans' => 'सम्झौता भएका योजनाहरू',
     'closed_plans' => 'बन्द योजनाहरू',
     'create_budgethead' => 'बजेट हेड सिर्जना गर्नुहोस्',
     'update_budgethead' => 'बजेट हेड अद्यावधिक गर्नुहोस्',

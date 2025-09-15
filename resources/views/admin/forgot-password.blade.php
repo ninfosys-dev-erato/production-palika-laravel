@@ -39,7 +39,7 @@
                             <span class="app-brand-logo demo">
 
                             </span>
-                            <span class="app-brand-text demo text-body fw-bolder mt-3 text-primary">ई-पालिका</span>
+                            <span class="app-brand-text demo text-body fw-bolder mt-3 text-secondary">ई-पालिका</span>
                         </a>
                     </div>
                     
@@ -76,7 +76,7 @@
                     <!-- Livewire componet form -->
                     <livewire:forgot-password/>
 
-                    <div class="text-center">
+                    <div class="text-center mt-2">
                         <a href="{{ route('login') }}">
                             <i class="bx bx-chevron-left"></i> Back to Login
                         </a>
