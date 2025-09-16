@@ -131,10 +131,10 @@ class OrganizationCustomerDetailForm extends Component
         foreach ($this->distanceToWall as $index => $label) {
 
             $rules["distanceToWall.$index.direction"] = 'nullable|string';
-            $rules["distanceToWall.$index.has_road"] = 'nullable';
-            $rules["distanceToWall.$index.does_have_wall_door"] = 'nullable';
-            $rules["distanceToWall.$index.dist_left"] = 'nullable|numeric|min:0';
-            $rules["distanceToWall.$index.min_dist_left"] = 'nullable|numeric|min:0';
+            $rules["distanceToWall.$index.has_road"] = 'required';
+            $rules["distanceToWall.$index.does_have_wall_door"] = 'required';
+            $rules["distanceToWall.$index.dist_left"] = 'required|numeric|min:0';
+            $rules["distanceToWall.$index.min_dist_left"] = 'required|numeric|min:0';
         }
 
         foreach ($this->cantileverDetails as $index => $label) {

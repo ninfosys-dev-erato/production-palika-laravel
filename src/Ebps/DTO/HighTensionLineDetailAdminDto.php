@@ -24,10 +24,10 @@ public static function fromLiveWireModel(HighTensionLineDetail $highTensionLineD
 public static function fromArray(array $data): self
 {
     return new self(
-        $data['map_apply_id'],
-        $data['direction'],
-        $data['distance'],
-        $data['minimum']
+        $data['map_apply_id'] ?? null,
+        $data['direction'] ?? null,
+        $data['distance'] ?? null,
+        $data['minimum'] ?? $data['minimun'] ?? null
     );
 }
 }
