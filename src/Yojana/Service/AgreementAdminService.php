@@ -79,7 +79,6 @@ public function collectionDelete(array $ids){
         // );
 
         // return $url;
-        
         $html =$this->resolveTemplate($plan,$agreement);
         return $html;
 

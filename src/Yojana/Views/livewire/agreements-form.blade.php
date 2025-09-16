@@ -736,6 +736,7 @@
 </form>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <script>
     document.addEventListener('livewire:init', () => {
         // Existing listener for cost estimation
@@ -751,7 +752,6 @@
     
     async function printHtml(html) {
         const { jsPDF } = window.jspdf;
-    
         // Create a hidden container for rendering the HTML
         const container = document.createElement('div');
         container.style.position = 'absolute';

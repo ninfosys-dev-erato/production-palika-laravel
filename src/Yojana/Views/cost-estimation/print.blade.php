@@ -96,12 +96,26 @@
                 page-break-inside: avoid;
             }
         }
+
+
+        /* Ensure A4 Size */
+        .a4-container {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 7mm 20mm;
+            margin: auto;
+            background: white;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            position: relative;
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div class="main-container">
+    <div class="main-container a4-container">
         <!-- <table class="main-table">
             <tr>
                 <td style="width: 80px;"><img class="logo" src="{{ $palika_logo }}" alt="Logo"></td>

@@ -561,8 +561,16 @@ async function printHtml(html) {
 
     // Create a temporary container for the HTML string
     const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px'; // hide offscreen
+    container.style.width = "210mm";
+    container.style.minHeight = "297mm";
+    container.style.padding = "7mm 20mm";
+    container.style.margin = "auto";
+    container.style.background = "white";
+    container.style.boxShadow = "0px 0px 5px rgba(0, 0, 0, 0.2)";
+    container.style.textAlign = "left";
+    container.style.position = "absolute";
+    container.style.left = "-9999px"; // hide offscreen
+    
     container.innerHTML = html;
     document.body.appendChild(container);
 

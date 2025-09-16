@@ -38,14 +38,26 @@
     <div class="col-md-12 {{ $preview ? 'd-none' : '' }}">
         <x-form.ck-editor-input label="" id="recommendation_letter" name="letter" :value="$letter" />
     </div>
-    <div class="card mt-3 {{ !$preview ? 'd-none' : '' }}">
+    <div class=" mt-3 {{ !$preview ? 'd-none' : '' }}">
         <div class="card-body">
-            <div class="col-md-12" id="printContent">
+            <div class="col-md-12 a4-container" id="printContent">
                 {!! $letter !!}
             </div>
         </div>
     </div>
-
+    <style>
+        /* Ensure A4 Size */
+        .a4-container {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 7mm 20mm;
+            margin: auto;
+            background: white;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            position: relative;
+        }
+    </style>
 
 </div>
 
