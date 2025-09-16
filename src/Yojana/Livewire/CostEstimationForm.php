@@ -38,10 +38,11 @@ use Src\Yojana\Service\CostEstimationConfigurationAdminService;
 use Src\Yojana\Service\CostEstimationDetailAdminService;
 use Src\Settings\Traits\AdminSettings;
 use Src\Yojana\Service\WorkOrderAdminService;
+use App\Traits\HelperTemplate;
 
 class CostEstimationForm extends Component
 {
-    use SessionFlash, WithFileUploads, HelperDate;
+    use SessionFlash, WithFileUploads, HelperDate, HelperTemplate;
 
     public ?Plan $plan;
     public ?CostEstimation $costEstimation;
@@ -552,16 +553,22 @@ class CostEstimationForm extends Component
         $address = getSetting('palika-district') . ', ' . getSetting('palika-province') . ', ' . 'नेपाल';
         $palika_ward = $ward ? $ward->ward_name_ne : getSetting('office_name');
         $nepaliDate = replaceNumbers($this->adToBs(now()->format('Y-m-d')), true);
+        $header = $this->getBusinessLetterHeaderFromSample();
 
-        $html = view('Yojana::cost-estimation.print', compact('costEstimation',  'palika_name', 'palika_logo', 'palika_campaign_logo', 'address', 'palika_ward', 'nepaliDate', 'plan', 'totalConfig'))->render();
-        $url = PdfFacade::saveAndStream(
-            content: $html,
-            file_path: config('src.Yojana.yojana.cost-estimation'),
-            file_name: "token_{$user->email}" . date('YmdHis'),
-                            disk: getStorageDisk('private'),
-        );
-        $this->dispatch('open-pdf-in-new-tab', url: $url);
-    }
+        $html = view('Yojana::cost-estimation.print', compact('costEstimation',  'palika_name', 'palika_logo', 'palika_campaign_logo', 'address', 'palika_ward', 'nepaliDate', 'plan', 'totalConfig','header'))->render();
+        
+        // $url = PdfFacade::saveAndStream(
+        //     content: $html,
+        //     file_path: config('src.Yojana.yojana.cost-estimation'),
+        //     file_name: "token_{$user->email}" . date('YmdHis'),
+        //                     disk: getStorageDisk('private'),
+        // );
+
+
+        // $this->dispatch('open-pdf-in-new-tab', url: $url);
+
+        $this->dispatch('print-cost-estimation', html: $html);
+        }
 
     public function printApprovalLetter()
     {

@@ -70,17 +70,19 @@ public function collectionDelete(array $ids){
             return null;
         };
 
-        $url = PdfFacade::saveAndStream(
-            content: $this->resolveTemplate($plan,$agreement),
-            file_path: config('src.Yojana.yojana.certificate'),
-            file_name: "yojana_{$plan->id}",
-            disk: getStorageDisk('private'),
-            styles: $agreement?->styles ?? ""
-        );
+        // $url = PdfFacade::saveAndStream(
+        //     content: $this->resolveTemplate($plan,$agreement),
+        //     file_path: config('src.Yojana.yojana.certificate'),
+        //     file_name: "yojana_{$plan->id}",
+        //     disk: getStorageDisk('private'),
+        //     styles: $agreement?->styles ?? ""
+        // );
 
-        return $url;
+        // return $url;
         
-        // return redirect()->away($url);
+        $html =$this->resolveTemplate($plan,$agreement);
+        return $html;
+
     }
 }
 

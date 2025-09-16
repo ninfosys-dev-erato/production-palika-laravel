@@ -120,12 +120,12 @@ class AgreementTable extends DataTableComponent
 
     public function print($id){
         $service = new AgreementAdminService();
-        $agreementFormat = $service->printAgreement($id);
-        if (!isset($agreementFormat)){
+        $agreementContent = $service->printAgreement($id);
+        if (!isset($agreementContent)){
             $this->errorFlash('Agreement Format Not Found');
         }
-
-        $this->dispatch('open-pdf-in-new-tab', url: $agreementFormat);
+        // $this->dispatch('open-pdf-in-new-tab', url: $agreementFormat);
+        $this->dispatch('print-agreement', html: $agreementContent);
         // return $agreementFormat;
     }
 

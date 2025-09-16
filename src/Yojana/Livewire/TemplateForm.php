@@ -28,7 +28,7 @@ class TemplateForm extends Component
 
     use SessionFlash, WithFileUploads, YojanaTemplate;
 
-    public bool $preview = false;
+    public bool $preview = true;
     public $letter;
     public $model;
     public $plan;

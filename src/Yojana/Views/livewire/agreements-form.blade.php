@@ -734,3 +734,64 @@
             wire:loading.attr="disabled">{{ __('yojana::yojana.save') }}</button>
     </div>
 </form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    document.addEventListener('livewire:init', () => {
+        // Existing listener for cost estimation
+        Livewire.on('print-cost-estimation', ({ html }) => {
+            printHtml(html);
+        });
+    
+        // New listener for agreement
+        Livewire.on('print-agreement', ({ html }) => {
+            printHtml(html);
+        });
+    });
+    
+    async function printHtml(html) {
+        const { jsPDF } = window.jspdf;
+    
+        // Create a hidden container for rendering the HTML
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px'; // offscreen
+        container.innerHTML = html;
+        document.body.appendChild(container);
+    
+        const canvas = await html2canvas(container, {
+            scale: 2,
+            useCORS: true
+        });
+    
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+    
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+    
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    
+        let heightLeft = imgHeight;
+        let position = 0;
+    
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
+    
+        while (heightLeft > 1) {
+            position -= pdfHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+        }
+    
+        // Auto print
+        pdf.autoPrint();
+        window.open(pdf.output('bloburl'), '_blank');
+    
+        // Clean up
+        document.body.removeChild(container);
+    }
+    </script>
+    

@@ -522,6 +522,8 @@
 </div>
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 
     document.addEventListener('livewire:initialized', () => {
@@ -546,6 +548,58 @@
         });
 
     });
+
+
+document.addEventListener('livewire:init', () => {
+    Livewire.on('print-cost-estimation', ({ html }) => {
+        printHtml(html);
+    });
+});
+
+async function printHtml(html) {
+    const { jsPDF } = window.jspdf;
+
+    // Create a temporary container for the HTML string
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-9999px'; // hide offscreen
+    container.innerHTML = html;
+    document.body.appendChild(container);
+
+    const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    while (heightLeft > 1) {
+        position -= pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
+    }
+
+    pdf.autoPrint();
+    window.open(pdf.output('bloburl'), '_blank');
+
+    // Clean up the container
+    document.body.removeChild(container);
+}
+
 
 </script>
 @endpush

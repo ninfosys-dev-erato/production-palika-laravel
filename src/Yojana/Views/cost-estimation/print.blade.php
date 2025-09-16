@@ -79,6 +79,14 @@
             margin: 5px 0;
         }
 
+        figure.table,
+        figure.table table,
+        figure.table td,
+        figure.table th {
+            border: none !important;
+            border-collapse: collapse;
+        }
+
         @media print {
             body {
                 margin: 0;
@@ -94,7 +102,7 @@
 <body>
 
     <div class="main-container">
-        <table class="main-table">
+        <!-- <table class="main-table">
             <tr>
                 <td style="width: 80px;"><img class="logo" src="{{ $palika_logo }}" alt="Logo"></td>
                 <td class="title" style="color: red;">
@@ -105,15 +113,15 @@
                 <td style="width: 80px;"><img class="campaign_logo" src="{{ $palika_campaign_logo }}"
                         alt="Campaign Logo"></td>
             </tr>
-        </table>
-    </div>
-
+        </table> -->
+        {!! $header !!}
+   
 
     <table style="width: 100%; border-collapse: collapse; border: none;">
         <tr style="border: none;">
             <td style="width: 70%; text-align: left; vertical-align: top; border: none;">
                 <p>कार्यालय वा परियोजनाको नामः {{ $plan->project_name }}</p>
-                <p>कार्यक्रम/योजनाको नाम:</p>
+                <p>कार्यक्रम/योजनाको नाम: {{ $plan->project_name }}</p>
                 <p>कार्यान्वयन हुने स्थलः {{ $plan->location }}</p>
                 <p>सम्पन्न हुने अनुमानित अवधिः ........................................</p>
             </td>
@@ -160,36 +168,36 @@
                     <td>
                         {{ replaceNumbers($record->unitRelation->symbol, true) }}
                     </td>
-
+                    <td>
+                        रु {{ replaceNumbers($record->rate, true) }}
+                    </td>
                     <td>
                         {{ replaceNumbers($record->quantity, true) }}
                     </td>
+                    
                     <td>
-                        {{ replaceNumbers($record->rate, true) }}
+                        रु {{ replaceNumbers($record->amount, true) }}
                     </td>
                     <td>
-                        {{ replaceNumbers($record->amount, true) }}
-                    </td>
-                    <td>
-                        {{ replaceNumbers($record->vat_amount, true) }}
+                        रु {{ replaceNumbers($record->vat_amount, true) }}
                     </td>
                 </tr>
             @endforeach
             <tr>
                 <td colspan="5" class="no-border bold" style="text-align:right">खुद लागत अनुमान</td>
-                <td colspan="2" class="bold">{{ replaceNumbers($totalAmount, true) }}</td>
+                <td colspan="2" class="bold">रु {{ replaceNumbers($totalAmount, true) }}</td>
             </tr>
             <tr>
                 <td colspan="5" class="no-border" style="text-align:right">कन्टेन्जेन्सी +(पुर्वधार)</td>
-                <td colspan="2">{{ replaceNumbers($totalConfig, true) }}</td>
+                <td colspan="2">रु {{ replaceNumbers($totalConfig, true) }}</td>
             </tr>
             <tr>
                 <td colspan="5" class="no-border" style="text-align:right">जम्मा रकम</td>
-                <td colspan="2">{{ replaceNumbers(($totalAmount + $totalConfig), true) }}</td>
+                <td colspan="2">रु {{ replaceNumbers(($totalAmount + $totalConfig), true) }}</td>
             </tr>
             <tr>
                 <td colspan="5" class="no-border bold" style="text-align:right">लगभग</td>
-                <td colspan="2" class="bold">{{ replaceNumbers($totalAmountWithoutVat, true) }}</td>
+                <td colspan="2" class="bold">रु {{ replaceNumbers($totalAmountWithoutVat, true) }}</td>
             </tr>
         </tbody>
     </table>
@@ -219,6 +227,7 @@
             </td>
         </tr>
     </table>
+</div>
 
 
 </body>
