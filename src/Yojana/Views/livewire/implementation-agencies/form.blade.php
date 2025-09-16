@@ -66,7 +66,7 @@
             @endif
 
 
-            @if ($this->plan?->implementationMethod?->model == \Src\Yojana\Enums\ImplementationMethods::OperatedByTrust->value)
+            @if ($this->plan?->implementationMethod?->model == \Src\Yojana\Enums\ImplementationMethods::OperatedByTrust)
                 <!-- Trust Field -->
                 <div class='col-md-6 mb-3'>
                     <div class='form-group'>
