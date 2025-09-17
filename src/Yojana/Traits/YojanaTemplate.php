@@ -47,7 +47,8 @@ trait YojanaTemplate
             return  "_______________";
         }, $template);
         $date = replaceNumbers(ne_date(date('Y-m-d')),true);
-        return $this->getLetterHeader($plan->ward_id??0,$date).$resolved;
+        // return $this->getLetterHeader($plan->ward_id??0,$date).$resolved;
+        return $this->getBusinessLetterHeaderFromSample().$resolved;
     }
     function resolveTemplateBindings(string $template, Plan | ConsumerCommittee $model): array
     {
@@ -120,15 +121,15 @@ trait YojanaTemplate
     public function getBudgetSourceData($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;text-align: left;">
+        <thead style="text-align: left;">
             <tr>
-                <th style="border:1px solid #dee2e6; padding:8px; background-color:#f8f9fa; text-align: center;">#</th>
-                <th style="border:1px solid #dee2e6; padding:8px; background-color:#f8f9fa; text-align: center;">' . __('स्रोत प्रकार') . '</th>
-                <th style="border:1px solid #dee2e6; padding:8px; background-color:#f8f9fa; text-align: center;">' . __('कार्यक्रम') . '</th>
-                <th style="border:1px solid #dee2e6; padding:8px; background-color:#f8f9fa; text-align: center;">' . __('बजेट शीर्षक') . '</th>
-                <th style="border:1px solid #dee2e6; padding:8px; background-color:#f8f9fa; text-align: center;">' . __('खर्च शीर्षक') . '</th>
-                <th style="border:1px solid #dee2e6; padding:8px; background-color:#f8f9fa; text-align: center;">' . __('आर्थिक वर्ष') . '</th>
-                <th style="border:1px solid #dee2e6; padding:8px; background-color:#f8f9fa; text-align: center;">' . __('रकम') . '</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">#</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('स्रोत प्रकार') . '</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('कार्यक्रम') . '</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('बजेट शीर्षक') . '</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('खर्च शीर्षक') . '</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('आर्थिक वर्ष') . '</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('रकम') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -166,13 +167,13 @@ trait YojanaTemplate
     public function getAgreementGrantDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;text-align: left;">
+        <thead style="text-align: left;">
             <tr style="text-align: left;">
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('स्रोत प्रकार') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('सामग्रीको नाम') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('एकाइ') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('स्रोत प्रकार') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('सामग्रीको नाम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('एकाइ') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('रकम') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -203,13 +204,13 @@ trait YojanaTemplate
     public function getAgreementBenificiaries($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;">
+        <thead >
             <tr>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('लाभान्वित हुने') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('कुल संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('पुरुष संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('महिला संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('लाभान्वित हुने') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('कुल संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('पुरुष संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('महिला संख्या') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -240,11 +241,11 @@ trait YojanaTemplate
     public function getCostDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;">
+        <thead >
             <tr>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('लागतको स्रोत') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('लागतको स्रोत') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('रकम') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -273,14 +274,14 @@ trait YojanaTemplate
     public function getAgreementInstallmentDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;">
+        <thead >
             <tr>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('किस्ता') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('किस्ता अनुमानित निकासा मिति') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('नगद (रकममा)') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('सामान (रकममा)') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;">' . __('प्रतिशत') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('किस्ता') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('किस्ता अनुमानित निकासा मिति') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('नगद (रकममा)') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('सामान (रकममा)') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px;">' . __('प्रतिशत') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -340,10 +341,10 @@ trait YojanaTemplate
         $configDetails = '';
 
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-    <thead style="background-color:#f8f9fa;">
+    <thead >
         <tr>
-            <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;text-align: center;">' . __('विवरण') . '</th>
-            <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px;text-align: center;">' . __('रकम') . '</th>
+            <th style="border:1px solid #dee2e6;  padding:8px;text-align: center;">' . __('विवरण') . '</th>
+            <th style="border:1px solid #dee2e6;  padding:8px;text-align: center;">' . __('रकम') . '</th>
         </tr>
     </thead>
     <tbody>';
@@ -396,11 +397,11 @@ trait YojanaTemplate
     public function getAgreementCostDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;">
+        <thead >
             <tr>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('कुल रकम') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('भ्याट') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('भ्याट सहित कुल रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('कुल रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('भ्याट') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('भ्याट सहित कुल रकम') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -421,11 +422,11 @@ trait YojanaTemplate
     public function getAdvancePaymentDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;">
+        <thead >
             <tr>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('भुक्तानी मिति') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('भुक्तानी मिति') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('रकम') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -454,15 +455,15 @@ trait YojanaTemplate
     public function getEvaluationDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;">
+        <thead >
             <tr>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('किस्ता') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('मूल्यांकन न.') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('मूल्यांकन मिति') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('मूल्यांकन रकम') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('कर रकम') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('कर सहित मूल्यांकन रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('किस्ता') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('मूल्यांकन न.') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('मूल्यांकन मिति') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('मूल्यांकन रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('कर रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('कर सहित मूल्यांकन रकम') . '</th>
             </tr>
         </thead>
         <tbody>';
@@ -496,13 +497,13 @@ trait YojanaTemplate
     {
         $latestPayment = $plan->payments->sortByDesc('created_at')->first();
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
-        <thead style="background-color:#f8f9fa;">
+        <thead >
             <tr>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('कर शिर्षक') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('मूल्यांकन रकम') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('कर दर') . '</th>
-                <th style="border:1px solid #dee2e6; background-color:#f8f9fa; padding:8px; text-align: center">' . __('कर रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('कर शिर्षक') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('मूल्यांकन रकम') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('कर दर') . '</th>
+                <th style="border:1px solid #dee2e6;  padding:8px; text-align: center">' . __('कर रकम') . '</th>
             </tr>
         </thead>
         <tbody>';
