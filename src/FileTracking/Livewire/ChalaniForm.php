@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\HelperDate;
 use App\Traits\HelperTemplate;
 use App\Traits\SessionFlash;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -248,7 +249,10 @@ class ChalaniForm extends Component
     {
         $this->validate();
         try {
-            $this->fileRecord->registration_date = $this->bsToAd($this->fileRecord['registration_date']); 
+            $adDate = $this->bsToAd($this->fileRecord['registration_date']); // e.g. "2025-05-23"
+
+            $this->fileRecord->registration_date = Carbon::parse($adDate)
+                ->setTimeFrom(Carbon::now());
             if (!$this->isReceipent) {
 
                 [$recipientType, $recipientId] = explode('_', $this->fileRecord->recipient_department);
