@@ -8,6 +8,8 @@ use App\Facades\FileTrackingFacade;
 use App\Facades\GlobalFacade;
 use App\Facades\ImageServiceFacade;
 use App\Models\User;
+use App\Traits\HelperDate;
+use App\Traits\HelperTemplate;
 use App\Traits\SessionFlash;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -21,7 +23,7 @@ use Src\Wards\Models\Ward;
 
 class ChalaniForm extends Component
 {
-    use SessionFlash, WithFileUploads;
+    use SessionFlash, WithFileUploads, HelperDate;
 
     public FileRecord $fileRecord;
 
@@ -46,6 +48,7 @@ class ChalaniForm extends Component
             'fileRecord.fiscal_year' => ['required'],
             'fileRecord.title' => ['required'],
             'fileRecord.recipient_department' => ['nullable'],
+            'fileRecord.registration_date' => ['nullable'],
             'fileRecord.recipient_name' => ['nullable'],
             'fileRecord.recipient_position' => ['nullable'],
             'fileRecord.signee_department' => ['required'],
@@ -64,6 +67,7 @@ class ChalaniForm extends Component
             'fileRecord.title.required' => __('filetracking::filetracking.the_title_is_required'),
             'fileRecord.fiscal_year.required' => __('filetracking::filetracking.fiscal_year_is_required'),
             'fileRecord.recipient_department.required' => __('filetracking::filetracking.the_recipient_department_is_required'),
+            'fileRecord.registration_date.required' => __('filetracking::filetracking.the_title_is_required'),
             'fileRecord.recipient_name.required' => __('filetracking::filetracking.the_recipient_name_is_required'),
             'fileRecord.signee_department.required' => __('filetracking::filetracking.the_signee_department_is_required'),
             'fileRecord.signee_name.required' => __('filetracking::filetracking.the_signee_name_is_required'),
@@ -132,6 +136,19 @@ class ChalaniForm extends Component
         if ($this->action == Action::UPDATE) {
             $this->recipientDepartmentUser();
             $this->signeeDepartmentUser();
+            $regDate = $this->fileRecord->registration_date;
+            $year = intval(substr($regDate, 0, 4));
+            if ($year >= 2070 && $year <= 2100) {
+
+                $this->fileRecord->registration_date = replaceNumbers(substr($regDate, 0, 10), true);
+            } else {
+                try {
+                    $bsDate = $this->adToBs(substr($regDate, 0, 10));
+                    $this->fileRecord->registration_date = replaceNumbers($bsDate, true);
+                } catch (\Exception $e) {
+                    $this->fileRecord->registration_date = 'Invalid Date';
+                }
+            }
         } else {
             $this->fileRecord->fiscal_year = key(getSettingWithKey('fiscal-year'));
         }
@@ -231,6 +248,7 @@ class ChalaniForm extends Component
     {
         $this->validate();
         try {
+            $this->fileRecord->registration_date = $this->bsToAd($this->fileRecord['registration_date']); 
             if (!$this->isReceipent) {
 
                 [$recipientType, $recipientId] = explode('_', $this->fileRecord->recipient_department);
