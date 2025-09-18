@@ -41,7 +41,7 @@ class Plan extends Model
         'purpose',
         'red_book_detail',
         'allocated_budget',
-        'remaining_budget',
+        // 'remaining_budget',
         'source_id',
         'program',
         'budget_head_id',
@@ -244,12 +244,17 @@ class Plan extends Model
         return $this->hasMany(Payment::class, 'plan_id');
     }
 
-    public function getRemainingAmountAttribute()
+     public function getRemainingAmountAttribute()
     {
-        // return $this->budgetSources->whereNull('deleted_at')->sum('remaining_amount') + $this->getReceivedAmountAttribute();
-        return $this->allocated_budget - $this->total_payment - $this->total_advance_paid - $this->total_transfer_amount + $this->received_amount;
+        $this->loadMissing('budgetSources');
+         if ($this->total_transfer_amount < 0) {
+        // Sender plan logic
+        return $this->allocated_budget - abs($this->total_transfer_amount) - $this->total_payment - $this->total_advance_paid;
+    } else {
+        // Receiver plan logic
+        return $this->allocated_budget + $this->total_transfer_amount - $this->total_payment - $this->total_advance_paid;
     }
-
+    }
     public function getTransferredAmountAttribute()
     {
         return $this->budgetSources->whereNull('deleted_at')->sum(function ($source) {

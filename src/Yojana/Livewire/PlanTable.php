@@ -112,7 +112,7 @@ class PlanTable extends DataTableComponent
             })->html()->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('yojana::yojana.budget'))->label(function ($row) {
                 $allocated = __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($row->allocated_budget ?? 0), true);
-                $remaining =__('yojana::yojana.rs').replaceNumbersWithLocale(number_format($row->remaining_budget ?? 0), true);
+                $remaining =__('yojana::yojana.rs').replaceNumbersWithLocale(number_format($row->remaining_amount ?? 0), true);
 
                 return '
             <strong>' . __('yojana::yojana.allocated') . ':</strong> ' . $allocated . '<br>

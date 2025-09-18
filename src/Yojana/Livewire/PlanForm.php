@@ -83,7 +83,7 @@ class PlanForm extends Component
             'plan.project_group_id' => ['required'],
             'plan.purpose' => ['required'],
             'plan.red_book_detail' => ['required'],
-            'plan.allocated_budget' => ['required'],
+            'plan.allocated_budget' => ['required','numeric','min:1'],
             'plan.category' => ['required'],
             'plan.department' => ['nullable'],
             //    'plan.source_id' => ['required'],
