@@ -252,5 +252,6 @@ return [
 
     'select_a_fiscal_year' => 'Select an fiscal year',
     'receipt_no' => 'receipt no',
-    'darta_title' => 'title'
+    'darta_title' => 'title',
+    'chalani_date' => 'Chalani Date'
 ];

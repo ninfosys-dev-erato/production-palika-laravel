@@ -267,6 +267,6 @@ return [
     'magh' => 'माघ',
     'falgun' => 'फाल्गुण',
     'chaitra' => 'चैत्र',
-
+    'chalani_date' => 'चलानी मिति'
 
 ];
