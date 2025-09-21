@@ -345,6 +345,7 @@ function crawlerMapItem(mixed $crawledItem): array
 function getFormattedBsDate() 
 {
     $bsDate = ne_date(date('Y-m-d'), 'yyyy,MM,dd');
+    dd($bsDate);
     [$year, $monthName, $day] = explode(',', $bsDate);
     $monthName = preg_replace('/[^\p{L}\p{M}]/u', '', $monthName);
 
@@ -354,7 +355,7 @@ function getFormattedBsDate()
         'असार' => '०३',
         'साउन' => '०४',
         'भदौ' => '०५',
-        'आश्विन' => '०६',
+        'असोज' => '०६',
         'कार्तिक' => '०७',
         'मंसिर' => '०८',
         'पुष' => '०९',
