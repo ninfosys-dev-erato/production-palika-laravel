@@ -47,9 +47,9 @@
             text-align: center;
         }
 
-        th {
+        /* th {
             background-color: #f2f2f2;
-        }
+        } */
 
         .no-border {
             border: none !important;
@@ -115,7 +115,7 @@
 
 <body>
 
-    <div class="main-container a4-container">
+    <div class="main-container">
         <!-- <table class="main-table">
             <tr>
                 <td style="width: 80px;"><img class="logo" src="{{ $palika_logo }}" alt="Logo"></td>

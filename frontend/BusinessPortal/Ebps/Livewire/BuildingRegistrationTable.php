@@ -37,11 +37,11 @@ class BuildingRegistrationTable extends DataTableComponent
     {
         $this->setPrimaryKey('ebps_map_applies.id')
             ->setTableAttributes([
-                'class' =>"table table-bordered table-hover dataTable dtr-inline"
+                'class' => "table table-bordered table-hover dataTable dtr-inline"
             ])
             ->setAdditionalSelects(['ebps_map_applies.id'])
             ->setBulkActionsDisabled()
-            ->setPerPageAccepted([10, 25, 50, 100,500])
+            ->setPerPageAccepted([10, 25, 50, 100, 500])
             ->setSelectAllEnabled()
             ->setRefreshMethod('refresh')
             ->setBulkActionConfirms([
@@ -53,19 +53,19 @@ class BuildingRegistrationTable extends DataTableComponent
         $organizationId = Auth::guard('organization')->user()?->organization_id;
 
         $mapApplyIds = MapApplyDetail::where('organization_id', $organizationId)
-        ->whereNull('ebps_map_apply_details.deleted_at')
-        ->pluck('map_apply_id');
+            ->whereNull('ebps_map_apply_details.deleted_at')
+            ->pluck('map_apply_id');
 
         return MapApply::query()
-        ->with(['fiscalYear', 'customer', 'landDetail', 'constructionType', 'mapApplySteps', 'houseOwner', 'localBody', 'district'])
-         ->whereIn('ebps_map_applies.id', $mapApplyIds)
-        ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id')
-            ->where('ebps_map_applies.deleted_at',null)
-            ->where('ebps_map_applies.deleted_by',null)
-        ->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)
-            ->where('ebps_map_applies.deleted_at',null)
-            ->where('ebps_map_applies.deleted_by',null)
-           ->orderBy('ebps_map_applies.created_at','DESC'); // Select some things
+            ->with(['fiscalYear', 'customer', 'landDetail', 'constructionType', 'mapApplySteps', 'houseOwner', 'localBody', 'district'])
+            ->whereIn('ebps_map_applies.id', $mapApplyIds)
+            ->select('full_name', 'mobile_no', 'province_id', 'local_body_id', 'district_id', 'ward_no', 'house_owner_id')
+            ->where('ebps_map_applies.deleted_at', null)
+            ->where('ebps_map_applies.deleted_by', null)
+            ->where('application_type', ApplicationTypeEnum::BUILDING_DOCUMENTATION)
+            ->where('ebps_map_applies.deleted_at', null)
+            ->where('ebps_map_applies.deleted_by', null)
+            ->orderBy('ebps_map_applies.created_at', 'DESC'); // Select some things
     }
     public function filters(): array
     {
@@ -75,32 +75,34 @@ class BuildingRegistrationTable extends DataTableComponent
     {
         $columns = [
 
-            Column::make(__('ebps::ebps.submission_no'), "submission_id") ->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ebps::ebps.fiscal_year'), "fiscalYear.year") ->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ebps::ebps.submission_no'), "submission_id")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ebps::ebps.fiscal_year'), "fiscalYear.year")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ebps::ebps.house_owner'))->label(
-                    fn($row, Column $column) => view('Ebps::livewire.table.col-house-owner-detail', [
-                        'row' => $row,
-                    ])->render()
-                )->html(),
-            Column::make(__('ebps::ebps.applied_date'), "applied_date") ->sortable()->searchable()->collapseOnTablet(),
+                fn($row, Column $column) => view('Ebps::livewire.table.col-house-owner-detail', [
+                    'row' => $row,
+                ])->render()
+            )->html(),
+            Column::make(__('ebps::ebps.applied_date'), "applied_date")->sortable()->searchable()->collapseOnTablet(),
         ];
 
         $actionsColumn = Column::make(__('Actions'))->label(function ($row, Column $column) {
             $buttons = '';
 
-                $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
-                $buttons .= $view;
+            $view = '<button class="btn btn-success btn-sm" wire:click="view(' . $row->id . ')" ><i class="bx bx-show"></i></button>&nbsp;';
+            $buttons .= $view;
 
-                // Check if first step has been approved using the service
-                $firstStepApproved = $this->applicationStepService->isFirstStepApprovedForBuildingRegistration($row->id);
+            // Check if first step has been approved using the service
+            $firstStepApproved = $this->applicationStepService->isFirstStepApprovedForBuildingRegistration($row->id);
 
-                // Only show edit and delete buttons if first step is not approved
-                if (!$firstStepApproved) {
-                    $edit = '<button type="button" class="btn btn-primary btn-sm"  wire:click="edit(' . $row->id . ')"><i class="bx bx-edit"></i></button>&nbsp;';
-                    $buttons .= $edit;
-                    $delete = '<button type="button" class="btn btn-danger btn-sm"  wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
-                    $buttons .= $delete;
-                }
+            // Only show edit and delete buttons if first step is not approved
+            if (!$firstStepApproved) {
+                $edit = '<button type="button" class="btn btn-primary btn-sm"  wire:click="edit(' . $row->id . ')"><i class="bx bx-edit"></i></button>&nbsp;';
+                $buttons .= $edit;
+                $delete = '<button type="button" class="btn btn-danger btn-sm"  wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>&nbsp;';
+                $buttons .= $delete;
+            }
+            $additionalForm = '<button type="button" class="btn btn-secondary btn-sm" wire:click="additionalForm(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Additional Form"><i class="bx bx-file"></i></button>&nbsp;';
+            $buttons .= $additionalForm;
 
             $moveForward = '<button type="button" class="btn btn-info btn-sm" wire:click="moveFurther(' . $row->id . ')" data-bs-toggle="tooltip" data-bs-placement="top" title="Move Forward"><i class="bx bx-right-arrow-alt"></i></button>&nbsp;';
             $buttons .= $moveForward;
@@ -110,13 +112,12 @@ class BuildingRegistrationTable extends DataTableComponent
         $columns[] = $actionsColumn;
 
         return $columns;
-
     }
-    public function refresh(){}
+    public function refresh() {}
 
     public function edit($id)
     {
-        return redirect()->route('organization.ebps.building-registrations.edit',['id'=>$id]);
+        return redirect()->route('organization.ebps.building-registrations.edit', ['id' => $id]);
     }
     public function chooseOrganization($id)
     {
@@ -126,12 +127,12 @@ class BuildingRegistrationTable extends DataTableComponent
 
     public function moveFurther($id)
     {
-        return redirect()->route('organization.ebps.building-registrations.step', ['id'=>$id]);
+        return redirect()->route('organization.ebps.building-registrations.step', ['id' => $id]);
     }
 
     public function view($id)
     {
-        return redirect()->route('organization.ebps.building-registrations.view',['id'=>$id]);
+        return redirect()->route('organization.ebps.building-registrations.view', ['id' => $id]);
     }
 
 
@@ -147,9 +148,15 @@ class BuildingRegistrationTable extends DataTableComponent
         $service->collectionDelete($this->getSelected());
         $this->clearSelected();
     }
-    public function exportSelected(){
+    public function exportSelected()
+    {
         $records = $this->getSelected();
         $this->clearSelected();
         return Excel::download(new MapAppliesExport($records), 'map_applies.xlsx');
+    }
+
+    public function additionalForm($id)
+    {
+        return redirect()->route('organization.ebps.map_apply.additionalForm', ['id' => $id]);
     }
 }

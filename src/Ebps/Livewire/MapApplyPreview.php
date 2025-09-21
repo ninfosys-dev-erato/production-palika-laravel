@@ -47,7 +47,6 @@ class MapApplyPreview extends Component
     {
         $this->mapApplyStep = $mapApplyStep;
 
-
         $mapStepId = $mapApplyStep->map_step_id;
         $mapApplyId = $mapApplyStep->map_apply_id;
 
@@ -55,6 +54,7 @@ class MapApplyPreview extends Component
             ->where('map_apply_id', $mapApplyId)
             ->where('map_step_id', $mapStepId)
             ->get();
+
         $this->additionalForms = $this->mapApplySteps->first()
             ->mapApply
             ->additionalFormDynamicData()

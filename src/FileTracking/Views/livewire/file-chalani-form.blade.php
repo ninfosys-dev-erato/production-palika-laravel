@@ -1,7 +1,7 @@
 <form wire:submit.prevent="save">
     <div class="card-body">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12 mb-4">
                 <div class="form-group">
                     <label for="title">{{ __('filetracking::filetracking.chalani_title') }}</label>
                     <input wire:model.defer="fileRecord.title" name="fileRecord.title" type="text"
@@ -13,6 +13,21 @@
                     @enderror
                 </div>
             </div>
+
+            <div class="col-md-4 ">
+                <div class="form-group">
+                    <label for="registration_date">{{ __('filetracking::filetracking.chalani_date') }}</label>
+                    <input wire:model.defer="fileRecord.registration_date" name="registration_date" type="text"
+                        id="reg_date"
+                        class="nepali-date form-control {{ $errors->has('fileRecord.registration_date') ? 'is-invalid' : '' }}"
+                        style="{{ $errors->has('fileRecord.registration_date') ? 'border: 1px solid #dc3545; box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);' : '' }}"
+                        placeholder="{{ __('filetracking::filetracking.chalani_date') }}">
+                    @error('fileRecord.registration_date')
+                        <small class="text-danger">{{ __($message) }}</small>
+                    @enderror
+                </div>
+            </div>
+
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="fiscal_year">{{ __('filetracking::filetracking.letter_number') }}</label>
@@ -32,6 +47,7 @@
             </div>
 
             <div class="col-12 mt-3">
+                <hr>
                 <h5>{{ __('filetracking::filetracking.recepient_information') }}</h5>
             </div>
 
