@@ -72,39 +72,41 @@ class TemplateForm extends Component
     }
     public function resetLetter()
     {
-        $this->model->load('letter_sample');
-        $letterType = $this->model->letter_sample->letter_type;
+        // dd($this->model, $this->letter, $this->letterType);
         if ($this->model instanceof WorkOrder) {
-            if($letterType == LetterTypes::AdvancePayment){
-                $advancePaymentService = new AdvancePaymentAdminService();
-                $letter = $advancePaymentService->getWorkOrder($this->model_id);
-                $this->letter = $letter->letter_body;
-            }elseif($letterType == LetterTypes::Agreement){
-                $implementationAgencyService = new ImplementationAgencyAdminService();
-                $letter = $implementationAgencyService->getWorkOrder($this->model_id);
-                $this->letter = $letter->letter_body;
-            }elseif($letterType == LetterTypes::Payment){
-                $paymentService = new PaymentAdminService();
-                $letter = $paymentService->getWorkOrder($this->model_id);
-                $this->letter = $letter->letter_body;
-            }
-            else
-            {
+            $this->model->load('letter_sample');
+            $letterType = $this->model->letter_sample->letter_type;
+            // if($letterType == LetterTypes::AdvancePayment){
+            //     $advancePaymentService = new AdvancePaymentAdminService();
+            //     $letter = $advancePaymentService->getWorkOrder($this->model_id);
+            //     $this->letter = $letter->letter_body;
+            // }elseif($letterType == LetterTypes::Agreement){
+            //     $implementationAgencyService = new ImplementationAgencyAdminService();
+            //     $letter = $implementationAgencyService->getWorkOrder($this->model_id);
+            //     $this->letter = $letter->letter_body;
+            // }elseif($letterType == LetterTypes::Payment){
+            //     $paymentService = new PaymentAdminService();
+            //     $letter = $paymentService->getWorkOrder($this->model_id);
+            //     $this->letter = $letter->letter_body;
+            // }
+            // else
+            // {
                 $letterSample = LetterSample::where('id', $this->model->letter_sample_id)
                     ->where('implementation_method_id', $this->plan->implementation_method_id)
                     ->firstOrFail();
 
                 $letterBody = $this->resolveTemplate($this->plan, $letterSample)??"";
                 $this->letter = $letterSample?->styles.$letterBody;
-            }
+            // }
 
         }
         elseif ($this->model instanceof ConsumerCommittee)
+
         {
             $letterSample = LetterSample::where('letter_type', $this->letterType)
                 ->firstOrFail();
-            $letterBody = $letterSample->sample_letter;
-            $this->letter = $this->getLetterHeader().$letterSample?->styles.$letterBody;
+                $letterBody = $this->resolveTemplate($this->model, $letterSample) ?? "";
+            $this->letter = $letterBody;
         }
         $this->save();
         $this->successToast(__('yojana::yojana.reset_successfully'));

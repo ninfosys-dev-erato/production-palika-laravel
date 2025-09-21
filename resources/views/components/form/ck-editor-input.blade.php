@@ -120,16 +120,16 @@
                 console.error('CKEditor initialization error:', error);
             });
 
-        function sanitizeEditorData(data) {
-            const doc = new DOMParser().parseFromString(data, 'text/html');
+            function sanitizeEditorData(data) {
+    const doc = new DOMParser().parseFromString(data, 'text/html');
 
-            // Remove dangerous tags
-            doc.querySelectorAll('script, iframe').forEach(node => node.remove());
+    // Remove only truly dangerous tags
+    doc.querySelectorAll('script, iframe').forEach(node => node.remove());
 
+    // Keep <style> tags
+    return doc.body.innerHTML + (doc.head ? doc.head.innerHTML : '');
+}
 
-
-            return doc.body.innerHTML;
-        }
 
 
         function setEditorData(editorInstance, newData) {
