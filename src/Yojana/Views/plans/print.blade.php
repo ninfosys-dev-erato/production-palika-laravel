@@ -203,7 +203,7 @@
 <table class="table">
     <thead>
     <tr>
-        <th>#</th>
+        <th>क्र.सं</th>
         <th>स्रोत प्रकार</th>
         <th>कार्यक्रम</th>
         <th>बजेट शीर्षक	</th>
