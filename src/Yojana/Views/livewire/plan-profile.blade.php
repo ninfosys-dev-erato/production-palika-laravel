@@ -32,7 +32,7 @@
                 <div class="col-md-6 d-flex align-items-center">
                     <i class="bx bx-buildings text-primary me-2"></i>
                     <span class="text-gray me-1">{{ __('yojana::yojana.ward_no') }} :</span>
-                    <strong class="text-black">{{ app()->getLocale() === "en" ? ($plan->ward->ward_name_en ?? $plan->ward->ward_name_ne) : ($plan->ward->ward_name_ne ?? $plan->ward->ward_name_en) ?? 'N/A' }}</strong>
+                    <strong class="text-black">{{ app()->getLocale() === "en" ? ($plan->ward?->ward_name_en ?? $plan->ward?->ward_name_ne) ?? 'N/A' : ($plan->ward?->ward_name_ne ?? $plan->ward?->ward_name_en) ?? 'N/A' }}</strong>
                 </div>
 
                 <div class="col-md-6 d-flex align-items-center">

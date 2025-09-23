@@ -100,6 +100,9 @@ trait YojanaTemplate
                             $value = $this->getPalikaAddress();
                         }if ($segment == 'palika'){
                             $value = $this->getPalika();
+                        }if ($segment == 'current_date_bs'){
+                            $value = getFormattedBsDate() ?? '';
+
                         }
                     } catch (\Throwable $e) {
                         $value = null;

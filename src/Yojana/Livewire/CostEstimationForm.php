@@ -136,7 +136,7 @@ class CostEstimationForm extends Component
         $this->action = $action;
         $this->plan = $plan;
 
-        if ($this->plan?->costEstimation?->status === "Approved" && $this->plan?->targetEntries()->exists()) {
+        if ($this->plan?->costEstimation?->status === "Approved" ) {
             $this->showApprovalLetter = true;
         }
 

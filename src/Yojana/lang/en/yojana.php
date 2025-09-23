@@ -1729,4 +1729,7 @@ return [
     // Plan Extension Record validations (added)
     'extension_date_is_required' => 'Extension date is required',
     'letter_submission_date_is_required' => 'Letter submission date is required',
+
+    // General guidance
+    'enter_implementation_method_first' => 'Please select the implementation method first',
 ];

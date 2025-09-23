@@ -95,11 +95,11 @@
     <tr>
         <td>
             <div class="info-title">आयोजनाको नाम</div>
-            <div class="info-value">{{ $plan->project_name }}</div>
+            <div class="info-value">{{ $plan->project_name ?? '-' }}</div>
         </td>
         <td>
             <div class="info-title">परियोजनाको स्थिति</div>
-            <div class="info-value">{{ $plan->status->label() }}</div>
+            <div class="info-value">{{ $plan->status?->label() ?? '-' }}</div>
         </td>
     </tr>
     <tr>
@@ -109,7 +109,7 @@
         </td>
         <td>
             <div class="info-title">स्थान</div>
-            <div class="info-value">{{ $plan->location }}</div>
+            <div class="info-value">{{ $plan->location ?? '-' }}</div>
         </td>
     </tr>
     <tr>
@@ -151,23 +151,23 @@
         </td>
         <td>
             <div class="info-title">योजना प्रकार</div>
-            <div class="info-value">{{ $plan->plan_type->label() }}</div>
+            <div class="info-value">{{ $plan->plan_type?->label() ?? '-' }}</div>
         </td>
     </tr>
     <tr>
         <td>
             <div class="info-title">प्रकृति</div>
-            <div class="info-value">{{ $plan->nature->label() }}</div>
+            <div class="info-value">{{ $plan->nature?->label() ?? '-' }}</div>
         </td>
         <td>
             <div class="info-title">योजना ग्रुप</div>
-            <div class="info-value">{{ $plan->projectGroup->title ?? '-' }}</div>
+            <div class="info-value">{{ $plan->projectGroup?->title ?? '-' }}</div>
         </td>
     </tr>
     <tr>
         <td>
             <div class="info-title">उद्देश्य</div>
-            <div class="info-value">{{ $plan->purpose }}</div>
+            <div class="info-value">{{ $plan->purpose ?? '-' }}</div>
         </td>
         <td>
             <div class="info-title">रातो पुस्तक विवरण/सिन नं.</div>
@@ -190,9 +190,9 @@
     </thead>
     <tbody>
         <tr>
-            <td>{{' रु ' . replaceNumbersWithLocale(number_format($plan->allocated_budget), true) }}</td>
-            <td>{{' रु ' . replaceNumbersWithLocale(number_format($plan->totalTransferAmount), true) }}</td>
-            <td>{{' रु ' . replaceNumbersWithLocale(number_format($plan->remaining_amount), true) }}</td>
+            <td>{{' रु ' . replaceNumbersWithLocale(number_format($plan->allocated_budget ?? 0), true) }}</td>
+            <td>{{' रु ' . replaceNumbersWithLocale(number_format($plan->totalTransferAmount ?? 0), true) }}</td>
+            <td>{{' रु ' . replaceNumbersWithLocale(number_format($plan->remaining_amount ?? 0), true) }}</td>
         </tr>
 
     </tbody>
@@ -221,7 +221,7 @@
             <td>{{ $source->budgetHead->title ?? '-' }}</td>
             <td>{{ $source->expenseHead->title ?? '-' }}</td>
             <td>{{ $source->fiscalYear->year ?? '-' }}</td>
-            <td class="text-end">{{' रु '. replaceNumbersWithLocale(number_format($source->amount), true) }}</td>
+            <td class="text-end">{{' रु '. replaceNumbersWithLocale(number_format($source->amount ?? 0), true) }}</td>
         </tr>
     @empty
         <tr>
@@ -232,7 +232,7 @@
     @if ($plan->budgetSources->count() > 0)
         <tr class="fw-bold bg-light">
             <td colspan="6" class="text-end" style="text-align: right;">कुल:</td>
-            <td class="text-end">{{ ' रु '. replaceNumbersWithLocale(number_format($plan->budgetSources->sum('amount')), true) }}</td>
+            <td class="text-end">{{ ' रु '. replaceNumbersWithLocale(number_format($plan->budgetSources?->sum('amount')) ?? 0, true) }}</td>
         </tr>
     @endif
     </tbody>

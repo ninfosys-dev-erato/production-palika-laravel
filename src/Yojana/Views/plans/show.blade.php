@@ -38,14 +38,13 @@
                             {{ __('yojana::yojana.cost_estimation') }}
                         </button>
                     </li>
-                    @if ($plan->costEstimation()->exists())
                         <li class="nav-item" role="presentation">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                 data-bs-target="#target_entry" aria-controls="target_entry" aria-selected="false">
                                 {{ __('yojana::yojana.target_entry') }}
                             </button>
                         </li>
-                    @endif
+
                     @if ($plan?->costEstimation?->status === 'Approved')
                         <li class="nav-item" role="presentation">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
@@ -178,7 +177,7 @@
                                         <i class="bx bx-buildings text-primary me-2 mt-1"></i>
                                         <div class="d-flex flex-column">
                                             <span class="fw-bold small">{{ __('yojana::yojana.project_name') }}</span>
-                                            <span class="fw-medium">{{ $plan->project_name }}</span>
+                                            <span class="fw-medium">{{ $plan->project_name ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -189,7 +188,7 @@
                                         <div class="d-flex flex-column">
                                             <span
                                                 class="fw-bold small">{{ __('yojana::yojana.project_status') }}</span>
-                                            <span class="fw-medium">{{ $plan->status->label() }}</span>
+                                            <span class="fw-medium">{{ $plan->status->label() ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -211,7 +210,7 @@
                                         <i class="bx bx-map-pin text-primary me-2 mt-1"></i>
                                         <div class="d-flex flex-column">
                                             <span class="fw-bold small">{{ __('yojana::yojana.location') }}</span>
-                                            <span class="fw-medium">{{ $plan->location }}</span>
+                                            <span class="fw-medium">{{ $plan->location ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -221,7 +220,7 @@
                                         <i class="bx bx-map text-primary me-2 mt-1"></i>
                                         <div class="d-flex flex-column">
                                             <span class="fw-bold small">{{ __('yojana::yojana.ward') }}</span>
-                                            <span class="fw-medium">{{ app()->getLocale() === "en" ? ($plan->ward->ward_name_en ?? $plan->ward->ward_name_ne) : ($plan->ward->ward_name_ne ?? $plan->ward->ward_name_en) ?? '-' }}</span>
+                                            <span class="fw-medium">{{ app()->getLocale() === "en" ? ($plan->ward?->ward_name_en ?? $plan->ward?->ward_name_ne)  ?? '-' : ($plan->ward?->ward_name_ne ?? $plan->ward?->ward_name_en) ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -295,7 +294,7 @@
                                         <i class="bx bx-category text-primary me-2 mt-1"></i>
                                         <div class="d-flex flex-column">
                                             <span class="fw-bold small">{{ __('yojana::yojana.plan_type') }}</span>
-                                            <span class="fw-medium">{{ $plan->plan_type->label() }}</span>
+                                            <span class="fw-medium">{{ $plan->plan_type?->label() ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -305,7 +304,7 @@
                                         <i class="bx bx-cube text-primary me-2 mt-1"></i>
                                         <div class="d-flex flex-column">
                                             <span class="fw-bold small">{{ __('yojana::yojana.nature') }}</span>
-                                            <span class="fw-medium">{{ $plan->nature->label() }}</span>
+                                            <span class="fw-medium">{{ $plan->nature?->label() ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -326,7 +325,7 @@
                                         <i class="bx bx-bulb text-primary me-2 mt-1"></i>
                                         <div class="d-flex flex-column">
                                             <span class="fw-bold small">{{ __('yojana::yojana.purpose') }}</span>
-                                            <span class="fw-medium">{{ $plan->purpose }}</span>
+                                            <span class="fw-medium">{{ $plan->purpose ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -536,7 +535,7 @@
                             <h5 class="text-primary fw-bold mb-0">
                                 {{ __('yojana::yojana.cost_estimation') }}
                             </h5>
-                            @if ($plan->targetEntries()->exists() && $plan?->costEstimation?->status !== 'Approved')
+                            @if ($plan->costEstimation()->exists() && $plan?->costEstimation?->status !== 'Approved')
                                 <div>
                                     <a class="btn btn-info" data-bs-toggle="modal"
                                         data-bs-target="#costEstimationForwardModal" onclick="resetForm()">
@@ -568,7 +567,6 @@
                         </div>
                     </div>
                 </div>
-                @if ($plan->costEstimation()->exists())
                     <div class="tab-pane fade" id="target_entry" role="tabpanel">
                         <div class="card p-4 mb-4">
                             <!-- Nav tabs -->
@@ -616,6 +614,13 @@
                     @if ($plan?->costEstimation?->status === 'Approved')
                         <div class="tab-pane fade" id="implementation_bodies" role="tabpanel">
                             <div class="card p-4">
+                                @if ($plan?->implementation_method_id == null)
+                                <div class="card-body">
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ __('yojana::yojana.enter_implementation_method_first') }}
+                                    </div>
+                                </div>
+                                @else
                                 <div class="card-header d-flex justify-content-between">
                                     <h5 class="text-primary fw-bold mb-0">
                                         {{ __('yojana::yojana.implementation_bodies') }}
@@ -633,7 +638,7 @@
                                 <div class="card-body">
                                     <livewire:yojana.implementation_agency_table theme="bootstrap-4" :$plan />
                                 </div>
-
+                                @endif 
                             </div>
                             <div class="modal fade" id="implementationBodyModal" tabindex="-1"
                                 aria-labelledby="ModalLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -1018,7 +1023,6 @@
 
                         @endif
                     @endif
-                @endif
             </div>
         </div>
     </div>

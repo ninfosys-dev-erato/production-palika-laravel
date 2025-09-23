@@ -982,6 +982,9 @@ return [
     // Plan Extension Record validations (added)
     'extension_date_is_required' => 'विस्तार मिति आवश्यक छ',
     'letter_submission_date_is_required' => 'पत्र पेश गर्ने मिति आवश्यक छ',
+
+    // General guidance
+    'enter_implementation_method_first' => 'पहिले कार्यान्वयन विधि चयन गर्नुहोस्',
     'amount_is_required' => 'रकम आवश्यक छ',
     'amount_must_be_a_number' => 'रकम एक संख्या हुनुपर्छ',
     'vat_must_be_true_or_false' => 'VAT सत्य वा झूठ हुनु पर्छ',
