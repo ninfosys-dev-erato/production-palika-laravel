@@ -123,7 +123,7 @@ trait YojanaTemplate
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid #dee2e6;">
         <thead style="text-align: left;">
             <tr>
-                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">#</th>
+                <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">क्र.सं</th>
                 <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('स्रोत प्रकार') . '</th>
                 <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('कार्यक्रम') . '</th>
                 <th style="border:1px solid #dee2e6; padding:8px;  text-align: center;">' . __('बजेट शीर्षक') . '</th>
