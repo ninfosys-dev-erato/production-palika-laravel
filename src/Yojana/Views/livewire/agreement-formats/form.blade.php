@@ -81,7 +81,7 @@
             <div class='col-md-12 mt-3'>
                 <div class='form-group'>
                     <label class="form-label" for='style'>{{ __('yojana::yojana.style') }}</label>
-                    <textarea wire:model="letterSample.styles" name="styles" class="form-control"
+                    <textarea wire:model="agreementFormat.styles" name="styles" class="form-control"
                         placeholder="{{ __('yojana::yojana.enter_style') }}" rows="5"></textarea>
 
                     <div>

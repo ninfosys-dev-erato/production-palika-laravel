@@ -32,6 +32,7 @@ class AgreementFormat extends Model
             'implementation_method_id' => 'string',
             'name' => 'string',
             'sample_letter' => 'string',
+            'styles' => 'string',
             'id' => 'int',
             'created_at' => 'datetime',
             'created_by' => 'string',
