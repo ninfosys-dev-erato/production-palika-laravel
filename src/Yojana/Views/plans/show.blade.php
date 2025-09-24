@@ -421,7 +421,7 @@
                                         <table class="table table-bordered table-hover">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>#</th>
+                                                    <th>क्र.सं</th>
                                                     <th>{{ __('yojana::yojana.source_type') }}</th>
                                                     <th>{{ __('yojana::yojana.program') }}</th>
                                                     <th>{{ __('yojana::yojana.budget_head') }}</th>
