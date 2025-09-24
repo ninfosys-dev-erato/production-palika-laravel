@@ -60,7 +60,7 @@ class TemplateForm extends Component
     {
         if ($this->model instanceof WorkOrder) {
             $this->model->update([
-                'letter_body' => $this->letter
+                'letter_body' => $this->letter 
             ]);
         } elseif ($this->model instanceof ConsumerCommittee) {
             $this->model->update([

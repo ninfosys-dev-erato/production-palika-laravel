@@ -80,6 +80,7 @@ public function collectionDelete(array $ids){
 
         // return $url;
         $html =$this->resolveTemplate($plan,$agreement);
+        $html = $agreement->styles.$html;
         return $html;
 
     }
