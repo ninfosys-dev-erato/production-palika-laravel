@@ -135,6 +135,8 @@ return [
     'target_entry' => 'लक्ष्य प्रविष्टि',
     'implementation_bodies' => 'कार्यान्वयन निकायहरू',
     'agreement' => 'सम्झौता',
+    'payment_recommendation_letter' => 'भुक्तानी सिफारिस पत्र',
+    'plan_handover_letter' => 'योजना हस्तान्तरण पत्र',
     'documents' => 'कागजातहरू',
     'back' => 'फिर्ता',
     'basic_details' => 'मूल विवरण',

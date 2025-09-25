@@ -21,6 +21,8 @@ enum LetterTypes :string implements EnumInterface
     case LetterOfIntentPublicationNotice = 'intent_notice';
     case RateQuotationSubmission = 'rate-quotation';
     case Agreement = 'agreement';
+    case PaymentRecommendationLetter = 'payment_recommendation';
+    case PlanHandoverLetter = 'plan_handover';
 
     public function label(): string
     {
@@ -43,6 +45,8 @@ enum LetterTypes :string implements EnumInterface
             self::LetterOfIntentPublicationNotice => __('yojana::yojana.letter_of_intent_publication_notice'),
             self::Agreement => __('yojana::yojana.agreement'),
             self::RateQuotationSubmission => __('yojana::yojana.rate_quotation_submission'),
+            self::PaymentRecommendationLetter => __('yojana::yojana.payment_recommendation_letter'),
+            self::PlanHandoverLetter => __('yojana::yojana.plan_handover_letter'),
         };
 
 

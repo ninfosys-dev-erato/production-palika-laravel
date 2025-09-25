@@ -85,7 +85,8 @@ class EvaluationTable extends DataTableComponent
             })->html()->sortable()->searchable()->collapseOnTablet(),
 
             Column::make(__('yojana::yojana.testing_date'), "testing_date")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('yojana::yojana.attendance_number'), "attendance_number")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('yojana::yojana.attendance_number'), "attendance_number")->sortable()->searchable()->collapseOnTablet()
+            ->format(fn($value) => replaceNumbersWithLocale($value, true)),
             Column::make(__('yojana::yojana.evaluation_no'), "evaluation_no")->sortable()->searchable()->collapseOnTablet()
             ->format(fn($value) => replaceNumbersWithLocale($value, true)),
 
