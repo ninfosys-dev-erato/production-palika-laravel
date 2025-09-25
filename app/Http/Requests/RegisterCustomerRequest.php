@@ -39,7 +39,7 @@ class RegisterCustomerRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', Rule::unique('tbl_customers', 'email')],
             'mobile_no' => ['required', 'numeric', 'digits:10', 'unique:tbl_customers,mobile_no'],
-            'avatar' => ['nullable', 'image', 'mimes:jpg,png,jpeg,gif', 'max:10240'],
+            'avatar' => ['required', 'image', 'mimes:jpg,png,jpeg,gif', 'max:10240'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }

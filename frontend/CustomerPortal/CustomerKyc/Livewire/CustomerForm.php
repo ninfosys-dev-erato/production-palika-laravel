@@ -47,6 +47,7 @@ class CustomerForm extends Component
     public ?CustomerKyc $kyc;
     public $existingImage1;
     public $existingImage2;
+    public $avatar;
 
     public function rules(): array
     {
@@ -55,6 +56,7 @@ class CustomerForm extends Component
             'customer.email' => ['nullable'],
             'customer.mobile_no' => ['required', 'numeric', 'digits:10', Rule::unique('tbl_customers', 'mobile_no')->ignore($this->customer->id)],
             'customer.gender' => ['required', Rule::in(GenderEnum::cases())],
+            'avatar' => ['required'],
             'kyc.nepali_date_of_birth' => ['required', 'string'],
             'kyc.grandfather_name' => ['required', 'string'],
             'kyc.father_name' => ['required', 'string'],
@@ -209,6 +211,11 @@ class CustomerForm extends Component
         } else {
             $this->kyc = new CustomerKyc();
         }
+
+        if($this->customer->avatar)
+        {
+            $this->avatar = $this->customer->avatar;
+        }
         if ($this->customer->kyc && $this->customer) {
             $this->permanentLoadDistricts();
             $this->permanentLoadLocalBodies();
@@ -256,6 +263,7 @@ class CustomerForm extends Component
                 $this->kyc->document_image1 = $this->handleFileIfValid($this->uploadedImage1);
                 $this->kyc->document_image2 = null;
             }
+            $this->customer->avatar = ImageServiceFacade::compressAndStoreImage($this->avatar, 'customer/avatar', getStorageDisk('public'));
 
             $dto = CustomerAdminDto::fromLiveWireModel($this->customer, $this->kyc);
 
