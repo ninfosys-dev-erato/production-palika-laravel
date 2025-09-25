@@ -31,6 +31,55 @@
                         @enderror
                     </div>
 
+                    <div class="col-md-6 mb-4">
+                        <div class="form-group">
+                            <label for="image">{{ __('Avatar') }}</label>
+                            <input wire:model="avatar" name="avatar" type="file"
+                                class="form-control" accept="image/*,.pdf">
+                            @error('avatar')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+
+                            @if (
+                                ($avatar && $avatar instanceof \Livewire\TemporaryUploadedFile) ||
+                                    $avatar instanceof \Illuminate\Http\File ||
+                                    $avatar instanceof \Illuminate\Http\UploadedFile)
+                                @php
+                                    $mime = $avatar->getMimeType();
+                                    $isImage = str_starts_with($mime, 'image/');
+                                    $isPDF = $mime === 'application/pdf';
+                                @endphp
+
+                                <div class="col-md-3 col-sm-4 col-6 mb-3">
+                                    
+                                        <div class="border rounded p-3 d-flex align-items-center"
+                                            style="height: 60px;">
+                                            <i class="fas fa-file-alt fa-lg text-primary me-2"></i>
+                                            <a href="{{ $avatar->temporaryUrl() }}" target="_blank"
+                                                class="text-primary fw-bold text-decoration-none">
+                                                {{ __('अपलोड गरिएको फाइल हेर्नुहोस्') }}
+                                            </a>
+                                   
+                                </div>
+                            @elseif (!empty(trim($avatar)))
+                                @php
+                                    $fileUrl = customFileAsset(
+                                        'customer/avatar',
+                                        $avatar,
+                                        'local',
+                                        'tempUrl',
+                                    );
+                                @endphp
+
+                                <a href="{{ $fileUrl }}" target="_blank"
+                                    class="btn btn-outline-primary btn-sm">
+                                    <i class="bx bx-file"></i>
+                                    {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="col-md-6">
                         <label for="nepali_date_of_birth">{{ __('Nepali Date of Birth') }}</label>
                         <input type="text" name="kyc.nepali_date_of_birth" id="nepali_date_of_birth"
