@@ -314,35 +314,51 @@ class MapApplyForm extends Component
         if ($this->action === Action::UPDATE) {
             $this->customer_id = $this->mapApply->customer_id;
             $this->uploadedImage = $this->mapApply->signature;
-            $this->uploadedImageUrl = FileFacade::getTemporaryUrl(
+            if($this->mapApply->signature)
+            {
+                $this->uploadedImageUrl = FileFacade::getTemporaryUrl(
                 path: config('src.Ebps.ebps.path'),
                 filename: $this->mapApply->signature,
                 disk: getStorageDisk('private')
-            );
+                );
+            }
             $this->mapApply->fiscal_year_id = getSetting('fiscal-year');
 
 
             $this->houseOwnerDetail = HouseOwnerDetail::where('id', $this->mapApply->house_owner_id)->first();
             $this->houseOwnerPhoto = $this->houseOwnerDetail->photo;
-            $this->houseOwnerPhotoUrl = FileFacade::getTemporaryUrl(
-                path: config('src.Ebps.ebps.path'),
-                filename: $this->houseOwnerDetail->photo,
-                disk: getStorageDisk('private')
-            );
+            if($this->houseOwnerDetail->photo)
+            {
+                $this->houseOwnerPhotoUrl = FileFacade::getTemporaryUrl(
+                    path: config('src.Ebps.ebps.path'),
+                    filename: $this->houseOwnerDetail->photo,
+                    disk: getStorageDisk('private')
+                );
+            }
             $storedDocuments = DocumentFile::where('map_apply_id', $this->mapApply->id)->whereNotNull('map_document_id')->get();
             $this->documents = DocumentFile::where(
                 'map_apply_id',
                 $this->mapApply->id
-            )->whereNull('map_document_id')->get()->map(function ($document) {
-                return array_merge($document->toArray(), [
-                    'url' => FileFacade::getTemporaryUrl(
-                        path: config('src.Ebps.ebps.path'),
-                        filename: $document->file,
-                        disk: getStorageDisk('private')
-                    ),
-                ]);
+            )
+            ->whereNull('map_document_id')
+            ->get()
+            ->map(function ($document) {
+            $url = null;
+
+            if (!empty($document->file)) {
+                $url = FileFacade::getTemporaryUrl(
+                    path: config('src.Ebps.ebps.path'),
+                    filename: $document->file,
+                    disk: getStorageDisk('private')
+                );
+            }
+
+            return array_merge($document->toArray(), [
+                'url' => $url,
+            ]);
             })
-                ->toArray();
+            ->toArray();
+
             $this->mapApplyDetail = MapApplyDetail::where('map_apply_id', $this->mapApply->id)->first() ?? new MapApplyDetail();
 
             $this->getHouseOwnerDistricts();
@@ -353,11 +369,14 @@ class MapApplyForm extends Component
 
             foreach ($storedDocuments as $index => $document) {
                 $this->uploadedFiles[$index] = $document->file;
-                $this->uploadedFilesUrls[$index] = FileFacade::getTemporaryUrl(
+                $this->uploadedFilesUrls[$index] = !empty($document->file)
+                ? FileFacade::getTemporaryUrl(
                     path: config('src.Ebps.ebps.path'),
                     filename: $document->file,
                     disk: getStorageDisk('private')
-                );
+                )
+                : null;
+
                 $this->mapDocuments[$index] = ['title' => $document->title];
             }
             $this->customerLandDetail = CustomerLandDetail::where('id', $mapApply->land_detail_id)->first() ?? [];
