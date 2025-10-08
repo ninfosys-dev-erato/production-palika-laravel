@@ -17,11 +17,14 @@ class ApplyRecommendationPreview extends Component
     public bool $preview;
     public string $letter;
     public string $template;
+    public string $styles;
 
     public function mount(ApplyRecommendation $applyRecommendation)
     {
-        $this->applyRecommendation = $applyRecommendation;
-        $this->template = $this->resolveRecommendationTemplate($applyRecommendation);
+        $this->applyRecommendation = $applyRecommendation->load('recommendation');
+        $rawTemplate = $this->resolveRecommendationTemplate($applyRecommendation);
+        $this->template = $this->cleanTemplate($rawTemplate);
+        $this->styles = $applyRecommendation->recommendation?->form?->styles ?? "";
     }
     public function render()
     {
@@ -34,4 +37,16 @@ class ApplyRecommendationPreview extends Component
         $service = new RecommendationService();
         return $service->getLetter($this->applyRecommendation, 'web');
     }
+
+    private function cleanTemplate(string $template): string
+{
+    // Remove empty <p></p> tags (including &nbsp; or spaces)
+    $template = preg_replace('/<p>(\s|&nbsp;)*<\/p>/', '', $template);
+
+    // Remove all {{...}} placeholder tags
+    $template = preg_replace('/{{[^}]*}}/', '', $template);
+
+    // Trim whitespace at the start and end
+    return trim($template);
+}
 }
