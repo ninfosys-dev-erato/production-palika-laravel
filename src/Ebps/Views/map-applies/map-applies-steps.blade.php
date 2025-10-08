@@ -345,10 +345,10 @@
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                                     <h5 class="card-title fw-semibold mb-0">{{ $mapStep->title }}</h5>
                                                     <span
-                                                        class="badge {{ $isDisabled ? 'bg-secondary' : $statusColor['bg'] }} rounded-pill px-3 py-2">
+                                                        class="badge {{ $canApply ? 'bg-secondary' : $statusColor['bg'] }} rounded-pill px-3 py-2">
                                                         <i
-                                                            class="bx {{ $isDisabled ? 'bx-lock' : $statusColor['icon'] }} me-1"></i>
-                                                        {{ $isDisabled ? __('ebps::ebps.locked') : $status }}
+                                                            class="bx {{ $canApply ? 'bx-lock' : $statusColor['icon'] }} me-1"></i>
+                                                        {{ $canApply ? __('ebps::ebps.locked') : $status }}
                                                     </span>
                                                 </div>
 
@@ -392,7 +392,7 @@
                                                         $canUserAccessStep = $canUserAccess && $isCurrentStep;
                                                     @endphp
 
-                                                    @if (($canUserAccessStep || isSuperAdmin()) && ($status !== 'accepted' && $canApply && !$isDisabled))
+                                                    @if (($canUserAccessStep || isSuperAdmin()) && ($status !== 'accepted' && ($canApply|| isSuperAdmin())))
                                                         <a href="{{ route('admin.ebps.map_applies.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i
@@ -410,8 +410,7 @@
                                                     @if (
                                                         ($canUserAccessStep || isSuperAdmin()) &&
                                                             ($status != 'Not Applied' || $status != 'accepted') &&
-                                                            $canApply &&
-                                                            !$isDisabled)
+                                                            ($canApply || isSuperAdmin()))
                                                         <button
                                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center"
                                                             data-bs-toggle="modal"
