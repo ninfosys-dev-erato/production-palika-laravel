@@ -46,7 +46,7 @@
             text-align: left;
             position: relative;
             font-family: 'Kalimati' !important;
-            font-size: 15px;
+            font-size: 16px;
             color: #000;
         }
 
@@ -115,6 +115,8 @@
     {{-- this script lets user download the pdf --}}
     <script>
         async function printDiv() {
+            const timestamp = new Date().getTime();
+
             const {
                 jsPDF
             } = window.jspdf;
@@ -148,7 +150,7 @@
                 pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
                 heightLeft -= pdfHeight;
             }
-            pdf.save("certificate.pdf");
+            pdf.save(`certificate_${timestamp}.pdf`);
         }
     </script>
 
