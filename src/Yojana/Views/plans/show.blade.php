@@ -113,16 +113,16 @@
                             </li>
                             @endif
 
-                            <li class="nav-item" role="presentation">
-                                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                                    data-bs-target="#document-upload" aria-controls="document-upload"
-                                    aria-selected="false">
-                                    {{ __('yojana::yojana.documents') }}
-                                </button>
-                            </li>
                             @endif
                         @endif
                     @endif
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#document-upload" aria-controls="document-upload"
+                            aria-selected="false">
+                            {{ __('yojana::yojana.documents') }}
+                        </button>
+                    </li>
                 </ul>
             </div>
 
