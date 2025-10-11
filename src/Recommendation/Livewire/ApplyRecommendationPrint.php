@@ -19,7 +19,8 @@ class ApplyRecommendationPrint extends Component
     public $styles;
     public function mount(ApplyRecommendation $applyRecommendation)
     {
-        $this->applyRecommendation = $applyRecommendation->load('recommendation.form', 'recommendation.acceptedBy', 'recommendation.notifyTo', 'customer.kyc', 'reviewedBy', 'acceptedBy');;
+        $this->applyRecommendation = $applyRecommendation->load('recommendation.form', 'recommendation.acceptedBy', 'recommendation.notifyTo', 'customer.kyc', 'reviewedBy', 'acceptedBy');
+        
         $this->preview = true;
         $this->letter = $applyRecommendation->additional_letter ?? $this->resolveRecommendationTemplate($this->applyRecommendation);
         $this->styles = $applyRecommendation->recommendation?->form?->styles ?? "";

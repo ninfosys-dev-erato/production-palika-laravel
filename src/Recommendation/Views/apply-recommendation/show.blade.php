@@ -199,15 +199,18 @@
                                         </button>
                                     @endperm
                                 @break
+                                {{-- 
+@case(Src\Recommendation\Enums\RecommendationStatusEnum::ACCEPTED)
+    <button type="button" class="btn btn-info"
+        onclick="Livewire.dispatch('print-recommendation')" data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="{{ __('recommendation::recommendation.print_recommendation') }}">
+        <i class="bx bx-printer"></i> {{ __('recommendation::recommendation.print') }}
+    </button>
+@break 
+--}}
 
-                                @case(Src\Recommendation\Enums\RecommendationStatusEnum::ACCEPTED)
-                                    <button type="button" class="btn btn-info"
-                                        onclick="Livewire.dispatch('print-recommendation')" data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        title="{{ __('recommendation::recommendation.print_recommendation') }}">
-                                        <i class="bx bx-printer"></i> {{ __('recommendation::recommendation.print') }}
-                                    </button>
-                                @break
+            
 
                             @endswitch
 
@@ -256,3 +259,4 @@
         }
     </script>
 @endpush
+               
