@@ -23,6 +23,13 @@ enum LetterTypes :string implements EnumInterface
     case Agreement = 'agreement';
     case PaymentRecommendationLetter = 'payment_recommendation';
     case PlanHandoverLetter = 'plan_handover';
+    case TenderApprovalLetter = 'tender_approval';
+    case BiddersPaymentLetter = 'bidders_payment';
+    case RateSubmissionLetter = 'rate_submission';
+    case TenderOpeningForm = 'tender_opening_form';
+    case TenderOpeningMinute = 'tender_opening_minute';
+    case EvaluationCommitteeMinute = 'evaluation_committee_minute';
+    case QuotationApprovalLetter = 'quotation_approval';
 
     public function label(): string
     {
@@ -47,6 +54,13 @@ enum LetterTypes :string implements EnumInterface
             self::RateQuotationSubmission => __('yojana::yojana.rate_quotation_submission'),
             self::PaymentRecommendationLetter => __('yojana::yojana.payment_recommendation_letter'),
             self::PlanHandoverLetter => __('yojana::yojana.plan_handover_letter'),
+            self::TenderApprovalLetter => __('yojana::yojana.tender_approval_letter'),
+            self::BiddersPaymentLetter => __('yojana::yojana.bidders_payment_letter'),
+            self::RateSubmissionLetter => __('yojana::yojana.rate_submission_letter'),
+            self::TenderOpeningForm => __('yojana::yojana.tender_opening_form'),
+            self::TenderOpeningMinute => __('yojana::yojana.tender_opening_minute'),
+            self::EvaluationCommitteeMinute => __('yojana::yojana.evaluation_committee_minute'),
+            self::QuotationApprovalLetter => __('yojana::yojana.quotation_approval_letter'),
         };
 
 

@@ -42,19 +42,41 @@
                         <td>
                             @if (can('plan edit'))
                                 <button class="btn btn-primary btn-sm" wire:click="edit({{ $row->id }})"
-                                        title>
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ __('yojana::yojana.edit') }}">
                                     <i class="bx bx-edit"></i>
                                 </button>
                             @endif
                             @if (can('plan edit'))
-                                <button class="btn btn-info btn-sm" wire:click="printWorkOrder({{ $row->id }})"
-                                    title>
+                                <button class="btn btn-info btn-sm" wire:click="printPaymentLetter({{ $row->id }})"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ __('yojana::yojana.print_payment_letter') }}">
+                                    <i class="bx bx-file"></i>
+                                </button>
+                            @endif
+                            @if (can('plan edit'))
+                                <button class="btn btn-info btn-sm" wire:click="printPaymentRecommendation({{ $row->id }})"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ __('yojana::yojana.print_payment_recommendation') }}">
+                                    <i class="bx bx-file"></i>
+                                </button>
+                            @endif
+                            @if (can('plan edit'))
+                                <button class="btn btn-success btn-sm" wire:click="printPlanHandoverLetter({{ $row->id }})"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ __('yojana::yojana.print_plan_handover_letter') }}">
                                     <i class="bx bx-file"></i>
                                 </button>
                             @endif
                                 @if (can('plan delete'))
                                 <button class="btn btn-danger btn-sm" wire:click="delete({{ $row->id }})"
-                                    title>
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ __('yojana::yojana.delete') }}">
                                     <i class="bx bx-trash"></i>
                                 </button>
                             @endif

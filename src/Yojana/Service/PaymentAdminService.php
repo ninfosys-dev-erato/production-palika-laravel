@@ -80,13 +80,25 @@ class PaymentAdminService
         }
     }
 
-    public function getWorkOrder($id)
+    public function getWorkOrder($id, $letterType)
     {
         $payment = Payment::find($id);
         $plan = $payment->plan;
         $plan->load('costEstimation.costDetails.sourceType','costEstimation.configDetails.configuration','agreement.agreementCost.agreementCostDetails','StartFiscalYear','implementationAgency.consumerCommittee', 'implementationAgency.application','implementationAgency.organization','advancePayments', 'evaluations','payments.taxDeductions.configuration');
         $workOrderService = new WorkOrderAdminService();
-        return $workOrderService->workOrderLetter(LetterTypes::Payment , $plan);
+        return $workOrderService->workOrderLetter($letterType , $plan);
+    }
+
+    public function printPaymentLetter($id) {
+        return $this->getWorkOrder($id, LetterTypes::Payment);
+    }
+
+    public function printPaymentRecommendation($id) {
+        return $this->getWorkOrder($id, LetterTypes::PaymentRecommendationLetter);
+    }
+
+    public function printPlanHandoverLetter($id) {
+        return $this->getWorkOrder($id, LetterTypes::PlanHandoverLetter);
     }
 }
 

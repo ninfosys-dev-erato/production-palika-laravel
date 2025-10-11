@@ -90,10 +90,10 @@ class PaymentsTable extends Component
         $this->dispatch('edit-payment',$id);
     }
 
-    public function printWorkOrder($id)
+    public function printPaymentLetter($id)
     {
         $service = new PaymentAdminService();
-        $workOrder = $service->getWorkOrder($id);
+        $workOrder = $service->printPaymentLetter($id);
         if (!isset($workOrder)){
             $this->errorFlash('Template Not Found');
             return false;
@@ -102,4 +102,28 @@ class PaymentsTable extends Component
         $this->dispatch('open-pdf-in-new-tab', url: $url);
     }
 
+
+    public function printPaymentRecommendation($id)
+    {
+        $service = new PaymentAdminService();
+        $workOrder = $service->printPaymentRecommendation($id);
+        if (!isset($workOrder)){
+            $this->errorFlash('Template Not Found');
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview',['id'=>$workOrder->id,'model_id'=>$id]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    public function printPlanHandoverLetter($id)
+    {
+        $service = new PaymentAdminService();
+        $workOrder = $service->printPlanHandoverLetter($id);
+        if (!isset($workOrder)){
+            $this->errorFlash('Template Not Found');
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview',['id'=>$workOrder->id,'model_id'=>$id]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
 }
