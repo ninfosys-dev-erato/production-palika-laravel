@@ -14,12 +14,11 @@ trait EjalashTemplateTrait
     use HelperDate, HelperTemplate;
     function resolveEjalasTemplate($model, $value = null)
     {
-       
         if (!$model) {
             return '';
         }
 
-        $modelName = class_basename($model);
+        $modelName = class_basename($this->model);
 
         $data = [
             '{{global.letter-head}}' => $this->getLetterHeader(null),
@@ -45,13 +44,27 @@ trait EjalashTemplateTrait
                 // Load related data for ComplaintRegistration
                 $model->load([
                     'disputeMatter',
+                    'disputeMatter.disputeArea',
                     'priority',
                     'fiscalYear',
                     'parties.permanentDistrict',
                     'parties.permanentLocalBody',
                     'parties.temporaryDistrict',
                     'parties.temporaryLocalBody',
-                    'disputeMatter.disputeArea'
+                    'disputeMatter.disputeArea',
+                    'disputeRegistrationCourt',
+                    'disputeRegistrationCourt.judicialEmployee',
+                    'disputeRegistrationCourt.judicialEmployee.designation',
+               
+                    'hearingSchedule',
+                    'courtNotice',
+                    'writtenResponseRegistration',
+                    'mediatorSelection.mediator',
+                    'witnessesRepresentative',
+                    'settlement',
+                    'caseRecord.judicialEmployee.designation',
+                    'caseRecord.judicialMember',
+                    'disputeDeadline'
                 ]);
 
 
@@ -73,25 +86,134 @@ trait EjalashTemplateTrait
                     $defenderTextPlain .= "{$d['district']} जिल्ला, {$d['local_body']} वडा नं {$d['ward']}, {$d['tole']} बस्ने {$d['grandfather_name']}को नाती/नातिनी, {$d['father_name']}को छोरा/छोरी {$d['spouse_name']}को श्रीमान/श्रीमती वर्ष {$d['age']}को  {$d['name']} विपक्षी (दोश्रो पक्ष) <br>";
                 }
 
-                $complainerName = '';
-                foreach ($complainerDetailsArray as $i => $c) {
-                    $complainerName .= "{$c['name']},";
-                }
-                $complainerNumber = '';
-                foreach ($complainerDetailsArray as $i => $c) {
-                    $complainerNumber .= "{$c['phone_no']},";
-                }
+
+                $complainerFields = extractPartyFields($complainerDetailsArray);
+
+$complainerDistrict = $complainerFields['district'];
+$complainerLocalBody = $complainerFields['local_body'];
+$complainerWard = $complainerFields['ward'];
+$complainerTole = $complainerFields['tole'];
+$complainerGrandfather = $complainerFields['grandfather_name'];
+$complainerFather = $complainerFields['father_name'];
+$complainerSpouse = $complainerFields['spouse_name'];
+$complainerAge = $complainerFields['age'];
+$complainerName = $complainerFields['name'];
+$complainerNumber = $complainerFields['phone'];
+
+$defenderFields = extractPartyFields($defenderDetailsArray);
+
+$defenderDistrict = $defenderFields['district'];
+$defenderLocalBody = $defenderFields['local_body'];
+$defenderWard = $defenderFields['ward'];
+$defenderTole = $defenderFields['tole'];
+$defenderGrandfather = $defenderFields['grandfather_name'];
+$defenderFather = $defenderFields['father_name'];
+$defenderSpouse = $defenderFields['spouse_name'];
+$defenderAge = $defenderFields['age'];
+$defenderName = $defenderFields['name'];
+$defenderNumber = $defenderFields['phone'];
+
+$bsDate = $this->convertToNepaliDateFormat(replaceNumbers($this->AdTobs($model->reg_date), true));
+$nepaliDateParts = $this->convertToNepaliDateParts($bsDate);
+
+$regYear = $nepaliDateParts['year'];
+$regMonth = $nepaliDateParts['month'];
+$regDay = $nepaliDateParts['day'];
+$latestHearingSchedule = $model->hearingSchedule()->latest('created_at')->first();
+$latestCourtNotice = $model->courtNotice()->latest('created_at')->first();
+$latestWrittenResponse = $model->writtenResponseRegistration()->latest('created_at')->first();
+$latestMediatorSelection = $model->mediatorSelection()->latest('created_at')->first();
+$latestWitness = $model->witnessesRepresentative()->latest('created_at')->first();
+$latestSettlement = $model->settlement()->latest('created_at')->first();
+$latestCaseRecord = $model->caseRecord()->latest('created_at')->first();
+$latestDisputeDeadline = $model->disputeDeadline()->latest('created_at')->first();
+
+
 
                 $data = array_merge($data, [
-                    '{{complainer_detail_plain}}' => $complainerTextPlain,
-                    '{{defender_detail_plain}}' => $defenderTextPlain,
-                    '{{dispute_area}}' => $model->disputeMatter?->disputeArea->title,
-                    '{{dispute_matter}}' => $model->disputeMatter->title,
-                    '{{complaint_registration_subject}}' => $model->subject,
-                    '{{complaint_description}}' => $model->description,
-                    '{{complainer_name}}' => $complainerName,
-                    '{{complainer_number}}' => $complainerNumber,
-                    '{{reg_date}}' => $this->convertToNepaliDateFormat(replaceNumbers($this->AdTobs($model->reg_date), true)),
+                    '{{complainer_detail_plain}}' => $complainerTextPlain ?? '',
+                    '{{defender_detail_plain}}' => $defenderTextPlain ?? '',
+                    '{{complainer_detail_br}}' => $complainerTextBr ?? '',
+                    '{{defender_detail_br}}' => $defenderTextBr ?? '',
+                    '{{dispute_area}}' => $model->disputeMatter?->disputeArea->title ?? '',
+                    '{{dispute_matter}}' => $model->disputeMatter?->title ?? '',
+                    '{{complaint_registration_subject}}' => $model->subject ?? '',
+                    '{{complaint_description}}' => $model->description ?? '',
+                    '{{complainer_name}}' => $complainerName ?? '',
+                    '{{complainer_number}}' => $complainerNumber ?? '',
+                    '{{defender_name}}' => $defenderName ?? '',
+                    '{{defender_number}}' => $defenderNumber ?? '',
+                    '{{reg_date}}' => $this->convertToNepaliDateFormat(replaceNumbers($this->AdTobs($model->reg_date), true)) ?? '',
+
+    // Complainers
+    '{{complainer_district}}' => $complainerDistrict ?? '',
+    '{{complainer_local_body}}' => $complainerLocalBody ?? '',
+    '{{complainer_ward}}' => $complainerWard ?? '',
+    '{{complainer_tole}}' => $complainerTole ?? '',
+    '{{complainer_grandfather_name}}' => $complainerGrandfather ?? '',
+    '{{complainer_father_name}}' => $complainerFather ?? '',
+    '{{complainer_spouse_name}}' => $complainerSpouse ?? '',
+    '{{complainer_age}}' => $complainerAge ?? '',
+
+    // Defenders
+    '{{defender_district}}' => $defenderDistrict ?? '',
+    '{{defender_local_body}}' => $defenderLocalBody ?? '',
+    '{{defender_ward}}' => $defenderWard ?? '',
+    '{{defender_tole}}' => $defenderTole ?? '',
+    '{{defender_grandfather_name}}' => $defenderGrandfather ?? '',
+    '{{defender_father_name}}' => $defenderFather ?? '',
+    '{{defender_spouse_name}}' => $defenderSpouse ?? '',
+    '{{defender_age}}' => $defenderAge ?? '',
+
+    '{{reg_year}}' => $regYear ?? '',
+    '{{reg_month}}' => $regMonth ?? '',
+    '{{reg_day}}' => $regDay ?? '',
+    '{{complaint_registration_no}}' => $model->reg_no ?? '',
+
+
+    //disputeRegistrationCourt
+    '{{dispute_entry_judicial_employee_name}}' => $model->disputeRegistrationCourt?->judicialEmployee?->name ?? '',
+    '{{dispute_entry_judicial_employee_designation}}' => $model->disputeRegistrationCourt?->judicialEmployee?->designation?->title ?? '',
+    '{{dispute_decision_date}}' => $model->disputeRegistrationCourt?->decision_date ?? '',
+
+    // Hearing Schedule Related Placeholders
+    '{{hearing_time}}' => $latestHearingSchedule?->hearing_time ?? '',
+
+    '{{hearing_date}}' => $latestHearingSchedule ? replaceNumbers($this->AdTobs($latestHearingSchedule->hearing_date), true) : '',
+
+    // Court Notice Related Placeholders
+    '{{notice_time}}' => $latestCourtNotice?->notice_time ?? '',
+    '{{notice_date}}' => $latestCourtNotice ? $this->convertToNepaliDateFormat($latestCourtNotice->notice_date) : '',
+
+    // Written Response Related Placeholders
+    '{{written_response_description}}' => $latestWrittenResponse?->description ?? '',
+    '{{written_response_date}}' => $latestWrittenResponse ? $this->convertToNepaliDateFormat(replaceNumbers($latestWrittenResponse->registration_date, true)) : '',
+
+    // Mediator Selection Related Placeholders
+    '{{mediator_name}}' => $latestMediatorSelection?->mediator?->mediator_name ?? '',
+    '{{mediator_address}}' => $latestMediatorSelection?->mediator?->mediator_address ?? '',
+    '{{mediator_selection_date}}' => $latestMediatorSelection ? $this->convertToNepaliDateFormat(replaceNumbers($latestMediatorSelection->selection_date, true)) : '',
+
+    // Witnesses Related Placeholders
+    '{{witness_name}}' => $latestWitness?->name ?? '',
+    '{{witness_address}}' => $latestWitness?->address ?? '',
+
+    // Settlement Related Placeholders
+    '{{settlement_detail}}' => $latestSettlement?->settlement_details ?? '',
+    '{{settlement_date}}' => $latestSettlement ? $this->convertToNepaliDateFormat(replaceNumbers($latestSettlement->settlement_date, true)) : '',
+    '{{discussion_date}}' => $latestSettlement ? $this->convertToNepaliDateFormat(replaceNumbers($latestSettlement->discussion_date, true)) : '',
+    '{{complaint_registration_claim_request}}' => $model->claim_request ?? '',
+
+    // Case Record Related Placeholders
+    '{{complaint_registration_date}}' => replaceNumbers($this->adToBs($model->reg_date), true) ?? '',
+    '{{recording_officer_name}}' => $latestCaseRecord?->judicialEmployee?->name ?? '',
+    '{{decision_authority}}' => $latestCaseRecord?->judicialMember?->title ?? '',
+    '{{recording_officer_position}}' => $latestCaseRecord?->judicialEmployee?->designation?->title ?? '',
+    '{{decision_date}}' => $latestCaseRecord ? replaceNumbers($this->adToBs($latestCaseRecord->decision_date), true) : '',
+
+    // Dispute Deadline Related Placeholders
+    '{{extension_period}}' => $latestDisputeDeadline?->deadline_extension_period ?? '',
+
                 ]);
                 break;
 
@@ -543,7 +665,6 @@ trait EjalashTemplateTrait
         if (!$template) {
             return ['template' => '', 'styles' => ''];
         }
-    
         // Replace placeholders in the template
         return [ //returns template and styles
             'template' => \Illuminate\Support\Str::replace(array_keys($data), array_values($data), $template->template ?? ''),
@@ -603,4 +724,59 @@ trait EjalashTemplateTrait
 
         return "{$year} साल {$monthName} महिना {$day} गते";
     }
+
+
+    function extractPartyFields(array $partyDetailsArray): array
+{
+    $fields = [
+        'district' => [],
+        'local_body' => [],
+        'ward' => [],
+        'tole' => [],
+        'grandfather_name' => [],
+        'father_name' => [],
+        'spouse_name' => [],
+        'age' => [],
+        'name' => [],
+        'phone' => [],
+    ];
+
+    foreach ($partyDetailsArray as $party) {
+        foreach ($fields as $key => &$arr) {
+            $arr[] = $party[$key] ?? '';
+        }
+    }
+
+    // Implode each array into comma-separated string
+    return array_map(fn($arr) => implode(', ', $arr), $fields);
+}
+
+function convertToNepaliDateParts($bsDate)
+{
+    $monthNames  = [
+        '०१' => 'वैशाख',
+        '०२' => 'जेठ',
+        '०३' => 'असार',
+        '०४' => 'श्रावण',
+        '०५' => 'भाद्र',
+        '०६' => 'आश्विन',
+        '०७' => 'कार्तिक',
+        '०८' => 'मंसिर',
+        '०९' => 'पौष',
+        '१०' => 'माघ',
+        '११' => 'फाल्गुण',
+        '१२' => 'चैत्र'
+    ];
+
+    [$year, $month, $day] = explode('-', $bsDate);
+    $monthName = $monthNames[$month] ?? '';
+
+    return [
+        'year' => $year,
+        'month' => $monthName,
+        'day' => $day,
+    ];
+}
+
+
 }

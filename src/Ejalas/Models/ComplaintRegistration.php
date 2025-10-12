@@ -100,4 +100,50 @@ class ComplaintRegistration extends Model
             ->withPivot('type')
             ->withTimestamps();
     }
+
+    // Additional relationships for template placeholders
+    public function hearingSchedule()
+    {
+        return $this->hasMany(HearingSchedule::class, 'complaint_registration_id', 'id');
+    }
+
+    public function courtNotice()
+    {
+        return $this->hasMany(CourtNotice::class, 'complaint_registration_id', 'id');
+    }
+
+    public function writtenResponseRegistration()
+    {
+        return $this->hasMany(WrittenResponseRegistration::class, 'complaint_registration_id', 'id');
+    }
+
+    public function mediatorSelection()
+    {
+        return $this->hasMany(MediatorSelection::class, 'complaint_registration_id', 'id');
+    }
+
+    public function witnessesRepresentative()
+    {
+        return $this->hasMany(WitnessesRepresentative::class, 'complaint_registration_id', 'id');
+    }
+
+    public function settlement()
+    {
+        return $this->hasMany(Settlement::class, 'complaint_registration_id', 'id');
+    }
+
+    public function caseRecord()
+    {
+        return $this->hasMany(CaseRecord::class, 'complaint_registration_id', 'id');
+    }
+
+    public function disputeDeadline()
+    {
+        return $this->hasMany(DisputeDeadline::class, 'complaint_registration_id', 'id');
+    }
+
+    public function disputeRegistrationCourt()
+    {
+        return $this->hasOne(DisputeRegistrationCourt::class, 'complaint_registration_id', 'id');
+    }
 }
