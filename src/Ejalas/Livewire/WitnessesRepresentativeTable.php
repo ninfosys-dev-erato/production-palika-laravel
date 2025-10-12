@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\WitnessesRepresentativesExport;
 use Src\Ejalas\Models\WitnessesRepresentative;
 use Src\Ejalas\Service\WitnessesRepresentativeAdminService;
@@ -16,7 +15,7 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class WitnessesRepresentativeTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = WitnessesRepresentative::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

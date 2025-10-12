@@ -14,11 +14,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Src\Ejalas\Exports\DisputeAreasExport;
 use Src\Ejalas\Models\DisputeArea;
 use Src\Ejalas\Service\DisputeAreaAdminService;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 
 class DisputeAreaTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = DisputeArea::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

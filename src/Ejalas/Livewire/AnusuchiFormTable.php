@@ -7,14 +7,13 @@ use App\Traits\SessionFlash;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Maatwebsite\Excel\Facades\Excel;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\ComplaintRegistrationsExport;
 use Src\Ejalas\Models\ComplaintRegistration;
 use Src\Ejalas\Service\ComplaintRegistrationAdminService;
 
 class AnusuchiFormTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = ComplaintRegistration::class;
 

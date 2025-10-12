@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Enum\PartyType;
 use Src\Ejalas\Exports\RegistrationIndicatorsExport;
 use Src\Ejalas\Models\RegistrationIndicator;
@@ -16,7 +15,7 @@ use Src\Ejalas\Service\RegistrationIndicatorAdminService;
 
 class RegistrationIndicatorTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
     protected $model = RegistrationIndicator::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

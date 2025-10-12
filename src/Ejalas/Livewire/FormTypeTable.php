@@ -7,7 +7,6 @@ use App\Traits\SessionFlash;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Maatwebsite\Excel\Facades\Excel;
-use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\FormTypesExport;
 use Src\Ejalas\Models\FormType;
 use Src\Ejalas\Service\FormTypeAdminService;
@@ -15,7 +14,7 @@ use Src\Ejalas\Enum\FormTypeEnum;
 
 class FormTypeTable extends DataTableComponent
 {
-    use SessionFlash, IsSearchable;
+    use SessionFlash;
 
     protected $model = FormType::class;
 
