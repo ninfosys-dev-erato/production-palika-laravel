@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\ComplaintRegistrationsExport;
 use Src\Ejalas\Models\ComplaintRegistration;
 use Src\Ejalas\Service\ComplaintRegistrationAdminService;
@@ -26,7 +27,7 @@ use Src\Ejalas\Enum\RouteName;
 
 class ComplaintRegistrationTable extends DataTableComponent
 {
-    use SessionFlash, HelperDate, AdminSettings;
+    use SessionFlash, IsSearchable, HelperDate, AdminSettings;
     protected $model = ComplaintRegistration::class;
     //for report
     public $report = false;

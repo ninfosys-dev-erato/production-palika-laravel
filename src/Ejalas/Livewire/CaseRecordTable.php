@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\CaseRecordsExport;
 use Src\Ejalas\Models\CaseRecord;
 use Src\Ejalas\Service\CaseRecordAdminService;
 
 class CaseRecordTable extends DataTableComponent
 {
-    use SessionFlash, HelperDate;
+    use SessionFlash, IsSearchable, HelperDate;
     protected $model = CaseRecord::class;
 
     protected $listeners = ['getSearchDate' => 'getSearchDate'];

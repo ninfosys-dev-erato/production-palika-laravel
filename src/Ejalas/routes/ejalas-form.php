@@ -13,3 +13,12 @@ Route::group(['prefix' => 'admin/ejalas/forms', 'as' => 'admin.ejalas.', 'middle
     Route::get('/form/create', [FormController::class, 'create'])->name('form.create');
     Route::get('/form/edit/{id}', [FormController::class, 'edit'])->name('form.edit');
 });
+
+Route::group(['prefix' => 'admin/ejalas/forms/type', 'as' => 'admin.ejalas.form-template-type.', 'middleware' => ['web', 'auth', 'check_module:ejalash']], function () {
+    Route::get('/', [EjalasFormAdminController::class, 'formTypeIndex'])->name('index');
+    Route::get('/create', [EjalasFormAdminController::class, 'formTypeCreate'])->name('create');
+    Route::get('/edit/{id}', [EjalasFormAdminController::class, 'formTypeEdit'])->name('edit');
+});
+
+
+

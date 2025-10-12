@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\FulfilledConditionsExport;
 use Src\Ejalas\Models\FulfilledCondition;
 use Src\Ejalas\Service\FulfilledConditionAdminService;
 
 class FulfilledConditionTable extends DataTableComponent
 {
-    use SessionFlash, HelperDate;
+    use SessionFlash, IsSearchable, HelperDate;
     protected $model = FulfilledCondition::class;
     public $report = false;
     public $startDate = null;

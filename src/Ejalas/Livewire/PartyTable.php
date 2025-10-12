@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\PartiesExport;
 use Src\Ejalas\Models\Party;
 use Src\Ejalas\Service\PartyAdminService;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Log;
 
 class PartyTable extends DataTableComponent
 {
-    use SessionFlash;
+    use SessionFlash, IsSearchable;
     protected $model = Party::class;
 
     public $complainer_reg_no = null;

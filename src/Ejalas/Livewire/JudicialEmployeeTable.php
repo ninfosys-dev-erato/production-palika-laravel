@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\JudicialEmployeesExport;
 use Src\Ejalas\Models\JudicialEmployee;
 use Src\Ejalas\Service\JudicialEmployeeAdminService;
 
 class JudicialEmployeeTable extends DataTableComponent
 {
-    use SessionFlash;
+    use SessionFlash, IsSearchable;
     protected $model = JudicialEmployee::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\DisputeRegistrationCourtsExport;
 use Src\Ejalas\Models\DisputeRegistrationCourt;
 use Src\Ejalas\Service\DisputeRegistrationCourtAdminService;
@@ -15,7 +16,7 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class DisputeRegistrationCourtTable extends DataTableComponent
 {
-    use SessionFlash;
+    use SessionFlash, IsSearchable;
     protected $model = DisputeRegistrationCourt::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',

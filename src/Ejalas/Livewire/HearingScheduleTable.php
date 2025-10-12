@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Traits\Columns\IsSearchable;
 use Src\Ejalas\Exports\HearingSchedulesExport;
 use Src\Ejalas\Models\HearingSchedule;
 use Src\Ejalas\Service\HearingScheduleAdminService;
 
 class HearingScheduleTable extends DataTableComponent
 {
-    use SessionFlash, HelperDate;
+    use SessionFlash, IsSearchable, HelperDate;
     protected $model = HearingSchedule::class;
     //for report
     public $report = false;
