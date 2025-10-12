@@ -1,64 +1,82 @@
-<form wire:submit.prevent="save" enctype="multipart/form-data" class="space-y-4">
-    <input type="hidden" wire:model="plan_id" />
-
-    <div class="row">
-        @foreach ($fields as $field)
-            <?php
-            $label = ucwords(str_replace('_', ' ', $field));
-            $urlField = $field . '_Url';
-            ?>
-            <div class="col-md-6 mb-3">
-                <div class="form-group">
-                    <label for="{{ $field }}" class="form-label">{{ __($label) }}</label>
-                    <input wire:model="{{ $field }}" name="{{ $field }}" type="file"
-                        class="form-control">
-                    <div>
-                        @if ($$urlField)
-                            <div class="row align-items-center mb-2 mt-2">
-                                <div class="col">
-                                    <strong>{{ __('yojana::yojana.preview') }}:</strong>
-                                    <a href="{{ $$urlField }}" target="_blank"
-                                        class="btn btn-outline-primary btn-sm ms-2">
-                                        <i class="bx bx-file"></i> {{ __('yojana::yojana.view_uploaded_file') }}
-                                    </a>
-                                    <button type="button" class="btn btn-outline-danger btn-sm ms-2"
-                                        wire:click="deleteFile('{{ $field }}')"
-                                        wire:confirm="Are you sure you want to delete it??">
-                                        <i class="bx bx-trash"></i> Delete
-                                    </button>
-                                </div>
-                            </div>
-                        @endif
-                        <div wire:loading wire:target="{{ $field }}">
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Uploading...
-                        </div>
-                        @error($field)
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-                </div>
+<div>
+    <form wire:submit.prevent="uploadDocument" enctype="multipart/form-data" class="space-y-4">
+        <div class="d-flex align-items-end border rounded p-3 mb-3 gap-3 flex-wrap">
+            <!-- Document Name -->
+            <div class="flex-grow-1">
+                <label class="form-label fw-bold">{{ __('Document Name') }}</label>
+                <input type="text" class="form-control" wire:model.defer="documentName"
+                    placeholder="Enter document name">
+                @error('documentName')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
-        @endforeach
-    </div>
+
+            <!-- Upload File -->
+            <div class="flex-grow-1">
+                <label class="form-label fw-bold">{{ __('Upload File') }}</label>
+                <input type="file" wire:model.defer="documentFile" accept="image/*,.pdf"
+                    class="form-control @error('documentFile') is-invalid @enderror">
+                <div wire:loading wire:target="documentFile">
+                    <span class="spinner-border spinner-border-sm"></span> Uploading...
+                </div>
+                @error('documentFile')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+
+            <!-- Upload Button -->
+            <div>
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="bx bx-upload"></i> {{ __('Upload') }}
+                </button>
+            </div>
+        </div>
+    </form>
 
 
+    {{-- Table of uploaded documents --}}
+    @if ($uploadedDocuments && count($uploadedDocuments) > 0)
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>{{ __('Document Name') }}</th>
+                        <th>{{ __('Actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($uploadedDocuments as $index => $doc)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $doc['name'] }}</td>
+                            <td>
+                                <a href="{{ $doc['url'] }}" target="_blank" class="btn btn-outline-primary btn-sm me">
+                                    <i class="bx bx-file"></i> {{ __('View') }}
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                    wire:click="deleteDocument({{ $index }})">
+                                    <i class="bx bx-trash"></i> {{ __('Delete') }}
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+</div>
 
-    {{-- <div class="mt-3">
-        <button type="submit" class="btn btn-primary fw-bold">{{ __('yojana::yojana.submit') }}</button>
-    </div> --}}
+@push('styles')
+    <style>
+        .form-label {
+            font-weight: 600;
+            color: #333;
+        }
 
-    @push('styles')
-        <style>
-            .field {
-                font-size: 1rem;
-                font-weight: 600;
-                color: #222;
-            }
-
-            input[type="file"] {
-                border-radius: 0.5rem;
-            }
-        </style>
-    @endpush
-</form>
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
+@endpush

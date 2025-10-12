@@ -113,16 +113,16 @@
                             </li>
                             @endif
 
-                            <li class="nav-item" role="presentation">
-                                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                                    data-bs-target="#document-upload" aria-controls="document-upload"
-                                    aria-selected="false">
-                                    {{ __('yojana::yojana.documents') }}
-                                </button>
-                            </li>
                             @endif
                         @endif
                     @endif
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#document-upload" aria-controls="document-upload"
+                            aria-selected="false">
+                            {{ __('yojana::yojana.documents') }}
+                        </button>
+                    </li>
                 </ul>
             </div>
 
@@ -1007,22 +1007,20 @@
                                 </div>
                             </div>
                             @endif
-                            
-                            <div class="tab-pane fade" id="document-upload" role="tabpanel">
-                                <div class="card p-4">
-                                    <div class="card-header">
-                                        <h5 class="text-primary fw-bold mb-0">
-                                            {{ __('yojana::yojana.document_upload') }}
-                                        </h5>
-                                    </div>
-                                    <div class="card-body mx-3" wire:poll.1s>
-                                        <livewire:yojana.document_upload_form :$plan />
-                                    </div>
-                                </div>
-                            </div>
-
                         @endif
                     @endif
+                <div class="tab-pane fade" id="document-upload" role="tabpanel">
+                    <div class="card p-4">
+                        <div class="card-header">
+                            <h5 class="text-primary fw-bold mb-0">
+                                {{ __('yojana::yojana.document_upload') }}
+                            </h5>
+                        </div>
+                        <div class="card-body mx-3" wire:poll.1s>
+                            <livewire:yojana.document_upload_form :$plan />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
