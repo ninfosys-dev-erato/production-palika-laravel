@@ -49,7 +49,7 @@
 
                     <div class='col-md-6 mb-3'>
                         <div class='form-group'>
-                            <label for='completion_date' class='form-label'>{{ __('yojana::yojana.payment_date') }}</label>
+                            <label for='completion_date' class='form-label'>{{ __('yojana::yojana.payment_date') }}<span class="text-danger">*</span></label>
                             <input wire:model='payment.payment_date' id="payment_date" name='payment_date'
                                    type='date' class='form-control {{ $errors->has('payment.payment_date') ? 'is-invalid' : '' }}'>
                             <div>
@@ -142,7 +142,11 @@
                             <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($payment['total_paid_amount'] ?? 0), true) }}</td>
                             <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($payment['total_payable_amount'] ?? 0), true) }}</td>
                             @if($category == 'plan')
-                                <td>{{ $payment['installment'] ?? '-' }}</td>
+                                <td>
+                                    {{ ($payment['installment'] instanceof \Src\Yojana\Enums\Installments)
+                                        ? $payment['installment']->label()
+                                        : (\Src\Yojana\Enums\Installments::tryFrom((string)($payment['installment'] ?? ''))?->label() ?? '-') }}
+                                </td>
                                 <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($payment['evaluation_amount'] ?? 0), true) }}</td>
                                 <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($payment['evaluation_amount_without_tax'] ?? 0), true) }}</td>
                             @endif

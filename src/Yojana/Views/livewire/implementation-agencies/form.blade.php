@@ -24,7 +24,7 @@
                 <div class='col-md-6 mb-3'>
                     <div class='form-group'>
                         <label for='consumer_committee_id'
-                            class='form-label'>{{ __('yojana::yojana.consumer_committee') }}</label>
+                            class='form-label'>{{ __('yojana::yojana.consumer_committee') }} <span class="text-danger">*</span></label>
                         <select wire:model='implementationAgency.consumer_committee_id' name='consumer_committee_id'
                             class="form-select">
                             <option value="" hidden>{{ __('yojana::yojana.select_an_option') }}</option>

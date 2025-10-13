@@ -93,7 +93,7 @@
 
                     <div class='col-md-2 mb-3'>
                         <div class='form-group'>
-                            <label class="form-label" for='amount'>{{ __('yojana::yojana.amount') }}</label>
+                            <label class="form-label" for='amount'>{{ __('yojana::yojana.amount') }} <span class="text-danger">*</span></label>
                             <input wire:model='costEstimationDetail.amount' name='amount' type='number'
                                 class='form-control {{ $errors->has('costEstimationDetail.amount') ? 'is-invalid' : '' }}'
                                 placeholder='{{ __('yojana::yojana.enter_amount') }}'>
@@ -175,7 +175,7 @@
                                 <tr>
                                     <td>{{ replaceNumbersWithLocale($index + 1, true) }}</td>
                                     <td>{{ ($activities->firstWhere('id',$record['activity_id']))?->title ?? '-' }}</td>
-                                    <td>{{ $units[$record['unit']] }}</td>
+                                    <td>{{ $units[$record['unit']] ?? '-' }}</td>
                                     <td>{{ replaceNumbersWithLocale($record['quantity'] ?? '-', true) }}</td>
                                     <td>{{ replaceNumbersWithLocale($record['rate'] ?? '-', true) }}</td>
                                     <td>{{ __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($record['amount'] ?? 0), true) }}</td>
@@ -254,7 +254,7 @@
                                 <tr class="">
                                     <td>{{ replaceNumbersWithLocale($index + 1, true) }}</td>
                                     <td>{{ $configurations[$configRecord['configuration']] ?? '-'}}</td>
-                                    <td>{{ __($configRecord['operation_type']) }}</td>
+                                    <td>{{ ($configRecord['operation_type'] == 'add' ? __('yojana::yojana.added') : __('yojana::yojana.deducted ')) }}</td>
                                     <td>{{ replaceNumbersWithLocale($configRecord['rate'] ?? '-', true).' %' }}</td>
                                     <td>{{ ($configRecord['operation_type'] == 'add' ? ' + ' : ' - ') . __('yojana::yojana.rs').replaceNumbersWithLocale(number_format($configRecord['amount'] ?? 0), true) }}</td>
                                     <td>

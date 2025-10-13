@@ -214,6 +214,7 @@ return [
     'business_nature' => 'Business nature',
     'recommendation_template' => 'Recommendation Template',
     'business_template' => 'Business Template',
+    'plan' => 'Plan',
     'recommendation' => 'Recommendation',
     'business' => 'Business',
     'select_template_type' => 'Select Template Type',

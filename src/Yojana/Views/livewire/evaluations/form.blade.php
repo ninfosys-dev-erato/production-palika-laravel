@@ -32,7 +32,7 @@
                 <div class='col-md-6 mb-3'>
                     <div class='form-group'>
                         <label for='evaluation_date'
-                            class='form-label'>{{ __('yojana::yojana.evaluation_date') }}</label>
+                            class='form-label'>{{ __('yojana::yojana.evaluation_date') }} <span class="text-danger">*</span></label>
                         <input wire:model='evaluation.evaluation_date' name='evaluation_date' type='text'
                             class='form-control nepali-date {{ $errors->has('evaluation.evaluation_date') ? 'is-invalid' : '' }}' id="evaluation_date"
                             placeholder="{{ __('yojana::yojana.enter_evaluation_date') }}">
@@ -46,7 +46,7 @@
                 <div class='col-md-6 mb-3'>
                     <div class='form-group'>
                         <label for='completion_date'
-                            class='form-label'>{{ __('yojana::yojana.completion_date') }}</label>
+                            class='form-label'>{{ __('yojana::yojana.completion_date') }} <span class="text-danger">*</span></label>
                         <input wire:model='evaluation.completion_date' id="evaluation_completion_date"
                             name='completion_date' type='text' class='form-control nepali-date {{ $errors->has('evaluation.completion_date') ? 'is-invalid' : '' }}'
                             placeholder="{{ __('yojana::yojana.enter_completion_date') }}">
@@ -124,7 +124,7 @@
                             <th>{{ __('yojana::yojana.up_to_date') }}</th>
                             <th>{{ __('yojana::yojana.current') }}</th>
                             <th>{{ __('yojana::yojana.rate') }}</th>
-                            <th>{{ __('yojana::yojana.amount') }}</th>
+                            <th class="text-nowrap">{{ __('yojana::yojana.amount') }} <span class="text-danger">*</span></th>
                             <th>{{ __('yojana::yojana.vat') }}</th>
                             <th>{{ __('yojana::yojana.vat_amount') }}</th>
                         </tr>
@@ -148,7 +148,12 @@
                                 <td>{{ floatval($costEstimationData[$index]['up_to_date_amount'] ?? 0) }}</td>
                                 <td>{{ $detail['rate'] }}</td>
                                 <td>
-                                    {{ number_format($costEstimationData[$index]['assessment_amount'] ?? 0, 2) }}
+                                    <input type="number" step="0.01" class="form-control {{ $errors->has('costEstimationData.'.$index.'.assessment_amount') ? 'is-invalid' : '' }}"
+                                           wire:model="costEstimationData.{{ $index }}.assessment_amount"
+                                           wire:input="calculateAmount({{ $index }})">
+                                    @error('costEstimationData.'.$index.'.assessment_amount')
+                                        <small class='text-danger'>{{ $message }}</small>
+                                    @enderror
                                 </td>
                                 <td class="text-center">
                                     <input type="checkbox" class="form-check-input"
@@ -184,7 +189,7 @@
                         <th>{{ __('yojana::yojana.estimated_cost') }}</th>
                         <th>{{ __('yojana::yojana.total_payment_amount') }}</th>
                         <th>{{ __('yojana::yojana.remaining_amount') }}</th>
-                        <th>{{ __('yojana::yojana.installment_no') }}</th>
+                        <th class="text-nowrap">{{ __('yojana::yojana.installment_no') }} <span class="text-danger">*</span></th>
                         <th>{{ __('yojana::yojana.evaluation_amount') }}</th>
                     </tr>
                 </thead>

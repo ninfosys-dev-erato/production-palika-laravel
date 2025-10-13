@@ -10,14 +10,14 @@ class AgreementCostDetailsAdminDto
     public function __construct(
         public string $agreement_cost_id,
         public string $cost_estimation_detail_id,
-        public string $activity_id,
-        public string $unit,
-        public string $quantity,
-        public string $estimated_rate,
-        public string $contractor_rate,
-        public string $amount,
-        public string $vat_amount,
-        public string $remarks
+        public ?string $activity_id,
+        public ?string $unit,
+        public ?string $quantity,
+        public ?string $estimated_rate,
+        public ?string $contractor_rate,
+        public ?string $amount,
+        public ?string $vat_amount,
+        public ?string $remarks
     ){}
 
     public static function fromLiveWireModel(AgreementCostDetail $agreementCostDetail): AgreementCostDetailsAdminDto
