@@ -144,6 +144,6 @@ class ComplaintRegistration extends Model
 
     public function disputeRegistrationCourt()
     {
-        return $this->hasMany(DisputeRegistrationCourt::class, 'complaint_registration_id', 'id');
+        return $this->hasOne(DisputeRegistrationCourt::class, 'complaint_registration_id', 'id');
     }
 }

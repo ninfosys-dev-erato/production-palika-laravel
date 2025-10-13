@@ -302,6 +302,7 @@
 @endperm
 
 
+
 @perm('jms_report access')
     <li
         class="menu-item has-sub {{ request()->routeIs('admin.ejalas.report.complaint_registrations.*', 'admin.ejalas.report.hearing_schedules.*', 'admin.ejalas.report.settlements.*', 'admin.ejalas.report.dispute_deadlines.*', 'admin.ejalas.report.fulfilled_conditions.*', 'admin.ejalas.report.case_records.*', 'admin.ejalas.report.court_submissions.*', 'admin.ejalas.fiscal_years.report') ? 'active open' : '' }}">
@@ -371,21 +372,42 @@
     </li>
 @endperm
 
+
+
+<li
+    class="menu-item  {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.anusuchi-form.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.ejalas.anusuchi-form.index') }}" class="menu-link  gap-2">
+    <i class="menu-icon tf-icons bx bx-shield"></i>
+    <div data-i18n="Tasks">{{ __('ejalas::ejalas.anusuchi_form') }}</div>
+    </a>
+</li>
+
 <li class="menu-header small text-uppercase">
     <span class="menu-header-text">{{ __('ejalas::ejalas.system_setting') }}</span>
 </li>
-<li class="menu-item has-sub {{ request()->routeIs('admin.ejalas.form-template.index.*') ? 'active open' : '' }}">
+<li class="menu-item has-sub {{ request()->routeIs('admin.ejalas.form-template.index') ? 'active open' : '' }}">
     <a href="javascript:void(0)" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-cog"></i>
         <div data-i18n="Ejalas Management">{{ __('ejalas::ejalas.forms') }}</div>
     </a>
     <ul class="menu-sub">
-        <li
-            class="{{ \Illuminate\Support\Facades\Route::is('admin.ejalas.form-template.index.*') ? 'active' : '' }}">
+    <li
+            class="{{ \Illuminate\Support\Facades\Route::is('admin.ejalas.form-template-type.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.ejalas.form-template-type.index') }}" class="menu-link ps-4 gap-2">
+                <i class="menu-icon tf-icons bx bx-shield"></i>
+                <div data-i18n="Tasks">{{ __('ejalas::ejalas.form_type') }}</div>
+            </a>
+        </li>
+    <li
+            class="{{ \Illuminate\Support\Facades\Route::is('admin.ejalas.form-template.index') ? 'active' : '' }}">
             <a href="{{ route('admin.ejalas.form-template.index') }}" class="menu-link ps-4 gap-2">
                 <i class="menu-icon tf-icons bx bx-shield"></i>
                 <div data-i18n="Tasks">{{ __('ejalas::ejalas.ejalas_form') }}</div>
             </a>
         </li>
+     
+     
     </ul>
 </li>
+
+

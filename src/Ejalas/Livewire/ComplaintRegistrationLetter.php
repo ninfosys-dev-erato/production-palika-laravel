@@ -72,7 +72,7 @@ class ComplaintRegistrationLetter extends Component
                 content: $fullHtml,
                 file_path: config('src.Ejalas.ejalas.pdf'),
                 file_name: "ejalas" . date('YmdHis'),
-                disk: getStorageDisk('private'),
+                disk: "local",
             );
 
             return redirect()->away($url);

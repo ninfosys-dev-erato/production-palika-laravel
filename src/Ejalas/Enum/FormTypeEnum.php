@@ -2,12 +2,10 @@
 
 namespace Src\Ejalas\Enum;
 
-enum LocalLevelType: string
+enum FormTypeEnum: string
 {
-    case METROPOLITAN_CITY = 'metropolitan_city';
-    case SUB_METROPOLITAN_CITY = 'sub_metropolitan_city';
-    case MUNICIPALITY = 'municipality';
-    case RURAL_MUNICIPALITY = 'rural_municipality';
+    case ANUSUCHI = 'anusuchi';
+    case NORMAL = 'normal';
 
     public function label(): string
     {
@@ -17,10 +15,8 @@ enum LocalLevelType: string
     public static function getLabel(self $value): string
     {
         return match ($value) {
-            self::METROPOLITAN_CITY => __('Metropolitan City'),
-            self::SUB_METROPOLITAN_CITY => __('Sub Metropolitan City'),
-            self::MUNICIPALITY => __('Municipality'),
-            self::RURAL_MUNICIPALITY => __('Rural Municipality'),
+            self::ANUSUCHI => __('Anusuchi'),
+            self::NORMAL => __('Normal'),
         };
     }
 
@@ -52,10 +48,8 @@ enum LocalLevelType: string
     public static function getNepaliLabel(self $value): string
     {
         return match ($value) {
-            self::METROPOLITAN_CITY => 'महानगरपालिका',
-            self::SUB_METROPOLITAN_CITY => 'उपमहानगरपालिका',
-            self::MUNICIPALITY => 'नगरपालिका',
-            self::RURAL_MUNICIPALITY => 'गाउँपालिका',
+            self::ANUSUCHI => 'अनुसूची',
+            self::NORMAL => 'सामान्य',
         };
     }
 

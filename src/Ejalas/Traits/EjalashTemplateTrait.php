@@ -200,6 +200,7 @@ $latestDisputeDeadline = $model->disputeDeadline()->latest('created_at')->first(
 
     // Settlement Related Placeholders
     '{{settlement_detail}}' => $latestSettlement?->settlement_details ?? '',
+    '{{settlement_date}}' => $latestSettlement ? $this->convertToNepaliDateFormat(replaceNumbers($latestSettlement->settlement_date, true)) : '',
     '{{discussion_date}}' => $latestSettlement ? $this->convertToNepaliDateFormat(replaceNumbers($latestSettlement->discussion_date, true)) : '',
     '{{complaint_registration_claim_request}}' => $model->claim_request ?? '',
 
