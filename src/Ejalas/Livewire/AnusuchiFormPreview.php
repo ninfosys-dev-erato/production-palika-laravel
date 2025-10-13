@@ -50,7 +50,7 @@ class AnusuchiFormPreview extends Component
     public function mount(ComplaintRegistration $complaintRegistration)
     {
         $this->complaintRegistration = $complaintRegistration;
-        $this->formTemplate = FormType::where('status', true)->where('form_type', FormTypeEnum::ANUSUCHI)->pluck('name','id');
+        $this->formTemplate = FormType::whereNull('deleted_at')->where('status', true)->where('form_type', FormTypeEnum::ANUSUCHI)->pluck('name','id');
         $this->editMode = !$this->preview;
         $this->hasUnsavedChanges = false;
     }
