@@ -194,6 +194,7 @@ return [
     'business_nature' => 'व्यवसाय प्रकृति',
     'recommendation_template' => 'सुझाव टेम्प्लेट',
     'business_template' => 'व्यवसाय टेम्प्लेट',
+    'plan' => 'योजना',
     'recommendation' => 'सिफारिस',
     'business' => 'व्यवसाय',
     'select_template_type' => 'टेम्प्लेट प्रकार चयन गर्नुहोस्',
