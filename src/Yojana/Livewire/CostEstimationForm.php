@@ -101,11 +101,11 @@ class CostEstimationForm extends Component
     {
         return [
             'costEstimationDetail.id' => 'nullable',
-            'costEstimationDetail.activity_group_id' => 'required',
-            'costEstimationDetail.activity_id' => 'required',
-            'costEstimationDetail.unit' => 'required',
-            'costEstimationDetail.quantity' => ['required', 'numeric', 'min:1'],
-            'costEstimationDetail.rate' => ['required', 'numeric', 'min:1'],
+            'costEstimationDetail.activity_group_id' => 'nullable',
+            'costEstimationDetail.activity_id' => 'nullable',
+            'costEstimationDetail.unit' => 'nullable',
+            'costEstimationDetail.quantity' => ['nullable', 'numeric', 'min:1'],
+            'costEstimationDetail.rate' => ['nullable', 'numeric', 'min:1'],
             'costEstimationDetail.amount' => 'required',
             'costEstimationDetail.vat_amount' => 'nullable',
             'costEstimation.is_revised' => 'nullable',
@@ -345,6 +345,11 @@ class CostEstimationForm extends Component
         $detail = $this->costEstimationDetail;
         if (isset($detail->quantity) && isset($detail->rate)) {
             $this->costEstimationDetail->amount = $detail->quantity * $detail->rate;
+            if ($this->is_vatable) {
+                $this->costEstimationDetail->vat_amount = $detail->amount * 0.13;
+            }
+        }
+        else{
             if ($this->is_vatable) {
                 $this->costEstimationDetail->vat_amount = $detail->amount * 0.13;
             }

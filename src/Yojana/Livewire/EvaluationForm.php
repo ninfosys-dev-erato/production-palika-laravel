@@ -91,7 +91,9 @@ class EvaluationForm extends Component
         // Add validation for cost estimation data
         if (!empty($this->costEstimationData)) {
             foreach ($this->costEstimationData as $index => $data) {
-                $rules["costEstimationData.{$index}.up_to_date_amount"] = ['required', 'numeric', 'gt:0'];
+                // $rules["costEstimationData.{$index}.up_to_date_amount"] = ['required', 'numeric', 'gt:0'];
+                $rules["costEstimationData.{$index}.up_to_date_amount"] = ['nullable', 'numeric'];
+                $rules["costEstimationData.{$index}.assessment_amount"] = ['required', 'numeric', 'gt:0'];
             }
         }
 
@@ -131,6 +133,11 @@ class EvaluationForm extends Component
                 $messages["costEstimationData.{$index}.up_to_date_amount.required"] = __('yojana::yojana.current_amount_required');
                 $messages["costEstimationData.{$index}.up_to_date_amount.numeric"] = __('yojana::yojana.current_amount_must_be_numeric');
                 $messages["costEstimationData.{$index}.up_to_date_amount.gt"] = __('yojana::yojana.current_amount_must_be_greater_than_zero');
+
+                // assessment_amount messages
+                $messages["costEstimationData.{$index}.assessment_amount.required"] = __('yojana::yojana.assessment_amount_required');
+                $messages["costEstimationData.{$index}.assessment_amount.numeric"] = __('yojana::yojana.assessment_amount_must_be_numeric');
+                $messages["costEstimationData.{$index}.assessment_amount.gt"] = __('yojana::yojana.assessment_amount_must_be_greater_than_zero');
             }
         }
 
@@ -157,7 +164,7 @@ class EvaluationForm extends Component
         $this->area = $this->plan?->planArea?->area_name ?? "";
         $this->evaluation->plan_id = $this->plan->id;
         $this->costEstimationDetails = $this->plan?->agreement;
-        $this->costTotal = $this->plan?->costEstimation->value('total_cost');
+        $this->costTotal = $this->plan?->costEstimation->total_cost;
         $this->advancePayment = $this->plan?->advancePayments?->sum('paid_amount') ?? 0;
         $this->installments = Installments::getForWeb();
         if ($action == Action::CREATE) {
@@ -211,13 +218,16 @@ class EvaluationForm extends Component
     }
     public function calculateAmount($index)
     {
-        $rate = floatval($this->costEstimationData[$index]['rate'] ?? 0);
-        $qty = floatval($this->costEstimationData[$index]['up_to_date_amount'] ?? 0);
+        $rate = floatval($this->costEstimationData[$index]['rate'] ?? null);
+        $qty = floatval($this->costEstimationData[$index]['up_to_date_amount'] ?? null);
 
+        if ($rate > 0 && $qty > 0) {
         // Calculate assessment amount
         $assessment = $qty * $rate;
         $this->costEstimationData[$index]['assessment_amount'] = $assessment;
-
+        }else{
+            $assessment = $this->costEstimationData[$index]['assessment_amount'];
+        }
         // Calculate VAT if vatable
         if (!empty($this->costEstimationData[$index]['is_vatable'])) {
             $this->costEstimationData[$index]['vat_amount'] = $assessment * 0.13;

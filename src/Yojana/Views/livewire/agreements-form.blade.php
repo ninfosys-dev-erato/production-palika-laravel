@@ -83,7 +83,7 @@
             </div>
             <div class='col-md-6' wire:ignore>
                 <div class='form-group mb-3'>
-                    <label for='plan_start_date' class='form-label'>{{ __('yojana::yojana.plan_start_date') }}</label>
+                    <label for='plan_start_date' class='form-label'>{{ __('yojana::yojana.plan_start_date') }} <span class="text-danger">*</span></label>
                     <input wire:model='agreement.plan_start_date' name='plan_start_date' type='text'
                         class='form-control nepali-date {{ $errors->has('agreement.plan_start_date') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_plan_start_date') }}">
@@ -97,7 +97,7 @@
             <div class='col-md-6' wire:ignore>
                 <div class='form-group mb-3'>
                     <label for='plan_completion_date'
-                        class='form-label'>{{ __('yojana::yojana.plan_completion_date') }}</label>
+                        class='form-label'>{{ __('yojana::yojana.plan_completion_date') }} <span class="text-danger">*</span></label>
                     <input wire:model='agreement.plan_completion_date' name='plan_completion_date'
                         type='text' class='form-control nepali-date {{ $errors->has('agreement.plan_completion_date') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_plan_completion_date') }}">
@@ -111,7 +111,7 @@
 
             <div class='col-md-6'>
                 <div class='form-group mb-3'>
-                    <label for='experience' class='form-label'>{{ __('yojana::yojana.experience') }}</label>
+                    <label for='experience' class='form-label'>{{ __('yojana::yojana.experience') }} <span class="text-danger">*</span></label>
                     <input wire:model='agreement.experience' name='experience' type='text' class='form-control {{ $errors->has('agreement.experience') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_experience') }}">
                     <div>
