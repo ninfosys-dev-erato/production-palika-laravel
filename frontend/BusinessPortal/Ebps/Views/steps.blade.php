@@ -295,11 +295,7 @@
                                                 @endif
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    @if (
-                                                        !$isDisabled &&
-                                                            $status != 'accepted' &&
-                                                            $canApply &&
-                                                            $mapStep->form_submitter === Src\Ebps\Enums\FormSubmitterEnum::CONSULTANT_SUPERVISOR)
+                                                            @if ($status != 'accepted' && $mapStep->form_submitter !== 'municipality')
                                                         <a href="{{ route('organization.ebps.map_apply.apply-map-step', ['mapStep' => $mapStep->id, 'mapApply' => $mapApply]) }}"
                                                             class="btn btn-primary btn-sm me-2">
                                                             <i
