@@ -50,7 +50,7 @@ class AnusuchiFormPreview extends Component
     public function mount(ComplaintRegistration $complaintRegistration)
     {
         $this->complaintRegistration = $complaintRegistration;
-        $this->formTemplate = FormType::where('status', true)->where('form_type', FormTypeEnum::ANUSUCHI)->pluck('name','id');
+        $this->formTemplate = FormType::whereNull('deleted_at')->where('status', true)->where('form_type', FormTypeEnum::ANUSUCHI)->pluck('name','id');
         $this->editMode = !$this->preview;
         $this->hasUnsavedChanges = false;
     }
@@ -98,6 +98,7 @@ public function updatedCertificateTemplate()
 
     public function saveTemplate()
     {
+        
         if (!$this->formTemplateId || !$this->certificateTemplate) {
             $this->errorToast(__('ejalas::ejalas.form_template_id_is_required'));
             return;
@@ -108,7 +109,10 @@ public function updatedCertificateTemplate()
             $this->errorToast(__('ejalas::ejalas.form_not_found'));
             return;
         }
-
+        $fullTemplate = $this->certificateTemplate;
+        if (!empty($this->style)) {
+            $fullTemplate = $this->certificateTemplate . $this->style ;
+        }
         // Update or create the template detail
         UpdatedTemplateDetail::updateOrCreate(
             [
@@ -117,7 +121,7 @@ public function updatedCertificateTemplate()
                 'deleted_at' => null
             ],
             [
-                'template' => $this->certificateTemplate,
+                'template' => $fullTemplate,
                 'created_by' => Auth::id(),
                 'updated_by' => Auth::id(),
             ]
