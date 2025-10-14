@@ -23,6 +23,7 @@ class BusinessRegistrationShow extends Component
     public $bill_no;
     public $amount;
     public $bill;
+    public $signee_name;
     public array $businessRequiredDocUrls = [];
 
     public array $citizenshipFrontUrls = [];
@@ -36,6 +37,7 @@ class BusinessRegistrationShow extends Component
         $this->businessRegistration = $businessRegistration;
         $this->rejectionReason = $businessRegistration->application_rejection_reason ?? '';
         $this->showBillUpload = $this->businessRegistration->status == ApplicationStatusEnum::SENT_FOR_PAYMENT->value;
+        $this->signee_name = getSetting('business-signee-name') ?? '';
 
         $this->generateTemporaryUrlsForDocs();
         $this->generateTemporaryUrlsForCitizenship();
@@ -122,6 +124,7 @@ class BusinessRegistrationShow extends Component
     {
         $this->validate([
             'bill_no' => 'required|string|max:255',
+            'signee_name' => 'nullable',
         ]);
 
 
@@ -147,6 +150,7 @@ class BusinessRegistrationShow extends Component
                 'registration_date_en' => $registrationDateEn,
                 'certificate_number' => $registrationNumber,
                 'bill_no' => $this->bill_no,
+                'signee_name' => $this->signee_name,
             ];
 
 

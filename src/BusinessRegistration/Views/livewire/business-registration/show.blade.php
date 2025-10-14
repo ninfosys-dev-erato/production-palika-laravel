@@ -391,6 +391,16 @@
                             <span class="text-danger">{{ __($message) }}</span>
                         @enderror
                     </div>
+
+                    <div class="mb-3">
+                        <label for="bill_no"
+                            class="form-label">{{ __('businessregistration::businessregistration.signee_name') }}</label>
+                        <input type="text" id="signee_name"
+                            class="form-control" wire:model="signee_name">
+                        @error('bill_no')
+                            <span class="text-danger">{{ __($message) }}</span>
+                        @enderror
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
