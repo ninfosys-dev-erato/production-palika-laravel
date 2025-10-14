@@ -76,6 +76,7 @@ return new class extends Migration
             $table->unsignedBigInteger('ward_id')->nullable();
             $table->timestamps();
             $table->string('business_category')->nullable();
+            $table->string('signee_name')->nullable();
         });
     }
 
