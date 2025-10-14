@@ -27,7 +27,20 @@ trait BusinessRegistrationTemplate
             $businessRegistration = $businessRegistration->businessRegistration;
         }
 
-        $businessRegistration->load('registrationType', 'fiscalYear', 'province', 'district', 'localBody', 'businessNature', 'renewals');
+        $businessRegistration->load(
+            'registrationType',
+            'fiscalYear',
+            'province',
+            'district',
+            'localBody',
+            'businessNature',
+            'renewals',
+            'applicants',
+            'applicants.citizenshipDistrict',
+            'applicants.applicantProvince',
+            'applicants.applicantDistrict',
+            'applicants.applicantLocalBody'
+        );
 
 
         $fileRecord = FileRecord::where('subject_id',  $businessRegistration->id)->whereNull('deleted_at')->first();
@@ -157,6 +170,8 @@ trait BusinessRegistrationTemplate
             '{{business.kardata_miti}}' => $businessRegistration->kardata_miti ?? ' ',
             '{{business.pratilipi_count}}' => $pratilipiCount ? 'प्रतिलिपी: ' . $pratilipiCount . ' प्रतिलिपी' : ' ',
             '{{business.is_pratilipi}}' => $pratilipiCount ? 'प्रतिलिपी' : ' ',
+
+            '{{business.signee_name}}' => $businessRegistration->signee_name ?? getSetting('business-signee-name') ?? '',
 
 
         ];

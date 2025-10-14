@@ -588,4 +588,5 @@ return [
     'create_pratilipi' => 'प्रतिलिपी सिर्जना गर्नुहोस्',
     'failed_to_save_pratilipi_entry' => 'प्रतिलिपी इनपुट गर्न असफल भयो',
     'registration_type_id_is_required' => 'दर्ता प्रकार आवश्यक छ।',
+    'signee_name' => 'हस्ताक्षर गर्ने नाम',
 ];

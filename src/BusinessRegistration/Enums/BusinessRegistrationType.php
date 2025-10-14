@@ -10,6 +10,7 @@ enum BusinessRegistrationType: string
     case RENEWAL = 'renewal';
     case CAPITAL_GROWTH = 'capital-growth';
     case ARCHIVING = 'archiving';
+    case CHANGEREQUEST = 'change-request';
 
     public function label(): string
     {
@@ -25,6 +26,7 @@ enum BusinessRegistrationType: string
             self::RENEWAL => __('Renewal'),
             self::CAPITAL_GROWTH => __('Capital Growth'),
             self::ARCHIVING => __('Archiving'),
+            self::CHANGEREQUEST => __('Change Request'),
         };
     }
 
@@ -37,6 +39,7 @@ enum BusinessRegistrationType: string
             self::RENEWAL => 'नवीकरण',
             self::CAPITAL_GROWTH => 'पूँजी वृद्धि',
             self::ARCHIVING => 'अभिलेखिकरण',
+            self::CHANGEREQUEST => 'परिवर्तन अनुरोध',
         };
     }
 
