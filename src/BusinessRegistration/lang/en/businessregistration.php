@@ -565,4 +565,5 @@ return [
     'pratilipi' => 'Pratilipi',
     'create_pratilipi' => 'Create Pratilipi',
     'failed_to_save_pratilipi_entry' => 'Failed to save pratilipi entry',
+    'signee_name' => 'Signee Name'
 ];

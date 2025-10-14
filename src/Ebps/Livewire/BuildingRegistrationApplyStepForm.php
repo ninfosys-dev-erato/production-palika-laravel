@@ -43,7 +43,8 @@ class BuildingRegistrationApplyStepForm extends Component
             // }
 
             $mapApplyStep = MapApplyStep::with('mapApplyStepTemplates')
-                ->where('map_step_id', $mapStep->id)
+                ->where('map_step_id', $this->mapStep->id)
+                ->where('map_apply_id', $this->mapApply->id)
                 ->first();
 
             $mapApplyStepTemplate = $mapApplyStep

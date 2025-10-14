@@ -206,6 +206,7 @@ class BusinessRegistrationAdminService
             'registration_date_en' => $data['registration_date_en'] ?? date('Y-m-d'),
             'certificate_number' => $data['certificate_number'],
             'bill_no' => $data['bill_no'],
+            'signee_name' => $data['signee_name'],
             'business_status' => BusinessStatusEnum::ACTIVE->value,
             'approved_at' => now(),
             'approved_by' => Auth::user()->id,
