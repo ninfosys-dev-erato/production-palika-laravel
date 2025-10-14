@@ -18,7 +18,7 @@ trait EjalashTemplateTrait
             return '';
         }
 
-        $modelName = class_basename($this->model);
+        $modelName = class_basename($model);
 
         $data = [
             '{{global.letter-head}}' => $this->getLetterHeader(null),
@@ -35,7 +35,7 @@ trait EjalashTemplateTrait
             '{{global.local-body}}' => getSetting('palika-local-body'),
             '{{global.ward}}' => getSetting('palika-ward'),
             '{{global.today_date_ad}}' => today()->toDateString(),
-            '{{global.today_date_bs}}' => $this->adToBs(today()->toDateString(), 'yyyy-mm-dd'),
+            '{{global.today_date_bs}}' => replaceNumbers($this->adToBs(today()->toDateString(), 'yyyy-mm-dd'), true),
         ];
 
         switch ($modelName) {
@@ -87,7 +87,7 @@ trait EjalashTemplateTrait
                 }
 
 
-                $complainerFields = extractPartyFields($complainerDetailsArray);
+                $complainerFields = $this->extractPartyFields($complainerDetailsArray);
 
 $complainerDistrict = $complainerFields['district'];
 $complainerLocalBody = $complainerFields['local_body'];
@@ -100,7 +100,7 @@ $complainerAge = $complainerFields['age'];
 $complainerName = $complainerFields['name'];
 $complainerNumber = $complainerFields['phone'];
 
-$defenderFields = extractPartyFields($defenderDetailsArray);
+$defenderFields = $this->extractPartyFields($defenderDetailsArray);
 
 $defenderDistrict = $defenderFields['district'];
 $defenderLocalBody = $defenderFields['local_body'];
@@ -112,8 +112,8 @@ $defenderSpouse = $defenderFields['spouse_name'];
 $defenderAge = $defenderFields['age'];
 $defenderName = $defenderFields['name'];
 $defenderNumber = $defenderFields['phone'];
-
-$bsDate = $this->convertToNepaliDateFormat(replaceNumbers($this->AdTobs($model->reg_date), true));
+$today = date('Y-m-d');
+$bsDate = $this->convertToNepaliDateFormat(replaceNumbers($this->AdTobs($today), true));
 $nepaliDateParts = $this->convertToNepaliDateParts($bsDate);
 
 $regYear = $nepaliDateParts['year'];
@@ -144,6 +144,7 @@ $latestDisputeDeadline = $model->disputeDeadline()->latest('created_at')->first(
                     '{{defender_name}}' => $defenderName ?? '',
                     '{{defender_number}}' => $defenderNumber ?? '',
                     '{{reg_date}}' => $this->convertToNepaliDateFormat(replaceNumbers($this->AdTobs($model->reg_date), true)) ?? '',
+                 
 
     // Complainers
     '{{complainer_district}}' => $complainerDistrict ?? '',
@@ -169,6 +170,7 @@ $latestDisputeDeadline = $model->disputeDeadline()->latest('created_at')->first(
     '{{reg_month}}' => $regMonth ?? '',
     '{{reg_day}}' => $regDay ?? '',
     '{{complaint_registration_no}}' => $model->reg_no ?? '',
+    '{{complaint_registration_ward_no}}' => $model->ward_no ?? '',
 
 
     //disputeRegistrationCourt
@@ -187,6 +189,9 @@ $latestDisputeDeadline = $model->disputeDeadline()->latest('created_at')->first(
 
     // Written Response Related Placeholders
     '{{written_response_description}}' => $latestWrittenResponse?->description ?? '',
+    '{{written_response_fee_amount}}' => $latestWrittenResponse?->fee_amount ?? '',
+    '{{written_response_fee_receipt_no}}' => $latestWrittenResponse?->fee_receipt_no ?? '',
+    '{{written_response_fee_paid_date}}' => $latestWrittenResponse?->fee_paid_date ?? '',
     '{{written_response_date}}' => $latestWrittenResponse ? $this->convertToNepaliDateFormat(replaceNumbers($latestWrittenResponse->registration_date, true)) : '',
 
     // Mediator Selection Related Placeholders
@@ -210,6 +215,7 @@ $latestDisputeDeadline = $model->disputeDeadline()->latest('created_at')->first(
     '{{decision_authority}}' => $latestCaseRecord?->judicialMember?->title ?? '',
     '{{recording_officer_position}}' => $latestCaseRecord?->judicialEmployee?->designation?->title ?? '',
     '{{decision_date}}' => $latestCaseRecord ? replaceNumbers($this->adToBs($latestCaseRecord->decision_date), true) : '',
+    '{{case_remark}}' => $latestCaseRecord?->remarks ?? '',
 
     // Dispute Deadline Related Placeholders
     '{{extension_period}}' => $latestDisputeDeadline?->deadline_extension_period ?? '',
@@ -753,6 +759,15 @@ $latestDisputeDeadline = $model->disputeDeadline()->latest('created_at')->first(
 
 function convertToNepaliDateParts($bsDate)
 {
+    // Handle null or empty input
+    if (empty($bsDate) || is_null($bsDate)) {
+        return [
+            'year' => '',
+            'month' => '',
+            'day' => '',
+        ];
+    }
+
     $monthNames  = [
         '०१' => 'वैशाख',
         '०२' => 'जेठ',
@@ -768,7 +783,22 @@ function convertToNepaliDateParts($bsDate)
         '१२' => 'चैत्र'
     ];
 
-    [$year, $month, $day] = explode('-', $bsDate);
+    // Split the date and handle cases where explode might fail
+    $dateParts = explode('-', $bsDate);
+    
+    // Check if we have at least 3 parts (year, month, day)
+    if (count($dateParts) < 3) {
+        return [
+            'year' => $dateParts[0] ?? '',
+            'month' => '',
+            'day' => $dateParts[1] ?? '',
+        ];
+    }
+
+    $year = $dateParts[0] ?? '';
+    $month = $dateParts[1] ?? '';
+    $day = $dateParts[2] ?? '';
+    
     $monthName = $monthNames[$month] ?? '';
 
     return [
@@ -777,6 +807,5 @@ function convertToNepaliDateParts($bsDate)
         'day' => $day,
     ];
 }
-
 
 }

@@ -26,6 +26,7 @@ class ComplaintRegistrationAdminService
             'status' => $complaintRegistrationAdminDto->status,
             'reconciliation_center_id' => $complaintRegistrationAdminDto->reconciliation_center_id,
             'reconciliation_reg_no' => $complaintRegistrationAdminDto->reconciliation_reg_no,
+            'ward_no' => GlobalFacade::ward() ?? null,
             'created_at' => date('Y-m-d H:i:s'),
             'created_by' => Auth::user()->id,
         ]);

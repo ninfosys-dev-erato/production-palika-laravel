@@ -39,12 +39,14 @@ class AgreementCostForm extends Component
             'agreementCost.total_with_vat' => ['nullable','min:1'],
 
             'agreementCostDetails' => ['required', 'array'],
-            'agreementCostDetails.*.activity_id' => ['required', 'string'],
-            'agreementCostDetails.*.unit' => ['required', 'string'],
-            'agreementCostDetails.*.quantity' => ['required', 'numeric', 'gt:0'],
+            'agreementCostDetails.*.activity_id' => ['nullable', 'string'],
+            'agreementCostDetails.*.unit' => ['nullable', 'string'],
+            // 'agreementCostDetails.*.quantity' => ['nullable', 'numeric', 'gt:0'],
+            'agreementCostDetails.*.quantity' => ['nullable'],
             'agreementCostDetails.*.estimated_rate' => ['nullable', 'numeric'],
-            'agreementCostDetails.*.contractor_rate' => ['required', 'numeric', 'gte:1'],
-            'agreementCostDetails.*.amount' => ['required', 'numeric'],
+            // 'agreementCostDetails.*.contractor_rate' => ['required', 'numeric', 'gte:1'],
+            'agreementCostDetails.*.contractor_rate' => ['nullable', 'numeric'],
+            'agreementCostDetails.*.amount' => ['required', 'numeric','gt:0'],
             'agreementCostDetails.*.vat' => ['boolean'],
             'agreementCostDetails.*.vat_amount' => ['nullable', 'numeric'],
             'agreementCostDetails.*.remarks' => ['nullable'],
@@ -75,6 +77,7 @@ class AgreementCostForm extends Component
             'agreementCostDetails.*.contractor_rate.gte' => __('yojana::yojana.contractor_rate_should_be_greater_than_0'),
             'agreementCostDetails.*.amount.required' => __('yojana::yojana.amount_is_required'),
             'agreementCostDetails.*.amount.numeric' => __('yojana::yojana.amount_must_be_a_number'),
+            'agreementCostDetails.*.amount.gt' => __('yojana::yojana.amount_must_be_greater_than_zero'),
             'agreementCostDetails.*.vat.boolean' => __('yojana::yojana.vat_must_be_true_or_false'),
             'agreementCostDetails.*.vat_amount.nullable' => __('yojana::yojana.vat_amount_is_optional'),
             'agreementCostDetails.*.vat_amount.numeric' => __('yojana::yojana.vat_amount_must_be_a_number'),
@@ -102,10 +105,10 @@ class AgreementCostForm extends Component
             foreach ($this->costEstimationDetails as $index => $detail) {
                 $this->agreementCostDetails[$index] = [
                     'cost_estimation_detail_id' => $detail->id ?? null,
-                    'activity_id' => $this->activities[$detail->activity_id],
-                    'unit' => $this->units[$detail->unit],
-                    'quantity' => $detail->quantity,
-                    'estimated_rate' => $detail->rate,
+                    'activity_id' => $this->activities[$detail->activity_id] ?? '-',
+                    'unit' => $this->units[$detail->unit] ?? '-',
+                    'quantity' => $detail->quantity ?? 0,
+                    'estimated_rate' => $detail->rate ?? 0,
                     'contractor_rate' => 0,
                     'amount' => 0,
                     'vat' => false,
@@ -146,8 +149,9 @@ class AgreementCostForm extends Component
         $contractorRate = floatval($this->agreementCostDetails[$index]['contractor_rate'] ?? 0);
         $quantity = floatval($this->agreementCostDetails[$index]['quantity'] ?? 0);
 
-        $this->agreementCostDetails[$index]['amount'] = $contractorRate * $quantity;
-
+        if ($contractorRate >0 && $quantity > 0){
+            $this->agreementCostDetails[$index]['amount'] = $contractorRate * $quantity;
+        }else
         $this->recalculateTotals();
     }
 

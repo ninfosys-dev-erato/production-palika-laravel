@@ -992,6 +992,7 @@ return [
     'enter_implementation_method_first' => 'पहिले कार्यान्वयन विधि चयन गर्नुहोस्',
     'amount_is_required' => 'रकम आवश्यक छ',
     'amount_must_be_a_number' => 'रकम एक संख्या हुनुपर्छ',
+    'amount_must_be_greater_than_zero' => 'रकम शून्य भन्दा बढी हुनुपर्छ',
     'vat_must_be_true_or_false' => 'VAT सत्य वा झूठ हुनु पर्छ',
     'vat_amount_is_optional' => 'VAT रकम वैकल्पिक छ',
     'vat_amount_must_be_a_number' => 'VAT रकम एक संख्या हुनुपर्छ',
@@ -1490,6 +1491,9 @@ return [
     'current_amount_required' => 'हालको रकम आवश्यक छ',
     'current_amount_must_be_numeric' => 'हालको रकम संख्या हुनुपर्छ',
     'current_amount_must_be_greater_than_zero' => 'हालको रकम शून्य भन्दा बढी हुनुपर्छ',
+    'assessment_amount_required' => 'मूल्यांकन रकम आवश्यक छ',
+    'assessment_amount_must_be_numeric' => 'मूल्यांकन रकम संख्या हुनुपर्छ',
+    'assessment_amount_must_be_greater_than_zero' => 'मूल्यांकन रकम शून्य भन्दा बढी हुनुपर्छ',
     'select_an_organization' => 'संस्था चयन गर्नुहोस्',
     'trust_name' => 'अमानतको नाम',
     'contract_details' => 'ठेक्का विवरण',
@@ -1740,6 +1744,8 @@ return [
     'select_signature_party' => 'हस्ताक्षर पार्टी चयन गर्नुहोस्',
     'planning_department' => 'योजना शाखा',
     'office' => 'कार्यालय',
+    'added' => 'थपियो',
+    'deducted' => 'कटौती गरियो',
 
 
 ];

@@ -947,6 +947,7 @@ return [
     'contractor_rate_has_invalid_validation_gte' => 'Contractor rate has invalid validation: gte',
     'amount_is_required' => 'Amount is required',
     'amount_must_be_a_number' => 'Amount must be a number',
+    'amount_must_be_greater_than_zero' => 'Amount must be greater than zero',
     'vat_must_be_true_or_false' => 'Vat must be true or false',
     'vat_amount_is_optional' => 'Vat amount is optional',
     'vat_amount_must_be_a_number' => 'Vat amount must be a number',
@@ -1451,6 +1452,9 @@ return [
     'current_amount_required' => 'Current amount is required',
     'current_amount_must_be_numeric' => 'Current amount must be a number',
     'current_amount_must_be_greater_than_zero' => 'Current amount must be greater than zero',
+    'assessment_amount_required' => 'Assessment amount is required',
+    'assessment_amount_must_be_numeric' => 'Assessment amount must be a number',
+    'assessment_amount_must_be_greater_than_zero' => 'Assessment amount must be greater than zero',
     'select_an_organization' => 'Select an organization',
     'trust_name' => 'Trust Name',
     'contract_details' => 'Contract Details',
@@ -1705,6 +1709,8 @@ return [
     'contractor_rate_must_be_a_number' => 'Contractor rate must be a number',
     'contractor_rate_has_invalid_validation_gte' => 'Contractor rate must be greater than or equal to 0',
     'contractor_rate_should_be_greater_than_0' => 'Contractor rate should be greater than 0',
+    'added' => 'Added',
+    'deducted' => 'Deducted',
 
     // Target Completion validations (added)
     'plan_id_is_required' => 'Plan ID is required',

@@ -37,7 +37,8 @@ class ComplaintRegistration extends Model
         'deleted_by',
         'updated_at',
         'template',
-        'updated_by'
+        'updated_by',
+        'ward_no'
     ];
 
     public function casts(): array
@@ -66,6 +67,7 @@ class ComplaintRegistration extends Model
             'deleted_at' => 'datetime',
             'deleted_by' => 'string',
             'template' => 'string',
+            'ward_no' => 'string',
         ];
     }
 
