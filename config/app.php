@@ -126,4 +126,7 @@ return [
     'grantmanagement' => [
         'certificate' => 'pdfs/grants/',
     ],
+
+    'app_abbreviation' => env('APP_ABBREVIATION', ''),
+
 ];

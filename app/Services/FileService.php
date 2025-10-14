@@ -15,192 +15,254 @@ class FileService
     public function saveFile(
         string $path,
         $filename,
-        string|File|TemporaryUploadedFile|PDF $file,
-        string $disk = null
-    ) {
+        string|File|TemporaryUploadedFile|\Barryvdh\DomPDF\PDF $file,
+        ?string $disk = null
+    ): string|false {
         $disk = $disk ?: getStorageDisk('public');
+        $path = rtrim($path, '/') . '/';
+
+        try {
+            // Normalize file input
+            [$fileContent, $originalName, $extension] = $this->resolveFileContent($file);
+
+            // Generate final filename
+            $filename = FileNamingService::generateFilename($originalName, $filename);
+
+            // Ensure correct prefix for cloud storage
+            $finalPath = $this->applyTenantPrefix($path, $disk);
+
+            // Store the file
+            $stored = Storage::disk($disk)->put($finalPath . $filename, $fileContent);
+
+            if (!$stored) {
+                $this->logStorageError('File storage failed', $disk, $finalPath . $filename);
+                return false;
+            }
+
+            $this->logStorageSuccess($disk, $finalPath . $filename);
+            return $filename;
+
+        } catch (\Throwable $e) {
+            $this->logStorageError('Exception during file storage', $disk, ($finalPath ?? $path) . $filename, $e);
+            return false;
+        }
+    }
+
+    /**
+     * Normalize the incoming file and return [content, originalName, extension].
+     */
+    protected function resolveFileContent(string|File|TemporaryUploadedFile|\Barryvdh\DomPDF\PDF $file): array
+    {
         if ($file instanceof TemporaryUploadedFile) {
             $file = new File($file->getRealPath());
         }
 
-        // Determine file type and content
-        if ($file instanceof \Barryvdh\DomPDF\PDF) {
-            $extension = 'pdf';
-            $fileContent = $file->output(); // Get raw PDF content
-            $originalName = 'document.pdf';
-        } elseif ($file instanceof File) {
-            $extension = $file->getExtension() ?: 'doc';
-            $fileContent = file_get_contents($file->getRealPath());
-            $originalName = $file->getFilename();
-        } elseif (is_string($file)) {
-            $extension = 'pdf';
-            $fileContent = $file;
-            $originalName = 'document.pdf';
-        } else {
-            throw new \Exception('Unsupported file type');
-        }
-
-        // Use consistent filename generation
-        $filename = FileNamingService::generateFilename($originalName, $filename);
-
-        // Ensure path ends with a slash
-        $path = rtrim($path, '/') . '/';
-
-        // Store the file correctly
-        Storage::disk($disk)->put($path . $filename, $fileContent);
-
-        return $filename;
+        return match (true) {
+            $file instanceof \Barryvdh\DomPDF\PDF => [$file->output(), 'document.pdf', 'pdf'],
+            $file instanceof File => [
+                file_get_contents($file->getRealPath()),
+                $file->getFilename(),
+                $file->getExtension() ?: 'doc',
+            ],
+            is_string($file) => [$file, 'document.pdf', 'pdf'],
+            default => throw new \InvalidArgumentException('Unsupported file type'),
+        };
     }
 
-        public function getFile(
-string $path,
-        string $filename,
-        string $disk = null
-    ) {
-        $disk = $disk ?: getStorageDisk('public');
-        // Ensure path ends with a slash
-        $path = rtrim($path, '/') . '/';
-
-        // Full file path
-        $filePath = $path . $filename;
-        if (!Storage::disk($disk)->exists($filePath)) {
-            //            throw new \Exception("File not found: {$filePath}");
-            return false;
-        }
-        // Return file contents or a file URL
-        return Storage::disk($disk)->get($filePath); // Or use `Storage::url($filePath)` for a public URL
-    }
-
-    public function getTemporaryUrl(
-        string $path,
-        string $filename,
-        string $disk = null,
-        int $minutes = 5
-    ) {
-        $disk = $disk ?: getStorageDisk('private');
-
-        // Ensure path ends with a slash
-        $path = rtrim($path, '/') . '/';
-
-        // Full file path
-        $filePath = $path . $filename;
-
-        // HYBRID APPROACH: Try cloud storage first, then local fallback
-        
-        // 1. If we're configured for cloud storage, check if file exists there
-        if ($this->shouldUseCloudStorage($disk)) {
-            \Log::info("Checking cloud storage for file", [
-                'file_path' => $filePath,
-                'disk' => $disk,
-                'tenant_prefix' => getTenantPrefix()
-            ]);
-            
-            if (Storage::disk($disk)->exists($filePath)) {
-                \Log::info("File found in cloud storage", [
-                    'file_path' => $filePath,
-                    'disk' => $disk
-                ]);
-                
-                try {
-                    // Special handling for Backblaze storage
-                    if ($disk === 'backblaze') {
-                        $config = config('filesystems.disks.backblaze');
-                        if ($config['visibility'] === 'public') {
-                            // Try to construct public URL for Backblaze
-                            $publicUrl = $config['url'] . '/' . $config['root'] . '/' . $filePath;
-                            
-                            // Test if the public URL is accessible
-                            $headers = @get_headers($publicUrl);
-                            if ($headers && strpos($headers[0], '200') !== false) {
-                                return $publicUrl;
-                            } else {
-                                // If public URL is not accessible, fall back to temporary URL
-                                Log::info("Public URL not accessible, using temporary URL", [
-                                    'file_path' => $filePath,
-                                    'public_url' => $publicUrl
-                                ]);
-                            }
-                        }
-                        
-                        // Generate temporary signed URL for Backblaze (works for both public and private files)
-                        try {
-                            $s3Client = Storage::disk($disk)->getAdapter()->getClient();
-                            $command = $s3Client->getCommand('GetObject', [
-                                'Bucket' => $config['bucket'],
-                                'Key' => $config['root'] . '/' . $filePath,
-                            ]);
-                            
-                            $request = $s3Client->createPresignedRequest($command, now()->addMinutes($minutes));
-                            return (string) $request->getUri();
-                        } catch (\Exception $e) {
-                            Log::warning("Failed to generate Backblaze temporary URL", [
-                                'file_path' => $filePath,
-                                'error' => $e->getMessage()
-                            ]);
-                            return false;
-                        }
-                    }
-                    
-                    // Check if it's a public cloud disk
-                    if ($disk == 'public' || config("filesystems.disks.{$disk}.visibility") === 'public') {
-                        return Storage::disk($disk)->url($filePath);
-                    }
-                    
-                    // Generate temporary signed URL for private cloud storage
-                    try {
-                        return Storage::disk($disk)->temporaryUrl($filePath, now()->addMinutes($minutes));
-                    } catch (\RuntimeException $e) {
-                        // If temporary URLs are not supported, try to get a regular URL
-                        $driver = Storage::disk($disk)->getDriver();
-                        
-                        if (method_exists($driver, 'url')) {
-                            return $driver->url($filePath);
-                        } else {
-                            Log::warning("Storage driver for disk '{$disk}' does not support URLs or temporary URLs", [
-                                'file_path' => $filePath,
-                                'error' => $e->getMessage()
-                            ]);
-                            return false;
-                        }
-                    }
-                    
-                } catch (\Exception $e) {
-                    Log::warning("Failed to get cloud URL, falling back to local", [
-                        'file_path' => $filePath,
-                        'disk' => $disk,
-                        'error' => $e->getMessage()
-                    ]);
-                    // Fall through to local storage check
-                }
-            } else {
-                \Log::warning("File not found in cloud storage", [
-                    'file_path' => $filePath,
-                    'disk' => $disk,
-                    'tenant_prefix' => getTenantPrefix(),
-                    'expected_full_path' => getTenantPrefix() . '/' . $filePath
-                ]);
+    /**
+     * Apply tenant prefix for cloud disks like R2, Backblaze, or S3.
+     */
+    protected function applyTenantPrefix(string $path, string $disk): string
+    {
+        if (in_array($disk, ['r2', 'backblaze', 's3'])) {
+            $tenantPrefix = rtrim(env('APP_ABBREVIATION', 'default'), '/') . '/';
+            if (strpos($path, $tenantPrefix) !== 0) {
+                $path = $tenantPrefix . ltrim($path, '/');
             }
         }
 
-        // 2. Fallback: Check if file exists in local storage
-        if (Storage::disk('local')->exists($filePath)) {
-            // Use our LocalFileController for serving local files
-            return \App\Http\Controllers\LocalFileController::getDownloadUrl($filePath);
-        }
+        return $path;
+    }
 
-        // 3. Last fallback: Check public disk if different from main disk
-        if ($disk !== 'public' && Storage::disk('public')->exists($filePath)) {
-            return Storage::disk('public')->url($filePath);
-        }
+    /**
+     * Log details on file storage success.
+     */
+    protected function logStorageSuccess(string $disk, string $storedPath): void
+    {
+        $config = config("filesystems.disks.{$disk}") ?? [];
 
-        // File not found anywhere
-        Log::warning("File not found in any storage location", [
-            'file_path' => $filePath,
-            'checked_disks' => [$disk, 'local', 'public']
+        Log::info('File stored successfully', [
+            'disk'        => $disk,
+            'driver'      => $config['driver'] ?? null,
+            'bucket'      => $config['bucket'] ?? null,
+            'endpoint'    => $config['endpoint'] ?? null,
+            'url'         => $config['url'] ?? null,
+            'root'        => $config['root'] ?? null,
+            'visibility'  => $config['visibility'] ?? null,
+            'stored_path' => $storedPath,
+            'is_cloud'    => in_array($disk, ['r2', 'backblaze', 's3']),
         ]);
+    }
+
+    /**
+     * Log details when file storage fails or throws an exception.
+     */
+    protected function logStorageError(string $message, string $disk, string $storedPath, ?\Throwable $e = null): void
+    {
+        $config = config("filesystems.disks.{$disk}") ?? [];
+
+        Log::error($message, [
+            'disk'        => $disk,
+            'driver'      => $config['driver'] ?? null,
+            'bucket'      => $config['bucket'] ?? null,
+            'endpoint'    => $config['endpoint'] ?? null,
+            'root'        => $config['root'] ?? null,
+            'stored_path' => $storedPath,
+            'error'       => $e?->getMessage(),
+        ]);
+    }
+
+
+    /**
+     * Retrieve file content from storage.
+     */
+    public function getFile(string $path, string $filename, ?string $disk = null): string|false
+    {
+        $disk = $disk ?: getStorageDisk('public');
+        $filePath = $this->buildTenantAwarePath($path, $filename, $disk);
+    
+        if (!Storage::disk($disk)->exists($filePath)) {
+            Log::warning('File not found', [
+                'disk' => $disk,
+                'path' => $filePath,
+            ]);
+            return false;
+        }
+    
+        try {
+            return Storage::disk($disk)->get($filePath);
+        } catch (\Throwable $e) {
+            Log::error('File retrieval failed', [
+                'disk' => $disk,
+                'path' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+    
+    /**
+     * Generate a temporary or public-access URL for a stored file.
+     */
+    public function getTemporaryUrl(
+        string $path,
+        string $filename,
+        ?string $disk = null,
+        int $minutes = 5
+    ): string|false {
+        $disk = $disk ?: getStorageDisk('private');
+        $filePath = $this->buildTenantAwarePath($path, $filename, $disk);
+    
+        if (!Storage::disk($disk)->exists($filePath)) {
+            Log::warning('Temporary URL request for missing file', [
+                'disk' => $disk,
+                'path' => $filePath,
+            ]);
+            return false;
+        }
+    
+        try {
+            if ($this->shouldUseCloudStorage($disk)) {
+                return $this->generateCloudTemporaryUrl($disk, $filePath, $minutes);
+            }
         
+            // Local or public disk fallback
+            if ($disk === 'public' || config("filesystems.disks.{$disk}.visibility") === 'public') {
+                return Storage::disk($disk)->url($filePath);
+            }
+        
+            if (Storage::disk('local')->exists($filePath)) {
+                return \App\Http\Controllers\LocalFileController::getDownloadUrl($filePath);
+            }
+        
+            if ($disk !== 'public' && Storage::disk('public')->exists($filePath)) {
+                return Storage::disk('public')->url($filePath);
+            }
+        
+        } catch (\Throwable $e) {
+            Log::warning('Temporary URL generation failed', [
+                'disk' => $disk,
+                'path' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    
         return false;
     }
+    
+    /**
+     * Unified cloud temporary URL generator for R2, Backblaze, or S3.
+     */
+    protected function generateCloudTemporaryUrl(string $disk, string $filePath, int $minutes): string|false
+    {
+        $config = config("filesystems.disks.{$disk}", []);
+        $visibility = $config['visibility'] ?? 'private';
+    
+        // Public URL (if accessible)
+        if ($visibility === 'public' && !empty($config['url'])) {
+            return rtrim($config['url'], '/') . '/' . trim($config['root'] ?? '', '/') . '/' . ltrim($filePath, '/');
+        }
+    
+        // Native Laravel temporary URL
+        try {
+            return Storage::disk($disk)->temporaryUrl($filePath, now()->addMinutes($minutes));
+        } catch (\Exception $e) {
+            Log::warning('Native temporaryUrl failed', [
+                'disk' => $disk,
+                'file' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    
+        // Fallback: manual presigned URL generation using AWS SDK
+        try {
+            $adapter = Storage::disk($disk)->getAdapter();
+            $client = $adapter->getClient();
+            $command = $client->getCommand('GetObject', [
+                'Bucket' => $config['bucket'],
+                'Key'    => trim($config['root'] ?? '', '/') . '/' . ltrim($filePath, '/'),
+            ]);
+            $request = $client->createPresignedRequest($command, now()->addMinutes($minutes));
+            return (string) $request->getUri();
+        } catch (\Throwable $e) {
+            Log::warning('Manual presigned URL generation failed', [
+                'disk' => $disk,
+                'file' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    
+        return false;
+    }
+    
+    /**
+     * Build the final file path with tenant prefix (for cloud disks).
+     */
+    protected function buildTenantAwarePath(string $path, string $filename, string $disk): string
+    {
+        $path = rtrim($path, '/') . '/';
+        $filePath = $path . $filename;
+    
+        if (in_array($disk, ['r2', 'backblaze', 's3'])) {
+            $tenantPrefix = rtrim(env('APP_ABBREVIATION', 'default'), '/') . '/';
+            if (strpos($filePath, $tenantPrefix) !== 0) {
+                $filePath = $tenantPrefix . ltrim($filePath, '/');
+            }
+        }
+    
+        return $filePath;
+    }
+
 
     /**
      * Check if we should use cloud storage for the given disk

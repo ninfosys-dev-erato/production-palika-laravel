@@ -821,7 +821,7 @@ function customFileAsset(string|null $file_path, string|null $file_name, string 
         return false;
     }
     
-    // Always use Backblaze for file operations if configured
+    // Use cloud storage (R2 preferred) for file operations if configured
     $preferredDisk = getStorageDisk($disk === 'public' ? 'public' : 'private');
     
     if($type === 'tempUrl')
@@ -1210,37 +1210,37 @@ function resolveMapStepTemplate(MapApply $mapApply, MapStep $mapStep, $form): st
 if (!function_exists('getStorageDisk')) {
     /**
      * Get the appropriate storage disk based on environment configuration
-     * Prioritizes Backblaze for all file operations
+     * Prioritizes Cloudflare R2 (S3-compatible) for file operations
      */
     function getStorageDisk(?string $type = null): string
     {
-        // Always prioritize Backblaze if configured
-        if (config('filesystems.disks.backblaze.key')) {
-            return 'backblaze';
+        // Always prioritize Cloudflare R2 if configured
+        if (config('filesystems.disks.r2.key')) {
+            return 'r2';
         }
         
         $defaultDisk = config('filesystems.default', 'local');
         
-        if ($defaultDisk === 'backblaze') {
-            return 'backblaze';
+        if ($defaultDisk === 'r2') {
+            return 'r2';
         }
         
         $useCloudStorage = env('USE_CLOUD_STORAGE', false);
         
         if ($useCloudStorage) {
-            if (config('filesystems.disks.backblaze.key')) {
-                return 'backblaze';
+            if (config('filesystems.disks.r2.key')) {
+                return 'r2';
             } elseif (config('filesystems.disks.s3.key')) {
                 return 's3';
             }
         }
         
         if ($type === 'public') {
-            return config('filesystems.disks.backblaze.key') ? 'backblaze' : 'public';
+            return config('filesystems.disks.r2.key') ? 'r2' : 'public';
         }
         
         if ($type === 'private') {
-            return config('filesystems.disks.backblaze.key') ? 'backblaze' : 'local';
+            return config('filesystems.disks.r2.key') ? 'r2' : (config('filesystems.disks.s3.key') ? 's3' : 'local');
         }
         
         return $defaultDisk;
@@ -1254,7 +1254,7 @@ if (!function_exists('isCloudStorage')) {
     function isCloudStorage(): bool
     {
         $disk = getStorageDisk();
-        return in_array($disk, ['s3', 'backblaze']);
+        return in_array($disk, ['s3', 'r2']);
     }
 }
 
@@ -1277,7 +1277,7 @@ if (!function_exists('getTenantPrefixedPath')) {
         $disk = $disk ?: getStorageDisk();
         
         // Only add prefix for cloud storage since local storage doesn't need it
-        if (isCloudStorage() && in_array($disk, ['s3', 'backblaze'])) {
+        if (isCloudStorage() && in_array($disk, ['s3', 'r2'])) {
             // The 'root' parameter in filesystems.php already handles the prefix
             // so we don't need to manually prepend it here as Laravel handles it
             return $path;
