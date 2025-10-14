@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\DurationType;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -13,86 +14,144 @@ use Intervention\Image\Exceptions\DecoderException;
 class ImageService
 {
     public static function compressAndStoreImage(
-        File|TemporaryUploadedFile|UploadedFile $image,
-        string $path,
-        ?string $disk = null,
-        $desiredFilename = null
-    ) {
-        $disk = $disk ?: getStorageDisk('public');
-        
-        try {
-            // Validate the uploaded file
-            if (!$image->isValid()) {
-                throw new \Exception('Invalid uploaded file');
-            }
+    File|TemporaryUploadedFile|UploadedFile $image,
+    string $path,
+    ?string $disk = null,
+    $desiredFilename = null
+): string|false {
+    $disk = $disk ?: getStorageDisk('public');
+    $path = self::applyTenantPrefix($path, $disk);
+    $config = config("filesystems.disks.{$disk}") ?? [];
 
-            // Check if the file is actually an image
-            $mimeType = $image->getMimeType();
-            $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-            
-            if (!in_array($mimeType, $allowedMimeTypes)) {
-                // If it's not an image, store it as a regular file
-                return self::storeAsRegularFile($image, $path, $disk, $desiredFilename);
-            }
+    try {
+        // Validate file
+        if (!$image->isValid()) {
+            throw new \Exception('Invalid uploaded file');
+        }
 
-            // Store the image temporarily on local disk to ensure filesystem path access
-            if ($image instanceof TemporaryUploadedFile) {
-                $tempPath = $image->store($path, 'local');
-                $tempFullPath = Storage::disk('local')->path($tempPath);
-            } else {
-                $tempPath = $image->store($path);
-                $tempFullPath = Storage::path($tempPath);
-            }
-            
-            // Verify the file exists and is readable
-            if (!file_exists($tempFullPath) || !is_readable($tempFullPath)) {
-                throw new \Exception('Temporary file not accessible');
-            }
+        // Check mime type
+        $mimeType = $image->getMimeType();
+        $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 
-            // Try to read the image with error handling
-            try {
-                $imageInstance = Image::read($tempFullPath);
-            } catch (DecoderException $e) {
-                // If image decoding fails, try to store as regular file
-                \Log::warning('Image decoding failed, storing as regular file: ' . $e->getMessage());
-                return self::storeAsRegularFile($image, $path, $disk, $desiredFilename);
-            } catch (\Exception $e) {
-                // For any other image processing error, store as regular file
-                \Log::warning('Image processing failed, storing as regular file: ' . $e->getMessage());
-                return self::storeAsRegularFile($image, $path, $disk, $desiredFilename);
-            }
-
-            // Scale down the image if it's too large
-            $imageInstance->scaleDown(width: 1920);
-            
-            // Determine the filename
-            $finalFilename = $desiredFilename ?? basename($tempPath);
-            
-            // Ensure proper file extension
-            if (!pathinfo($finalFilename, PATHINFO_EXTENSION)) {
-                $extension = self::getExtensionFromMimeType($mimeType);
-                $finalFilename .= '.' . $extension;
-            }
-
-            // Store the processed image
-            Storage::disk($disk)->put("{$path}/{$finalFilename}", $imageInstance->encode());
-            
-            // Clean up temporary file (from the correct disk)
-            if ($image instanceof TemporaryUploadedFile) {
-                Storage::disk('local')->delete($tempPath);
-            } else {
-                Storage::delete($tempPath);
-            }
-
-            return $finalFilename;
-            
-        } catch (\Exception $e) {
-            \Log::error('ImageService::compressAndStoreImage error: ' . $e->getMessage());
-            
-            // Fallback: store as regular file
+        if (!in_array($mimeType, $allowedMimeTypes)) {
+            Log::warning("Non-image file detected, storing as regular file", [
+                'mimeType' => $mimeType,
+                'disk'     => $disk,
+                'path'     => $path,
+            ]);
             return self::storeAsRegularFile($image, $path, $disk, $desiredFilename);
         }
+
+        // Store temporarily
+        if ($image instanceof TemporaryUploadedFile) {
+            $tempPath = $image->store($path, 'local');
+            $tempFullPath = Storage::disk('local')->path($tempPath);
+        } else {
+            $tempPath = $image->store($path);
+            $tempFullPath = Storage::path($tempPath);
+        }
+
+        if (!file_exists($tempFullPath)) {
+            throw new \Exception("Temporary file not accessible: {$tempFullPath}");
+        }
+
+        try {
+            $imageInstance = Image::read($tempFullPath);
+        } catch (\Exception $e) {
+            Log::warning('Image decoding failed — storing as regular file', [
+                'error' => $e->getMessage(),
+                'file'  => $tempFullPath,
+            ]);
+            return self::storeAsRegularFile($image, $path, $disk, $desiredFilename);
+        }
+
+        // Resize (max width 1920px)
+        $imageInstance->scaleDown(width: 1920);
+
+        // Determine filename
+        $finalFilename = $desiredFilename ?? basename($tempPath);
+        if (!pathinfo($finalFilename, PATHINFO_EXTENSION)) {
+            $finalFilename .= '.' . self::getExtensionFromMimeType($mimeType);
+        }
+
+        // Encode and store
+        $encodedImage = $imageInstance->encode();
+        $stored = Storage::disk($disk)->put("{$path}/{$finalFilename}", $encodedImage);
+
+        if (!$stored) {
+            self::logStorageError('Image storage failed', $disk, "{$path}/{$finalFilename}");
+            return false;
+        }
+
+        // Cleanup
+        if ($image instanceof TemporaryUploadedFile) {
+            Storage::disk('local')->delete($tempPath);
+        } else {
+            Storage::delete($tempPath);
+        }
+
+        // ✅ Log success
+        self::logStorageSuccess($disk, "{$path}/{$finalFilename}");
+        return $finalFilename;
+
+    } catch (\Throwable $e) {
+        self::logStorageError('Exception during image storage', $disk, "{$path}/" . ($desiredFilename ?? 'unknown'), $e);
+        return self::storeAsRegularFile($image, $path, $disk, $desiredFilename);
     }
+}
+
+/**
+ * Add app abbreviation prefix for cloud disks
+ */
+protected static function applyTenantPrefix(string $path, string $disk): string
+{
+    if (in_array($disk, ['r2', 'backblaze', 's3'])) {
+        $tenantPrefix = rtrim(env('APP_ABBREVIATION', 'default'), '/') . '/';
+        if (strpos($path, $tenantPrefix) !== 0) {
+            $path = $tenantPrefix . ltrim($path, '/');
+        }
+    }
+    return rtrim($path, '/');
+}
+
+/**
+ * Log success details
+ */
+protected static function logStorageSuccess(string $disk, string $storedPath): void
+{
+    $config = config("filesystems.disks.{$disk}") ?? [];
+
+    Log::info('✅ Image stored successfully', [
+        'disk'        => $disk,
+        'driver'      => $config['driver'] ?? null,
+        'bucket'      => $config['bucket'] ?? null,
+        'endpoint'    => $config['endpoint'] ?? null,
+        'root'        => $config['root'] ?? null,
+        'stored_path' => $storedPath,
+        'is_cloud'    => in_array($disk, ['r2', 'backblaze', 's3']),
+    ]);
+}
+
+/**
+ * Log errors or exceptions during image storage
+ */
+protected static function logStorageError(string $message, string $disk, string $storedPath, ?\Throwable $e = null): void
+{
+    $config = config("filesystems.disks.{$disk}") ?? [];
+
+    Log::error("❌ {$message}", [
+        'disk'        => $disk,
+        'driver'      => $config['driver'] ?? null,
+        'bucket'      => $config['bucket'] ?? null,
+        'endpoint'    => $config['endpoint'] ?? null,
+        'root'        => $config['root'] ?? null,
+        'stored_path' => $storedPath,
+        'error'       => $e?->getMessage(),
+        'trace'       => $e?->getTraceAsString(),
+    ]);
+}
+
+
 
     /**
      * Store file as regular file without image processing
