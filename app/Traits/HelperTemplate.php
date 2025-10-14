@@ -172,6 +172,42 @@ trait HelperTemplate
         HTML;
     }
 
+    function getPlanLetterHeaderFromSample(): string
+    {
+        // Fetch the letter head sample by slug
+        $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Plan)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$letterHeadSample) {
+            return '';
+        }
+
+
+        $district = getSetting('palika-district') ?: self::EMPTY_LINES;
+        $province = getSetting('palika-province') ?: self::EMPTY_LINES;
+        $address = trim("{$district}, {$province}, नेपाल", ', ');
+
+
+        $globalData = $this->getGlobalData(null);
+
+
+        $replacements = array_merge(
+            $globalData,
+        );
+        $replacements = $this->sanitizeReplacements($replacements);
+
+        $content =  Str::replace(array_keys($replacements), array_values($replacements), $letterHeadSample->content);
+
+        // Add style if available
+        $style = $letterHeadSample->style ? "<style>{$letterHeadSample->style}</style>" : "";
+
+        return <<<HTML
+        {$style}
+        {$content}
+        HTML;
+    }
+
     function getFooter(): string
     {
         $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Footer)->whereNull('deleted_at')->first();
@@ -351,7 +387,7 @@ trait HelperTemplate
             '{{global.palika_name}}' => getSetting('palika-name') ?? self::EMPTY_LINES,
             '{{global.palika_name_en}}' => getSetting('palika-name-english') ?: self::EMPTY_LINES,
             '{{global.office_name}}' => getSetting('office-name') ?? self::EMPTY_LINES,
-            '{{global.office_name_en}}' => getSetting('office-name-eng') ?: self::EMPTY_LINES,
+            '{{global.office_name_en}}' => getSetting('office-name-english') ?: self::EMPTY_LINES,
             '{{global.fiscal_year}}' => getSetting('fiscal-year') ?? self::EMPTY_LINES,
             '{{global.palika_address}}' => getSetting('palika-address') ?? self::EMPTY_LINES,
             '{{global.palika_email}}' => getSetting('office_email') ?? self::EMPTY_LINES,

@@ -10,14 +10,14 @@ class CostEstimationDetailsAdminDto
 {
     public function __construct(
         public string $cost_estimation_id,
-        public string $activity_group_id,
-        public string $activity_id,
-        public string $unit,
-        public string $quantity,
-        public string $rate,
+        public ?string $activity_group_id,
+        public ?string $activity_id,
+        public ?string $unit,
+        public ?string $quantity,
+        public ?string $rate,
         public string $amount,
 //        public string $is_vatable,
-        public string $vat_amount,
+        public ?string $vat_amount,
 
     ){}
 

@@ -103,4 +103,15 @@ class ConsumerCommittee extends Model
         return $this->hasMany(ConsumerCommitteeMember::class, 'consumer_committee_id');
     }
 
+    public function getChairmanNameAttribute(){
+        return $this->committeeMembers()->where('designation', 'chair')->first()->name;
+    }
+
+    public function getSecretaryNameAttribute(){
+        return $this->committeeMembers()->where('designation', 'secretary')->first()->name;
+    }
+
+    public function getTreasurerNameAttribute(){
+        return $this->committeeMembers()->where('designation', 'treasurer')->first()->name;
+    }
 }

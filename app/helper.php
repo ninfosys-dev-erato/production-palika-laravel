@@ -1478,4 +1478,11 @@ if (!function_exists('getFileTypeIcon')) {
             return 'fas fa-file text-muted';
         }
     }
+
+    function amountToNepali($amount)
+    {
+        $amount = (float) $amount;
+        $amount = number_format(replaceNumbers($amount, true), 2, '.', ',');
+        return $amount;
+    }
 }

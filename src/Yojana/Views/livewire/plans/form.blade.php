@@ -6,7 +6,7 @@
             </div>
             <div class='col-md-6 p-2'>
                 <div class='form-group'>
-                    <label class="form-label" for='project_name'>{{ __('yojana::yojana.project_name') }}</label>
+                    <label class="form-label" for='project_name'>{{ __('yojana::yojana.project_name') }} <span class="text-danger">*</span></label>
                     <input wire:model='plan.project_name' name='project_name' type='text'
                         class='form-control {{ $errors->has('plan.project_name') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_project_name') }}">
@@ -20,7 +20,7 @@
             <div class='col-md-6 p-2'>
                 <div class='form-group'>
                     <label class="form-label"
-                        for='implementation_method_id'>{{ __('yojana::yojana.implementation_method') }}</label>
+                        for='implementation_method_id'>{{ __('yojana::yojana.implementation_method') }} <span class="text-danger">*</span></label>
                     <select wire:model='plan.implementation_method_id' name='implementation_method_id' type='text'
                         class='form-control {{ $errors->has('plan.implementation_method_id') ? 'is-invalid' : '' }}'>
                         <option value="" hidden>{{ __('yojana::yojana.select_implementation_method') }}</option>
@@ -289,7 +289,7 @@
             <div class='col-md-4 p-2'>
                 <div class='form-group'>
                     <label class="form-label text-primary"
-                        for='allocated_budget'>{{ __('yojana::yojana.allocated_budget') }}</label>
+                        for='allocated_budget'>{{ __('yojana::yojana.allocated_budget') }} <span class="text-danger">*</span></label>
                     <input wire:model='plan.allocated_budget' name='allocated_budget' type='number'
                         class='form-control {{ $errors->has('plan.allocated_budget') ? 'is-invalid' : '' }}'
                         placeholder="{{ __('yojana::yojana.enter_allocated_budget') }}">
