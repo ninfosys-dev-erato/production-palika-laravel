@@ -104,14 +104,22 @@ class ConsumerCommittee extends Model
     }
 
     public function getChairmanNameAttribute(){
-        return $this->committeeMembers()->where('designation', 'chair')->first()->name;
+        return $this->committeeMembers()->where('designation', 'chair')->whereNull('deleted_at')->first()->name;
     }
 
     public function getSecretaryNameAttribute(){
-        return $this->committeeMembers()->where('designation', 'secretary')->first()->name;
+        return $this->committeeMembers()->where('designation', 'secretary')->whereNull('deleted_at')->first()->name;
     }
 
     public function getTreasurerNameAttribute(){
-        return $this->committeeMembers()->where('designation', 'treasurer')->first()->name;
+        return $this->committeeMembers()->where('designation', 'treasurer')->whereNull('deleted_at')->first()->name;
+    }
+
+    public function getNumberOfMenAttribute(){
+        return count($this->committeeMembers()->where('gender', 'Male')->whereNull('deleted_at'));
+    }
+   
+    public function getNumberOfWomenAttribute(){
+        return count($this->committeeMembers()->where('gender', 'Female')->whereNull('deleted_at'));
     }
 }
