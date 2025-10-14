@@ -37,7 +37,8 @@ class BusinessRegistrationShow extends Component
         $this->businessRegistration = $businessRegistration;
         $this->rejectionReason = $businessRegistration->application_rejection_reason ?? '';
         $this->showBillUpload = $this->businessRegistration->status == ApplicationStatusEnum::SENT_FOR_PAYMENT->value;
-        $this->signee_name = getSetting('business-signee-name') ?? '';
+        $this->signee_name = getSetting('business-signee-name') ?: '';
+
 
         $this->generateTemporaryUrlsForDocs();
         $this->generateTemporaryUrlsForCitizenship();
