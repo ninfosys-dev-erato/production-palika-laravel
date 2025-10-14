@@ -149,8 +149,9 @@ class AgreementCostForm extends Component
         $contractorRate = floatval($this->agreementCostDetails[$index]['contractor_rate'] ?? 0);
         $quantity = floatval($this->agreementCostDetails[$index]['quantity'] ?? 0);
 
-        $this->agreementCostDetails[$index]['amount'] = $contractorRate * $quantity;
-
+        if ($contractorRate >0 && $quantity > 0){
+            $this->agreementCostDetails[$index]['amount'] = $contractorRate * $quantity;
+        }else
         $this->recalculateTotals();
     }
 

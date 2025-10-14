@@ -42,7 +42,7 @@
                         @enderror
                     </td>
                     <td>
-                        <input wire:model="agreementCostDetails.{{ $index }}.amount" type="number" class="form-control form-control-sm {{ $errors->has('agreementCostDetails.'.$index.'.amount') ? 'is-invalid' : '' }}" placeholder="{{__('yojana::yojana.amount')}}" >
+                        <input wire:model="agreementCostDetails.{{ $index }}.amount" wire:input="calculateAmount({{ $index }})" type="number" class="form-control form-control-sm {{ $errors->has('agreementCostDetails.'.$index.'.amount') ? 'is-invalid' : '' }}" placeholder="{{__('yojana::yojana.amount')}}" >
                         @error('agreementCostDetails.'.$index.'.amount')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
