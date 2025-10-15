@@ -13,43 +13,116 @@ trait YojanaTemplate
 {
     use HelperTemplate;
 
-    public function resolveTemplate(Plan | ConsumerCommittee $plan , LetterSample | AgreementFormat $form)
-    {
-        $replacements = $this->resolveTemplateBindings($form->sample_letter, $plan);
-        $template = $form->sample_letter;
+//     public function resolveTemplate(Plan | ConsumerCommittee $plan , LetterSample | AgreementFormat $form)
+//     {
+//         $replacements = $this->resolveTemplateBindings($form->sample_letter, $plan);
+//         $template = $form->sample_letter;
 
-        $resolved = preg_replace_callback('/{{\s*(.*?)\s*}}/', function ($matches) use ($replacements) {
-//            dd($matches,$replacements);
-            $key = $matches[1];
-            $value = $replacements[$key] ?? "_______________";
+//         $resolved = preg_replace_callback('/{{\s*(.*?)\s*}}/', function ($matches) use ($replacements) {
+// //            dd($matches,$replacements);
+//             $key = $matches[1];
+//             $value = $replacements[$key] ?? "_______________";
 
-            // Basic scalar types
-            if (is_string($value) || is_numeric($value)) {
-                return $value;
+//             // Basic scalar types
+//             if (is_string($value) || is_numeric($value)) {
+//                 return $value;
+//             }
+
+//             // Laravel collections
+//             if ($value instanceof Collection) {
+//                 return $value->implode(', ');
+//             }
+
+//             // Enum handling
+//             if (is_object($value) && enum_exists(get_class($value)) && property_exists($value, 'value')) {
+//                 return $value->value;
+//             }
+
+//             // Object with __toString
+//             if (is_object($value) && method_exists($value, '__toString')) {
+//                 return (string) $value;
+//             }
+
+//             // Skip arrays or unsupported types
+//             return  "_______________";
+//         }, $template);
+//         $date = replaceNumbers(ne_date(date('Y-m-d')),true);
+//         // return $this->getLetterHeader($plan->ward_id??0,$date).$resolved;
+//         return $this->getBusinessLetterHeaderFromSample().$resolved;
+//     }
+
+public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | AgreementFormat $form)
+{
+    $template = $form->sample_letter;
+    $replacements = $this->resolveTemplateBindings($template, $plan);
+
+    // Keep model reference for resolving single bindings later
+    $this->model = $plan;
+
+    $resolved = preg_replace_callback('/{{\s*(.*?)\s*}}/', function ($matches) use ($replacements) {
+        $expression = trim($matches[1]);
+
+        // --- Function call pattern ---
+        // e.g., amountToNepaliWords(costEstimation.total_cost)
+        if (preg_match('/^(\w+)\((.*?)\)$/', $expression, $funcParts)) {
+            $functionName = $funcParts[1];
+            $paramString = trim($funcParts[2]);
+
+            // Split params safely by comma, ignoring commas inside quotes
+            $params = preg_split('/,(?=(?:[^"]*"[^"]*")*[^"]*$)/', $paramString);
+
+            $resolvedParams = [];
+            foreach ($params as $param) {
+                $param = trim($param, " \t\n\r\0\x0B\"'"); // Trim quotes/spaces
+                if ($param === '') continue;
+
+                // Try to resolve variable from replacements or directly
+                $value = $replacements[$param] ?? $this->resolveSingleBinding($param);
+
+                // If still null, keep literal string
+                $resolvedParams[] = $value ?? $param;
             }
 
-            // Laravel collections
-            if ($value instanceof Collection) {
-                return $value->implode(', ');
+            // If helper function exists, call it with all resolved params
+            if (function_exists($functionName)) {
+                try {
+                    return call_user_func_array($functionName, $resolvedParams);
+                } catch (\Throwable $e) {
+                    return "_______________";
+                }
             }
 
-            // Enum handling
-            if (is_object($value) && enum_exists(get_class($value)) && property_exists($value, 'value')) {
-                return $value->value;
-            }
+            // Unknown function
+            return "_______________";
+        }
 
-            // Object with __toString
-            if (is_object($value) && method_exists($value, '__toString')) {
-                return (string) $value;
-            }
+        // --- Normal variable replacement ---
+        $key = $expression;
+        $value = $replacements[$key] ?? "_______________";
 
-            // Skip arrays or unsupported types
-            return  "_______________";
-        }, $template);
-        $date = replaceNumbers(ne_date(date('Y-m-d')),true);
-        // return $this->getLetterHeader($plan->ward_id??0,$date).$resolved;
-        return $this->getBusinessLetterHeaderFromSample().$resolved;
-    }
+        if (is_string($value) || is_numeric($value)) {
+            return $value;
+        }
+
+        if ($value instanceof \Illuminate\Support\Collection) {
+            return $value->implode(', ');
+        }
+
+        if (is_object($value) && enum_exists(get_class($value)) && property_exists($value, 'value')) {
+            return $value->value;
+        }
+
+        if (is_object($value) && method_exists($value, '__toString')) {
+            return (string) $value;
+        }
+
+        return "_______________";
+    }, $template);
+
+    $date = replaceNumbers(ne_date(date('Y-m-d')), true);
+    return $this->getBusinessLetterHeaderFromSample() . $resolved;
+}
+
     function resolveTemplateBindings(string $template, Plan | ConsumerCommittee $model): array
     {
         preg_match_all('/{{\s*(.*?)\s*}}/', $template, $matches);
@@ -120,6 +193,33 @@ trait YojanaTemplate
         }
         return $results;
     }
+
+    private function resolveSingleBinding(string $binding)
+{
+    if (!property_exists($this, 'model') || !$this->model) {
+        return null;
+    }
+
+    $model = $this->model;
+    $path = explode('.', $binding);
+    $value = $model;
+
+    foreach ($path as $segment) {
+        if (is_null($value)) break;
+
+        if (is_object($value)) {
+            $value = $value->{$segment} ?? null;
+        } elseif (is_array($value)) {
+            $value = $value[$segment] ?? null;
+        } else {
+            $value = null;
+            break;
+        }
+    }
+
+    return $value;
+}
+
 
     public function getBudgetSourceData($plan)
     {

@@ -3,7 +3,7 @@
         <div class="row">
             <div class='col-md-6'>
     <div class='form-group'>
-        <label class="form-label" for='employee_id'>{{__('yojana::yojana.employee')}}</label>
+        <label class="form-label" for='employee_id'>{{__('yojana::yojana.employee')}} <span class="text-danger">*</span></label>
 {{--        <input wire:model='projectIncharge.employee_id' name='employee_id' type='text' class='form-control' placeholder="{{__('yojana::yojana.enter_employee_id')}}">--}}
         <select wire:model='projectIncharge.employee_id' name='employee_id' type='text'
                 class='form-control {{ $errors->has('projectIncharge.employee_id') ? 'is-invalid' : '' }}' >

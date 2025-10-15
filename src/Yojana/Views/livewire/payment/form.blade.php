@@ -49,7 +49,7 @@
 
                     <div class='col-md-6 mb-3'>
                         <div class='form-group'>
-                            <label for='completion_date' class='form-label'>{{ __('yojana::yojana.payment_date') }}<span class="text-danger">*</span></label>
+                            <label for='completion_date' class='form-label'>{{ __('yojana::yojana.payment_date') }} <span class="text-danger">*</span></label>
                             <input wire:model='payment.payment_date' id="payment_date" name='payment_date'
                                    type='date' class='form-control {{ $errors->has('payment.payment_date') ? 'is-invalid' : '' }}'>
                             <div>
