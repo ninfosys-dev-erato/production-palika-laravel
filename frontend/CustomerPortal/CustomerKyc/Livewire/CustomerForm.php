@@ -263,8 +263,15 @@ class CustomerForm extends Component
                 $this->kyc->document_image1 = $this->handleFileIfValid($this->uploadedImage1);
                 $this->kyc->document_image2 = null;
             }
-            $this->customer->avatar = ImageServiceFacade::compressAndStoreImage($this->avatar, 'customer/avatar', getStorageDisk('public'));
-
+            
+            if (
+                $this->customer->avatar instanceof \Illuminate\Http\File ||
+                $this->customer->avatar instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ||
+                $this->customer->avatar instanceof \Illuminate\Http\UploadedFile
+                ) {
+                $this->customer->avatar = ImageServiceFacade::compressAndStoreImage($this->avatar, 'customer/avatar', getStorageDisk('public'));
+            }
+            $this->customer->avatar = $this->avatar;
             $dto = CustomerAdminDto::fromLiveWireModel($this->customer, $this->kyc);
 
             $service = new CustomerKycService();

@@ -30,11 +30,13 @@ use Src\Settings\Models\FiscalYear;
 use Src\Settings\Traits\AdminSettings;
 use Src\Wards\Models\Ward;
 use Illuminate\Support\Facades\Log;
-
+use Src\Settings\Models\Form;
+use App\Traits\HelperTemplate;
+use Illuminate\Support\Str;
 
 class ApplyRecommendationController extends Controller implements HasMiddleware
 {
-    use ApiStandardResponse, HelperDate, AdminSettings, RecommendationTemplate;
+    use ApiStandardResponse, HelperDate, AdminSettings, RecommendationTemplate, HelperTemplate;
 
     public static function middleware()
     {
@@ -282,4 +284,52 @@ class ApplyRecommendationController extends Controller implements HasMiddleware
 
         return view('Recommendation::apply-recommendation.preview')->with(compact('template', 'applyRecommendation'));
     }
+
+    public function showRecommendationTemplate($id)
+    {
+        $form = Form::findOrFail($id);
+        $sanitizedData = $this->replaceData($form->template);
+    
+        return view('Recommendation::template-preview')->with([
+            'formData' => $form,
+            'sanitizedData' => $sanitizedData
+        ]);
+    }
+    
+    public function replaceData($form)
+    {
+        $customer = Customer::latest()->first();
+        $customerData = $this->getCustomerData($customer);
+        $globalData = $this->getGlobalData(null, null, null);
+        $letterHead = $this->getRecommendationLetterHead(1, getSetting('fiscal-year'), true);
+        $letterFoot = $this->getFooter();
+    
+
+    
+        $replacements = array_merge(
+            ['{{global.letter-head}}' => $letterHead],
+            $globalData,
+        
+            $customerData,
+            ['{{global.letter-foot}}' => $letterFoot]
+        );
+    
+        $replacements = $this->sanitizeReplacements($replacements);
+    
+        // Assume form->content contains the template string
+        $replacedContent = Str::replace(array_keys($replacements), array_values($replacements), $form);
+        $replacedContent = preg_replace_callback('/{{[^}]+}}/', function ($matches) {
+            return Str::random(10); // Replace with 10-character random string
+        }, $replacedContent);
+    
+        return $replacedContent;
+    }
+    
+    private function sanitizeReplacements(array $replacements): array
+    {
+        return array_map(function ($value) {
+            return (is_null($value) || $value === '') ? self::EMPTY_LINES : $value;
+        }, $replacements);
+    }
+    
 }
