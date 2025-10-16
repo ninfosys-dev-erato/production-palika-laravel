@@ -38,5 +38,14 @@ Route::group(['prefix' => 'admin/recommendations', 'as' => 'admin.recommendation
     Route::get('/download-pdf',[ApplyRecommendationController::class, 'downloadPdf'])->name('download-pdf');
     Route::get('/register/{id}', [ApplyRecommendationController::class, 'register'])->name('recommendation.register');
     Route::get('/preview/{id}', [ApplyRecommendationController::class, 'preview'])->name('preview');
+ 
 });
     Route::get('/customers/search', [ApplyRecommendationController::class, 'search'])->name('customers.search');
+    Route::group([
+        'middleware' => ['web', 'auth'],
+    ], function () {
+        Route::get('admin/recommendations/form/preview/{id}', [ApplyRecommendationController::class, 'showRecommendationTemplate'])
+            ->name('showRecommendationTemplate');
+    });
+    
+    
