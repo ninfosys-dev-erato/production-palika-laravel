@@ -144,6 +144,8 @@ return [
     'implementation_bodies' => 'Implementation Bodies',
     'current_fy_goal' => 'Current Fiscal Year Goal',
     'agreement' => 'Agreement',
+    'agreement_instruction' => 'Agreement Instruction',
+    'agreement_letter' => 'Agreement Letter',
     'payment_recommendation_letter' => 'Payment Recommendation Letter',
     'plan_handover_letter' => 'Plan Handover Letter',
     'print_payment_letter' => 'Print Payment Letter',

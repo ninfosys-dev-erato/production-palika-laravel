@@ -64,7 +64,7 @@ public function collectionDelete(array $ids){
         $plan->setRelation('committeeCost', $committeeCost->cost_amount ?? 0);
 
         $workOrderService = new WorkOrderAdminService();
-        return $workOrderService->workOrderLetter(LetterTypes::Agreement , $plan);
+        return $workOrderService->workOrderLetter(LetterTypes::AgreementInstruction , $plan);
     }
 }
 
