@@ -41,6 +41,7 @@
                         @if ($letter->form_id)
                             <div class="d-flex justify-content-end mb-3">
                                 <button type="button" class="btn btn-danger" wire:click="print({{ $letter->id }})"
+                              
                                     data-bs-toggle="tooltip" data-bs-placement="top" title="Print">
                                     <i class="bx bx-printer"></i> {{ __('ebps::ebps.print') }}
                                 </button>
@@ -52,7 +53,7 @@
 
                             <div class="col-md-12 mt-3">
                                 <div style="border-radius: 10px; text-align: center; padding: 20px;">
-                                    <div id="printContent" class="a4-container">
+                                    <div id="printContent{{ $letter->id }}" class="a4-container">
                                         <style>
                                             {{ $form?->styles ?? '' }}
                                         </style>
@@ -205,7 +206,7 @@
         .a4-container {
             width: 210mm;
             min-height: 297mm;
-            padding: 20mm;
+            padding: 7mm 20mm;
             margin: auto;
             background: white;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
@@ -227,7 +228,7 @@
                 height: 297mm;
                 box-shadow: none;
                 margin: 0;
-                padding: 20mm;
+                padding: 7mm 20mm;
                 page-break-after: always;
             }
         }
@@ -306,3 +307,52 @@
     @endif
 
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+
+    async function printDivById(letterId) {
+        const { jsPDF } = window.jspdf;
+        const element = document.getElementById(`printContent${letterId}`);
+
+        if (!element) {
+            console.error(`❌ printContent${letterId} element not found!`);
+            return;
+        }
+
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+
+        while (heightLeft > 1) {
+            position -= pdf.internal.pageSize.getHeight();
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
+        }
+
+        pdf.autoPrint();
+        window.open(pdf.output('bloburl'), '_blank');
+    }
+
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('print-certificate-letter', (event) => {
+            console.log('🖨️ Printing letter with ID:', event.id);
+            printDivById(event.id);
+        });
+    });
+</script>

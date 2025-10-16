@@ -43,38 +43,70 @@ class MapApplyPreview extends Component
         return view("Ebps::livewire.map-applies.map-applies-preview");
     }
 
-    public function mount(MapApplyStep $mapApplyStep)
-    {
-        $this->mapApplyStep = $mapApplyStep;
+   public function mount(MapApplyStep $mapApplyStep)
+{
+    $this->mapApplyStep = $mapApplyStep;
 
-        $mapStepId = $mapApplyStep->map_step_id;
-        $mapApplyId = $mapApplyStep->map_apply_id;
+    $mapStepId = $mapApplyStep->map_step_id;
+    $mapApplyId = $mapApplyStep->map_apply_id;
 
-        $this->mapApplySteps = MapApplyStep::with('mapApplyStepTemplates', 'mapStep', 'mapApply', 'mapApply.additionalFormDynamicData')
-            ->where('map_apply_id', $mapApplyId)
-            ->where('map_step_id', $mapStepId)
-            ->get();
+    // Load related data
+    $this->mapApplySteps = MapApplyStep::with(
+        'mapApplyStepTemplates',
+        'mapStep',
+        'mapApply',
+        'mapApply.additionalFormDynamicData'
+    )
+        ->where('map_apply_id', $mapApplyId)
+        ->where('map_step_id', $mapStepId)
+        ->get();
 
-        $this->additionalForms = $this->mapApplySteps->first()
-            ->mapApply
-            ->additionalFormDynamicData()
-            ->whereNotNull('form_data')
-            ->with(['form', 'form.additionalForm'])
-            ->get();
+    $this->additionalForms = $this->mapApplySteps->first()
+        ->mapApply
+        ->additionalFormDynamicData()
+        ->whereNotNull('form_data')
+        ->with(['form', 'form.additionalForm'])
+        ->get();
+
+    // Get letters/templates
+    $this->letters = $this->mapApplySteps->flatMap(function ($step) {
+        return $step->mapApplyStepTemplates;
+    });
+
+    // Clean the 'template' field for each letter
+    $this->letters = $this->letters->map(function ($letter) {
+        if (isset($letter['template'])) {
+            $letter['template'] = $this->cleanTemplate($letter['template']);
+        }
+        return $letter;
+    });
+
+   
+
+    $this->selectedStatus = $mapApplyStep->status;
+    $this->mapApplyStatusEnum = MapApplyStatusEnum::cases();
+
+    $this->files = BuildingRegistrationDocument::where('map_step_id', $mapStepId)
+        ->where('map_apply_id', $mapApplyId)
+        ->whereNull('deleted_at')
+        ->get();
+}
+
+/**
+ * Clean a template string by removing empty <p> tags and placeholders
+ */
+private function cleanTemplate(string $template): string
+{
+    // Remove empty <p> tags including spaces, tabs, newlines, &nbsp; (literal or UTF-8)
+    $template = preg_replace('/<p>([\s\x{00A0}&nbsp;]*)<\/p>/iu', '', $template);
+
+    // Remove all {{...}} placeholder tags
+    $template = preg_replace('/{{[^}]*}}/', '', $template);
+
+    return trim($template);
+}
 
 
-        $this->letters = $this->mapApplySteps->flatMap(function ($step) {
-            return $step->mapApplyStepTemplates;
-        });
-
-        $this->selectedStatus = $mapApplyStep->status;
-        $this->mapApplyStatusEnum = MapApplyStatusEnum::cases();
-
-        $this->files = BuildingRegistrationDocument::where('map_step_id', $mapStepId)
-            ->where('map_apply_id', $mapApplyId)
-            ->whereNull('deleted_at')
-            ->get();
-    }
 
     public function deleteFile($fileId)
     {
@@ -158,8 +190,7 @@ class MapApplyPreview extends Component
     #[On('print-map-apply')]
     public function print(MapApplyStepTemplate $mapApplyStepTemplate)
     {
-        $service = new MapApplyAdminService();
-        return $service->getLetter($mapApplyStepTemplate, 'web');
+        $this->dispatch('print-certificate-letter', id: $mapApplyStepTemplate->id);
     }
 
     public function viewAdditionalForm($additionalFormId)

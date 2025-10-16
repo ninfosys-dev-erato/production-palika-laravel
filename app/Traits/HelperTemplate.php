@@ -53,38 +53,42 @@ trait HelperTemplate
         $label = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
-        <div class="main-container" style="">
-            <table class="main-table" width="100%" cellpadding="0" cellspacing="0" style="padding: 0; margin:0;">
-                <tr>
-                    <td width="80">
-                        <img class="logo" src="{$palika_logo}" alt="Logo" width="80">
-                    </td>
-                    <td class="title" align="center" valign="middle">
-                        <span style="color: red;">
-                            <span style="font-size: 1.6rem; font-weight: bold">{$palika_name}</span><br>
-                            <span style="font-size: 1.6rem; font-weight: bold">{$office_name}</span><br>
-                            <span style="font-size: 1.2rem">{$address}</span>
-                        </span>
-                    </td>
-                    <td width="80">
-                        <img class="campaign_logo" src="{$palika_campaign_logo}" alt="Campaign Logo" width="80">
-                    </td>
-                </tr>
-            </table>
+<div class="main-container" style="">
+    <!-- Main header table -->
+    <table class="main-table" width="100%" cellpadding="0" cellspacing="0" style="padding: 0; margin:0; border: none; border-collapse: collapse;">
+        <tr style="border: none;">
+            <td width="80" style="border: none;">
+                <img class="logo" src="{$palika_logo}" alt="Logo" width="80">
+            </td>
+            <td class="title" align="center" valign="middle" style="border: none;">
+                <span style="color: red;">
+                    <span style="font-size: 1.6rem; font-weight: bold;">{$palika_name}</span><br>
+                    <span style="font-size: 1.6rem; font-weight: bold;">{$office_name}</span><br>
+                    <span style="font-size: 1.2rem;">{$address}</span>
+                </span>
+            </td>
+            <td width="80" style="border: none;">
+                <img class="campaign_logo" src="{$palika_campaign_logo}" alt="Campaign Logo" width="80">
+            </td>
+        </tr>
+    </table>
 
-            <table width="100%" style="font-size: 0.9rem; margin-top: 0.3rem;">
-                <tr>
-                    <td width="34%">पत्र संख्या: {$fiscal_year}</td>
-                    <td width="33%" rowspan="2" style="text-align: right;">मिति: {$date}</td>
+    <!-- Info table -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 0.9rem; border: none; border-collapse: collapse;">
+        <tr style="border: none;">
+            <td width="34%" style="border: none; color: #333;">पत्र संख्या: {$fiscal_year}</td>
+            <td width="33%" rowspan="2" style="text-align: right; border: none; color:#333;">मिति: {$date}</td>
+        </tr>
+        <tr style="border: none;">
+            <td width="33%" style="border: none; color:#333;">चलानी नं./Dis. No.: {$reg_no}</td>
+        </tr>
+    </table>
 
-                </tr>
-                <tr>
-                <td width="33%">चलानी नं./Dis. No.: {$reg_no}</td>
-    </tr>
-            </table>
-            <hr style="margin: 0.5rem 0;">
-        </div>
-    HTML;
+    <!-- Optional horizontal line if needed -->
+    <hr style="margin: 0.5rem 0;">
+</div>
+HTML;
+
     }
 
     function getRecommendationLetterHead(string $regNo, string $fiscalYear, bool $is_darta = true): string
