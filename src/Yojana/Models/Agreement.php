@@ -113,4 +113,16 @@ class Agreement extends Model
         // this method returns nepali date for created_at for report purpose
         return $this->adToBs($this->plan_completion_date);
     }
+    public function getBeneficiariesTotalNoAttribute(): int
+    {
+        return $this->beneficiaries()->sum('total_count');
+    }
+    public function getBeneficiariesTotalMenAttribute(): int
+    {
+        return $this->beneficiaries()->sum('men_count');
+    }public function getBeneficiariesTotalWomenAttribute(): int
+    {
+        return $this->beneficiaries()->sum('women_count');
+    }
+
 }

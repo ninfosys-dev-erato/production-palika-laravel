@@ -690,6 +690,7 @@
                 <thead class="text-center">
                     <tr>
                         <th>{{ __('yojana::yojana.sno') }}</th>
+                        <th>{{ __('yojana::yojana.signature_party') }}</th>
                         <th>{{ __('yojana::yojana.name') }}</th>
                         <th>{{ __('yojana::yojana.position') }}</th>
                         <th>{{ __('yojana::yojana.address') }}</th>
@@ -710,6 +711,9 @@
                     @foreach ($signatureRecords as $index => $signature)
                         <tr class="text-center">
                             <td>{{ replaceNumbersWithLocale($index + 1, true) }}</td>
+                            <td> {{ $signature['signature_party']
+                                ? \Src\Yojana\Enums\SignatureParties::from($signature['signature_party'])->label()
+                                : '' }}</td>
                             <td>{{ $signature['name'] }}</td>
                             <td>{{ $signature['position'] }}</td>
                             <td>{{ $signature['address'] }}</td>

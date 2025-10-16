@@ -128,6 +128,23 @@
             </div>
             <div class='col-md-6 mb-4'>
                 <div class='form-group'>
+                    <label for='account_type' class='form-label'>{{__('yojana::yojana.account_type')}}</label>
+                    <select wire:model="consumerCommittee.account_type" name="account_type"
+                            id="account_type" class="form-control">
+                        <option value="" hidden>{{__('yojana::yojana.select_an_option')}}</option>
+                        @foreach ($account_types as $type)
+                            <option value="{{ $type->value }}">{{ $type->label() }}</option>
+                        @endforeach
+                    </select>
+                    <div>
+                        @error('consumerCommittee.account_type')
+                            <small class='text-danger'>{{ __($message) }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6 mb-4'>
+                <div class='form-group'>
                     <label for='account_number' class='form-label'>{{__('yojana::yojana.account_number')}}</label>
                     <input wire:model='consumerCommittee.account_number' name='account_number' type='number'
                         class='form-control' placeholder="{{__('yojana::yojana.enter_account_number')}}">

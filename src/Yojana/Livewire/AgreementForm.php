@@ -403,6 +403,7 @@ class AgreementForm extends Component
     public function loadParty($value)
     {
         $this->isImplementationAgency = false;
+        $this->agreementSignatureDetail->signature_party = $value;
 
         switch ($value) {
             case SignatureParties::ImplementationAgency->value:

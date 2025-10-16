@@ -3,6 +3,7 @@
 namespace Src\Yojana\DTO;
 
 use Src\Yojana\Models\ConsumerCommittee;
+use Src\Yojana\Enums\AccountTypes;
 
 class ConsumerCommitteeAdminDto
 {
@@ -15,6 +16,7 @@ class ConsumerCommitteeAdminDto
         public string $address,
         public string $creating_body,
         public string $bank_id,
+        public ?AccountTypes $account_type,
         public string $account_number,
         public ?string $formation_minute,
         public string $number_of_attendees
@@ -30,6 +32,7 @@ public static function fromLiveWireModel(ConsumerCommittee $consumerCommittee):C
         address: $consumerCommittee->address,
         creating_body: $consumerCommittee->creating_body,
         bank_id: $consumerCommittee->bank_id,
+        account_type: $consumerCommittee->account_type,
         account_number: $consumerCommittee->account_number,
         formation_minute: $consumerCommittee->formation_minute,
         number_of_attendees: $consumerCommittee->number_of_attendees,

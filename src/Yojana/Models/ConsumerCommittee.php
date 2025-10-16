@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Src\Wards\Models\Ward;
+use Src\Yojana\Enums\AccountTypes;
 
 class ConsumerCommittee extends Model
 {
@@ -25,6 +26,7 @@ class ConsumerCommittee extends Model
         'address',
         'creating_body',
         'bank_id',
+        'account_type',
         'account_number',
         'number_of_attendees',
         'formation_minute',
@@ -50,6 +52,7 @@ class ConsumerCommittee extends Model
             'address' => 'string',
             'creating_body' => 'string',
             'bank_id' => 'string',
+            'account_type' => AccountTypes::class,
             'account_number' => 'string',
             'formation_minute' => 'string',
             'number_of_attendees' => 'string',
@@ -100,7 +103,7 @@ class ConsumerCommittee extends Model
 
     public function committeeMembers() :HasMany
     {
-        return $this->hasMany(ConsumerCommitteeMember::class, 'consumer_committee_id');
+        return $this->hasMany(ConsumerCommitteeMember::class, 'consumer_committee_id')->whereNull('deleted_at');
     }
 
     public function getChairmanNameAttribute(){
@@ -115,11 +118,19 @@ class ConsumerCommittee extends Model
         return $this->committeeMembers()->where('designation', 'treasurer')->whereNull('deleted_at')->first()->name;
     }
 
+    public function getNumberOfMembersAttribute(){
+        return $this->committeeMembers()->whereNull('deleted_at')->count();
+    }
+
     public function getNumberOfMenAttribute(){
-        return count($this->committeeMembers()->where('gender', 'Male')->whereNull('deleted_at'));
+        return $this->committeeMembers()->where('gender', 'Male')->whereNull('deleted_at')->count();
     }
    
     public function getNumberOfWomenAttribute(){
-        return count($this->committeeMembers()->where('gender', 'Female')->whereNull('deleted_at'));
+        return $this->committeeMembers()->where('gender', 'Female')->whereNull('deleted_at')->count();
+    }
+
+    public function getAccountTypeLabelAttribute(){
+        return $this->account_type->label();
     }
 }
