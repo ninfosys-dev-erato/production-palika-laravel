@@ -215,7 +215,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label">9. फिल्ड नाप अनुसारको जग्गाको वास्तविक क्षेत्रफल
                                             sqm</label>
-                                        <input type="number"
+                                        <input  type="test"
                                             class="form-control @error('mapApplyDetail.field_measurement_area') is-invalid @enderror"
                                             name="field_measurement_area"
                                             wire:model="mapApplyDetail.field_measurement_area"
@@ -231,7 +231,7 @@
                                     <div class="col-md-12">
                                         <label class="form-label">10. प्रस्तावित भवनको प्लिन्थको क्षेत्रफल
                                             (sqm)</label>
-                                        <input type="number"
+                                        <input  type="test"
                                             class="form-control @error('mapApplyDetail.building_plinth_area') is-invalid @enderror"
                                             name="building_plinth_area"
                                             wire:model="mapApplyDetail.building_plinth_area"
@@ -284,7 +284,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control purposed-area @error('constructionStoreyPurpose.' . $index . '.purposed_area') is-invalid @enderror"
                                                             name="constructionStoreyPurpose[{{ $index }}][purposed_area]"
                                                             wire:model.defer="constructionStoreyPurpose.{{ $index }}.purposed_area"
@@ -295,7 +295,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control former-area @error('constructionStoreyPurpose.' . $index . '.former_area') is-invalid @enderror"
                                                             name="constructionStoreyPurpose[{{ $index }}][former_area]"
                                                             wire:model.defer="constructionStoreyPurpose.{{ $index }}.former_area"
@@ -306,12 +306,12 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="number" class="form-control total-area" readonly
+                                                        <input  type="test" class="form-control total-area" readonly
                                                             value="{{ $purpose['total_area'] ?? 0 }}">
                                                     </td>
 
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('constructionStoreyPurpose.' . $index . '.height') is-invalid @enderror"
                                                             name="constructionStoreyPurpose[{{ $index }}][height]"
                                                             wire:model="constructionStoreyPurpose.{{ $index }}.height">
@@ -517,7 +517,7 @@
                                                             value="{{ $label }}">
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.width') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.width">
                                                         @error('roads.' . $key . '.width')
@@ -525,7 +525,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.dist_from_middle') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.dist_from_middle">
                                                         @error('roads.' . $key . '.dist_from_middle')
@@ -533,7 +533,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.min_dist_from_middle') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.min_dist_from_middle">
                                                         @error('roads.' . $key . '.min_dist_from_middle')
@@ -541,7 +541,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.dist_from_side') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.dist_from_side">
                                                         @error('roads.' . $key . '.dist_from_side')
@@ -549,7 +549,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.min_dist_from_side') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.min_dist_from_side">
                                                         @error('roads.' . $key . '.min_dist_from_side')
@@ -557,7 +557,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.dist_from_right') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.dist_from_right">
                                                         @error('roads.' . $key . '.dist_from_right')
@@ -565,7 +565,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.min_dist_from_right') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.min_dist_from_right">
                                                         @error('roads.' . $key . '.min_dist_from_right')
@@ -573,7 +573,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.setback') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.setback">
                                                         @error('roads.' . $key . '.setback')
@@ -581,7 +581,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('roads.' . $key . '.min_setback') is-invalid @enderror"
                                                             wire:model.defer="roads.{{ $key }}.min_setback">
                                                         @error('roads.' . $key . '.min_setback')
@@ -662,7 +662,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('distanceToWall.' . $key . '.min_dist_left') is-invalid @enderror"
                                                             wire:model.defer="distanceToWall.{{ $key }}.min_dist_left">
                                                         @error('distanceToWall.' . $key . '.min_dist_left')
@@ -671,7 +671,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('distanceToWall.' . $key . '.dist_left') is-invalid @enderror"
                                                             wire:model.defer="distanceToWall.{{ $key }}.dist_left">
                                                         @error('distanceToWall.' . $key . '.dist_left')
@@ -716,7 +716,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <label class="form-label">छोड्नु पर्ने न्यूनतम दूरी (meters/feet)</label>
-                                        <input type="number"
+                                        <input  type="test"
                                             class="form-control @error('mapApplyDetail.distance_left') is-invalid @enderror"
                                             name="distance_left" wire:model="mapApplyDetail.distance_left"
                                             placeholder="Minimum distance to be dropped (meters/feet)*" required>
@@ -765,14 +765,14 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number" class="form-control"
+                                                        <input  type="test" class="form-control"
                                                             wire:model.defer="cantileverDetails.{{ $key }}.distance">
                                                         @error('cantileverDetails.' . $key . '.distance')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number" class="form-control"
+                                                        <input  type="test" class="form-control"
                                                             wire:model.defer="cantileverDetails.{{ $key }}.minimum">
                                                         @error('cantileverDetails.' . $key . '.minimum')
                                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -824,7 +824,7 @@
                                                             value="{{ $label }}">
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('highTensionDetails.' . $key . '.distance') is-invalid @enderror"
                                                             wire:model.defer="highTensionDetails.{{ $key }}.distance">
                                                         @error('highTensionDetails.' . $key . '.distance')
@@ -832,7 +832,7 @@
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input type="number"
+                                                        <input  type="test"
                                                             class="form-control @error('highTensionDetails.' . $key . '.minimum') is-invalid @enderror"
                                                             wire:model.defer="highTensionDetails.{{ $key }}.minimum">
                                                         @error('highTensionDetails.' . $key . '.minimum')

@@ -109,23 +109,23 @@ class OrganizationCustomerDetailForm extends Component
 
         foreach ($this->constructionStoreyPurpose as $index => $purpose) {
             $rules["constructionStoreyPurpose.$index.storey_id"] = 'nullable|exists:ebps_storeys,id';
-            $rules["constructionStoreyPurpose.$index.purposed_area"] = 'nullable|numeric|min:0';
-            $rules["constructionStoreyPurpose.$index.former_area"] = 'nullable|numeric|min:0';
-            $rules["constructionStoreyPurpose.$index.height"] = 'nullable|numeric|min:0';
-            $rules["constructionStoreyPurpose.$index.remarks"] = 'nullable|string';
+            $rules["constructionStoreyPurpose.$index.purposed_area"] = 'nullable';
+            $rules["constructionStoreyPurpose.$index.former_area"] = 'nullable';
+            $rules["constructionStoreyPurpose.$index.height"] = 'nullable';
+            $rules["constructionStoreyPurpose.$index.remarks"] = 'nullable';
         }
 
 
         foreach ($this->roads as $index => $label) {
-            $rules["roads.$index.width"] = 'nullable|numeric';
-            $rules["roads.$index.dist_from_middle"] = 'nullable|numeric';
-            $rules["roads.$index.min_dist_from_middle"] = 'nullable|numeric';
-            $rules["roads.$index.dist_from_side"] = 'nullable|numeric';
-            $rules["roads.$index.min_dist_from_side"] = 'nullable|numeric';
-            $rules["roads.$index.dist_from_right"] = 'nullable|numeric';
-            $rules["roads.$index.min_dist_from_right"] = 'nullable|numeric';
-            $rules["roads.$index.setback"] = 'nullable|numeric';
-            $rules["roads.$index.min_setback"] = 'nullable|numeric';
+            $rules["roads.$index.width"] = 'nullable';
+            $rules["roads.$index.dist_from_middle"] = 'nullable';
+            $rules["roads.$index.min_dist_from_middle"] = 'nullable ';
+            $rules["roads.$index.dist_from_side"] = 'nullable ';
+            $rules["roads.$index.min_dist_from_side"] = 'nullable ';
+            $rules["roads.$index.dist_from_right"] = 'nullable ';
+            $rules["roads.$index.min_dist_from_right"] = 'nullable ';
+            $rules["roads.$index.setback"] = 'nullable ';
+            $rules["roads.$index.min_setback"] = 'nullable ';
         }
 
         foreach ($this->distanceToWall as $index => $label) {
@@ -133,19 +133,19 @@ class OrganizationCustomerDetailForm extends Component
             $rules["distanceToWall.$index.direction"] = 'nullable|string';
             $rules["distanceToWall.$index.has_road"] = 'required';
             $rules["distanceToWall.$index.does_have_wall_door"] = 'required';
-            $rules["distanceToWall.$index.dist_left"] = 'required|numeric|min:0';
-            $rules["distanceToWall.$index.min_dist_left"] = 'required|numeric|min:0';
+            $rules["distanceToWall.$index.dist_left"] = 'required';
+            $rules["distanceToWall.$index.min_dist_left"] = 'required';
         }
 
         foreach ($this->cantileverDetails as $index => $label) {
             $rules["cantileverDetails.$index.direction"] = 'nullable|string';
-            $rules["cantileverDetails.$index.distance"] = 'nullable|numeric|min:0';
-            $rules["cantileverDetails.$index.minimum"] = 'nullable|numeric|min:0';
+            $rules["cantileverDetails.$index.distance"] = 'nullable';
+            $rules["cantileverDetails.$index.minimum"] = 'nullable';
         }
 
 
         foreach ($this->highTensionDetails as $direction => $highTensionData) {
-            $rules["highTensionDetails.$direction.distance"] = 'nullable|numeric|min:0';
+            $rules["highTensionDetails.$direction.distance"] = 'nullable';
             $rules["highTensionDetails.$direction.voltage"] = 'nullable|string';
             $rules["highTensionDetails.$direction.remarks"] = 'nullable|string';
         }
