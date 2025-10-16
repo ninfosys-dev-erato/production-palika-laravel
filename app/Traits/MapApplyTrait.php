@@ -160,7 +160,6 @@ trait MapApplyTrait
         }
 
         $houseOwner = $mapApply?->houseOwner ?? self::EMPTY_LINES;
-        $houseOwner->photo ='bbb.jpg';
 
         return [
             '{{mapApply.houseOwnerName}}' => $houseOwner?->owner_name ?? self::EMPTY_LINES,
