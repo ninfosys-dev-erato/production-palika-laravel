@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Facades\ImageServiceFacade;
+use Illuminate\Support\Facades\Storage;
 use Src\Ebps\Models\MapApplyStepTemplate;
 
 trait MapApplyTrait
@@ -16,11 +17,9 @@ trait MapApplyTrait
             return '';
         }
 
-
-
         $mapApply?->load('customer.kyc', 'fiscalYear', 'landDetail.fourBoundaries', 'constructionType', 'mapApplySteps', 'houseOwner', 'detail.organization');
 
-        $signatures = '______________________';
+        $signatures = '';
 
         $letter = [
             'header' => $this->getLetterHeader(null),
@@ -54,6 +53,7 @@ trait MapApplyTrait
             ...getResolvedFormData($submittedData)
         ];
 
+ 
         if ($mapApply?->customer && $mapApply?->customer->kyc) {
             $data = array_merge($data, $this->resolveCustomerData($mapApply));
         }
@@ -71,9 +71,10 @@ trait MapApplyTrait
         $data = array_merge($data, $this->resolveApplicantDetails($mapApply));
 
         if ($mapApply?->signature) {
+        
             $data = array_merge($data, [
                 '{{mapApply.signature}}' => '<img src="data:image/jpeg;base64,' . base64_encode(\App\Facades\ImageServiceFacade::getImage(config('src.Ebps.ebps.path'), $mapApply?->signature, getStorageDisk('private'))) . '" alt="Signature" width="80">',
-                '{{form.approver.signature}}' => $signatures,
+                '{{form.approver.signature}}' => $signatures ?? "    ",
             ]);
         }
 
@@ -107,6 +108,12 @@ trait MapApplyTrait
 
         // Remove any placeholders still left like {{xyz.abc}}
         $content = preg_replace('/{{[^}]+}}/', '', $content);
+
+    // Remove empty <p></p> tags (including &nbsp; or spaces)
+    $content = preg_replace('/<p>(\s|&nbsp;)*<\/p>/', '', $content);
+
+    // Remove all {{...}} placeholder tags
+    $content = preg_replace('/{{[^}]*}}/', '', $content);
 
         return $content;
     }
@@ -153,6 +160,7 @@ trait MapApplyTrait
         }
 
         $houseOwner = $mapApply?->houseOwner ?? self::EMPTY_LINES;
+        $houseOwner->photo ='bbb.jpg';
 
         return [
             '{{mapApply.houseOwnerName}}' => $houseOwner?->owner_name ?? self::EMPTY_LINES,
@@ -165,8 +173,28 @@ trait MapApplyTrait
             '{{mapApply.houseOwnerLocalBody}}' => isset($houseOwner?->localBody, $houseOwner?->localBody->title) ? $houseOwner?->localBody->title : self::EMPTY_LINES,
             '{{mapApply.houseOwnerWard}}' => replaceNumbers($houseOwner?->ward_no, true) ?? self::EMPTY_LINES,
             '{{mapApply.houseOwnerTole}}' => $houseOwner?->tole ?? self::EMPTY_LINES,
+           '{{mapApply.houseOwnerPhoto}}' => $houseOwner?->photo
+        ? '<img src="' . self::getPrivateFileBase64(config('src.Ebps.ebps.path'), $houseOwner->photo) . '" alt="House Owner Photo" width="120" height="120">'
+        : self::EMPTY_LINES,
         ];
+
     }
+
+    private static function getPrivateFileBase64(string $path, string $filename): ?string
+{
+    try {
+        $fullPath = $path . '/' . $filename;
+
+        // Read from private disk
+        $fileContent = Storage::disk(getStorageDisk('private'))->get($fullPath);
+        $mimeType = Storage::disk(getStorageDisk('private'))->mimeType($fullPath);
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode($fileContent);
+    } catch (\Throwable $e) {
+        return null; // Return null if file not found or unreadable
+    }
+}
+
     private function resolveLandOwnerDetails($mapApply)
     {
 
@@ -209,28 +237,33 @@ trait MapApplyTrait
         $fourBoundaries = $landDetail->fourBoundaries ?? collect();
 
         $fourBoundariesTable = '';
-        if ($fourBoundaries->isNotEmpty()) {
-            $fourBoundariesTable = '<table style="width:100%; border-collapse: collapse;" border="1" cellpadding="8" cellspacing="0">
-                <thead>
-                    <tr style="background-color: #f2f2f2;">
-                        <th style="border: 1px solid #000;">नाम</th>
-                        <th style="border: 1px solid #000;">दिशा</th>
-                        <th style="border: 1px solid #000;">दूरी</th>
-                        <th style="border: 1px solid #000;">कित्ता नं</th>
-                    </tr>
-                </thead>
-                <tbody>' .
-                $fourBoundaries->map(
-                    fn($fort) =>
-                    "<tr>
-                        <td style='border: 1px solid #000;'>" . (isset($fort?->title) ? $fort?->title : self::EMPTY_LINES) . "</td>
-                        <td style='border: 1px solid #000;'>" . (isset($fort?->direction) ? $fort?->direction : self::EMPTY_LINES) . "</td>
-                        <td style='border: 1px solid #000;'>" . (isset($fort?->distance) ? replaceNumbers($fort?->distance, true) : self::EMPTY_LINES) . "</td>
-                        <td style='border: 1px solid #000;'>" . (isset($fort?->lot_no) ? replaceNumbers($fort?->lot_no, true) : self::EMPTY_LINES) . "</td>
-                    </tr>"
-                )->implode('') .
-                '</tbody></table>';
-        }
+
+if ($fourBoundaries->isNotEmpty()) {
+    $fourBoundariesTable = '
+    <table class="four-boundaries-table">
+        <thead>
+            <tr>
+                <th>नाम</th>
+                <th>दिशा</th>
+                <th>दूरी</th>
+                <th>कित्ता नं</th>
+            </tr>
+        </thead>
+        <tbody>' .
+        $fourBoundaries->map(
+            fn($fort) =>
+            "<tr>
+                <td>" . ($fort?->title ?? self::EMPTY_LINES) . "</td>
+                <td>" . ($fort?->direction ?? self::EMPTY_LINES) . "</td>
+                <td>" . (isset($fort?->distance) ? replaceNumbers($fort?->distance, true) : self::EMPTY_LINES) . "</td>
+                <td>" . (isset($fort?->lot_no) ? replaceNumbers($fort?->lot_no, true) : self::EMPTY_LINES) . "</td>
+            </tr>"
+        )->implode('') .
+    '</tbody>
+    </table>';
+}
+
+
 
         return [
             '{{mapApply.customer.name}}' => isset($mapApply?->customer, $mapApply?->customer->name) ? $mapApply?->customer->name : 'Not Provided',

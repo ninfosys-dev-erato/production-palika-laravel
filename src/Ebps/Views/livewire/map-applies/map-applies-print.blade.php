@@ -187,6 +187,9 @@
                                                     class="text-muted">{{ __('ebps::ebps.this_is_how_your_document_will_appear') }}</small>
                                             </div>
                                             <div class="p-4 preview-content">
+                                                <style>
+                                            {{ $form?->styles ?? '' }}
+                                        </style>
                                                 {!! $letterContent !!}
                                             </div>
                                         </div>
