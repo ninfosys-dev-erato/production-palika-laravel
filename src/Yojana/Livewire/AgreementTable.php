@@ -16,6 +16,7 @@ use Src\Yojana\Exports\YojanaExport;
 use Src\Yojana\Models\Agreement;
 use Src\Yojana\Models\Plan;
 use Src\Yojana\Service\AgreementAdminService;
+use Src\Yojana\Enums\LetterTypes;
 
 class AgreementTable extends DataTableComponent
 {
@@ -118,15 +119,27 @@ class AgreementTable extends DataTableComponent
         $this->successFlash(__('yojana::yojana.agreement_deleted_successfully'));
     }
 
-    public function print($id){
+    // public function print($id){
+    //     $service = new AgreementAdminService();
+    //     $agreementContent = $service->printAgreement($id);
+    //     if (!isset($agreementContent)){
+    //         $this->errorFlash('Agreement Format Not Found');
+    //     }
+    //     // $this->dispatch('open-pdf-in-new-tab', url: $agreementFormat);
+    //     $this->dispatch('print-agreement', html: $agreementContent);
+    //     // return $agreementFormat;
+    // }
+
+    public function print($id)
+    {
         $service = new AgreementAdminService();
-        $agreementContent = $service->printAgreement($id);
-        if (!isset($agreementContent)){
-            $this->errorFlash('Agreement Format Not Found');
+        $workOrder = $service->getWorkOrder( $id);
+        if (!isset($workOrder)){
+            $this->errorFlash('Letter Sample Not Found');
+            return false;
         }
-        // $this->dispatch('open-pdf-in-new-tab', url: $agreementFormat);
-        $this->dispatch('print-agreement', html: $agreementContent);
-        // return $agreementFormat;
+        $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
     }
 
     public function deleteSelected(){

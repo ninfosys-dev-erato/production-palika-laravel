@@ -17,6 +17,9 @@ return [
 
     // Templates
     'template_not_found' => 'Template Not Found',
+    'savings' => 'Savings',
+    'current' => 'Current',
+    'fixed_deposit' => 'Fixed Deposit',
 
     // Cost estimation
     'please_add_cost_estimation_details_first' => 'Please add cost estimation details first',

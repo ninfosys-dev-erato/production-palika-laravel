@@ -15,6 +15,7 @@ use Src\Yojana\Models\CommitteeType;
 use Src\Yojana\Models\ConsumerCommittee;
 use Src\Yojana\Models\LetterSample;
 use Src\Yojana\Service\ConsumerCommitteeAdminService;
+use Src\Yojana\Enums\AccountTypes;
 
 class ConsumerCommitteeForm extends Component
 {
@@ -32,6 +33,8 @@ class ConsumerCommitteeForm extends Component
     public $formation_minute_url;
     public $formation_minute_saved;
 
+    public $account_types;
+
     public function rules(): array
     {
         return [
@@ -45,6 +48,7 @@ class ConsumerCommitteeForm extends Component
     'consumerCommittee.number_of_attendees' => ['required'],
     'consumerCommittee.bank_id' => ['required'],
     'consumerCommittee.account_number' => ['required'],
+            'consumerCommittee.account_type' => ['nullable'],
     'consumerCommittee.formation_minute' => ['nullable'],
 ];
     }
@@ -61,6 +65,7 @@ class ConsumerCommitteeForm extends Component
             'consumerCommittee.creating_body.required' => __('yojana::yojana.creating_body_is_required'),
             'consumerCommittee.bank_id.required' => __('yojana::yojana.bank_id_is_required'),
             'consumerCommittee.account_number.required' => __('yojana::yojana.account_number_is_required'),
+            'consumerCommittee.account_type.required' => __('yojana::yojana.account_type_is_required'),
             'consumerCommittee.formation_minute.required' => __('yojana::yojana.formation_minute_is_required'),
         ];
     }
@@ -76,6 +81,7 @@ class ConsumerCommitteeForm extends Component
         $this->Committee_type = CommitteeType::pluck("name", "id");
         $this->wards = Ward::pluck("ward_name_en", "id");
         $this->banks = BankDetail::pluck("title", "id");
+        $this->account_types = AccountTypes::cases();
         session()->put('redirect_url', url()->current());
         $this->handleFileUpload(null, 'formation_minute', 'formation_minute_url');
 

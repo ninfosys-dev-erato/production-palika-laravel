@@ -16,6 +16,9 @@ return [
 
     // Templates
     'template_not_found' => 'ढाँचा भेटिएन',
+    'savings' => 'बचत',
+    'current' => 'चल्ती',
+    'fixed_deposit' => 'मुदति',
 
     // Cost estimation
     'please_add_cost_estimation_details_first' => 'कृपया पहिले लागत अनुमान विवरणहरू थप्नुहोस्',

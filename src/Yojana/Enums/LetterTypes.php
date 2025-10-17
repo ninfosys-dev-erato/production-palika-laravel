@@ -20,7 +20,8 @@ enum LetterTypes :string implements EnumInterface
     case VATRegistrationCertificate = 'vat_cert';
     case LetterOfIntentPublicationNotice = 'intent_notice';
     case RateQuotationSubmission = 'rate-quotation';
-    case Agreement = 'agreement';
+    case AgreementInstruction = 'agreement_instruction';
+    case AgreementLetter = 'agreement_letter';
     case PaymentRecommendationLetter = 'payment_recommendation';
     case PlanHandoverLetter = 'plan_handover';
     case TenderApprovalLetter = 'tender_approval';
@@ -50,7 +51,8 @@ enum LetterTypes :string implements EnumInterface
             self::ProgramApprovalAndInformationLetter => __('yojana::yojana.program_approval_and_information_letter'),
             self::VATRegistrationCertificate => __('yojana::yojana.vat_registration_certificate'),
             self::LetterOfIntentPublicationNotice => __('yojana::yojana.letter_of_intent_publication_notice'),
-            self::Agreement => __('yojana::yojana.agreement'),
+            self::AgreementInstruction => __('yojana::yojana.agreement_instruction'),
+            self::AgreementLetter => __('yojana::yojana.agreement_letter'),
             self::RateQuotationSubmission => __('yojana::yojana.rate_quotation_submission'),
             self::PaymentRecommendationLetter => __('yojana::yojana.payment_recommendation_letter'),
             self::PlanHandoverLetter => __('yojana::yojana.plan_handover_letter'),

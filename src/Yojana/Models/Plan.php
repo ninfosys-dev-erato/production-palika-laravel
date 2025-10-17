@@ -301,4 +301,23 @@ class Plan extends Model
     {
         return $this->belongsTo(Branch::class, 'department');
     }
+
+    public function getExpenseHeads() :string
+{
+    if (count($this->budgetSources) === 0) {
+        return '';
+    }
+
+    $this->budgetSources->load('expenseHead');
+
+    $expenseHeads = [];
+
+    foreach ($this->budgetSources as $budgetSource) {
+        if (isset($budgetSource->expenseHead)) {
+            $expenseHeads[] = $budgetSource->expenseHead->code;
+        }
+    }
+
+    return implode(', ', $expenseHeads);
+}
 }

@@ -10,6 +10,7 @@ use Src\Yojana\Models\Agreement;
 use Src\Yojana\Models\AgreementFormat;
 use Src\Yojana\Models\Plan;
 use Src\Yojana\Traits\YojanaTemplate;
+use Src\Yojana\Enums\LetterTypes;
 
 class AgreementAdminService
 {
@@ -83,6 +84,16 @@ public function collectionDelete(array $ids){
         $html = $agreement->styles.$html;
         return $html;
 
+    }
+
+    public function getWorkOrder($id)
+    {
+        $agreement = Agreement::find($id);
+        $plan = $agreement->plan;
+        $plan->load('costEstimation.costDetails.sourceType','agreement.implementationMethod','agreement.consumerCommittee.ward','agreement.grants.sourceType','agreement.beneficiaries.beneficiary','agreement.signatureDetails','agreement.agreementCost','agreement.installmentDetails');
+
+        $workOrderService = new WorkOrderAdminService();
+        return $workOrderService->workOrderLetter(LetterTypes::AgreementLetter , $plan);
     }
 }
 
