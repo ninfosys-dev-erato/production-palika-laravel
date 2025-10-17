@@ -60,7 +60,6 @@ class BuildingRegistrationPreview extends Component
                 'deleted_at' => now(),
             ]);
 
-            // Refresh the files collection to exclude the deleted file
             $this->files = BuildingRegistrationDocument::where('map_step_id', $this->mapApplyStep->map_step_id)
                 ->where('map_apply_id', $this->mapApplyStep->map_apply_id)
                 ->whereNull('deleted_at')
@@ -83,8 +82,7 @@ class BuildingRegistrationPreview extends Component
     #[On('print-map-apply')]
     public function print(MapApplyStepTemplate $mapApplyStepTemplate)
     {
-        $service = new MapApplyAdminService();
-        return $service->getLetter($mapApplyStepTemplate,'web');
+       $this->dispatch('print-certificate-letter', id: $mapApplyStepTemplate->id);
     }
 
 }
