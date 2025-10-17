@@ -222,13 +222,7 @@ class RecommendationService
 
             // Get a temporary (or permanent) URL
             $url = FileFacade::getTemporaryUrl($filePath, $storedFileName, $disk);
-
-            // API should return JSON response
-            return response()->json([
-                'success' => true,
-                'url' => $url,
-                'message' => 'Letter generated successfully',
-            ]);
+            return $url;
 
         } catch (\Exception $exception) {
             logger('Exception: ' . $exception->getMessage());
