@@ -108,8 +108,13 @@ class ImplementationAgencyTable extends DataTableComponent
                     $buttons .= $edit;
                 }
                 if (can('plan print')) {
-                    $print = '<button type="button" class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp';
-                    $buttons .= $print;
+                    // Agreement Instruction Letter
+                    $agreementBtn = '<button type="button" class="btn btn-info btn-sm" title="' . __('yojana::yojana.agreement_instruction') . '" wire:click="printAgreementInstruction(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $agreementBtn;
+
+                    // Tender Approval Letter
+                    $tenderBtn = '<button type="button" class="btn btn-success btn-sm" title="' . __('yojana::yojana.tender_approval_letter') . '" wire:click="printTenderApproval(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $tenderBtn;
                 }
                 return $buttons;
             })->html();
@@ -136,6 +141,30 @@ class ImplementationAgencyTable extends DataTableComponent
         $workOrder = $service->getWorkOrder( $id);
         if (!isset($workOrder)){
             $this->errorFlash('Letter Sample Not Found');
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    public function printAgreementInstruction($id)
+    {
+        $service = new ImplementationAgencyAdminService();
+        $workOrder = $service->getWorkOrderByType($id, LetterTypes::AgreementInstruction);
+        if (!isset($workOrder)){
+            $this->errorFlash(__('yojana::yojana.letter_format_missing'));
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    public function printTenderApproval($id)
+    {
+        $service = new ImplementationAgencyAdminService();
+        $workOrder = $service->getWorkOrderByType($id, LetterTypes::TenderApprovalLetter);
+        if (!isset($workOrder)){
+            $this->errorFlash(__('yojana::yojana.letter_format_missing'));
             return false;
         }
         $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);

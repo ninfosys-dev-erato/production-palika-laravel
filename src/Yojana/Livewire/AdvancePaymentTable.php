@@ -86,7 +86,7 @@ class AdvancePaymentTable extends DataTableComponent
                 }
 
                 if (can('plan edit')) {
-                    $edit = '<button class="btn btn-info btn-sm" wire:click="printLetter(' . $row->id . ')" ><i class="bx bx-printer"></i></button>&nbsp;';
+                    $edit = '<button class="btn btn-info btn-sm" wire:click="printLetter(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
                     $buttons .= $edit;
                 }
 
