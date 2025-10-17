@@ -195,34 +195,47 @@ class RecommendationService
         }
     }
 
-    public function getLetter(ApplyRecommendation $applyRecommendation, $request = 'web')
+    public function getLetter(ApplyRecommendation $applyRecommendation, $request = 'api')
     {
         try {
-            $is_draft = $applyRecommendation->records->first()?->reg_no ? false : true;
-
-            // if($applyRecommendation->additional_letter)
-            // {
-            //     RecommendationService::updateAdditionalLetter($applyRecommendation, $applyRecommendation->records->first()?->reg_no);
-            // }
+            $isDraft = !$applyRecommendation->records->first()?->reg_no;
 
             $html = $applyRecommendation->additional_letter ?? $this->resolveRecommendationTemplate($applyRecommendation);
-            $url = PdfFacade::saveAndStream(
-                content: $html,
-                file_path: config('src.Recommendation.recommendation.certificate'),
-                file_name: "recommendation_{$applyRecommendation->id}",
-                disk: getStorageDisk('private'),
-                is_draft: false,
-                styles: $applyRecommendation->recommendation?->form?->styles
-            );
-            if ($request === 'web') {
-                return redirect()->away($url);
-            }
 
-            return $url;
+            // Render into a Blade view similar to your web layout
+            $renderedHtml = view('template.print', [
+                'html' => $html,
+                'styles' => $applyRecommendation->recommendation?->form?->styles,
+            ])->render();
+
+            $fileName = "recommendation_{$applyRecommendation->id}.html";
+            $filePath = config('src.Recommendation.recommendation.certificate');
+            $disk = getStorageDisk('private');
+
+            // Save the HTML file (like how PDFs are stored)
+            $storedFileName = FileFacade::saveFile(
+                $filePath,
+                $fileName,
+                $renderedHtml,
+                $disk
+            );
+
+            // Get a temporary (or permanent) URL
+            $url = FileFacade::getTemporaryUrl($filePath, $storedFileName, $disk);
+
+            // API should return JSON response
+            return response()->json([
+                'success' => true,
+                'url' => $url,
+                'message' => 'Letter generated successfully',
+            ]);
+
         } catch (\Exception $exception) {
-            logger('Exception: ' . $exception->getMessage() . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine());
-            logger('Stack trace: ' . $exception->getTraceAsString());
-            return null;
+            logger('Exception: ' . $exception->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate letter',
+            ], 500);
         }
     }
 
