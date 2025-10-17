@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Src\Recommendation\Models\Recommendation;
+use Domains\AdminGateway\Recommendation\Resources\RecommendationResource;
+use Domains\AdminGateway\Recommendation\Resources\ApplyRecommendationDocumentResource;
 
 class ApplyRecommendationResource extends JsonResource
 {
@@ -35,7 +37,7 @@ class ApplyRecommendationResource extends JsonResource
     private function transformData(array $data): array
     {
         return array_map(function ($item) {
-            if ($item['type'] === 'table' && isset($item['value'])) {
+            if (is_array($item) && isset($item['type']) && $item['type'] === 'table' && isset($item['value'])) {
                 $item['value'] = array_map(function ($row) {
                     return array_values($row);
                 }, $item['value']);

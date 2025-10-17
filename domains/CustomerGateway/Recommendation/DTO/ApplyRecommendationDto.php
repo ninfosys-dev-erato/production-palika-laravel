@@ -26,8 +26,7 @@ class ApplyRecommendationDto
 
     public static function fromValidatedRequest(array $request): ApplyRecommendationDto
     {
-
-        $customer = Auth::guard('customer')->user()?->load('kyc');
+        $customer = auth()->user()?->load('kyc');
         $recommendation = Recommendation::with('signees.user')->find($request['recommendation_id']);
         if (!$recommendation) {
             throw new \Exception('Recommendation not found');

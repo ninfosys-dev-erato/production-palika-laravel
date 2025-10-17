@@ -11,7 +11,7 @@
           
     <div class="a4-container" id="printContent">
         {!! $sanitizedData !!}
-        {!! $formData->style !!}
+        {!! $formData->styles !!}
     </div>
 
     <style>
@@ -25,8 +25,6 @@
             text-align: left;
             position: relative;
             font-family: 'Kalimati', sans-serif !important;
-            font-size: 16px;
-            color: #000;
         }
     </style>
 <script>

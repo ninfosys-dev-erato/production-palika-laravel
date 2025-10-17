@@ -14,7 +14,7 @@ class RecommedationFormResource extends JsonResource
         $updatedFields = [];
 
         foreach (json_decode($this->fields, true) as $field) {
-            if ($field['type'] === "table") {
+            if (is_array($field) && isset($field['type']) && $field['type'] === "table") {
                 foreach ($field as $key => $value) {
                     if (is_numeric($key)) {
                         $tableFields[] = $value;
