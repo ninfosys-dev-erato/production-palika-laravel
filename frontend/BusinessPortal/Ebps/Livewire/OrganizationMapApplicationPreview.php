@@ -50,6 +50,14 @@ class OrganizationMapApplicationPreview extends Component
             return $step->mapApplyStepTemplates;
         });
 
+        // Clean the 'template' field for each letter
+        $this->letters = $this->letters->map(function ($letter) {
+            if (isset($letter['template'])) {
+                $letter['template'] = $this->cleanTemplate($letter['template']);
+            }
+            return $letter;
+        });
+
         $this->selectedStatus = $mapApplyStep->status;
         $this->mapApplyStatusEnum = MapApplyStatusEnum::cases();
 
@@ -58,6 +66,21 @@ class OrganizationMapApplicationPreview extends Component
             ->whereNull('deleted_at')
             ->get();
     }
+
+    /**
+    * Clean a template string by removing empty <p> tags and placeholders
+    */
+    private function cleanTemplate(string $template): string
+    {
+        // Remove empty <p> tags including spaces, tabs, newlines, &nbsp; (literal or UTF-8)
+        $template = preg_replace('/<p>([\s\x{00A0}&nbsp;]*)<\/p>/iu', '', $template);
+
+        // Remove all {{...}} placeholder tags
+        $template = preg_replace('/{{[^}]*}}/', '', $template);
+
+        return trim($template);
+    }
+
 
     public function deleteFile($fileId)
     {
@@ -85,8 +108,7 @@ class OrganizationMapApplicationPreview extends Component
     #[On('print-map-apply')]
     public function print(MapApplyStepTemplate $mapApplyStepTemplate)
     {
-        $service = new MapApplyAdminService();
-        return $service->getLetter($mapApplyStepTemplate,'web');
+        $this->dispatch('print-certificate-letter', id: $mapApplyStepTemplate->id);
     }
 
 }
