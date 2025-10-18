@@ -114,7 +114,7 @@
                     <div class='form-group'>
                         <label for='contract_number'
                             class='form-label'>{{ __('yojana::yojana.contract_number') }}</label>
-                        <input wire:model='contractDetails.contract_number' name='contract_number' type='number'
+                        <input wire:model='contractDetails.contract_number' name='contract_number' type='text'
                             class='form-control' placeholder="{{ __('yojana::yojana.enter_comment') }}">
                         <div>
                             @error('contractDetails.contract_number')
@@ -124,11 +124,11 @@
                     </div>
                 </div>
                 <div class='col-md-6 mb-3'>
-                    <div class='form-group'>
+                    <div class='form-group' wire:ignore>
                         <label for='notice_date'
                             class='form-label'>{{ __('yojana::yojana.notice_publication_date') }}</label>
-                        <input wire:model='contractDetails.notice_date' name='notice_date' type='date'
-                            class='form-control'>
+                        <input wire:model='contractDetails.notice_date' name='notice_date' type='text'
+                            class='form-control nepali-date'>
                         <div>
                             @error('contractDetails.notice_date')
                                 <small class='text-danger'>{{ $message }}</small>
@@ -137,11 +137,11 @@
                     </div>
                 </div>
                 <div class='col-md-6 mb-3'>
-                    <div class='form-group'>
+                    <div class='form-group' wire:ignore>
                         <label for='bid_acceptance_date'
                             class='form-label'>{{ __('yojana::yojana.bid_acceptance_date') }}</label>
                         <input wire:model='contractDetails.bid_acceptance_date' name='bid_acceptance_date'
-                            type='date' class='form-control'>
+                            type='text' class='form-control nepali-date'>
                         <div>
                             @error('contractDetails.bid_acceptance_date')
                                 <small class='text-danger'>{{ $message }}</small>

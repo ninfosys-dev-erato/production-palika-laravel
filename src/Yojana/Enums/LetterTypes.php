@@ -21,6 +21,8 @@ enum LetterTypes :string implements EnumInterface
     case LetterOfIntentPublicationNotice = 'intent_notice';
     case RateQuotationSubmission = 'rate-quotation';
     case AgreementInstruction = 'agreement_instruction';
+    case AdvancePaymentInstruction = 'advance_payment_instruction';
+    case PaymentInstruction = 'payment_instruction';
     case AgreementLetter = 'agreement_letter';
     case PaymentRecommendationLetter = 'payment_recommendation';
     case PlanHandoverLetter = 'plan_handover';
@@ -52,6 +54,8 @@ enum LetterTypes :string implements EnumInterface
             self::VATRegistrationCertificate => __('yojana::yojana.vat_registration_certificate'),
             self::LetterOfIntentPublicationNotice => __('yojana::yojana.letter_of_intent_publication_notice'),
             self::AgreementInstruction => __('yojana::yojana.agreement_instruction'),
+            self::AdvancePaymentInstruction => __('yojana::yojana.advance_payment_instruction'),
+            self::PaymentInstruction => __('yojana::yojana.payment_instruction'),
             self::AgreementLetter => __('yojana::yojana.agreement_letter'),
             self::RateQuotationSubmission => __('yojana::yojana.rate_quotation_submission'),
             self::PaymentRecommendationLetter => __('yojana::yojana.payment_recommendation_letter'),
@@ -64,15 +68,6 @@ enum LetterTypes :string implements EnumInterface
             self::EvaluationCommitteeMinute => __('yojana::yojana.evaluation_committee_minute'),
             self::QuotationApprovalLetter => __('yojana::yojana.quotation_approval_letter'),
         };
-
-
-
-
-
-
-
-
-
     }
 
     public static function getValuesWithLabels(): array

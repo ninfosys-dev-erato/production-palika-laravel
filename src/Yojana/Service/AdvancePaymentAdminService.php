@@ -62,6 +62,24 @@ public function collectionDelete(array $ids){
         $workOrderService = new WorkOrderAdminService();
         return $workOrderService->workOrderLetter(LetterTypes::AdvancePayment , $plan);
     }
+    
+    /**
+     * Get or create a WorkOrder for the given advance payment and letter type.
+     *
+     * @param int $id
+     * @param LetterTypes $type
+     * @return \Src\Yojana\Models\WorkOrder|null
+     */
+    public function getWorkOrderByType($id, LetterTypes $type)
+    {
+        $advancePayment = AdvancePayment::find($id);
+
+        $plan = $advancePayment->plan->load('costEstimation','agreement','StartFiscalYear','implementationAgency.consumerCommittee', 'implementationAgency.application','implementationAgency.organization');
+
+        $plan->setRelation('advancePayments', $advancePayment);
+        $workOrderService = new WorkOrderAdminService();
+        return $workOrderService->workOrderLetter($type, $plan);
+    }
 }
 
 

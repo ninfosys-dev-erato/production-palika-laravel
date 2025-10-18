@@ -86,8 +86,13 @@ class AdvancePaymentTable extends DataTableComponent
                 }
 
                 if (can('plan edit')) {
-                    $edit = '<button class="btn btn-info btn-sm" wire:click="printLetter(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
-                    $buttons .= $edit;
+                    // Print Advance Payment Letter
+                    $advPrint = '<button class="btn btn-info btn-sm" wire:click="printLetter(' . $row->id . ')" title="' . __('yojana::yojana.advance_payment') . '"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $advPrint;
+
+                    // Print Advance Payment Instruction
+                    $instPrint = '<button class="btn btn-secondary btn-sm" wire:click="printAdvancePaymentInstruction(' . $row->id . ')" title="' . __('yojana::yojana.advance_payment_instruction') . '"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $instPrint;
                 }
 
                 if (can('plan delete')) {
@@ -158,6 +163,28 @@ class AdvancePaymentTable extends DataTableComponent
 //        $workOrder =  $service->getWorkOrder($advancePayment->plan->load('costEstimation','agreement','StartFiscalYear','implementationAgency.consumerCommittee', 'implementationAgency.application','implementationAgency.organization'), $advancePayment);
 
         $workOrder = $service->getWorkOrder($id);
+        if ($workOrder?->id) {
+            $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+            $this->dispatch('open-pdf-in-new-tab', url: $url);
+        } else {
+            $this->errorFlash(__('Letter Sample Not Found'));
+        }
+    }
+
+    public function printAdvancePaymentInstruction($id)
+    {
+        $exists = LetterSample::where('letter_type', LetterTypes::AdvancePaymentInstruction)
+            ->where('implementation_method_id', $this->plan->implementation_method_id)
+            ->exists();
+
+        if ($exists == false) {
+            $this->errorFlash(__('Letter Sample Not Found'));
+            return false;
+        }
+
+        $service = new AdvancePaymentAdminService();
+        $workOrder = $service->getWorkOrderByType($id, LetterTypes::AdvancePaymentInstruction);
+
         if ($workOrder?->id) {
             $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
             $this->dispatch('open-pdf-in-new-tab', url: $url);
