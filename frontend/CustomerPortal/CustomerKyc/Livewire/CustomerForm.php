@@ -301,7 +301,7 @@ class CustomerForm extends Component
 
     public function handleFileUpload($file)
     {
-        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file, 'local');
+        return FileFacade::saveFile(config('src.CustomerKyc.customerKyc.path'), "", $file,  getStorageDisk('private'));
     }
 
     private function initializeDates(string | null $nepaliDob, string | null $nepaliDocIssuedDate, string | null $engExpiryDate): void
