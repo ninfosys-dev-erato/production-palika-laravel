@@ -17,14 +17,14 @@ class DisputeDeadlineForm extends Component
 {
     use SessionFlash, HelperDate;
 
-    public ?DisputeDeadline $disputeDeadline;
-    public ?Action $action;
-    public $complainRegistrations;
-    public $registerEmployees;
-    public $complaintData = [];
 
-    public $complainers = [];
-    public $defenders = [];
+    public ?DisputeDeadline $disputeDeadline;
+    public ?Action $action = Action::CREATE;
+    public $complaintRegistration;
+    public $registerEmployees;
+    public $showDisputeDeadlineForm = false;
+
+      protected $listeners = ['edit-disputeDeadline' => 'editDisputeDeadline'];
 
     public function rules(): array
     {
@@ -41,54 +41,31 @@ class DisputeDeadlineForm extends Component
         return view("Ejalas::livewire.dispute-deadline.form");
     }
 
-    public function mount(DisputeDeadline $disputeDeadline, Action $action)
+    public function mount(ComplaintRegistration $complaintRegistration, DisputeDeadline $disputeDeadline)
     {
+
+        $this->complaintRegistration = $complaintRegistration;
+
         $this->disputeDeadline = $disputeDeadline;
-        $this->action = $action;
-        $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')->where('status', true)
-            ->with('parties')
-            ->get()
-            ->mapWithKeys(function ($complaint) {
-                $partyNames = $complaint->parties->pluck('name')->implode(', '); // Get all party names as a string
-                return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-            });
+
+        $this->disputeDeadline->complaint_registration_id = $complaintRegistration->id;
+        
+ 
 
 
 
         $this->registerEmployees = JudicialEmployee::whereNull('deleted_at')->pluck('name', 'id');
-        if ($this->disputeDeadline->complaint_registration_id) {
-            $this->getComplaintRegistration();
-            $this->disputeDeadline->deadline_set_date =  replaceNumbers($this->adToBs($this->disputeDeadline->deadline_set_date), true);
-        }
+
     }
 
-    public function getComplaintRegistration()
-    {
-        $complaintRegistrationId = $this->disputeDeadline['complaint_registration_id'];
 
-        $this->complaintData = ComplaintRegistration::with([
-            'fiscalYear',
-            'priority',
-            'disputeMatter',
-            'parties'
-        ])->find($complaintRegistrationId)?->toArray() ?? [];
 
-        if (!empty($this->complaintData)) {
-            // Access parties through the relationship
-            $parties = collect($this->complaintData['parties'] ?? []);
-
-            // Separate complainers and defenders using pivot data
-            $this->complainers = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Complainer';
-            })->pluck('name')->toArray();
-
-            $this->defenders = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Defender';
-            })->pluck('name')->toArray();
-        } else {
-            $this->complainers = [];
-            $this->defenders = [];
-        }
+    public function toggleDisputeDeadlineForm(){
+       $this->showDisputeDeadlineForm = !$this->showDisputeDeadlineForm;
+         $this->dispatch('init-registration-date');
+             if ($this->showDisputeDeadlineForm) {
+       $this->resetForm();
+    }
     }
 
     public function save()
@@ -97,23 +74,24 @@ class DisputeDeadlineForm extends Component
         try {
             $bsDate = $this->disputeDeadline['deadline_set_date'];
             $englishDate = $this->bsToAd($bsDate);
-            $this->disputeDeadline['deadline_set_date'] = $englishDate;
+            $this->disputeDeadline['deadline_set_date_en'] = $englishDate;
 
             $dto = DisputeDeadlineAdminDto::fromLiveWireModel($this->disputeDeadline);
             $service = new DisputeDeadlineAdminService();
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.dispute_deadline_created_successfully'));
-                    return redirect()->route('admin.ejalas.dispute_deadlines.index');
+                    $this->successToast(__('ejalas::ejalas.dispute_deadline_created_successfully'));
+                    $this->showDisputeDeadlineForm = false;
+                    $this->resetForm();
                     break;
                 case Action::UPDATE:
                     $service->update($this->disputeDeadline, $dto);
-                    $this->successFlash(__('ejalas::ejalas.dispute_deadline_updated_successfully'));
-                    return redirect()->route('admin.ejalas.dispute_deadlines.index');
+                    $this->successToast(__('ejalas::ejalas.dispute_deadline_updated_successfully'));
+                    $this->showDisputeDeadlineForm = false;
+                         $this->resetForm();
                     break;
                 default:
-                    return redirect()->route('admin.ejalas.dispute_deadlines.index');
                     break;
             }
         } catch (\Throwable $e) {
@@ -121,4 +99,23 @@ class DisputeDeadlineForm extends Component
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
     }
+
+       public function editDisputeDeadline(DisputeDeadline $disputeDeadline)
+    {
+        $this->disputeDeadline = $disputeDeadline;
+        $this->action = Action::UPDATE;
+       $this->showDisputeDeadlineForm = true;
+          $this->dispatch('init-registration-date');
+        
+    }
+
+    protected function resetForm()
+{
+    $this->reset('disputeDeadline');
+          $this->disputeDeadline = new DisputeDeadline();
+     $this->disputeDeadline->complaint_registration_id = $this->complaintRegistration->id;
+    $this->action = Action::CREATE;
+}
+
+    
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('reg_no')->nullable();
             $table->string('old_reg_no')->nullable();
             $table->string('reg_date')->nullable();
+            $table->string('reg_date_en')->nullable();
             $table->string('reg_address')->nullable(); //enum
             $table->foreignId('complainer_id')->nullable()->constrained('jms_parties')->cascadeOnDelete();
             $table->foreignId('defender_id')->nullable()->constrained('jms_parties')->cascadeOnDelete();

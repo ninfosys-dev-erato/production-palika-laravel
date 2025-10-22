@@ -8,7 +8,8 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Src\Ejalas\Enum\PlaceOfRegistration;
 use Src\FiscalYears\Models\FiscalYear;
-
+use  Src\Ejalas\Enum\ApplicationStatus;
+use Src\Ejalas\Enum\PartyType;
 class ComplaintRegistration extends Model
 {
     use HasFactory, LogsActivity;
@@ -20,6 +21,7 @@ class ComplaintRegistration extends Model
         'reg_no',
         'old_reg_no',
         'reg_date',
+        'reg_date_en',
         'reg_address',
         'complainer_id',
         'defender_id',
@@ -48,6 +50,7 @@ class ComplaintRegistration extends Model
             'reg_no' => 'string',
             'old_reg_no' => 'string',
             'reg_date' => 'string',
+            'reg_date_en' => 'string',
             'reg_address' => PlaceOfRegistration::class,
             'complainer_id' => 'string',
             'defender_id' => 'string',
@@ -58,7 +61,7 @@ class ComplaintRegistration extends Model
             'claim_request' => 'string',
             'reconciliation_center_id' => 'string',
             'reconciliation_reg_no' => 'string',
-            'status' => 'boolean',
+            'status' => ApplicationStatus::class,
             'id' => 'int',
             'created_at' => 'datetime',
             'created_by' => 'string',
@@ -98,7 +101,7 @@ class ComplaintRegistration extends Model
     // }
     public function parties()
     {
-        return $this->belongsToMany(Party::class, 'complaint_party', 'complaint_id', 'party_id')
+        return $this->belongsToMany(Party::class, 'jms_complaint_party', 'complaint_id', 'party_id')
             ->withPivot('type')
             ->withTimestamps();
     }
@@ -148,4 +151,14 @@ class ComplaintRegistration extends Model
     {
         return $this->hasOne(DisputeRegistrationCourt::class, 'complaint_registration_id', 'id');
     }
+public function getComplainersAttribute()
+{
+    return $this->parties?->filter(fn($party) => $party->pivot->type === PartyType::Complainer->value) ?? collect();
+}
+
+public function getDefendersAttribute()
+{
+    return $this->parties?->filter(fn($party) => $party->pivot->type === PartyType::Defender->value) ?? collect();
+}
+
 }

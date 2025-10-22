@@ -14,21 +14,19 @@ use Illuminate\Support\Facades\DB;
 use Src\Ejalas\Enum\PartyType;
 use Src\Ejalas\Models\RegistrationIndicator;
 use Src\Ejalas\Models\JudicialEmployee;
+use  Src\Ejalas\Enum\ApplicationStatus;
 
 class DisputeRegistrationCourtForm extends Component
 {
     use SessionFlash;
 
     public ?DisputeRegistrationCourt $disputeRegistrationCourt;
-    public ?Action $action;
-    public $complainRegistrations;
-    public array $disputeConditions = [];
+    public ?Action $action = Action::CREATE;
+    public $complaintRegistration;
     public $registerEmployees;
     public bool $conditionsChecked = false;
-    public array $complaintData = [];
+    public bool $showForm;
 
-    public array $complainers = [];
-    public array $defenders = [];
     public $registrationIndicators;
     public array $selectedIndicators = []; //stores data in the json format
 
@@ -48,82 +46,45 @@ class DisputeRegistrationCourtForm extends Component
         return view("Ejalas::livewire.dispute-registration-court.form");
     }
 
-    public function mount(DisputeRegistrationCourt $disputeRegistrationCourt, Action $action)
+
+    public function mount(ComplaintRegistration $complaintRegistration)
     {
-        $this->disputeRegistrationCourt = $disputeRegistrationCourt;
-        $this->action = $action;
+        $this->complaintRegistration = $complaintRegistration;
+
+$this->disputeRegistrationCourt =DisputeRegistrationCourt::with('judicialEmployee')->firstOrNew([
+    'complaint_registration_id' => $complaintRegistration->id,
+]);
+
 
         $this->registrationIndicators = RegistrationIndicator::whereNull('deleted_at')->where('indicator_type', PartyType::Complainer)->pluck('dispute_title', 'id');
-        if ($this->disputeRegistrationCourt->exists) {
-            $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')
-                ->with('parties')
-                ->get()
-                ->mapWithKeys(function ($complaint) {
-                    $partyNames = $complaint->parties->pluck('name')->implode(', '); // Get all party names as a string
-                    return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-                });
-            $this->selectedIndicators = json_decode($this->disputeRegistrationCourt->registration_indicator, true);
+ 
+
+        if ($this->complaintRegistration->status == ApplicationStatus::Pending) {
+            $this->showForm = true;
+            $this->action = Action::CREATE;
+            $this->disputeRegistrationCourt['status'] = 'rejected';
         } else {
-            $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')
-                ->whereNull('status')
-                ->with('parties')
-                ->get()
-                ->mapWithKeys(function ($complaint) {
-                    $partyNames = $complaint->parties->pluck('name')->implode(', '); // Get all party names as a string
-                    return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-                });
+            $this->showForm= false;
 
-            $this->disputeRegistrationCourt['status'] = 'Rejected';
+            $this->selectedIndicators = json_decode($this->disputeRegistrationCourt->registration_indicator ?? '[]', true) ?? [];
+
         }
-
-
         $this->registerEmployees = JudicialEmployee::whereNull('deleted_at')->pluck('name', 'id');
     }
-    //Hook function updated DisputeRegistrationCourtIsDetailsProvided (bool)
-    public function updatedSelectedIndicators($value)
+  
+    public function updatedSelectedIndicators()
     {
         if (in_array('पूरा नभएको', $this->selectedIndicators)) {
-            $this->disputeRegistrationCourt['status'] = 'Rejected';
+            $this->disputeRegistrationCourt['status'] = 'rejected';
         } else {
-            $this->disputeRegistrationCourt['status'] = 'Approved';
-        }
-    }
-
-
-
-
-    public function getComplaintRegistration()
-    {
-        $complaintRegistrationId = $this->disputeRegistrationCourt['complaint_registration_id'];
-
-        $this->complaintData = ComplaintRegistration::with([
-            'fiscalYear',
-            'priority',
-            'disputeMatter',
-            'parties'
-        ])->find($complaintRegistrationId)?->toArray() ?? [];
-
-        if (!empty($this->complaintData)) {
-            // Access parties through the relationship
-            $parties = collect($this->complaintData['parties'] ?? []);
-
-            // Separate complainers and defenders using pivot data
-            $this->complainers = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Complainer';
-            })->pluck('name')->toArray();
-
-            $this->defenders = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Defender';
-            })->pluck('name')->toArray();
-        } else {
-            $this->complainers = [];
-            $this->defenders = [];
+            $this->disputeRegistrationCourt['status'] = 'approved';
         }
     }
 
 
     public function save()
     {
+      
         $this->validate();
         try {
             $this->disputeRegistrationCourt->registration_indicator = json_encode($this->selectedIndicators, JSON_UNESCAPED_UNICODE);
@@ -134,23 +95,39 @@ class DisputeRegistrationCourtForm extends Component
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.dispute_registration_court_created_successfully'));
-                    return redirect()->route('admin.ejalas.dispute_registration_courts.index');
+                    $this->successToast(__('ejalas::ejalas.dispute_registration_court_created_successfully'));
+                     $this->showForm= false;
+                    // return redirect()->route('admin.ejalas.dispute_registration_courts.index');
                     break;
 
                 case Action::UPDATE:
                     $service->update($this->disputeRegistrationCourt, $dto);
-                    $this->successFlash(__('ejalas::ejalas.dispute_registration_court_updated_successfully'));
-                    return redirect()->route('admin.ejalas.dispute_registration_courts.index');
+                    $this->successToast(__('ejalas::ejalas.dispute_registration_court_updated_successfully'));
+                     $this->showForm= false;
+                    // return redirect()->route('admin.ejalas.dispute_registration_courts.index');
                     break;
 
                 default:
-                    return redirect()->route('admin.ejalas.dispute_registration_courts.index');
+                    // return redirect()->route('admin.ejalas.dispute_registration_courts.index');
                     break;
             }
         } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
+    }
+
+    public function print()
+    {
+        // Redirect to print route or generate PDF
+        // return redirect()->route('admin.ejalas.dispute_registration_courts.print', ['id' => $this->disputeRegistrationCourt->id]);
+    }
+
+    public function edit()
+    {
+        $this->showForm = true;
+        $this->action = Action::UPDATE;
+         $this->dispatch('init-registration-date');
+
     }
 }

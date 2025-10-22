@@ -54,6 +54,12 @@ class ComplaintRegistrationAdminController extends Controller
         // $id = $request->route('id');
         // return view('Ejalas::complaint-registration.preview')->with(compact('id'));
     }
+    public function forward(Request $request, $id){
+  
+        $complaintRegistration = ComplaintRegistration::findOrFail($id);
+        return view('Ejalas::complaint-registration.forward')->with(compact('complaintRegistration'));
+    }
+
     public function report()
     {
 

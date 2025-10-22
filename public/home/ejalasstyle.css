@@ -1,0 +1,40 @@
+.sub-icon-size{
+    font-size: 1.2rem;
+}
+.main-icon-size{
+    font-size:1.5rem;
+}
+   /* Custom tab class */
+/* .custom-blue-tabs .nav-link {
+  color: #333; 
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+} */
+ .nav-background{
+     background-color: #e6ecf9;
+ }
+
+.custom-blue-tabs .nav-link {
+  
+  border: 1px solid #ccc; /* Light grey border */
+  transition: all 0.3s ease-in-out; /* Smooth transition */
+  background-color: #e6ecf9; /* very light blue */
+color: #01399a;
+border-color: #c0c8e0; /* subtle grayish-blue */
+
+}
+.custom-blue-tabs .nav-link:hover {
+  color: #3251c1; /* darker blue on hover */
+  background-color: #e7f1ff; /* light blue background */
+}
+
+.custom-blue-tabs .nav-link.active {
+  color: #fff; /* active text color */
+  background-color: #01399a ; /* blue background for active */
+  border-color: #012f7a;
+  font-weight: 500;
+}
+.table-print-btn{
+   background-color: #17a2b8; 
+   color: white;
+}

@@ -1,3 +1,5 @@
+<div>
+@if($showForm)
 <form wire:submit.prevent="save">
     <!-- Registration Details Card -->
     <div class="card mb-3 mt-3">
@@ -10,23 +12,13 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <!-- Complaint Registration ID -->
-                <div class="col-md-6 mb-3" wire:ignore>
+           
+                <div class="col-md-6 mb-3">
                     <label for="complaint_registration_id" class="form-label">
                         {{ __('ejalas::ejalas.complaint_registration_no') }}
                     </label>
-                    <select wire:model="disputeRegistrationCourt.complaint_registration_id"
-                        name="complaint_registration_id"
-                        class="form-select form-select-md p-2  @error('complaint_registration_id') is-invalid @enderror"
-                        id="complaint_registration_id" wire:change="getComplaintRegistration()" required>
-                        <option value="" hidden>{{ __('ejalas::ejalas.select_registration_number') }}</option>
-                        @foreach ($complainRegistrations as $id => $value)
-                            <option value="{{ $id }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                    @error('disputeRegistrationCourt.complaint_registration_id')
-                        <small class="text-danger">{{ __($message) }}</small>
-                    @enderror
+                   <input type="text" class="form-control"
+                        value="{{ $complaintRegistration->reg_no}}" readonly>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -34,7 +26,7 @@
                         {{ __('ejalas::ejalas.fiscal_year') }}
                     </label>
                     <input type="text" class="form-control"
-                        value="{{ $complaintData['fiscal_year']['year'] ?? 'N/A' }}" readonly>
+                        value="{{ $complaintRegistration->fiscalYear?->year }}" readonly>
 
                 </div>
 
@@ -42,29 +34,28 @@
                     <label for="reg_date" class="form-label">
                         {{ __('ejalas::ejalas.complain_registration_date') }}
                     </label>
-                    <input type="text" class="form-control" wire:model="complaintData.reg_date" readonly>
+                    <input type="text" class="form-control" readonly value="{{ $complaintRegistration->reg_date }}">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="reg_date" class="form-label">
                         {{ __('ejalas::ejalas.priority') }}
                     </label>
                     <input type="text" class="form-control"
-                        value="{{ $complaintData['priority']['name'] ?? 'N/A' }}" readonly>
+                        value="{{ $complaintRegistration->priority?->name }}" readonly>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="dispute_matter_id" class="form-label">
                         {{ __('ejalas::ejalas.dispute_matter') }}
                     </label>
                     <input type="text" class="form-control"
-                        value="{{ $complaintData['dispute_matter']['title'] ?? 'N/A' }}" readonly>
-
+                        value="{{ $complaintRegistration->disputeMatter?->title }}" readonly>
 
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="claim request" class="form-label">
                         {{ __('ejalas::ejalas.claim_request') }}
                     </label>
-                    <input type="text" class="form-control" wire:model="complaintData.claim_request" readonly>
+                    <input type="text" class="form-control" value="{{ $complaintRegistration->claim_request }}" readonly>
                 </div>
 
 
@@ -72,24 +63,28 @@
                     <label for="complainer_id" class="form-label">
                         {{ __('ejalas::ejalas.complainers') }}
                     </label>
-                    @forelse ($complainers as $complainer)
-                        <input type="text" class="form-control mb-2" value="{{ $complainer }}" readonly>
-                    @empty
-                        <input type="text" class="form-control mb-2"
-                            value="{{ __('ejalas::ejalas.no_complainer') }}" readonly>
-                    @endforelse
+
+
+@forelse ($complaintRegistration->complainers as $complainer)
+    <input type="text" class="form-control mb-2" value="{{ $complainer->name }}" readonly>
+@empty
+    <input type="text" class="form-control mb-2" value="{{ __('ejalas::ejalas.no_complainer') }}" readonly>
+@endforelse
+
+
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="defender_id" class="form-label">
                         {{ __('ejalas::ejalas.defenders') }}
                     </label>
-                    @forelse ($defenders as $defender)
-                        <input type="text" class="form-control mb-2" value="{{ $defender }}" readonly>
-                    @empty
-                        <input type="text" class="form-control mb-2" value="{{ __('ejalas::ejalas.no_defender') }}"
+@forelse ($complaintRegistration->defenders as $defender)
+    <input type="text" class="form-control mb-2" value="{{ $defender->name }}" readonly>
+@empty
+  <input type="text" class="form-control mb-2" value="{{ __('ejalas::ejalas.no_defender') }}"
                             readonly>
-                    @endforelse
+@endforelse
+
                 </div>
 
                 <!-- Registrar Employee Name -->
@@ -108,7 +103,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3" wire:ignore>
                     <label for="registrar_id" class="form-label">
                         {{ __('ejalas::ejalas.decision_date') }}
                     </label>
@@ -134,7 +129,7 @@
 
         </div>
         <div class="card-body">
-            <ol class="list-unstyled">
+              <ol class="list-unstyled">
                 @foreach ($registrationIndicators as $id => $value)
                     <li class="row mb-3 align-items-center">
                         <div class="col-md-9">
@@ -144,19 +139,22 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                     wire:model.live="selectedIndicators.{{ $id }}"
+                                    name="indicator_{{ $id }}"
                                     id="full_{{ $id }}" value="पूरा भएको">
                                 <label class="form-check-label" for="full_{{ $id }}">पूरा भएको</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                     wire:model.live="selectedIndicators.{{ $id }}"
+                                    name="indicator_{{ $id }}"
                                     id="not_full_{{ $id }}" value="पूरा नभएको">
                                 <label class="form-check-label" for="not_full_{{ $id }}">पूरा नभएको</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                     wire:model.live="selectedIndicators.{{ $id }}"
-                                    id="not_applicable_{{ $id }}" value="लागु नहुने">
+                                    name="indicator_{{ $id }}"
+                                    id="not_applicable_{{ $id }}" value="लागु नहुने" >
                                 <label class="form-check-label" for="not_applicable_{{ $id }}">लागु
                                     नहुने</label>
                             </div>
@@ -175,21 +173,71 @@
                     </label>
                     <select wire:model="disputeRegistrationCourt.status" name="status" class="form-control"
                         disabled>
-                        <option value="Rejected">{{ __('ejalas::ejalas.rejected') }}</option>
-                        <option value="Approved">{{ __('ejalas::ejalas.approved') }}</option>
+                        <option value="rejected">{{ __('ejalas::ejalas.rejected') }}</option>
+                        <option value="approved">{{ __('ejalas::ejalas.approved') }}</option>
                     </select>
                 </div>
             </div>
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"
                     id="saveAllBtn">{{ __('ejalas::ejalas.save') }}</button>
-                <a href="{{ route('admin.ejalas.dispute_registration_courts.index') }}" wire:loading.attr="disabled"
-                    class="btn btn-danger">{{ __('ejalas::ejalas.back') }}</a>
+                {{-- <a href="{{ route('admin.ejalas.dispute_registration_courts.index') }}" wire:loading.attr="disabled"
+                    class="btn btn-danger">{{ __('ejalas::ejalas.back') }}</a> --}}
             </div>
         </div>
 
     </div>
+
 </form>
+@else
+
+<div class="card mb-3 mt-3">
+    <div class="card-header">
+        <div class="divider divider-primary text-start text-primary">
+            <div class="divider-text fw-bold fs-6">
+                {{ __('ejalas::ejalas.dispute_registration_court_details') }}
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{ __('ejalas::ejalas.complaint_registration_no') }}</th>
+                        <th>{{ __('ejalas::ejalas.registrar_employee_name') }}</th>
+                        <th>{{ __('ejalas::ejalas.decision_date') }}</th>
+                        <th>{{ __('ejalas::ejalas.status') }}</th>
+                        <th>{{ __('ejalas::ejalas.actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ $complaintRegistration->reg_no }}</td>
+                        <td>{{ $disputeRegistrationCourt->judicialEmployee?->name ?? '-' }}</td>
+                        <td>{{ $disputeRegistrationCourt->decision_date ?? '-' }}</td>
+                        <td>
+             {{ __('ejalas::ejalas.' . ($disputeRegistrationCourt->status ?? '')) ?: '-' }}
+
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-primary btn-sm me-1" wire:click="edit">
+                                    <i class="bx bx-edit me-1"></i>
+                                 
+                                </button>
+                                  
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+@endif
+</div>
 
 @script
     <script>

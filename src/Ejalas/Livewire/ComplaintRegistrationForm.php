@@ -114,7 +114,7 @@ class ComplaintRegistrationForm extends Component
         $this->validate();
         try {
             $englishDate = $this->bsToAd($this->complaintRegistration['reg_date']);
-            $this->complaintRegistration['reg_date'] = $englishDate;
+            $this->complaintRegistration['reg_date_en'] = $englishDate;
             $this->complaintRegistration['ward_no'] = GlobalFacade::ward();
             $dto = ComplaintRegistrationAdminDto::fromLiveWireModel($this->complaintRegistration);
             $service = new ComplaintRegistrationAdminService();

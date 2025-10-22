@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Ejalas\Models\JudicialEmployee;
+use Src\Ejalas\Models\ComplaintRegistration;
+
 
 class DisputeDeadline extends Model
 {
@@ -17,6 +20,7 @@ class DisputeDeadline extends Model
         'complaint_registration_id',
         'registrar_id',
         'deadline_set_date',
+        'deadline_set_date_en',
         'deadline_extension_period',
         'created_at',
         'created_by',
@@ -33,6 +37,7 @@ class DisputeDeadline extends Model
             'complaint_registration_id' => 'string',
             'registrar_id' => 'string',
             'deadline_set_date' => 'string',
+            'deadline_set_date_en' => 'string',
             'deadline_extension_period' => 'string',
             'id' => 'int',
             'created_at' => 'datetime',
@@ -56,8 +61,8 @@ class DisputeDeadline extends Model
     {
         return $this->belongsTo(ComplaintRegistration::class, 'complaint_registration_id', 'id');
     }
-    public function judicialMember()
+    public function judicialEmployee()
     {
-        return $this->belongsTo(JudicialMember::class, 'registrar_id', 'id');
+        return $this->belongsTo(JudicialEmployee::class, 'registrar_id', 'id');
     }
 }

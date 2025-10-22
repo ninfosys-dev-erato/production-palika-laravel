@@ -702,5 +702,6 @@ return [
     'template_reset_successfully' => 'टेम्पलेट सफलतापूर्वक रीसेट गरियो',
     'please_save_changes_before_printing' => 'कृपया प्रिन्ट गर्नु अघि परिवर्तनहरू बचत गर्नुहोस्',
     'form_type' => 'फारम प्रकार',
+    'dispute_registration_court_details' => 'विवाद दर्ता विवरण'
 
 ];

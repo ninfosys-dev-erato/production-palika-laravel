@@ -158,8 +158,8 @@ class ComplaintRegistrationTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.parties'))
                 ->label(function ($row) {
                     // Fetch related parties using the many-to-many relationship
-                    $defenders = $row->parties()->where('complaint_party.type', 'Defender')->pluck('name')->toArray();
-                    $complainers = $row->parties()->where('complaint_party.type', 'Complainer')->pluck('name')->toArray();
+           $defenders = $row->defenders->pluck('name')->toArray();
+        $complainers = $row->complainers->pluck('name')->toArray();
 
                     return (string) view('Ejalas::livewire.table.complaint-registration.complaint-registration-parties', [
                         'defenders' => $defenders,
@@ -232,6 +232,14 @@ class ComplaintRegistrationTable extends DataTableComponent
 
                 $view = '<button type="button" class="btn btn-success btn-sm me-1"  wire:click="view(' . $row->id . ')"><i class="bx bx-show"></i></button>';
                 $buttons .= $view;
+                $forward = '<button type="button" class="btn btn-sm me-1 text-white" 
+               style="background-color: #17a2b8; color: white;"
+                wire:click="forward(' . $row->id . ')">
+                <i class="bx bx-right-arrow-alt"></i>
+            </button>';
+                $buttons .= $forward;
+
+    
 
                 if (can('jms_judicial_management print')) {
                     $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
@@ -298,5 +306,8 @@ class ComplaintRegistrationTable extends DataTableComponent
     public function preview($id)
     {
         return redirect()->route('admin.ejalas.complaint_registrations.preview', ['id' => $id]);
+    }
+    public function forward($id){
+        return redirect()->route('admin.ejalas.complaint_registrations.forward',['id'=> $id]);
     }
 }

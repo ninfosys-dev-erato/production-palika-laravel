@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('complaint_party', function (Blueprint $table) {
+        Schema::create('jms_complaint_party', function (Blueprint $table) {
             $table->id();
             $table->foreignId('complaint_id')->constrained('jms_complaint_registrations')->onDelete('cascade');
             $table->foreignId('party_id')->constrained('jms_parties')->onDelete('cascade');
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('complaint_party');
+        Schema::dropIfExists('jms_complaint_party');
     }
 };
