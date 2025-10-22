@@ -15,11 +15,19 @@ use Src\Ejalas\Service\CourtNoticeAdminService;
 class CourtNoticeTable extends DataTableComponent
 {
     use SessionFlash;
+    public $complaintRegistration;
     protected $model = CourtNotice::class;
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+
+        public function mount( $complaintRegistration) 
+    {
+        $this->complaintRegistration = $complaintRegistration;
+    
+        
+    }
     public function configure(): void
     {
         $this->setPrimaryKey('jms_court_notices.id')
@@ -42,6 +50,9 @@ class CourtNoticeTable extends DataTableComponent
             ->select('*')
             ->where('jms_court_notices.deleted_at', null)
             ->where('jms_court_notices.deleted_by', null)
+                ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->orderBy('jms_court_notices.created_at', 'DESC'); // Select some things
     }
     public function filters(): array
@@ -51,47 +62,26 @@ class CourtNoticeTable extends DataTableComponent
     public function columns(): array
     {
         $columns = [
-
-
+            Column::make(__('ejalas::ejalas.complaint_no'), "complaintRegistration.reg_no")->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.notice_details'))->label(function ($row) {
                 $noticeNo = $row->notice_no ?? "N/A";
-                $noticeDate = $row->notice_date ?? "N/A";
                 $referenceNo = $row->reference_no ?? "N/A";
                 return "
                     <strong>" . (__('ejalas::ejalas.notice_no')) . ":" . "</strong> {$noticeNo} <br>
-                    <strong>" . (__('ejalas::ejalas.notice_date')) . ":" . "</strong> {$noticeDate} <br>
                     <strong>" . (__('ejalas::ejalas.ejalash_referenceno')) . ":" . "</strong> {$referenceNo}
                 ";
             })->html()->sortable()->searchable()->collapseOnTablet(),
 
-            // Column::make(__('ejalas::ejalas.notice_no'), "notice_no")->sortable()->searchable()->collapseOnTablet(),
-            // Column::make(__('ejalas::ejalas.notice_date'), "notice_date")->sortable()->searchable()->collapseOnTablet(),
-            // Column::make(__('ejalas::ejalas.reference_no'), "reference_no")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.complaint_no'), "complaintRegistration.reg_no")->sortable()->searchable()->collapseOnTablet(),
-
-            Column::make(__('ejalas::ejalas.notice_time'), "notice_time")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.complainer'))
-                ->label(
-                    fn($row) => $row->complaintRegistration?->parties
-                        ->filter(fn($party) => $party->pivot->type === 'Complainer')
-                        ->pluck('name')
-                        ->implode(', ') ?: 'N/A'
-                ),
-            Column::make(__('ejalas::ejalas.defender'))
-                ->label(
-                    fn($row) => $row->complaintRegistration?->parties
-                        ->filter(fn($party) => $party->pivot->type === 'Defender')
-                        ->pluck('name')
-                        ->implode(', ') ?: 'N/A'
-                ),
-            Column::make(__('ejalas::ejalas.dispute_area'))->label(function ($row) {
-                return "<div class='text-truncate d-inline-block' style='max-width: 90px;' title='{$row->complaintRegistration?->disputeMatter?->disputeArea?->title}'>
-                                {$row->complaintRegistration?->disputeMatter?->disputeArea?->title}
-                            </div>";
-            })->html()
-                ->sortable()
-                ->searchable()
-                ->collapseOnTablet(),
+                Column::make(__('ejalas::ejalas.notice_time'))->label(function ($row) {
+                    $noticeDate = $row->notice_date ?? "N/A";
+                    $noticeTime = $row->notice_time ?? "N/A";
+             
+                return "
+                <strong>" . (__('ejalas::ejalas.notice_date')) . ":" . "</strong> {$noticeDate} <br>
+                <strong>" . (__('ejalas::ejalas.notice_time')) . ":" . "</strong> {$noticeTime} <br>
+                ";
+            })->html()->sortable()->searchable()->collapseOnTablet(),
+          
             Column::make(__('ejalas::ejalas.dispute_subject'))->label(function ($row) {
                 return "<div class='text-truncate d-inline-block' style='max-width: 100px;' title='{$row->complaintRegistration?->disputeMatter?->title}'>
                                 {$row->complaintRegistration?->disputeMatter?->title}
@@ -115,12 +105,12 @@ class CourtNoticeTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
+                    $delete = '<button type="button" class="btn btn-danger btn-sm me-1" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
                 if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $preview = '<button type="button" class="btn btn-sm table-print-btn" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
 
@@ -139,7 +129,8 @@ class CourtNoticeTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.court_notices.edit', ['id' => $id]);
+        $this->dispatch('edit-courtNotice', courtNotice: $id);
+        // return redirect()->route('admin.ejalas.court_notices.edit', ['id' => $id]);
     }
     public function delete($id)
     {
@@ -149,7 +140,7 @@ class CourtNoticeTable extends DataTableComponent
         }
         $service = new CourtNoticeAdminService();
         $service->delete(CourtNotice::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.court_notice_deleted_successfully'));
+        $this->successToast(__('ejalas::ejalas.court_notice_deleted_successfully'));
     }
     public function deleteSelected()
     {

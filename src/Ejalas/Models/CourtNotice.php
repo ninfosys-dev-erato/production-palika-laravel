@@ -40,7 +40,7 @@ class CourtNotice extends Model
             'reference_no' => 'string',
             'notice_date' => 'string',
             'notice_time' => 'string',
-            'reconciliation_center_id' => PlaceOfRegistration::class,
+            'reconciliation_center_id' =>'string',
             'id' => 'int',
             'created_at' => 'datetime',
             'created_by' => 'string',

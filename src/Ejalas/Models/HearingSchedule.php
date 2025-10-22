@@ -40,7 +40,7 @@ class HearingSchedule extends Model
             'hearing_date' => 'string',
             'hearing_time' => 'string',
             'reference_no' => 'string',
-            'reconciliation_center_id' => PlaceOfRegistration::class,
+            'reconciliation_center_id' => 'string',
             'id' => 'int',
             'created_at' => 'datetime',
             'created_by' => 'string',

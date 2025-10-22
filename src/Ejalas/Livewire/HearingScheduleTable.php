@@ -22,6 +22,7 @@ class HearingScheduleTable extends DataTableComponent
     public $startDate = null;
     public $endDate = null;
     public $selectedReconciliationCenter;
+    public $complaintRegistration;
 
     protected $listeners = ['getSearchDate' => 'getSearchDate'];
 
@@ -45,8 +46,9 @@ class HearingScheduleTable extends DataTableComponent
                 'delete',
             ]);
     }
-    public function mount($report = false, $from = null)  // Default to false if not passed
+    public function mount($complaintRegistration, $report = false, $from = null)  // Default to false if not passed
     {
+        $this->complaintRegistration = $complaintRegistration;
         $this->report = $report;
         $this->from = $from;
     }
@@ -65,6 +67,9 @@ class HearingScheduleTable extends DataTableComponent
             ->where('jms_hearing_schedules.deleted_at', null)
             ->where('jms_hearing_schedules.deleted_by', null)
             ->orderBy('jms_hearing_schedules.created_at', 'DESC')
+              ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->when($this->report, function ($query) {
                 $query->whereBetween('hearing_date', [$this->startDate, $this->endDate])
                     ->when($this->selectedReconciliationCenter, function ($query) {
@@ -90,7 +95,7 @@ class HearingScheduleTable extends DataTableComponent
             })->html()->sortable()->searchable()->collapseOnTablet(),
             Column::make(__('ejalas::ejalas.hearing_schedule'))->label(function ($row) {
                 // $hearingDate = $row->hearing_date ?? "N/A";
-                $hearingDate = $row->hearing_date ? replaceNumbers($this->adToBs($row->hearing_date), true) : "N/A";
+                $hearingDate = $row->hearing_date ?? "N/A";
                 $hearingTime = $row->hearing_time ?? "N/A";
 
                 return "
@@ -100,20 +105,6 @@ class HearingScheduleTable extends DataTableComponent
             })->html()->sortable()->searchable()->collapseOnTablet(),
 
             Column::make(__('ejalas::ejalas.complaint_no'), "complaintRegistration.reg_no")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.defender'))
-                ->label(
-                    fn($row) => $row->complaintRegistration?->parties
-                        ->filter(fn($party) => $party->pivot->type === 'Defender')
-                        ->pluck('name')
-                        ->implode(', ') ?: 'N/A'
-                ),
-            Column::make(__('ejalas::ejalas.complainer'))
-                ->label(
-                    fn($row) => $row->complaintRegistration?->parties
-                        ->filter(fn($party) => $party->pivot->type === 'Complainer')
-                        ->pluck('name')
-                        ->implode(', ') ?: 'N/A'
-                ),
 
             Column::make(__('ejalas::ejalas.subject'))->label(function ($row) {
                 return "<div class='text-truncate d-inline-block' style='max-width: 100px;' title='{$row->complaintRegistration->disputeMatter->title}'>
@@ -135,12 +126,12 @@ class HearingScheduleTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
+                    $delete = '<button type="button" class="btn btn-danger btn-sm me-1" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
                 if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $preview = '<button type="button" class="btn table-print-btn btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
 
@@ -160,7 +151,9 @@ class HearingScheduleTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.hearing_schedules.edit', ['id' => $id, 'from' => $this->from]);
+        $this->dispatch('edit-hearingSchedule', hearingSchedule: $id);
+
+        // return redirect()->route('admin.ejalas.hearing_schedules.edit', ['id' => $id, 'from' => $this->from]);
     }
     public function delete($id)
     {
@@ -170,7 +163,7 @@ class HearingScheduleTable extends DataTableComponent
         }
         $service = new HearingScheduleAdminService();
         $service->delete(HearingSchedule::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.hearing_schedule_deleted_successfully'));
+        $this->successToast(__('ejalas::ejalas.hearing_schedule_deleted_successfully'));
     }
     public function deleteSelected()
     {

@@ -115,8 +115,20 @@
              </div>
     </div>
   </div>
-  <div class="tab-pane fade" id="tab3" role="tabpanel">तामेली content here</div>
-  <div class="tab-pane fade" id="tab4" role="tabpanel">मेलमिलाप content here</div>
+  <div class="tab-pane fade" id="tab3" role="tabpanel">
+      <div class="card">
+             <div class="card-body">
+       <livewire:ejalas.court_notice_form :complaintRegistration="$complaintRegistration" />
+             </div>
+            </div>
+  </div>
+  <div class="tab-pane fade" id="tab4" role="tabpanel">
+    <div class="card">
+             <div class="card-body">
+  <livewire:ejalas.hearing_schedule_form :complaintRegistration="$complaintRegistration"/>
+    </div>
+            </div>
+  </div>
   <div class="tab-pane fade" id="tab5" role="tabpanel">वडा मेलमिलाप content here</div>
   <div class="tab-pane fade" id="tab6" role="tabpanel">सम्पत्र content here</div>
   <div class="tab-pane fade" id="tab7" role="tabpanel">अपिल गरेको विवादहरु content here</div>
