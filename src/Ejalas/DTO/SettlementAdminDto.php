@@ -9,6 +9,7 @@ class SettlementAdminDto
     public function __construct(
         public string $complaint_registration_id,
         public string $discussion_date,
+         public string $discussion_date_en,
         public string $settlement_date,
         public ?string $present_members,
         public ?string $reconciliation_center_id,
@@ -21,6 +22,7 @@ class SettlementAdminDto
         return new self(
             complaint_registration_id: $settlement->complaint_registration_id,
             discussion_date: $settlement->discussion_date,
+            discussion_date_en: $settlement->discussion_date_en,
             settlement_date: $settlement->settlement_date,
             present_members: $settlement->present_members,
             settlement_details: $settlement->settlement_details,

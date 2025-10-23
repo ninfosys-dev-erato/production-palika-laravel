@@ -10,59 +10,62 @@ use Src\Ejalas\Models\SettlementDetail;
 
 class FulfilledConditionAdminService
 {
-    public function store(FulfilledConditionAdminDto $fulfilledConditionAdminDto)
+    public function store(FulfilledConditionAdminDto $dto): FulfilledCondition
     {
-        try {
-            DB::beginTransaction();
+        return DB::transaction(function () use ($dto) {
             $fulfilledCondition = FulfilledCondition::create([
-                'complaint_registration_id' => $fulfilledConditionAdminDto->complaint_registration_id,
-                'fulfilling_party' => $fulfilledConditionAdminDto->fulfilling_party,
-                'condition' => $fulfilledConditionAdminDto->condition,
-                'completion_details' => $fulfilledConditionAdminDto->completion_details,
-                'completion_proof' => $fulfilledConditionAdminDto->completion_proof,
-                'due_date' => $fulfilledConditionAdminDto->due_date,
-                'completion_date' => $fulfilledConditionAdminDto->completion_date,
-                'entered_by' => $fulfilledConditionAdminDto->entered_by,
-                'entry_date' => $fulfilledConditionAdminDto->entry_date,
+                'complaint_registration_id' => $dto->complaint_registration_id,
+                'fulfilling_party' => $dto->fulfilling_party,
+                'condition' => $dto->condition,
+                'completion_details' => $dto->completion_details,
+                'completion_proof' => $dto->completion_proof,
+                'due_date' => $dto->due_date,
+                'completion_date' => $dto->completion_date,
+                'entered_by' => $dto->entered_by,
+                'entry_date' => $dto->entry_date,
+                'entry_date_en' => $dto->entry_date_en,
                 'created_at' => now(),
                 'created_by' => Auth::id(),
             ]);
-            SettlementDetail::where('id', $fulfilledConditionAdminDto->condition)
-                ->update(['is_settled' => true]);
-            DB::commit();
-            return $fulfilledCondition;
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return false;
-        }
-    }
-    public function update(FulfilledCondition $fulfilledCondition, FulfilledConditionAdminDto $fulfilledConditionAdminDto)
-    {
 
-        return DB::transaction(function () use ($fulfilledCondition, $fulfilledConditionAdminDto) {
-            $oldConditionId = FulfilledCondition::find($fulfilledCondition->id)->condition; //gets previous condition Id 
-            tap($fulfilledCondition)->update([
-                'complaint_registration_id' => $fulfilledConditionAdminDto->complaint_registration_id,
-                'fulfilling_party' => $fulfilledConditionAdminDto->fulfilling_party,
-                'condition' => $fulfilledConditionAdminDto->condition,
-                'completion_details' => $fulfilledConditionAdminDto->completion_details,
-                'completion_proof' => $fulfilledConditionAdminDto->completion_proof,
-                'due_date' => $fulfilledConditionAdminDto->due_date,
-                'completion_date' => $fulfilledConditionAdminDto->completion_date,
-                'entered_by' => $fulfilledConditionAdminDto->entered_by,
-                'entry_date' => $fulfilledConditionAdminDto->entry_date,
-                'updated_at' => date('Y-m-d H:i:s'),
-                'updated_by' => Auth::user()->id,
-            ]);
-            if ($oldConditionId !== $fulfilledConditionAdminDto->condition) { //checks if condition id is changed or not
-                SettlementDetail::where('id', $oldConditionId)
-                    ->update(['is_settled' => false]);               //updates previous condition settled status to false
-                SettlementDetail::where('id', $fulfilledConditionAdminDto->condition)
-                    ->update(['is_settled' => true]);
-            }
+            SettlementDetail::where('id', $dto->condition)
+                ->update(['is_settled' => true]);
+
             return $fulfilledCondition;
         });
     }
+
+    public function update(FulfilledCondition $fulfilledCondition, FulfilledConditionAdminDto $dto): FulfilledCondition
+    {
+        return DB::transaction(function () use ($fulfilledCondition, $dto) {
+            $oldConditionId = FulfilledCondition::find($fulfilledCondition->id)->condition;
+
+    
+       
+            $fulfilledCondition->update([
+                'complaint_registration_id' => $dto->complaint_registration_id,
+                'fulfilling_party' => $dto->fulfilling_party,
+                'condition' => $dto->condition,
+                'completion_details' => $dto->completion_details,
+                'completion_proof' => $dto->completion_proof,
+                'due_date' => $dto->due_date,
+                'completion_date' => $dto->completion_date,
+                'entered_by' => $dto->entered_by,
+                'entry_date' => $dto->entry_date,
+                'entry_date_en' => $dto->entry_date_en,
+                'updated_at' => now(),
+                'updated_by' => Auth::id(),
+            ]);
+
+            if ($oldConditionId != $dto->condition) {
+                SettlementDetail::where('id', $oldConditionId)->update(['is_settled' => false]);
+                SettlementDetail::where('id', $dto->condition)->update(['is_settled' => true]);
+            }
+
+            return $fulfilledCondition;
+        });
+    }
+
     public function delete(FulfilledCondition $fulfilledCondition)
     {
         return tap($fulfilledCondition)->update([

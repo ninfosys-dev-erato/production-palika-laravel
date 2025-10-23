@@ -16,6 +16,7 @@ class Settlement extends Model
     protected $fillable = [
         'complaint_registration_id',
         'discussion_date',
+        'discussion_date_en',
         'settlement_date',
         'present_members',
         'settlement_details',
@@ -35,6 +36,7 @@ class Settlement extends Model
         return [
             'complaint_registration_id' => 'string',
             'discussion_date' => 'string',
+               'discussion_date_en' => 'string',
             'settlement_date' => 'string',
             'present_members' => 'string',
             'settlement_details' => 'string',

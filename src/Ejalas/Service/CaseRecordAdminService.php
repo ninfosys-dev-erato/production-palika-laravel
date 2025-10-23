@@ -14,6 +14,7 @@ class CaseRecordAdminService
             'complaint_registration_id' => $caseRecordAdminDto->complaint_registration_id,
             'discussion_date' => $caseRecordAdminDto->discussion_date,
             'decision_date' => $caseRecordAdminDto->decision_date,
+            'decision_date_en' => $caseRecordAdminDto->decision_date_en,
             'decision_authority_id' => $caseRecordAdminDto->decision_authority_id,
             'recording_officer_name' => $caseRecordAdminDto->recording_officer_name,
             'recording_officer_position' => $caseRecordAdminDto->recording_officer_position,
@@ -28,6 +29,8 @@ class CaseRecordAdminService
             'complaint_registration_id' => $caseRecordAdminDto->complaint_registration_id,
             'discussion_date' => $caseRecordAdminDto->discussion_date,
             'decision_date' => $caseRecordAdminDto->decision_date,
+                        'decision_date_en' => $caseRecordAdminDto->decision_date_en,
+
             'decision_authority_id' => $caseRecordAdminDto->decision_authority_id,
             'recording_officer_name' => $caseRecordAdminDto->recording_officer_name,
             'recording_officer_position' => $caseRecordAdminDto->recording_officer_position,

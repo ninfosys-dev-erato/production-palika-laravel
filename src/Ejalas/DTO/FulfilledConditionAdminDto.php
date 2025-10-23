@@ -15,7 +15,8 @@ class FulfilledConditionAdminDto
         public string $due_date,
         public string $completion_date,
         public string $entered_by,
-        public string $entry_date
+        public string $entry_date,
+        public string $entry_date_en
     ){}
 
 public static function fromLiveWireModel(FulfilledCondition $fulfilledCondition):FulfilledConditionAdminDto{
@@ -28,7 +29,8 @@ public static function fromLiveWireModel(FulfilledCondition $fulfilledCondition)
         due_date: $fulfilledCondition->due_date,
         completion_date: $fulfilledCondition->completion_date,
         entered_by: $fulfilledCondition->entered_by,
-        entry_date: $fulfilledCondition->entry_date
+        entry_date: $fulfilledCondition->entry_date,
+        entry_date_en: $fulfilledCondition->entry_date_en,
     );
 }
 }

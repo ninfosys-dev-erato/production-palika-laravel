@@ -21,6 +21,11 @@ class SettlementDetailTable extends DataTableComponent
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+    public $complaintRegistration;
+
+    public function mount($complaintRegistration){
+        $this->complaintRegistration = $complaintRegistration;
+    }
 
     public function configure(): void
     {
@@ -45,6 +50,9 @@ class SettlementDetailTable extends DataTableComponent
             ->with(['party'])
             ->whereNull('jms_settlement_details.deleted_at')
             ->whereNull('jms_settlement_details.deleted_by')
+                  ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->orderBy('jms_settlement_details.created_at', 'DESC');
     }
 
@@ -108,7 +116,8 @@ class SettlementDetailTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.settlement_details.edit', ['id' => $id]);
+        $this->dispatch('editSettlementDetailForm',settlementDetail:$id);
+        // return redirect()->route('admin.ejalas.settlement_details.edit', ['id' => $id]);
     }
 
     public function delete($id)
@@ -119,7 +128,7 @@ class SettlementDetailTable extends DataTableComponent
         }
         $service = new SettlementDetailAdminService();
         $service->delete(SettlementDetail::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.settlement_detail_deleted_successfully'));
+        $this->successToast(__('ejalas::ejalas.settlement_detail_deleted_successfully'));
     }
 
     public function deleteSelected()

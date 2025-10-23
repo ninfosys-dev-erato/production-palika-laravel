@@ -20,14 +20,15 @@ class CaseRecordForm extends Component
     use SessionFlash, HelperDate;
 
     public ?CaseRecord $caseRecord;
-    public ?Action $action;
-    public $complainRegistrations;
+    public ?Action $action = Action::CREATE;
+    public $complaintRegistration;
     public $judicialMembers;
-    public $complaintData = [];
-
-    public $complainers = [];
-    public $defenders = [];
     public $judicialEmployees;
+        public $showCaseRecordForm = false;
+           public bool $canCaseRecord = true;
+        
+               protected $listeners = ['edit-caseRecordForm' => 'editCaseRecordForm','caseRecordDeleted'=>'caseRecordDeleted'];
+
 
     public function rules(): array
     {
@@ -47,64 +48,26 @@ class CaseRecordForm extends Component
         return view("Ejalas::livewire.case-record.form");
     }
 
-    public function mount(CaseRecord $caseRecord, Action $action)
+    public function mount($complaintRegistration, CaseRecord $caseRecord)
     {
-        $this->caseRecord = $caseRecord;
-        $this->action = $action;
-
-        $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')->where('status', true)->with('parties')
-            ->get()
-            ->mapWithKeys(function ($complaint) {
-                $partyNames = $complaint->parties->pluck('name')->implode(', '); // Get all party names as a string
-                return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-            });
-        if ($this->caseRecord->complaint_registration_id) {
-            $this->getComplaintRegistration();
-            $this->caseRecord->decision_date = replaceNumbers($this->adToBs($this->caseRecord->decision_date), true);
-        }
-
+        $this->complaintRegistration = $complaintRegistration;
+        $this->caseRecord = $caseRecord ?? $this->getDefaultCaseRecord();
+        
         $this->judicialMembers = JudicialMember::where('status', true)->pluck('title', 'id');
         $this->judicialEmployees = JudicialEmployee::whereNull('deleted_at')->pluck('name', 'id');
-    }
-    public function getComplaintRegistration()
-    {
-        $complaintRegistrationId = $this->caseRecord['complaint_registration_id'];
-        $this->complaintData = ComplaintRegistration::with([
-            'fiscalYear',
-            'priority',
-            'disputeMatter',
-            'parties'
-        ])->find($complaintRegistrationId)?->toArray() ?? [];
-
-        if (!empty($this->complaintData)) {
-            // Access parties through the relationship
-            $parties = collect($this->complaintData['parties'] ?? []);
-
-            // Separate complainers and defenders using pivot data
-            $this->complainers = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Complainer';
-            })->pluck('name')->toArray();
-
-            $this->defenders = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Defender';
-            })->pluck('name')->toArray();
-        } else {
-            $this->complainers = [];
-            $this->defenders = [];
-        }
+             $exists = CaseRecord::whereNull('deleted_at')->where('complaint_registration_id', $complaintRegistration->id)->exists();
+    $this->canCaseRecord = !$exists;
     }
 
-    public function getJudicialEmployeePosition()
+       public function toggleCaseRecordForm()
     {
-        $judicialEmployee = JudicialEmployee::with('designation')
-            ->where('id', $this->caseRecord['recording_officer_name'])
-            ->first();
+        $this->showCaseRecordForm = !$this->showCaseRecordForm;
 
-        if ($judicialEmployee && $judicialEmployee->designation) {
-            $this->caseRecord['recording_officer_position'] = $judicialEmployee->designation->title;
-        } else {
-            $this->caseRecord['recording_officer_position'] = null;
+        if ($this->showCaseRecordForm) {
+            $this->resetForm();
         }
+
+        $this->dispatch('init-registration-date');
     }
 
 
@@ -113,27 +76,73 @@ class CaseRecordForm extends Component
         $this->validate();
         try {
             $englishDate = $this->bsToAd($this->caseRecord['decision_date']);
-            $this->caseRecord['decision_date'] = $englishDate;
+            $this->caseRecord['decision_date_en'] = $englishDate;
             $dto = CaseRecordAdminDto::fromLiveWireModel($this->caseRecord);
             $service = new CaseRecordAdminService();
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.case_record_created_successfully'));
-                    return redirect()->route('admin.ejalas.case_records.index');
+                         $this->canCaseRecord = false;
+                    $this->successToast(__('ejalas::ejalas.case_record_created_successfully'));
                     break;
                 case Action::UPDATE:
                     $service->update($this->caseRecord, $dto);
-                    $this->successFlash(__('ejalas::ejalas.case_record_updated_successfully'));
-                    return redirect()->route('admin.ejalas.case_records.index');
+                    $this->successToast(__('ejalas::ejalas.case_record_updated_successfully'));
                     break;
                 default:
-                    return redirect()->route('admin.ejalas.case_records.index');
                     break;
             }
+                 $this->showCaseRecordForm = false;
+        $this->resetForm(); // reset for next creation
         } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.')), $e->getMessage());
         }
     }
+
+        public function editCaseRecordForm(CaseRecord $caseRecord)
+    {
+        $this->caseRecord = $caseRecord;
+        $this->action = Action::UPDATE;
+        $this->showCaseRecordForm = true;
+        $this->dispatch('init-registration-date');
+    }
+
+    protected function resetForm()
+    {
+        $this->caseRecord = $this->getDefaultCaseRecord();
+        $this->action = Action::CREATE;
+    }
+
+ 
+    protected function getDefaultCaseRecord(): CaseRecord
+    {
+
+
+        $caseRecord = new CaseRecord();
+        $caseRecord->complaint_registration_id = $this->complaintRegistration->id;
+    
+
+        return $caseRecord;
+    }
+       public function caseRecordDeleted(){
+            $this->canCaseRecord = true;
+    }
+
+   
+
+
+    public function getJudicialEmployeePosition()
+    {
+        $judicialEmployee = JudicialEmployee::with('designation')
+            ->where('id', $this->caseRecord['recording_officer_name'])
+            ->first();
+            if ($judicialEmployee && $judicialEmployee->designation) {
+            $this->caseRecord['recording_officer_position'] = $judicialEmployee->designation->title;
+        } else {
+            $this->caseRecord['recording_officer_position'] = null;
+        }
+
+    }
+
 }

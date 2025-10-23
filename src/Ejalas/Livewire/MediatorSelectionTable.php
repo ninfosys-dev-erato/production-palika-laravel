@@ -16,7 +16,8 @@ class MediatorSelectionTable extends DataTableComponent
 {
     use SessionFlash;
     protected $model = MediatorSelection::class;
-    public $from;
+    public $complaintRegistration;
+ 
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
@@ -36,9 +37,9 @@ class MediatorSelectionTable extends DataTableComponent
                 'delete',
             ]);
     }
-    public function mount($from = null)  // Default to false if not passed
+    public function mount($complaintRegistration)  // Default to false if not passed
     {
-        $this->from = $from;
+        $this->complaintRegistration = $complaintRegistration;
     }
     public function builder(): Builder
     {
@@ -46,6 +47,9 @@ class MediatorSelectionTable extends DataTableComponent
             ->with(['complaintRegistration', 'mediator'])
             ->where('jms_mediator_selections.deleted_at', null)
             ->where('jms_mediator_selections.deleted_by', null)
+              ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->orderBy('jms_mediator_selections.created_at', 'DESC'); // Select some things
     }
     public function filters(): array
@@ -77,7 +81,7 @@ class MediatorSelectionTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $preview = '<button type="button" class="btn table-print-btn btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
 
@@ -97,7 +101,8 @@ class MediatorSelectionTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.mediator_selections.edit', ['id' => $id, 'from' => $this->from,]);
+             $this->dispatch('edit-mediatorSelectionForm', mediatorSelection: $id);
+        // return redirect()->route('admin.ejalas.mediator_selections.edit', ['id' => $id, 'from' => $this->from,]);
     }
     public function delete($id)
     {
@@ -107,7 +112,8 @@ class MediatorSelectionTable extends DataTableComponent
         }
         $service = new MediatorSelectionAdminService();
         $service->delete(MediatorSelection::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.mediator_selection_deleted_successfully'));
+               $this->dispatch('selectedMediatorDeleted');
+        $this->successToast(__('ejalas::ejalas.mediator_selection_deleted_successfully'));
     }
     public function deleteSelected()
     {

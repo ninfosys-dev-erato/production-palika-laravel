@@ -702,6 +702,8 @@ return [
     'template_reset_successfully' => 'टेम्पलेट सफलतापूर्वक रीसेट गरियो',
     'please_save_changes_before_printing' => 'कृपया प्रिन्ट गर्नु अघि परिवर्तनहरू बचत गर्नुहोस्',
     'form_type' => 'फारम प्रकार',
-    'dispute_registration_court_details' => 'विवाद दर्ता विवरण'
+    'dispute_registration_court_details' => 'विवाद दर्ता विवरण',
+    'settlement_saved_successfully' => 'सम्झौता सफलतापूर्वक सुरक्षित गरियो',
+    'no_data_available' => 'कुनै डाटा उपलब्ध छैन',
 
 ];

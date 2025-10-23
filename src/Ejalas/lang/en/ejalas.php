@@ -704,7 +704,9 @@ return [
     'template_reset_successfully' => 'Template reset successfully',
     'please_save_changes_before_printing' => 'Please save changes before printing',
     'form_type' => 'Form Type',
-    'dispute_registration_court_details' => 'Dispute Registraiton Detail'
+    'dispute_registration_court_details' => 'Dispute Registraiton Detail',
+    'settlement_saved_successfully' => 'Settlement Saved Successfully',
+    'no_data_available' => 'No Data Available',
  
 
 ];

@@ -23,9 +23,11 @@ class SettlementTable extends DataTableComponent
     public $endDate = null;
     public $settledStatus;
     public $from;
+    public $complaintRegistration;
 
-    public function mount($report = false, $from = null)  // Default to false if not passed
+    public function mount($complaintRegistration, $report = false, $from = null)  // Default to false if not passed
     {
+        $this->complaintRegistration = $complaintRegistration;
         $this->report = $report;
         $this->from = $from;
     }
@@ -62,6 +64,9 @@ class SettlementTable extends DataTableComponent
             ->whereNull('jms_settlements.deleted_at')
             ->whereNull('jms_settlements.deleted_by')
             ->orderBy('jms_settlements.created_at', 'DESC')
+                    ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->when($this->report, function ($query) {
                 return $query->where('is_settled', $this->settledStatus)
                     ->whereBetween('discussion_date', [$this->startDate, $this->endDate]);
@@ -78,7 +83,7 @@ class SettlementTable extends DataTableComponent
 
             Column::make(__('ejalas::ejalas.date'))->label(function ($row) {
                 return "<strong>" . (__('ejalas::ejalas.discussion_date')) . ":" . "</strong> " .
-                    ($row->discussion_date ? replaceNumbers($this->adToBs($row->discussion_date), true) : "N/A") .
+                    ($row->discussion_date ??  "N/A") .
                     "<br><strong>" . (__('ejalas::ejalas.settlement_date')) . ":" . "</strong> " .
                     ($row->settlement_date);
             })->html()
@@ -106,12 +111,12 @@ class SettlementTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
+                    $delete = '<button type="button" class="btn btn-danger btn-sm me-1" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
                 if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $preview = '<button type="button" class="btn table-print-btn  btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
 
@@ -130,7 +135,8 @@ class SettlementTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.settlements.edit', ['id' => $id, 'from' => $this->from,]);
+        $this->dispatch('edit-settlementForm', settlement: $id);
+        // return redirect()->route('admin.ejalas.settlements.edit', ['id' => $id, 'from' => $this->from,]);
     }
     public function delete($id)
     {
@@ -140,7 +146,7 @@ class SettlementTable extends DataTableComponent
         }
         $service = new SettlementAdminService();
         $service->delete(Settlement::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.settlement_deleted_successfully'));
+        $this->successToast(__('ejalas::ejalas.settlement_deleted_successfully'));
     }
     public function deleteSelected()
     {

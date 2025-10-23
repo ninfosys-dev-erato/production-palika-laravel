@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('complaint_registration_id')->constrained('jms_complaint_registrations')->cascadeOnDelete();
             $table->string('discussion_date')->nullable(); // छलफल मिति
+                 $table->string('discussion_date_en')->nullable(); // छलफल मिति
             $table->string('submission_decision_date')->nullable(); // अदालत पठाउने निर्णय मिति
             $table->string('decision_authority_id')->nullable()->constraints('jms_judicial_members')->cascadeOnDelete(); // निर्णय गर्ने अधिकारी
             $table->text('template')->nullable();

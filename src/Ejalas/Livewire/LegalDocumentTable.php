@@ -20,6 +20,11 @@ class LegalDocumentTable extends DataTableComponent
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+    public $complaintRegistration;
+       public function mount($complaintRegistration)  // Default to false if not passed
+    {
+        $this->complaintRegistration = $complaintRegistration;
+    }
     public function configure(): void
     {
         $this->setPrimaryKey('jms_legal_documents.id')
@@ -42,6 +47,9 @@ class LegalDocumentTable extends DataTableComponent
             ->with(['party', 'complaintRegistration'])
             ->where('jms_legal_documents.deleted_at', null)
             ->where('jms_legal_documents.deleted_by', null)
+                 ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->orderBy('jms_legal_documents.created_at', 'DESC');
     }
     public function filters(): array
@@ -52,22 +60,18 @@ class LegalDocumentTable extends DataTableComponent
     {
         $columns = [
             Column::make(__('ejalas::ejalas.complaint_no'), "complaintRegistration.reg_no")->sortable()->searchable()->collapseOnTablet(),
-            // Column::make(__('ejalas::ejalas.party_name'), "party.name")->sortable()->searchable()->collapseOnTablet(),
-            // Column::make(__('ejalas::ejalas.document_writer_name'), "document_writer_name")->sortable()->searchable()->collapseOnTablet(),
-            // Column::make(__('ejalas::ejalas.document_date'), "created_at")->sortable()->searchable()->collapseOnTablet(),
-            Column::make(__('ejalas::ejalas.document_date'))->label(function ($row) {
-                $date = $row->created_at
-                    ? replaceNumbers($this->adToBs($row->created_at->format('Y-m-d')), true)
-                    : 'N/A';
-
-                return $date;
+            Column::make(__('ejalas::ejalas.party_name'), "party.name")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ejalas::ejalas.document_writer_name'), "document_writer_name")->sortable()->searchable()->collapseOnTablet(),
+            Column::make(__('ejalas::ejalas.document_date'), "document_date")->sortable()->searchable()->collapseOnTablet(),
+       
+                Column::make(__('ejalas::ejalas.document_details'))->label(function ($row) {
+                return "<div class='text-truncate d-inline-block' style='max-width: 100px;' title='{$row->document_details}'>
+                                {$row->document_details}
+                            </div>";
             })->html()
                 ->sortable()
                 ->searchable()
                 ->collapseOnTablet(),
-
-
-            // Column::make(__('ejalas::ejalas.document_details'), "document_details")->sortable()->searchable()->collapseOnTablet(),
         ];
         if (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print')) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
@@ -79,12 +83,12 @@ class LegalDocumentTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management delete')) {
-                    $delete = '<button type="button" class="btn btn-danger btn-sm" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
+                    $delete = '<button type="button" class="btn btn-danger btn-sm me-1" wire:confirm="Are you sure you want to delete this record?" wire:click="delete(' . $row->id . ')"><i class="bx bx-trash"></i></button>';
                     $buttons .= $delete;
                 }
 
                 if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-primary btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $preview = '<button type="button" class="btn table-print-btn btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
 
@@ -103,7 +107,8 @@ class LegalDocumentTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.legal_documents.edit', ['id' => $id]);
+                     $this->dispatch('edit-legalDocumentForm', legalDocument: $id);
+        // return redirect()->route('admin.ejalas.legal_documents.edit', ['id' => $id]);
     }
     public function delete($id)
     {
@@ -113,7 +118,7 @@ class LegalDocumentTable extends DataTableComponent
         }
         $service = new LegalDocumentAdminService();
         $service->delete(LegalDocument::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.legal_document_deleted_successfully'));
+        $this->successToast(__('ejalas::ejalas.legal_document_deleted_successfully'));
     }
     public function deleteSelected()
     {

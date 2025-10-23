@@ -99,6 +99,11 @@
             <li class="nav-item" role="presentation">
       <button class="nav-link" id="tab8-tab" data-bs-toggle="tab" data-bs-target="#tab11" type="button" role="tab">{{ __('ejalas::ejalas.case_records') }}</button>
     </li>
+        </li>
+            <li class="nav-item" role="presentation">
+      <button class="nav-link" id="tab8-tab" data-bs-toggle="tab" data-bs-target="#tab12" type="button" role="tab">{{ __('ejalas::ejalas.court_submission') }}</button>
+    </li>
+    
   </ul>
 </div>
 
@@ -129,13 +134,62 @@
     </div>
             </div>
   </div>
-  <div class="tab-pane fade" id="tab5" role="tabpanel">वडा मेलमिलाप content here</div>
-  <div class="tab-pane fade" id="tab6" role="tabpanel">सम्पत्र content here</div>
-  <div class="tab-pane fade" id="tab7" role="tabpanel">अपिल गरेको विवादहरु content here</div>
-  <div class="tab-pane fade" id="tab8" role="tabpanel">मुद्धा फिर्ता content here</div>
-  <div class="tab-pane fade" id="tab9" role="tabpanel">मुद्धा फिर्ता content here</div>
-  <div class="tab-pane fade" id="tab10" role="tabpanel">मुद्धा फिर्ता content here</div>
-  <div class="tab-pane fade" id="tab11" role="tabpanel">मुद्धा फिर्ता content here</div>
+  <div class="tab-pane fade" id="tab5" role="tabpanel">
+    <div class="card">
+             <div class="card-body">
+ <livewire:ejalas.written_response_registration_form :complaintRegistration="$complaintRegistration"/>
+             </div>
+            </div>
+  </div>
+  <div class="tab-pane fade" id="tab6" role="tabpanel">
+  <div class="card">
+             <div class="card-body">
+       <livewire:ejalas.mediator_selection_form :complaintRegistration="$complaintRegistration"/>
+             </div>
+            </div>
+  </div>
+  <div class="tab-pane fade" id="tab7" role="tabpanel">
+<div class="card">
+             <div class="card-body">
+        <livewire:ejalas.witnesses_representative_form :complaintRegistration="$complaintRegistration"/>
+             </div>
+            </div>
+  </div>
+  <div class="tab-pane fade" id="tab8" role="tabpanel">
+    <div class="card">
+             <div class="card-body">
+       <livewire:ejalas.legal_document_form  :complaintRegistration="$complaintRegistration"/>
+             </div>
+            </div>
+  </div>
+  <div class="tab-pane fade" id="tab9" role="tabpanel">
+
+   
+             <livewire:ejalas.settlement_form :complaintRegistration="$complaintRegistration"/>
+        
+  </div>
+  <div class="tab-pane fade" id="tab10" role="tabpanel">
+ <div class="card">
+             <div class="card-body">
+     <livewire:ejalas.fulfilled_condition_form :complaintRegistration="$complaintRegistration"/>
+             </div>
+            </div>
+  </div>
+  <div class="tab-pane fade" id="tab11" role="tabpanel">
+    <div class="card">
+             <div class="card-body">
+<livewire:ejalas.case_record_form :complaintRegistration="$complaintRegistration"/>
+             </div>
+            </div>
+  </div>
+   <div class="tab-pane fade" id="tab12" role="tabpanel">
+
+        <div class="card">
+             <div class="card-body">
+   <livewire:ejalas.court_submission_form :complaintRegistration="$complaintRegistration"/>
+             </div>
+            </div>
+   </div>
 </div>
 
 

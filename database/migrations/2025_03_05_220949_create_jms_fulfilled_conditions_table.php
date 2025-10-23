@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('completion_date')->nullable(); // शर्त पुरा गरेको मिति
             $table->foreignId('entered_by')->constrained('jms_judicial_employees')->cascadeOnDelete(); // प्रविष्टी गर्ने अधिकारी
             $table->string('entry_date')->nullable(); // प्रविष्टि मिति
+            $table->string('entry_date_en')->nullable(); // प्रविष्टि मिति
             $table->softDeletes();
             $table->timestamps();
         });

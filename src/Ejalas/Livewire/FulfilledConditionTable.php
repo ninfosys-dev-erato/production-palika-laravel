@@ -20,6 +20,7 @@ class FulfilledConditionTable extends DataTableComponent
     public $startDate = null;
     public $endDate = null;
     public $from;
+    public $complaintRegistration;
     protected $listeners = ['getSearchDate' => 'getSearchDate'];
     public array $bulkActions = [
         'exportSelected' => 'Export',
@@ -40,9 +41,9 @@ class FulfilledConditionTable extends DataTableComponent
                 'delete',
             ]);
     }
-    public function mount($from = null)
+    public function mount($complaintRegistration)
     {
-        $this->from = $from;
+        $this->complaintRegistration = $complaintRegistration;
     }
     public function builder(): Builder
     {
@@ -52,6 +53,9 @@ class FulfilledConditionTable extends DataTableComponent
             ->where('jms_fulfilled_conditions.deleted_at', null)
             ->where('jms_fulfilled_conditions.deleted_by', null)
             ->orderBy('jms_fulfilled_conditions.created_at', 'DESC')
+              ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->when($this->report, function ($query) {
                 $query->whereBetween('entry_date', [$this->startDate, $this->endDate]);
             });
@@ -122,7 +126,7 @@ class FulfilledConditionTable extends DataTableComponent
 
             Column::make(__('ejalas::ejalas.entry_details'))->label(function ($row) {
                 $enteredBy = $row->judicialEmployee->name ?? 'N/A';
-                $entryDate = $row->entry_date ? replaceNumbers($this->adToBs($row->entry_date), true) : 'N/A';
+                $entryDate = $row->entry_date ??  'N/A';
 
 
                 return "
@@ -167,7 +171,8 @@ class FulfilledConditionTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.fulfilled_conditions.edit', ['id' => $id, 'from' => $this->from]);
+  $this->dispatch('edit-fulFilledConditionForm', fulfilledCondition: $id);
+        // return redirect()->route('admin.ejalas.fulfilled_conditions.edit', ['id' => $id, 'from' => $this->from]);
     }
     public function delete($id)
     {
@@ -177,7 +182,7 @@ class FulfilledConditionTable extends DataTableComponent
         }
         $service = new FulfilledConditionAdminService();
         $service->delete(FulfilledCondition::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.fulfilled_condition_deleted_successfully'));
+        $this->successToast(__('ejalas::ejalas.fulfilled_condition_deleted_successfully'));
     }
     public function deleteSelected()
     {

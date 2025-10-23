@@ -21,6 +21,10 @@ class WrittenResponseRegistrationTable extends DataTableComponent
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+    public $complaintRegistration;
+    public function mount($complaintRegistration){
+$this->complaintRegistration = $complaintRegistration;
+    }
     public function configure(): void
     {
         $this->setPrimaryKey('jms_written_response_registrations.id')
@@ -43,6 +47,9 @@ class WrittenResponseRegistrationTable extends DataTableComponent
             ->with('complaintRegistration')
             ->where('jms_written_response_registrations.deleted_at', null)
             ->where('jms_written_response_registrations.deleted_by', null)
+                       ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->orderBy('jms_written_response_registrations.created_at', 'DESC'); // Select some things
     }
     public function filters(): array
@@ -97,7 +104,7 @@ class WrittenResponseRegistrationTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $preview = '<button type="button" class="btn table-print-btn btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
 
@@ -117,7 +124,9 @@ class WrittenResponseRegistrationTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.written_response_registrations.edit', ['id' => $id]);
+                $this->dispatch('edit-responseForm', writtenResponseRegistration: $id);
+
+        // return redirect()->route('admin.ejalas.written_response_registrations.edit', ['id' => $id]);
     }
     public function delete($id)
     {
@@ -127,7 +136,8 @@ class WrittenResponseRegistrationTable extends DataTableComponent
         }
         $service = new WrittenResponseRegistrationAdminService();
         $service->delete(WrittenResponseRegistration::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.written_response_registration_deleted_successfully'));
+         $this->dispatch('responseDeleted');
+        $this->successToast(__('ejalas::ejalas.written_response_registration_deleted_successfully'));
     }
     public function deleteSelected()
     {

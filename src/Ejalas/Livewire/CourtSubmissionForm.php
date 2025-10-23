@@ -16,15 +16,17 @@ use Src\Ejalas\Models\JudicialMember;
 class CourtSubmissionForm extends Component
 {
     use SessionFlash, HelperDate;
+    protected $listeners = ['edit-courtSubmissionForm' => 'editCourtSubmissionForm', 'courtSubmissionFormDeleted' => 'courtSubmissionFormDeleted'];
+
 
     public ?CourtSubmission $courtSubmission;
-    public ?Action $action;
-    public $complainRegistrations;
-    public $complaintData = [];
-
-    public $complainers = [];
-    public $defenders = [];
+    public ?Action $action = Action::CREATE;
+    public $complaintRegistration;
     public $judicialMembers;
+
+    public bool $canAddCourtSubmission = true;
+
+    public $showCourtSubmissionForm = false;
     public function rules(): array
     {
         return [
@@ -40,76 +42,83 @@ class CourtSubmissionForm extends Component
         return view("Ejalas::livewire.court-submission.form");
     }
 
-    public function mount(CourtSubmission $courtSubmission, Action $action)
+    public function mount($complaintRegistration, CourtSubmission $courtSubmission)
     {
+        $this->complaintRegistration = $complaintRegistration ?? $this->getDefaultCourtSubmission();
         $this->courtSubmission = $courtSubmission;
-        $this->action = $action;
-        $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')->where('status', true)->with('parties')
-            ->get()
-            ->mapWithKeys(function ($complaint) {
-                $partyNames = $complaint->parties->pluck('name')->implode(', '); // Get all party names as a string
-                return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-            });
-        if ($this->courtSubmission->complaint_registration_id) {
-            $this->getComplaintRegistration();
-            $this->courtSubmission->discussion_date = replaceNumbers($this->adToBs($this->courtSubmission->discussion_date), true);
-        }
+        $exists = CourtSubmission::whereNull('deleted_at')->where('complaint_registration_id', $complaintRegistration->id)->exists();
+        $this->canAddCourtSubmission = !$exists;
         $this->judicialMembers = JudicialMember::where('status', true)->pluck('title', 'id');
     }
-    public function getComplaintRegistration()
+
+    public function toggleCourtSubmissionForm()
     {
-        $complaintRegistrationId = $this->courtSubmission['complaint_registration_id'];
-        $this->complaintData = ComplaintRegistration::with([
-            'fiscalYear',
-            'priority',
-            'disputeMatter',
-            'parties'
-        ])->find($complaintRegistrationId)?->toArray() ?? [];
+        $this->showCourtSubmissionForm = !$this->showCourtSubmissionForm;
 
-        if (!empty($this->complaintData)) {
-            // Access parties through the relationship
-            $parties = collect($this->complaintData['parties'] ?? []);
-
-            // Separate complainers and defenders using pivot data
-            $this->complainers = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Complainer';
-            })->pluck('name')->toArray();
-
-            $this->defenders = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Defender';
-            })->pluck('name')->toArray();
-        } else {
-            $this->complainers = [];
-            $this->defenders = [];
+        if ($this->showCourtSubmissionForm) {
+            $this->resetForm();
         }
+
+        $this->dispatch('init-registration-date');
     }
+
 
     public function save()
     {
         $this->validate();
         try {
             $englishDate = $this->bsToAd($this->courtSubmission['discussion_date']);
-            $this->courtSubmission['discussion_date'] = $englishDate;
+            $this->courtSubmission['discussion_date_en'] = $englishDate;
             $dto = CourtSubmissionAdminDto::fromLiveWireModel($this->courtSubmission);
             $service = new CourtSubmissionAdminService();
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.court_submission_created_successfully'));
-                    return redirect()->route('admin.ejalas.court_submissions.index');
+                    $this->canAddCourtSubmission = false;
+                    $this->successToast(__('ejalas::ejalas.court_submission_created_successfully'));
                     break;
                 case Action::UPDATE:
                     $service->update($this->courtSubmission, $dto);
-                    $this->successFlash(__('ejalas::ejalas.court_submission_updated_successfully'));
-                    return redirect()->route('admin.ejalas.court_submissions.index');
+                    $this->successToast(__('ejalas::ejalas.court_submission_updated_successfully'));
                     break;
                 default:
-                    return redirect()->route('admin.ejalas.court_submissions.index');
                     break;
             }
+            $this->showCourtSubmissionForm = false;
+            $this->resetForm(); // reset for next creation
         } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
+    }
+    public function editCourtSubmissionForm(CourtSubmission $courtSubmission)
+    {
+        $this->courtSubmission = $courtSubmission;
+        $this->action = Action::UPDATE;
+        $this->showCourtSubmissionForm = true;
+        $this->dispatch('init-registration-date');
+    }
+
+
+    protected function resetForm()
+    {
+        $this->courtSubmission = $this->getDefaultCourtSubmission();
+        $this->action = Action::CREATE;
+    }
+
+
+    protected function getDefaultCourtSubmission(): CourtSubmission
+    {
+
+
+        $courtSubmission = new CourtSubmission();
+        $courtSubmission->complaint_registration_id = $this->complaintRegistration->id;
+
+
+        return $courtSubmission;
+    }
+    public function courtSubmissionFormDeleted()
+    {
+        $this->canAddCourtSubmission = true;
     }
 }
