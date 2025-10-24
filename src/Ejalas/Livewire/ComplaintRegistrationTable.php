@@ -22,6 +22,7 @@ use App\Facades\GlobalFacade;
 use App\Facades\PdfFacade;
 use Src\Settings\Traits\AdminSettings;
 use Carbon\Carbon;
+use Src\Ejalas\Enum\ApplicationStatus;
 use Src\Ejalas\Enum\RouteName;
 
 class ComplaintRegistrationTable extends DataTableComponent
@@ -42,7 +43,7 @@ class ComplaintRegistrationTable extends DataTableComponent
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
-    protected $listeners = ['getSearchDate' => 'getSearchDate', 'print-complaint' => 'downloadPdf'];
+    // protected $listeners = ['getSearchDate' => 'getSearchDate', 'print-complaint' => 'downloadPdf'];
     public function configure(): void
     {
         $this->setPrimaryKey('jms_complaint_registrations.id')
@@ -86,46 +87,18 @@ class ComplaintRegistrationTable extends DataTableComponent
             ->with(['fiscalYear', 'priority', 'disputeMatter', 'parties', 'disputeMatter.disputeArea'])
             ->where('jms_complaint_registrations.deleted_at', null)
             ->where('jms_complaint_registrations.deleted_by', null)
-            ->orderBy('jms_complaint_registrations.created_at', 'DESC')
-            ->when($this->from === RouteName::ReconciliationCenter->value, function ($query) {
-
-                $query->whereNotNull('reconciliation_center_id');
-            })
-            ->when($this->report, function ($query) {
-                $query->whereBetween('reg_date', [$this->startDate, $this->endDate]);
-
-                if ($this->status === 'pending') {
-                    $query->whereNull('status');
-                } elseif ($this->status == '0' || $this->status == '1') {
-                    $query->where('status', $this->status);
-                }
-                $query->when($this->ward, function ($query) {
-                    $query->where('ward_no', $this->ward);
-                });
-
-                $query->when($this->disputeMatter, function ($query) {
-                    $query->where('dispute_matter_id', $this->disputeMatter);
-                });
-                $query->when($this->disputeArea, function ($query) {
-                    $query->whereHas('disputeMatter', function ($q) {
-                        $q->where('dispute_area_id', $this->disputeArea);
-                    });
-                });
-                $query->when($this->reconciliationCenter, function ($query) {
-                    $query->where('reconciliation_center_id', $this->reconciliationCenter);
-                });
-            });
+            ->orderBy('jms_complaint_registrations.created_at', 'DESC');
     }
-    public function getSearchDate($startDate, $endDate, $selectedStatus, $selectedDisputeMatter, $selectedDisputeArea, $selectedReconciliationCenter, $selectedWard)
-    {
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
-        $this->status = $selectedStatus;
-        $this->disputeMatter = $selectedDisputeMatter;
-        $this->disputeArea = $selectedDisputeArea;
-        $this->reconciliationCenter = $selectedReconciliationCenter;
-        $this->ward = $selectedWard;
-    }
+    // public function getSearchDate($startDate, $endDate, $selectedStatus, $selectedDisputeMatter, $selectedDisputeArea, $selectedReconciliationCenter, $selectedWard)
+    // {
+    //     $this->startDate = $startDate;
+    //     $this->endDate = $endDate;
+    //     $this->status = $selectedStatus;
+    //     $this->disputeMatter = $selectedDisputeMatter;
+    //     $this->disputeArea = $selectedDisputeArea;
+    //     $this->reconciliationCenter = $selectedReconciliationCenter;
+    //     $this->ward = $selectedWard;
+    // }
 
     public function filters(): array
     {
@@ -139,8 +112,7 @@ class ComplaintRegistrationTable extends DataTableComponent
                     return (string) view('Ejalas::livewire.table.complaint-registration.complaint-registration-time', [
                         'fiscalYearId' => $row->fiscalYear->year ?? 'N/A',
                         'regNo' => $row->reg_no ?? 'N/A',
-                        // 'regDate' => $row->reg_date,
-                        'regDate' => replaceNumbers($this->adToBs($row->reg_date), true),
+                        'regDate' => $row->reg_date,
                     ]);
                 })
                 ->html()
@@ -158,8 +130,8 @@ class ComplaintRegistrationTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.parties'))
                 ->label(function ($row) {
                     // Fetch related parties using the many-to-many relationship
-           $defenders = $row->defenders->pluck('name')->toArray();
-        $complainers = $row->complainers->pluck('name')->toArray();
+                    $defenders = $row->defenders->pluck('name')->toArray();
+                    $complainers = $row->complainers->pluck('name')->toArray();
 
                     return (string) view('Ejalas::livewire.table.complaint-registration.complaint-registration-parties', [
                         'defenders' => $defenders,
@@ -199,22 +171,29 @@ class ComplaintRegistrationTable extends DataTableComponent
                     '</div>')
                 ->html()
                 ->collapseOnTablet(),
-
-
-
             Column::make(__('ejalas::ejalas.status'), "status")
+                ->label(function ($row) {
+                    $status = $row->status instanceof ApplicationStatus
+                        ? $row->status
+                        : ApplicationStatus::from($row->status);
+
+                    // Define colors based on the enum value
+                    $color = match ($status) {
+                        ApplicationStatus::Accepted => 'success',
+                        ApplicationStatus::Rejected => 'danger',
+                        ApplicationStatus::Pending => 'warning',
+                    };
+
+                    $label = $status->label($status);
+
+
+                    return '<span class="badge bg-' . $color . '">' . e($label) . '</span>';
+                })
+                ->html() // enables HTML rendering
                 ->sortable()
                 ->searchable()
-                ->collapseOnTablet()
-                ->label(
-                    fn($row) =>
-                    is_null($row->status)
-                        ? '<span class="badge bg-warning">' . __('ejalas::ejalas.pending') . '</span>'
-                        : ($row->status
-                            ? '<span class="badge bg-success">' . __('ejalas::ejalas.accepted') . '</span>'
-                            : '<span class="badge bg-danger">' . __('ejalas::ejalas.rejected') . '</span>')
-                )
-                ->html()
+                ->collapseOnTablet(),
+
         ];
         if (!$this->report && (can('jms_judicial_management edit') || can('jms_judicial_management delete') || can('jms_judicial_management print'))) {
             $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
@@ -239,7 +218,7 @@ class ComplaintRegistrationTable extends DataTableComponent
             </button>';
                 $buttons .= $forward;
 
-    
+
 
                 if (can('jms_judicial_management print')) {
                     $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
@@ -307,7 +286,8 @@ class ComplaintRegistrationTable extends DataTableComponent
     {
         return redirect()->route('admin.ejalas.complaint_registrations.preview', ['id' => $id]);
     }
-    public function forward($id){
-        return redirect()->route('admin.ejalas.complaint_registrations.forward',['id'=> $id]);
+    public function forward($id)
+    {
+        return redirect()->route('admin.ejalas.complaint_registrations.forward', ['id' => $id]);
     }
 }

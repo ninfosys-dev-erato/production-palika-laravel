@@ -1,27 +1,22 @@
 <div>
-    <nav aria-label="breadcrumb" class="d-flex justify-content-end">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="bx bx-home-alt"></i></a>
-            <li class="breadcrumb-item"><a href="#">{{ __('ejalas::ejalas.hearing_schedule') }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ __('ejalas::ejalas.list') }}</li>
-        </ol>
-    </nav>
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="text-primary mb-0">{{ __('ejalas::ejalas.hearing_schedule_report') }}</h4>
-        <div class="d-flex gap-2 ms-auto">
-            <button type="button" wire:click="export" class="btn btn-outline-primary btn-sm">
-                {{ __('Export') }}
-            </button>
-            <button wire:click='downloadPdf' class="btn btn-outline-primary btn-sm" target="_blank">
-                {{ __('Pdf') }}
-            </button>
-        </div>
-    </div>
+
     <div class="container py-4">
         <div class="card border-0 shadow-sm rounded-3">
-            <div class="divider divider-primary text-start text-primary fw-bold mx-4 mb-0">
-                <div class="divider-text fs-4">{{ __('ejalas::ejalas.search') }}</div>
+
+            <div class="d-flex justify-content-between align-items-center mx-4 mb-0">
+                <div class="divider divider-primary text-start text-primary fw-bold flex-grow-1 mb-0">
+                    <div class="divider-text fs-5">
+                        {{ __('ejalas::ejalas.hearing_schedule_report') }}
+                    </div>
+                </div>
+                <div class="d-flex gap-2 ms-3 mt-3">
+                    {{-- <button type="button" wire:click="export" class="btn btn-outline-primary btn-sm">
+                        {{ __('Export') }}
+                    </button> --}}
+                    <button wire:click="downloadPdf" class="btn btn-outline-primary btn-sm">
+                        {{ __('Pdf') }}
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row g-3 align-items-center">
@@ -94,9 +89,13 @@
 
     <div class="overflow-x-auto mx-auto">
         @if ($hearingSchedules && $hearingSchedules->count())
-            <div class="container mt-4">
-                <div class="card mx-auto shadow">
-                    <table class="table table-border">
+            <div class=" mt-4" id="printReportContent">
+                <div>
+                    {!! $letterHead !!}
+                    <div class="d-flex justify-content-end">
+                        <p>मिति: {{ $nepaliDate }}</p>
+                    </div>
+                    <table class="bordered-table">
                         <thead>
                             <tr>
                                 <th>{{ __('ejalas::ejalas.registration_no') }}</th>
@@ -106,25 +105,28 @@
                                 <th>{{ __('ejalas::ejalas.hearing_date') }}</th>
                                 <th>{{ __('ejalas::ejalas.hearing_time') }}</th>
                                 <th>{{ __('ejalas::ejalas.reconciliation_center') }}</th>
-                                <th>{{ __('ejalas::ejalas.status') }}</th>
+                              
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($hearingSchedules as $hearingSchedule)
-                                <tr class="hover:bg-gray-50">
+                                <tr>
                                     <td>{{ $hearingSchedule->complaintRegistration?->reg_no ?? '' }}</td>
-                                    <td>{{ implode(', ', $hearingSchedule->complainers ?? []) }}
 
+                                    <td>
+                                        {{ $hearingSchedule->complaintRegistration?->complainers->pluck('name')->implode(', ') ?? '' }}
                                     </td>
-                                    <td>{{ implode(', ', $hearingSchedule->defenders ?? []) }}
+
+                                    <td>
+                                        {{ $hearingSchedule->complaintRegistration?->defenders->pluck('name')->implode(', ') ?? '' }}
                                     </td>
+
                                     <td>{{ $hearingSchedule->complaintRegistration?->disputeMatter?->title ?? '' }}
                                     </td>
-                                    <td>{{ $hearingSchedule->hearing_date_bs ?? '' }}</td>
-                                    <td>{{ $hearingSchedule->hearing_time ?? '' }}</td>
+                                    <td>{{ $hearingSchedule->hearing_date ?? '' }}</td>
+                                    <td>{{ replaceNumbers($hearingSchedule->hearing_time, true) ?? '' }}</td>
                                     <td>{{ $hearingSchedule->reconciliationCenter?->title ?? '' }}</td>
-                                    <td>{{ $hearingSchedule->status ? __('ejalas::ejalas.completed') : __('ejalas::ejalas.pending') }}
-                                    </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -148,4 +150,75 @@
             </div>
         @endif
     </div>
+    <style>
+        /* Ensure A4 Size */
+        #printReportContent {
+            padding: 7mm 20mm;
+            background: white;
+            text-align: left;
+            position: relative;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .bordered-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bordered-table th,
+        .bordered-table td {
+            border: 1px solid black;
+            padding: 8px 8px;
+            text-align: left;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('print-report', () => {
+                printDiv();
+            });
+        });
+        async function printDiv() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const element = document.getElementById('printReportContent');
+
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // Add first page
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            // Add more pages only if needed
+            while (heightLeft > 1) {
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            // Trigger browser print dialog
+            pdf.autoPrint();
+            window.open(pdf.output('bloburl'), '_blank');
+        }
+    </script>
 </div>

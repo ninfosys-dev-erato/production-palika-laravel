@@ -56,6 +56,11 @@ class SettlementDetail extends Model
             ->logOnlyDirty()
             ->setDescriptionForEvent(fn(string $eventName) => "This CaseRecord has been {$eventName}");
     }
+    public function complaintRegistration()
+    {
+        
+        return $this->belongsTo(ComplaintRegistration::class, 'complaint_registration_id', 'id');
+    }
     public function party()
     {
         return $this->belongsTo(Party::class, 'party_id', 'id');

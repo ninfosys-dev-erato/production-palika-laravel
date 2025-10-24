@@ -1,27 +1,21 @@
 <div>
-    <nav aria-label="breadcrumb" class="d-flex justify-content-end">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="bx bx-home-alt"></i></a>
-            <li class="breadcrumb-item"><a href="#">{{ __('ejalas::ejalas.settlement') }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ __('ejalas::ejalas.list') }}</li>
-        </ol>
-    </nav>
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="text-primary mb-0">{{ __('ejalas::ejalas.settlement_report') }}</h4>
-        <div class="d-flex gap-2 ms-auto">
-            <button type="button" wire:click="export" class="btn btn-outline-primary btn-sm">
-                {{ __('Export') }}
-            </button>
-            <button wire:click='downloadPdf' class="btn btn-outline-primary btn-sm" target="_blank">
-                {{ __('Pdf') }}
-            </button>
-        </div>
-    </div>
+
     <div class="container py-4">
         <div class="card border-0 shadow-sm rounded-3">
-            <div class="divider divider-primary text-start text-primary fw-bold mx-4 mb-0">
-                <div class="divider-text fs-4">{{ __('ejalas::ejalas.search') }}</div>
+            <div class="d-flex justify-content-between align-items-center mx-4 mb-0">
+                <div class="divider divider-primary text-start text-primary fw-bold flex-grow-1 mb-0">
+                    <div class="divider-text fs-5">
+                        {{ __('ejalas::ejalas.settlement_report') }}
+                    </div>
+                </div>
+                <div class="d-flex gap-2 ms-3 mt-3">
+                    {{-- <button type="button" wire:click="export" class="btn btn-outline-primary btn-sm">
+                        {{ __('Export') }}
+                    </button> --}}
+                    <button wire:click="downloadPdf" class="btn btn-outline-primary btn-sm">
+                        {{ __('Pdf') }}
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row g-3 align-items-center">
@@ -32,6 +26,8 @@
                             <span class="input-group-text bg-primary text-white border-0"><i
                                     class="bx bx-layer"></i></span>
                             <select class="form-select" wire:model="settledStatus">
+
+                                <option value="">{{ __('ejalas::ejalas.select_an_option') }}</option>
                                 <option value="1">{{ __('ejalas::ejalas.settled') }}</option>
                                 <option value="0">{{ __('ejalas::ejalas.unsettled') }}</option>
                             </select>
@@ -92,30 +88,31 @@
 
     <div class="overflow-x-auto mx-auto">
         @if ($settlements && $settlements->count())
-            <div class="container mt-4">
-                <div class="card mx-auto shadow">
-                    <table class="table table-border">
+            <div class=" mt-4" id="printReportContent">
+                <div>
+                    {!! $letterHead !!}
+                    <div class="d-flex justify-content-end">
+                        <p>मिति: {{ $nepaliDate }}</p>
+                    </div>
+                    <table class="bordered-table">
                         <thead>
                             <tr>
                                 <th>{{ __('ejalas::ejalas.registration_no') }}</th>
                                 <th>{{ __('ejalas::ejalas.registration_date') }}</th>
-                                <th>{{ __('ejalas::ejalas.complainer') }}</th>
-                                <th>{{ __('ejalas::ejalas.defender') }}</th>
-                                <th>{{ __('ejalas::ejalas.dispute_matter') }}</th>
-                                <th>{{ __('ejalas::ejalas.settlement_date') }}</th>
-                                <th>{{ __('ejalas::ejalas.settlement_status') }}</th>
+                                <th>{{ __('ejalas::ejalas.party') }}</th>
+                                <th>{{ __('ejalas::ejalas.detail') }}</th>
+                                <th>{{ __('ejalas::ejalas.deadline_set_date') }}</th>
+                                <th>{{ __('ejalas::ejalas.status') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($settlements as $settlement)
                                 <tr class="hover:bg-gray-50">
                                     <td>{{ $settlement->complaintRegistration?->reg_no ?? '' }}</td>
-                                    <td>{{ $settlement->complaintRegistration?->reg_date_bs ?? '' }}</td>
-                                    <td>{{ implode(', ', $settlement->complaintRegistration?->complainers ?? []) }}
-                                    </td>
-                                    <td>{{ implode(', ', $settlement->complaintRegistration?->defenders ?? []) }}</td>
-                                    <td>{{ $settlement->complaintRegistration?->disputeMatter?->title ?? '' }}</td>
-                                    <td>{{ $settlement->settlement_date_bs ?? '' }}</td>
+                                    <td>{{ $settlement->complaintRegistration?->reg_date ?? '' }}</td>
+                                    <td>{{ $settlement->party?->name ?? '' }}</td>
+                                    <td>{{ $settlement->detail ?? '' }}</td>
+                                    <td>{{ $settlement->deadline_set_date ?? '' }}</td>
                                     <td>{{ $settlement->is_settled ? __('ejalas::ejalas.settled') : __('ejalas::ejalas.unsettled') }}
                                     </td>
                                 </tr>
@@ -141,24 +138,75 @@
             </div>
         @endif
     </div>
-</div>
-@script
+    <style>
+        /* Ensure A4 Size */
+        #printReportContent {
+            padding: 7mm 20mm;
+            background: white;
+            text-align: left;
+            position: relative;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .bordered-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bordered-table th,
+        .bordered-table td {
+            border: 1px solid black;
+            padding: 8px 8px;
+            text-align: left;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#startDate').nepaliDatePicker({
-                dateFormat: '%y-%m-%d',
-                closeOnDateSelect: true,
-            }).on('dateSelect', function() {
-                let nepaliDate = $(this).val();
-                @this.set('startDate', nepaliDate);
-            });
-            $('#endDate').nepaliDatePicker({
-                dateFormat: '%y-%m-%d',
-                closeOnDateSelect: true,
-            }).on('dateSelect', function() {
-                let nepaliDate = $(this).val();
-                @this.set('endDate', nepaliDate);
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('print-report', () => {
+                printDiv();
             });
         });
+        async function printDiv() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const element = document.getElementById('printReportContent');
+
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // Add first page
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            // Add more pages only if needed
+            while (heightLeft > 1) {
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            // Trigger browser print dialog
+            pdf.autoPrint();
+            window.open(pdf.output('bloburl'), '_blank');
+        }
     </script>
-@endscript
+</div>

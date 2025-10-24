@@ -2,6 +2,7 @@
 
 namespace Src\Ejalas\Service;
 
+use App\Facades\GlobalFacade;
 use Illuminate\Support\Facades\Auth;
 use Src\Ejalas\DTO\ComplaintRegistrationAdminDto;
 use Src\Ejalas\Models\ComplaintRegistration;

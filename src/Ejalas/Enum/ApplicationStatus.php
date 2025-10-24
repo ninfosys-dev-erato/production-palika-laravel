@@ -16,9 +16,9 @@ enum ApplicationStatus: string
     public static function getLabel(self $value): string
     {
         return match ($value) {
-            self::Accepted => 'स्वीकृत',
-            self::Rejected => 'अस्वीकृत',
-            self::Pending => 'बाँकी',
+            self::Accepted => __('Accepted'),
+            self::Rejected => __('Rejected'),
+            self::Pending => __('Pending'),
         };
     }
 
@@ -30,5 +30,13 @@ enum ApplicationStatus: string
         }
 
         return $valuesWithLabels;
+    }
+    public function color(): string
+    {
+        return match ($this) {
+            self::Accepted => 'success',
+            self::Rejected => 'danger',
+            self::Pending => 'warning',
+        };
     }
 }

@@ -15,6 +15,7 @@ use Src\FiscalYears\Models\FiscalYear;
 use Illuminate\Support\Facades\Log;
 use Src\Ejalas\Models\Party;
 use App\Traits\HelperDate;
+use App\Traits\HelperTemplate;
 use Carbon\Carbon;
 use Src\Ejalas\Models\HearingSchedule;
 use Src\Ejalas\Models\ReconciliationCenter;
@@ -22,12 +23,15 @@ use Src\Ejalas\Service\ReportAdminService;
 
 class HearingScheduleReport extends Component
 {
-    use SessionFlash, HelperDate;
+    use SessionFlash, HelperDate, HelperTemplate;
     public $startDate;
     public $endDate;
     public $reconciliationCenters;
     public $selectedReconciliationCenter;
     public $hearingSchedules = [];
+
+    public  $nepaliDate;
+    public $letterHead;
 
     protected $rules = [
         'startDate' => 'required',
@@ -43,6 +47,9 @@ class HearingScheduleReport extends Component
     public function mount()
     {
         $this->reconciliationCenters = ReconciliationCenter::whereNull('deleted_at')->pluck('reconciliation_center_title', 'id');
+
+        $this->nepaliDate =  $this->convertEnglishToNepali($this->adToBs(now()->format('Y-m-d')));
+        $this->letterHead =  $this->getBusinessLetterHeaderFromSample();
     }
 
     public function searchReport()
@@ -53,29 +60,12 @@ class HearingScheduleReport extends Component
 
         $this->hearingSchedules = HearingSchedule::with(['complaintRegistration', 'fiscalYear', 'reconciliationCenter', 'complaintRegistration.parties', 'complaintRegistration.disputeMatter', 'complaintRegistration.disputeMatter.disputeArea'])
             ->whereNull('deleted_at')
-            ->whereBetween('hearing_date', [$startDate, $endDate])
+            ->whereBetween('hearing_date_en', [$startDate, $endDate])
             ->when($this->selectedReconciliationCenter, function ($query) {
                 $query->where('reconciliation_center_id', $this->selectedReconciliationCenter);
             })
             ->latest()
             ->get();
-
-        foreach ($this->hearingSchedules as $schedule) {
-            $schedule->hearing_date_bs = replaceNumbers(
-                $this->adToBs(Carbon::parse($schedule->hearing_date)->format('Y-m-d')),
-                true
-            );
-
-            $schedule->defenders = $schedule->complaintRegistration->parties
-                ->where('pivot.type', 'Defender')
-                ->pluck('name')
-                ->toArray();
-
-            $schedule->complainers = $schedule->complaintRegistration->parties
-                ->where('pivot.type', 'Complainer')
-                ->pluck('name')
-                ->toArray();
-        }
     }
 
     public function clear()
@@ -83,56 +73,14 @@ class HearingScheduleReport extends Component
         $this->reset(['startDate', 'endDate', 'selectedReconciliationCenter', 'hearingSchedules']);
     }
 
-    public function export()
-    {
-        // Export functionality can be implemented here
-        $this->searchReport();
-        // Add export logic
-    }
+
 
     public function downloadPdf()
     {
-        $startDate = $this->bsToAd($this->startDate);
-        $endDate = $this->bsToAd($this->endDate);
-        $reports = HearingSchedule::with(['complaintRegistration', 'fiscalYear', 'reconciliationCenter', 'complaintRegistration.parties', 'complaintRegistration.disputeMatter', 'complaintRegistration.disputeMatter.disputeArea'])
-            ->whereNull('deleted_at')
-            ->whereBetween('hearing_date', [$startDate, $endDate])
-            ->when($this->selectedReconciliationCenter, function ($query) {
-                $query->where('reconciliation_center_id', $this->selectedReconciliationCenter);
-            })
-            ->latest()
-            ->get();
-        if ($reports->isEmpty()) {
-            $this->errorToast(__('ejalas::ejalas.no_data_found'));
-            return;
+
+        if (!$this->hearingSchedules) {
+            return $this->errorToast('ejalas::ejalas.no_data_found');
         }
-        foreach ($reports as $report) {  //converted english date to nepali
-            $report->hearing_date_bs = replaceNumbers(
-                $this->adToBs(Carbon::parse($report->hearing_date)->format('Y-m-d')),
-                true
-            );
-
-            $report->defenders = $report->complaintRegistration->parties
-                ->where('pivot.type', 'Defender')
-                ->pluck('name')
-                ->toArray();
-
-            $report->complainers = $report->complaintRegistration->parties
-                ->where('pivot.type', 'Complainer')
-                ->pluck('name')
-                ->toArray();
-        }
-
-        $startDateNp = $this->startDate;
-        $endDateNp = $this->endDate;
-
-        $service = new ReportAdminService();
-
-        $commonReportData = $service->commonDataForReport();
-
-        $viewData = array_merge($commonReportData, compact('reports', 'startDateNp', 'endDateNp'));
-        $html = view('Ejalas::livewire.hearing-schedule.pdf', $viewData)->render();
-
-        return $service->getReport($html);
+        $this->dispatch('print-report');
     }
 }

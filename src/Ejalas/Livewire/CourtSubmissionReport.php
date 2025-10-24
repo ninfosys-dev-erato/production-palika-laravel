@@ -16,16 +16,19 @@ use Src\FiscalYears\Models\FiscalYear;
 use Illuminate\Support\Facades\Log;
 use Src\Ejalas\Models\Party;
 use App\Traits\HelperDate;
+use App\Traits\HelperTemplate;
 use Carbon\Carbon;
 use Src\Ejalas\Models\CourtSubmission;
 
 class CourtSubmissionReport extends Component
 {
-    use SessionFlash, HelperDate;
+    use SessionFlash, HelperDate, HelperTemplate;
     public $startDate;
     public $endDate;
     public $courtSubmissions = [];
 
+    public  $nepaliDate;
+    public $letterHead;
     protected $rules = [
         'startDate' => 'required',
         'endDate' => 'required'
@@ -36,7 +39,11 @@ class CourtSubmissionReport extends Component
         return view("Ejalas::livewire.court-submission.report");
     }
 
-    public function mount() {}
+    public function mount()
+    {
+        $this->nepaliDate =  $this->convertEnglishToNepali($this->adToBs(now()->format('Y-m-d')));
+        $this->letterHead =  $this->getBusinessLetterHeaderFromSample();
+    }
 
     public function searchReport()
     {
@@ -46,16 +53,9 @@ class CourtSubmissionReport extends Component
 
         $this->courtSubmissions = CourtSubmission::with(['complaintRegistration', 'judicialMember'])
             ->whereNull('deleted_at')
-            ->whereBetween('discussion_date', [$startDate, $endDate])
+            ->whereBetween('discussion_date_en', [$startDate, $endDate])
             ->latest()
             ->get();
-
-        foreach ($this->courtSubmissions as $submission) {
-            $submission->discussion_date_bs = replaceNumbers(
-                $this->adToBs(Carbon::parse($submission->discussion_date)->format('Y-m-d')),
-                true
-            );
-        }
     }
 
     public function clear()
@@ -72,39 +72,9 @@ class CourtSubmissionReport extends Component
 
     public function downloadPdf()
     {
-        $this->validate();
-        try {
-            $startDate = $this->bsToAd($this->startDate);
-            $endDate = $this->bsToAd($this->endDate);
-            $reports = CourtSubmission::with(['complaintRegistration', 'judicialMember'])
-                ->whereNull('deleted_at')
-                ->whereBetween('discussion_date', [$startDate, $endDate])
-                ->latest()
-                ->get();
-
-            if ($reports->isEmpty()) {
-                $this->errorToast(__('ejalas::ejalas.no_data_found'));
-                return;
-            }
-            foreach ($reports as $report) {  //converted english date to nepali
-                $report->discussion_date_bs = replaceNumbers(
-                    $this->adToBs(Carbon::parse($report->discussion_date)->format('Y-m-d')),
-                    true
-                );
-            }
-            $startDateNp = $this->startDate;
-            $endDateNp = $this->endDate;
-
-            $service = new ReportAdminService();
-            $commonReportData = $service->commonDataForReport();
-
-            $viewData = array_merge($commonReportData, compact('reports', 'startDateNp', 'endDateNp'));
-            $html = view('Ejalas::livewire.court-submission.pdf', $viewData)->render();
-
-            return $service->getReport($html);
-        } catch (\Throwable $e) {
-            logger($e->getMessage());
-            $this->errorFlash((('Something went wrong while saving.')), $e->getMessage());
+        if (!$this->courtSubmissions) {
+            return $this->errorToast('ejalas::ejalas.no_data_found');
         }
+        $this->dispatch('print-report');
     }
 }

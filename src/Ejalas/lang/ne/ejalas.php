@@ -106,6 +106,7 @@ return [
     'hearing_schedule_report' => 'सुनुवाई तालिका रिपोर्ट',
     'fulfilled_condition' => 'शर्त पुरा भएको अभिलेख',
     'create_fulfilled_condition' => 'शर्त पुरा भएको अभिलेख सिर्जना गर्नुहोस्',
+    'fulfilled_condition_report' => 'शर्त पुरा प्रतिवेदन',
     'update_fulfilled_condition' => 'शर्त पुरा भएको अभिलेख अपडेट गर्नुहोस्',
     'fulfilled_condition_list' => 'शर्त पुरा भएको अभिलेख सूची',
     'add_fulfilled_condition' => 'शर्त पुरा भएको अभिलेख थप्नुहोस्',
@@ -361,6 +362,7 @@ return [
     'condition' => 'शर्त',
     'select_a_condition' => 'सर्त चयन गर्नुहोस्',
     'condition_completion_date' => 'शर्त पुरा गरेको मिति',
+    'completion_date' => 'पुरा गरेको मिति',
     'enter_completion_date' => 'सम्पन्न मिति प्रविष्ट गर्नुहोस्',
     'completion_details' => 'पूरा गरिएको व्यहोरा',
     'enter_completion_details' => 'पूरा गरिएको व्यहोरा प्रविष्ट गर्नुहोस्',
@@ -466,6 +468,8 @@ return [
     'witness_representative' => 'साक्षी/वारेस नामाको प्रविष्टी',
     'fulfilled_conditions' => 'शर्त पुरा भएको अभिलेख',
     'case_records' => 'अभिलेख राख्ने',
+    'case_record_report' => 'अभिलेख राख्ने रिपोर्ट',
+    'court_submission_report' => 'अदालतको पेशी रिपोर्ट',
     'report' => 'रिपोर्ट',
     'system_setting' => 'सिस्टम सेटिङ',
     'forms' => 'फारम',
@@ -705,5 +709,7 @@ return [
     'dispute_registration_court_details' => 'विवाद दर्ता विवरण',
     'settlement_saved_successfully' => 'सम्झौता सफलतापूर्वक सुरक्षित गरियो',
     'no_data_available' => 'कुनै डाटा उपलब्ध छैन',
+    'registered_by' => 'दर्ता गर्नेको नाम ',
+
 
 ];

@@ -68,4 +68,8 @@ class HearingSchedule extends Model
     {
         return $this->belongsTo(ComplaintRegistration::class, 'complaint_registration_id', 'id');
     }
+    public function reconciliationCenter()
+    {
+        return $this->belongsTo(ReconciliationCenter::class, 'reconciliation_center_id', 'id');
+    }
 }

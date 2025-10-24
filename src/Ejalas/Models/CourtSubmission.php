@@ -16,7 +16,7 @@ class CourtSubmission extends Model
     protected $fillable = [
         'complaint_registration_id',
         'discussion_date',
-          'discussion_date_en',
+        'discussion_date_en',
         'submission_decision_date',
         'decision_authority_id',
         'created_at',
@@ -33,7 +33,7 @@ class CourtSubmission extends Model
         return [
             'complaint_registration_id' => 'string',
             'discussion_date' => 'string',
-              'discussion_date_en' => 'string',
+            'discussion_date_en' => 'string',
             'submission_decision_date' => 'string',
             'decision_authority_id' => 'string',
             'id' => 'int',

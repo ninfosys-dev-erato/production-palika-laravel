@@ -363,6 +363,8 @@ return [
     'condition' => 'Condition',
     'select_a_condition' => 'Select a condition',
     'condition_completion_date' => 'Condition Completion Date',
+    'completion_date' => 'Completion Date',
+    'case_record_report' => 'Case Record Report',
     'enter_completion_date' => 'Enter Completion Date',
     'completion_details' => 'Completion Details',
     'enter_completion_details' => 'Enter Completion Details',
@@ -452,6 +454,7 @@ return [
     'municipal_approval_date' => 'Municipal Approval Date',
     'enter_municipal_approval_date' => 'Enter Municipal Approval Date',
     'court_submission' => 'Court Submission',
+    'court_submission_report' => 'Court Submission Report',
     'create_court_submission' => 'Create Court Submission',
     'update_court_submission' => 'Update Court Submission',
     'court_submission_list' => 'Court Submission List',
@@ -707,6 +710,8 @@ return [
     'dispute_registration_court_details' => 'Dispute Registraiton Detail',
     'settlement_saved_successfully' => 'Settlement Saved Successfully',
     'no_data_available' => 'No Data Available',
- 
+    'registered_by' => 'Registered By',
+    'fulfilled_condition_report' => 'Fulfilled Condition Report'
+
 
 ];

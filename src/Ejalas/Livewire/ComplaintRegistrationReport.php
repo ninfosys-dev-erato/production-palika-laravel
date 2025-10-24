@@ -20,26 +20,37 @@ use Illuminate\Support\Facades\Log;
 use Src\Wards\Models\Ward;
 use App\Facades\GlobalFacade;
 use App\Facades\PdfFacade;
+use App\Traits\HelperTemplate;
 use Src\Settings\Traits\AdminSettings;
 use Carbon\Carbon;
+use Src\Ejalas\Enum\ApplicationStatus;
+use Src\Ejalas\Enum\PlaceOfRegistration;
 use Src\Ejalas\Models\ReconciliationCenter;
 
 class ComplaintRegistrationReport extends Component
 {
-    use SessionFlash, HelperDate, AdminSettings;
+    use SessionFlash, HelperDate, AdminSettings, HelperTemplate;
     public $startDate;
     public $endDate;
     public $disputeMatters;
     public $disputeAreas;
-    public $reconciliationCenters;
+    public $allStatus;
+    public $regAddresses;
+    public $fiscalYears;
+
     public $wards;
+
 
     public $selectedStatus = null;
     public $selectedDisputeMatter;
     public $selectedDisputeArea;
     public $selectedReconciliationCenter;
     public $selectedWard;
+    public $selectedRegAddress;
     public $complaints = [];
+    public  $nepaliDate;
+    public $letterHead;
+    public $selectedFiscalYear;
 
 
     protected $rules = [
@@ -49,6 +60,7 @@ class ComplaintRegistrationReport extends Component
         'selectedDisputeMatter' => 'nullable',
         'selectedDisputeArea' => 'nullable',
         'selectedWard' => 'nullable',
+        'selectedRegAddress' => 'nullable'
     ];
 
     public function render()
@@ -61,123 +73,70 @@ class ComplaintRegistrationReport extends Component
     {
         $this->disputeMatters = DisputeMatter::whereNull('deleted_at')->pluck('title', 'id');
         $this->disputeAreas = DisputeArea::whereNull('deleted_at')->pluck('title', 'id');
-        $this->reconciliationCenters = ReconciliationCenter::whereNull('deleted_at')->pluck('reconciliation_center_title', 'id');
+        $this->regAddresses = PlaceOfRegistration::getValuesWithLabels();
         $this->wards = getWards(getLocalBodies(localBodyId: key(getSettingWithKey('palika-local-body')))->wards);
+        $this->allStatus = ApplicationStatus::getValuesWithLabels();
+        $this->nepaliDate =  $this->convertEnglishToNepali($this->adToBs(now()->format('Y-m-d')));
+        $this->letterHead =  $this->getBusinessLetterHeaderFromSample();
+        $this->fiscalYears = FiscalYear::whereNull('deleted_at')->pluck('year', 'id');
     }
 
     public function searchReport()
     {
         $this->validate();
+
         $startDate = $this->bsToAd($this->startDate);
         $endDate = $this->bsToAd($this->endDate);
 
-        $this->complaints = ComplaintRegistration::with(['fiscalYear', 'priority', 'disputeMatter', 'parties', 'disputeMatter.disputeArea'])
-            ->where('jms_complaint_registrations.deleted_at', null)
-            ->where('jms_complaint_registrations.deleted_by', null)
+        $this->complaints = ComplaintRegistration::with([
+            'fiscalYear',
+            'priority',
+            'disputeMatter',
+            'parties',
+            'disputeMatter.disputeArea'
+        ])
+            ->whereNull('jms_complaint_registrations.deleted_at')
+            ->whereNull('jms_complaint_registrations.deleted_by')
+            ->whereBetween('reg_date_en', [$startDate, $endDate])
+            ->when($this->selectedFiscalYear, function ($query) {
+                $query->where('fiscal_year_id', $this->selectedFiscalYear);
+            })
+            ->when($this->selectedStatus, function ($query) {
+                $query->where('status', $this->selectedStatus);
+            })
+            ->when($this->selectedWard, function ($query) {
+                $query->where('ward_no', $this->selectedWard);
+            })
+            ->when($this->selectedDisputeMatter, function ($query) {
+                $query->where('dispute_matter_id', $this->selectedDisputeMatter);
+            })
+            ->when($this->selectedDisputeArea, function ($query) {
+                $query->whereHas('disputeMatter', function ($q) {
+                    $q->where('dispute_area_id', $this->selectedDisputeArea);
+                });
+            })
+            ->when($this->selectedRegAddress, function ($query) {
+                $query->where('reg_address', $this->selectedRegAddress);
+            })
             ->orderBy('jms_complaint_registrations.created_at', 'DESC')
-            ->whereBetween('reg_date', [$startDate, $endDate])
-            ->when(!$this->selectedReconciliationCenter, function ($query) {
-                $query->whereNull('reconciliation_center_id');
-            })
-            ->when(true, function ($query) {
-                if ($this->selectedStatus === 'pending') {
-                    $query->whereNull('status');
-                } elseif ($this->selectedStatus === '0' || $this->selectedStatus === '1') {
-                    $query->where('status', $this->status);
-                }
-                $query->when($this->selectedWard, function ($query) {
-                    $query->where('ward_no', $this->selectedWard);
-                });
-
-                $query->when($this->selectedDisputeMatter, function ($query) {
-                    $query->where('dispute_matter_id', $this->selectedDisputeMatter);
-                });
-
-                $query->when($this->selectedDisputeArea, function ($query) {
-                    $query->whereHas('disputeMatter', function ($q) {
-                        $q->where('dispute_area_id', $this->selectedDisputeArea);
-                    });
-                });
-
-                $query->when($this->selectedReconciliationCenter, function ($query) {
-                    $query->where('reconciliation_center_id', $this->selectedReconciliationCenter);
-                });
-            })
             ->get();
-
-        // $selectedStatus = $this->selectedStatus;
-        // $selectedDisputeMatter = $this->selectedDisputeMatter;
-        // $selectedDisputeArea = $this->selectedDisputeArea;
-        // $selectedReconciliationCenter = $this->selectedReconciliationCenter;
-        // $selectedWard = $this->selectedWard;
-
-        // $this->dispatch('getSearchDate', $startDate, $endDate, $selectedStatus, $selectedDisputeMatter, $selectedDisputeArea, $selectedReconciliationCenter, $selectedWard);
     }
+
+
+    // $selectedStatus = $this->selectedStatus;
+    // $selectedDisputeMatter = $this->selectedDisputeMatter;
+    // $selectedDisputeArea = $this->selectedDisputeArea;
+    // $selectedReconciliationCenter = $this->selectedReconciliationCenter;
+    // $selectedWard = $this->selectedWard;
+
+    // $this->dispatch('getSearchDate', $startDate, $endDate, $selectedStatus, $selectedDisputeMatter, $selectedDisputeArea, $selectedReconciliationCenter, $selectedWard);
+
     public function downloadPdf()
     {
-        $this->validate();
-
-        $startDate = $this->bsToAd($this->startDate);
-        $endDate = $this->bsToAd($this->endDate);
-
-        $complaints = ComplaintRegistration::with(['fiscalYear', 'priority', 'disputeMatter', 'parties', 'disputeMatter.disputeArea'])
-            ->where('jms_complaint_registrations.deleted_at', null)
-            ->where('jms_complaint_registrations.deleted_by', null)
-            ->orderBy('jms_complaint_registrations.created_at', 'DESC')
-            ->whereBetween('reg_date', [$startDate, $endDate])
-            ->when(!$this->selectedReconciliationCenter, function ($query) {
-                $query->whereNull('reconciliation_center_id');
-            })
-            ->when(true, function ($query) {
-                if ($this->selectedStatus === 'pending') {
-                    $query->whereNull('status');
-                } elseif ($this->selectedStatus === '0' || $this->selectedStatus === '1') {
-                    $query->where('status', $this->status);
-                }
-                $query->when($this->selectedWard, function ($query) {
-                    $query->where('ward_no', $this->selectedWard);
-                });
-
-                $query->when($this->selectedDisputeMatter, function ($query) {
-                    $query->where('dispute_matter_id', $this->selectedDisputeMatter);
-                });
-
-                $query->when($this->selectedDisputeArea, function ($query) {
-                    $query->whereHas('disputeMatter', function ($q) {
-                        $q->where('dispute_area_id', $this->selectedDisputeArea);
-                    });
-                });
-
-                $query->when($this->selectedReconciliationCenter, function ($query) {
-                    $query->where('reconciliation_center_id', $this->selectedReconciliationCenter);
-                });
-            })
-            ->get();
-
-        if ($complaints->isEmpty()) {
-            $this->errorToast(__('ejalas::ejalas.no_data_found'));
-            return;
+        if (empty($this->complaints)) {
+            return $this->errorToast('ejalas::ejalas.no_data_found');
         }
-        foreach ($complaints as $complaintRegistration) {  //converted english date to nepali
-            $complaintRegistration->reg_date_bs = replaceNumbers(
-                $this->adToBs(Carbon::parse($complaintRegistration->reg_date)->format('Y-m-d')),
-                true
-            );
-            $complaintRegistration->defenders = $complaintRegistration->parties()->where('complaint_party.type', 'Defender')->pluck('name')->toArray();
-            $complaintRegistration->complainers = $complaintRegistration->parties()->where('complaint_party.type', 'Complainer')->pluck('name')->toArray();
-        }
-
-        $startDateNp = $this->startDate;
-        $endDateNp = $this->endDate;
-
-
-        $service = new ReportAdminService();
-
-        $commonReportData = $service->commonDataForReport();
-
-        $viewData = array_merge($commonReportData, compact('complaints', 'startDateNp', 'endDateNp'));
-        $html = view('Ejalas::livewire.complaint-registration.pdf', $viewData)->render();
-        return $service->getReport($html);
+        $this->dispatch('print-report');
     }
     public function clear()
     {
