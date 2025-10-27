@@ -18,12 +18,6 @@ class EmployeeService
             ->allowedSorts(['name', 'email', 'created_at', 'position', 'type'])
             ->get();
 
-        $photoPath = config('src.Employees.employee.photo_path');
-        $employees->each(function (Employee $employee) use ($photoPath) {
-            if (!empty($employee->photo)) {
-                $employee->photo = ImageServiceFacade::getImage($photoPath, $employee->photo);
-            }
-        });
 
         return $employees;
     }

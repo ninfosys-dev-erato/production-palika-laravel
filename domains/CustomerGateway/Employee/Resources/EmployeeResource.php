@@ -2,8 +2,10 @@
 
 namespace Domains\CustomerGateway\Employee\Resources;
 
+use App\Facades\FileFacade;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Facades\ImageServiceFacade;
 
 class EmployeeResource extends JsonResource
 {
@@ -22,7 +24,10 @@ class EmployeeResource extends JsonResource
             'gender' => $this->gender,
             'pan_no' => $this->pan_no,
             'is_department_head' => $this->is_department_head,
-            'photo' => $this->photo, 
+            'photo' => !empty($this->photo)
+                ? FileFacade::getTemporaryUrl(config('src.Employees.employee.photo_path'), $this->photo)
+                : null,
+
             'email' => $this->email,
             'phone' => $this->phone,
             'type' => $this->type,
