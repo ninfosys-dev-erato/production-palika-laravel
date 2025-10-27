@@ -10,6 +10,7 @@ class ImplementationContractDetailsDto
         public string $implementation_agency_id,
         public string $contract_number,
         public string $notice_date,
+        public string $date_of_letter_of_intent,
         public string $bid_acceptance_date,
         public string $bid_amount,
         public string $deposit_amount,
@@ -22,6 +23,7 @@ class ImplementationContractDetailsDto
             contract_number: $implementationContractDetails->contract_number,
             notice_date: $implementationContractDetails->notice_date,
             bid_acceptance_date: $implementationContractDetails->bid_acceptance_date,
+            date_of_letter_of_intent: $implementationContractDetails->date_of_letter_of_intent,
             bid_amount: $implementationContractDetails->bid_amount,
             deposit_amount: $implementationContractDetails->deposit_amount,
         );
@@ -34,6 +36,7 @@ class ImplementationContractDetailsDto
             contract_number: $data['contract_number'],
             notice_date: $data['notice_date'],
             bid_acceptance_date: $data['bid_acceptance_date'],
+            date_of_letter_of_intent: $data['date_of_letter_of_intent'],
             bid_amount: $data['bid_amount'],
             deposit_amount: $data['deposit_amount'],
         );

@@ -1466,6 +1466,7 @@ return [
     'contract_number' => 'Contract Number',
     'notice_publication_date' => 'Notice Publication Date',
     'bid_acceptance_date' => 'Bid Acceptance Date',
+    'date_of_letter_of_intent' => 'Date of letter of intent',
     'bid_amount' => 'Bid Amount',
     'deposit_amount' => 'Deposit Amount',
     'quotation_details' => 'Quotation Details',
@@ -1758,8 +1759,4 @@ return [
 
     // General guidance
     'enter_implementation_method_first' => 'Please select the implementation method first',
-    'fiscal_year' => 'Fiscal Year',          
-    'select_fiscal_year' => 'Select Fiscal Year', 
-    'chalani_no' => 'Chalani Number',          
-    'enter_chalani_no' => 'Enter Chalani Number',
 ];

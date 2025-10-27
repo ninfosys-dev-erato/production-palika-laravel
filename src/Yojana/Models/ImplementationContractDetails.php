@@ -18,6 +18,7 @@ class ImplementationContractDetails extends Model
         'contract_number',
         'notice_date',
         'bid_acceptance_date',
+        'date_of_letter_of_intent',
         'bid_amount',
         'deposit_amount',
         'created_at',
@@ -32,9 +33,10 @@ class ImplementationContractDetails extends Model
     {
         return [
             'implementation_agency_id' => 'int',
-            'contract_number' => 'int',
+            'contract_number' => 'string',
             'notice_date' => 'string',
             'bid_acceptance_date' => 'string',
+            'date_of_letter_of_intent' => 'string',
             'bid_amount' => 'int',
             'deposit_amount' => 'int',
             'id' => 'int',
