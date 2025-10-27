@@ -1762,4 +1762,9 @@ return [
     'select_fiscal_year' => 'Select Fiscal Year', 
     'chalani_no' => 'Chalani Number',          
     'enter_chalani_no' => 'Enter Chalani Number',
+    'signee_name' => 'Signee Name',
+    'please_select_any_one_option' => 'Please select any one option',
+    'signee_saved_successfully' => 'Signee Saved Successfully',
+    'saved' => 'Saved',
+    'unsaved' => 'Unsaved',
 ];

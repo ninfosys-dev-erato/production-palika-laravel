@@ -21,6 +21,10 @@ use Src\Yojana\Service\WorkOrderAdminService;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Src\Yojana\Service\TemplateAdminService;
 use Livewire\Attributes\On;
+use Src\Employees\Models\Employee;
+use Src\Yojana\DTO\FormSigneeNameDto;
+use Src\Yojana\Models\FormSigneeName;
+use Src\Yojana\Service\FormSigneeAdminService;
 use Src\Yojana\Traits\YojanaTemplate;
 
 class TemplateForm extends Component
@@ -35,21 +39,88 @@ class TemplateForm extends Component
     public $letterType;
     public $model_id;
 
+    public $signees = [];
+    public $employees;
+
     public function mount(WorkOrder|ConsumerCommittee $model, $letterType = null, $model_id = null)
     {
         $this->model_id = $model_id;
         $this->model = $model;
         $this->letterType = $letterType;
 
+        $this->employees = Employee::whereNull('deleted_at')->pluck('name', 'id');
+
+        $existingSignees = FormSigneeName::whereNull('deleted_at')->where('work_order_id', $this->model->id)->get();
+
+        if ($existingSignees->isNotEmpty()) {
+            $this->signees = $existingSignees->map(function ($item) {
+                return [
+                    'id' => $item->id, // DB id
+                    'employee_id' => $item->signee_id
+                ];
+            })->toArray();
+        } else {
+            $this->signees = [
+                ['id' => null, 'employee_id' => '']
+            ];
+        }
+
         if ($model instanceof WorkOrder) {
             $this->plan = Plan::find($this->model->plan_id);
             $this->letter = $model->letter_body;
-        }
-        elseif ($model instanceof ConsumerCommittee) {
+        } elseif ($model instanceof ConsumerCommittee) {
             $this->letter = $model->{$letterType};
         }
-
     }
+
+    public function addSignee()
+    {
+        $this->signees[] = ['id' => null, 'employee_id' => ''];
+    }
+
+
+    public function removeSignee($index)
+    {
+        $signee = $this->signees[$index];
+
+        if (!empty($signee['id'])) {
+        
+            $formSignee = FormSigneeName::find($signee['id']);
+
+            if ($formSignee) {
+                $service = new FormSigneeAdminService();
+                $service->delete($formSignee);
+            }
+        }
+
+        unset($this->signees[$index]);
+        $this->signees = array_values($this->signees);
+    }
+
+
+
+    public function submitSignee($index)
+    {
+        $signee = $this->signees[$index];
+        if (!$signee['employee_id']) {
+            return $this->errorToast(__('yojana::yojana.please_select_any_one_option'));
+        }
+
+        $dto = FormSigneeNameDto::fromLivewire(
+            workOrderId: $this->model->id,
+            signeeId: $signee['employee_id'],
+            id: $signee['id'] ?? null
+        );
+
+        $service = new FormSigneeAdminService();
+        $saved = $service->storeOrUpdate($dto);
+
+        $this->signees[$index]['id'] = $saved->id;
+
+        $this->successToast(__('yojana::yojana.signee_saved_successfully'));
+    }
+
+
 
     public function render()
     {
@@ -60,7 +131,7 @@ class TemplateForm extends Component
     {
         if ($this->model instanceof WorkOrder) {
             $this->model->update([
-                'letter_body' => $this->letter 
+                'letter_body' => $this->letter
             ]);
         } elseif ($this->model instanceof ConsumerCommittee) {
             $this->model->update([
@@ -91,21 +162,18 @@ class TemplateForm extends Component
             // }
             // else
             // {
-                $letterSample = LetterSample::where('id', $this->model->letter_sample_id)
-                    ->where('implementation_method_id', $this->plan->implementation_method_id)
-                    ->firstOrFail();
+            $letterSample = LetterSample::where('id', $this->model->letter_sample_id)
+                ->where('implementation_method_id', $this->plan->implementation_method_id)
+                ->firstOrFail();
 
-                $letterBody = $this->resolveTemplate($this->plan, $letterSample)??"";
-                $this->letter = $letterSample?->styles.$letterBody;
+            $letterBody = $this->resolveTemplate($this->plan, $letterSample) ?? "";
+            $this->letter = $letterSample?->styles . $letterBody;
             // }
 
-        }
-        elseif ($this->model instanceof ConsumerCommittee)
-
-        {
+        } elseif ($this->model instanceof ConsumerCommittee) {
             $letterSample = LetterSample::where('letter_type', $this->letterType)
                 ->firstOrFail();
-                $letterBody = $this->resolveTemplate($this->model, $letterSample) ?? "";
+            $letterBody = $this->resolveTemplate($this->model, $letterSample) ?? "";
             $this->letter = $letterBody;
         }
         $this->save();

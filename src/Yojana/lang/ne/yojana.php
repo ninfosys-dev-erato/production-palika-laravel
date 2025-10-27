@@ -1759,6 +1759,12 @@ return [
     'select_fiscal_year' => 'आर्थिक वर्ष चयन गर्नुहोस्',
     'chalani_no' => 'चलानी नम्बर',
     'enter_chalani_no' => 'चलानी नम्बर प्रविष्ट गर्नुहोस्',
+    'signee_name' => 'हस्ताक्षर गर्ने नाम',
+
+    'please_select_any_one_option' => 'कृपया कुनै एउटा विकल्प छान्नुहोस्',
+    'signee_saved_successfully' => 'हस्ताक्षरकर्ता सफलतापूर्वक सुरक्षित गरियो',
+    'saved' => 'saved',
+    'unsaved' => 'saved नगरिएको',
 
 
 ];

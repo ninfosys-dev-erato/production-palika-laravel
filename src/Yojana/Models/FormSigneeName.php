@@ -6,38 +6,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Employees\Models\Employee;
+use Src\Yojana\Models\PlanArea;
 
-class WorkOrder extends Model
+class FormSigneeName extends Model
 {
     use HasFactory, LogsActivity;
-    protected $table = 'pln_work_order';
+
+    protected $table = 'pln_form_signee_name';
 
     protected $fillable = [
-        'date',
-        'plan_id',
-        'plan_name',
-        'subject',
-        'letter_body',
-        'template',
-        'letter_sample_id',
+        'work_order_id',
+        'signee_id',
         'created_at',
         'created_by',
         'deleted_at',
         'deleted_by',
         'updated_at',
-        'updated_by',
-        'template',
+        'updated_by'
     ];
 
     public function casts(): array
     {
         return [
-            'date' => 'string',
-            'plan_id' => 'string',
-            'plan_name' => 'string',
-            'subject' => 'string',
-            'letter_body' => 'string',
-            'letter_sample_id' => 'int',
+            'work_order_id' => 'string',
+            'signee_id' => 'string',
             'id' => 'int',
             'created_at' => 'datetime',
             'created_by' => 'string',
@@ -45,7 +38,6 @@ class WorkOrder extends Model
             'updated_by' => 'string',
             'deleted_at' => 'datetime',
             'deleted_by' => 'string',
-            'template' => 'string',
         ];
     }
 
@@ -54,15 +46,10 @@ class WorkOrder extends Model
         return LogOptions::defaults()
             ->logFillable()
             ->logOnlyDirty()
-            ->setDescriptionForEvent(fn(string $eventName) => "This WorkOrder has been {$eventName}");
+            ->setDescriptionForEvent(fn(string $eventName) => "This SubRegion has been {$eventName}");
     }
-
-    public function letter_sample()
+    public function employee()
     {
-        return $this->belongsTo(LetterSample::class, 'letter_sample_id', 'id');
-    }
-    public function formSigneeName()
-    {
-        return $this->hasMany(FormSigneeName::class, 'work_order_id', 'id');
+        return $this->belongsTo(Employee::class, 'signee_id', 'id');
     }
 }

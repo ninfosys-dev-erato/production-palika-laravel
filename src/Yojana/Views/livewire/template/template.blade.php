@@ -3,7 +3,7 @@
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5><strong>{{__('yojana::yojana.subject__')}}</strong>{{__($model->subject)}}</h5>
+                <h5><strong>{{ __('yojana::yojana.subject__') }}</strong>{{ __($model->subject) }}</h5>
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -25,13 +25,66 @@
             </div>
 
             <div>
-                <button type="button" class="btn btn-outline-primary btn-info"
-                    onclick="printDiv()" data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="{{ __('yojana::yojana.print_form') }}">
+                <button type="button" class="btn btn-outline-primary btn-info" onclick="printDiv()"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('yojana::yojana.print_form') }}">
                     <i class="bx bx-printer"></i> {{ __('yojana::yojana.print') }}
                 </button>
             </div>
 
+        </div>
+    </div>
+
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="row">
+                @foreach ($signees as $index => $signee)
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group border rounded p-3">
+
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label mb-0">
+                                    {{ __('yojana::yojana.signee_name') }}
+                                </label>
+
+                                @if ($signee['id'])
+                                    <span class="badge bg-success"> {{ __('yojana::yojana.saved') }}</span>
+                                @else
+                                    <span class="badge bg-warning"> {{ __('yojana::yojana.unsaved') }}</span>
+                                @endif
+                            </div>
+
+                            <select wire:model="signees.{{ $index }}.employee_id" class="form-control">
+                                <option value="" hidden>
+                                    {{ __('yojana::yojana.select_an_option') }}
+                                </option>
+                                @foreach ($employees as $id => $value)
+                                    <option value="{{ $id }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+
+                            <div class="mt-2 d-flex gap-2">
+                                @if (count($signees) > 1)
+                                    <button type="button" wire:click="removeSignee({{ $index }})"
+                                        class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                @endif
+
+                                <button type="button" wire:click="submitSignee({{ $index }})"
+                                    class="btn btn-success btn-sm">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
+                <div class="col-12 mt-3">
+                    <button type="button" wire:click="addSignee" class="btn btn-primary">
+                        Add
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -74,13 +127,12 @@
             });
 
         });
-
     </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>
-    async function printDiv() {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        async function printDiv() {
             const {
                 jsPDF
             } = window.jspdf;
@@ -119,54 +171,54 @@
             pdf.autoPrint();
             window.open(pdf.output('bloburl'), '_blank');
         }
-    </script> 
+    </script>
 
-{{-- this script lets user download the pdf --}}
-<!-- <script>
-    async function printDiv() {
-        const {
-            jsPDF
-        } = window.jspdf;
-        const element = document.getElementById('printContent');
+    {{-- this script lets user download the pdf --}}
+    <!-- <script>
+        async function printDiv() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const element = document.getElementById('printContent');
 
 
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-        });
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+            });
 
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
 
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
 
-        const imgProps = pdf.getImageProperties(imgData);
-        const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-        let heightLeft = imgHeight;
-        let position = 0;
+            let heightLeft = imgHeight;
+            let position = 0;
 
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-        heightLeft -= pdfHeight;
-
-        // Only add more pages if the image is taller than one page
-        while (heightLeft > 1) {
-            position -= pdfHeight;
-            pdf.addPage();
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
             heightLeft -= pdfHeight;
+
+            // Only add more pages if the image is taller than one page
+            while (heightLeft > 1) {
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+            pdf.save("certificate.pdf");
         }
-        pdf.save("certificate.pdf");
-    }
-    // Listen for Livewire print event
-    document.addEventListener('livewire:init', () => {
-        Livewire.on('print-certificate-letter', () => {
+        // Listen for Livewire print event
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('print-certificate-letter', () => {
 
-            printDiv();
+                printDiv();
+            });
+
+
         });
-
-
-    });
-</script> -->
+    </script> -->
 @endpush
