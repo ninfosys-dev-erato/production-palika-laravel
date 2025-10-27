@@ -152,94 +152,6 @@
                 </a>
             </li>
 
-            <li
-                class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.dispute_registration_courts.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.dispute_registration_courts.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-file"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.dispute_registration') }}</div>
-                </a>
-            </li>
-
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.dispute_deadlines.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.dispute_deadlines.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-time-five"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.dispute_deadline') }}</div>
-                </a>
-            </li>
-
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.court_notices.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.court_notices.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-time-five"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.court_notice') }}</div>
-                </a>
-            </li>
-
-            <li
-                class="{{ CheckRouteAdminService::isActive('admin.ejalas.hearing_schedules.*', RouteName::General) ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.hearing_schedules.index', ['from' => RouteName::General]) }}"
-                    class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-calendar"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.hearing_schedule') }}</div>
-                </a>
-            </li>
-            <li
-                class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.written_response_registrations.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.written_response_registrations.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.response_registration') }}</div>
-                </a>
-            </li>
-            <li
-                class="{{ CheckRouteAdminService::isActive('admin.ejalas.mediator_selections.*', RouteName::General) ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.mediator_selections.index', ['from' => RouteName::General]) }}"
-                    class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-user-check"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.mediator_selection') }}</div>
-                </a>
-            </li>
-
-            <li
-                class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.witnesses_representatives.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.witnesses_representatives.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.witness_representative') }}</div>
-                </a>
-            </li>
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.legal_documents.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.legal_documents.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.legal_document') }}</div>
-                </a>
-            </li>
-
-            <li
-                class="{{ CheckRouteAdminService::isActive('admin.ejalas.settlements.*', RouteName::General) ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.settlements.index', ['from' => RouteName::General]) }}"
-                    class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.settlement') }}</div>
-                </a>
-            </li>
-            <li
-                class="{{ CheckRouteAdminService::isActive('admin.ejalas.fulfilled_conditions.*', RouteName::General) ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.fulfilled_conditions.index', ['from' => RouteName::General]) }}"
-                    class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.fulfilled_conditions') }}</div>
-                </a>
-            </li>
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.case_records.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.case_records.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.case_records') }}</div>
-                </a>
-            </li>
-            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.court_submissions.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.ejalas.court_submissions.index') }}" class="menu-link ps-4 gap-2">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div data-i18n="Tasks">{{ __('ejalas::ejalas.court_submission') }}</div>
-                </a>
-            </li>
         </ul>
     </li>
 @endperm
@@ -343,8 +255,7 @@
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.fulfilled_conditions') }}</div>
                 </a>
             </li>
-            <li
-                class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.report.case_records.*') ? 'active' : '' }}">
+            <li class=" {{ \Illuminate\Support\Facades\Route::is('admin.ejalas.report.case_records.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.ejalas.report.case_records.report') }}" class="menu-link ps-4 gap-2">
                     <i class="menu-icon tf-icons bx bx-group"></i>
                     <div data-i18n="Tasks">{{ __('ejalas::ejalas.case_records') }}</div>
@@ -379,7 +290,8 @@
 <li class="menu-header small text-uppercase">
     <span class="menu-header-text">{{ __('ejalas::ejalas.system_setting') }}</span>
 </li>
-<li class="menu-item has-sub {{ request()->routeIs('admin.ejalas.form-template.index') ? 'active open' : '' }}">
+<li
+    class="menu-item has-sub {{ request()->routeIs('admin.ejalas.form-template.index', 'admin.ejalas.form-template-type.*') ? 'active open' : '' }}">
     <a href="javascript:void(0)" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-cog"></i>
         <div data-i18n="Ejalas Management">{{ __('ejalas::ejalas.forms') }}</div>

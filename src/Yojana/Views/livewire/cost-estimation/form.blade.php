@@ -11,6 +11,44 @@
                 </button>
             @endif
         </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class='col-md-6 mb-3'>
+                        <div class='form-group'>
+                            <label class="form-label" for='fiscal_year'>{{ __('yojana::yojana.fiscal_year') }}</label>
+                            <select wire:model='costEstimation.fiscal_year' name='fiscal_year' type='text'
+                                class='form-control {{ $errors->has('costEstimation.fiscal_year') ? 'is-invalid' : '' }}'>
+                                <option value="" hidden>{{ __('yojana::yojana.select_fiscal_year') }}</option>
+                                @foreach ($fiscalYear as $id=>$value)
+                                <option value="{{ $id }}">{{$value}}</option>
+                                @endforeach
+                            </select>
+                            <div>
+                                @error('costEstimation.fiscal_year')
+                                    <small class='text-danger'>{{ __($message) }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                  <div class='col-md-6 mb-3'>
+                        <div class='form-group'>
+                            <label class="form-label" for='chalani_no'>{{ __('yojana::yojana.chalani_no') }}</label>
+                              <input wire:model='costEstimation.chalani_no' name='chalani_no' type='text'
+                                class='form-control {{ $errors->has('costEstimation.chalani_no') ? 'is-invalid' : '' }}'
+                                placeholder='{{ __('yojana::yojana.enter_chalani_no') }}'>
+                            <div>
+                                @error('costEstimation.chalani_no')
+                                    <small class='text-danger'>{{ __($message) }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">

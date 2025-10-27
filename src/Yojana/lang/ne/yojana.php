@@ -1746,8 +1746,8 @@ return [
     'add_target_completion' => 'लक्ष्य सम्पन्नता थप्नुहोस्',
     'report_of_plan_with_less_than_15_days_for_deadline' => '१५ दिन भन्दा कम म्याद बाँकी भएको योजनाको प्रतिवेदन',
     'progress_indicators' => 'प्रगति सूचकहरू',
-     'payment_amount_with_vat' => 'भ्याट सहितको भुक्तानी रकम',
-     'payment_amount' => 'भुक्तानी रकम',
+    'payment_amount_with_vat' => 'भ्याट सहितको भुक्तानी रकम',
+    'payment_amount' => 'भुक्तानी रकम',
     'allocated' => 'बिनियोजित',
     'remaining' => 'बाँकी',
     'select_signature_party' => 'हस्ताक्षर पार्टी चयन गर्नुहोस्',
@@ -1755,6 +1755,10 @@ return [
     'office' => 'कार्यालय',
     'added' => 'थपियो',
     'deducted' => 'कटौती गरियो',
+    'fiscal_year' => 'आर्थिक वर्ष',
+    'select_fiscal_year' => 'आर्थिक वर्ष चयन गर्नुहोस्',
+    'chalani_no' => 'चलानी नम्बर',
+    'enter_chalani_no' => 'चलानी नम्बर प्रविष्ट गर्नुहोस्',
 
 
 ];

@@ -38,12 +38,19 @@ class ComplaintRegistrationAdminController extends Controller
     function view(Request $request)
     {
         // Retrieve the complaint registration
-        $complaintRegistration = ComplaintRegistration::with('parties')->findOrFail($request->route('id'));
-        $partyDetails = $complaintRegistration->parties->groupBy('pivot.role');
+       
+        $complaintRegistration = ComplaintRegistration::with([
+            'parties.permanentProvince',
+            'parties.permanentDistrict',
+            'parties.permanentLocalBody',
+            'parties.temporaryProvince',
+            'parties.temporaryDistrict',
+            'parties.temporaryLocalBody',
+        ])->findOrFail($request->route('id'));
 
         // Extract Defender and Complainer details
-        $defenderDetails = $partyDetails->get('Defender', collect());
-        $complainerDetails = $partyDetails->get('Complainer', collect());
+        $complainerDetails = $complaintRegistration->complainers;
+        $defenderDetails = $complaintRegistration->defenders;
 
         return view('Ejalas::complaint-registration.view', compact('complaintRegistration', 'defenderDetails', 'complainerDetails'));
     }
@@ -54,8 +61,9 @@ class ComplaintRegistrationAdminController extends Controller
         // $id = $request->route('id');
         // return view('Ejalas::complaint-registration.preview')->with(compact('id'));
     }
-    public function forward(Request $request, $id){
-  
+    public function forward(Request $request, $id)
+    {
+
         $complaintRegistration = ComplaintRegistration::findOrFail($id);
         return view('Ejalas::complaint-registration.forward')->with(compact('complaintRegistration'));
     }
