@@ -22,10 +22,15 @@ class CaseRecordTable extends DataTableComponent
     public $report = false;
     public $startDate = null;
     public $endDate = null;
+    public $complaintRegistration;
     public array $bulkActions = [
         'exportSelected' => 'Export',
         'deleteSelected' => 'Delete',
     ];
+    public function mount($complaintRegistration){
+        $this->complaintRegistration = $complaintRegistration;
+    }
+
     public function configure(): void
     {
         $this->setPrimaryKey('jms_case_records.id')
@@ -49,6 +54,9 @@ class CaseRecordTable extends DataTableComponent
             ->where('jms_case_records.deleted_at', null)
             ->where('jms_case_records.deleted_by', null)
             ->orderBy('jms_case_records.created_at', 'DESC')
+             ->when($this->complaintRegistration, function ($query) {
+            $query->where('complaint_registration_id', $this->complaintRegistration->id);
+        })
             ->when($this->report, function ($query) {
                 $query->whereBetween('decision_date', [$this->startDate, $this->endDate]);
             });
@@ -70,13 +78,15 @@ class CaseRecordTable extends DataTableComponent
                 ->searchable()
                 ->collapseOnTablet(),
 
-            Column::make(__('ejalas::ejalas.dates'))->label(function ($row) {
-                return "<strong>" . (__('ejalas::ejalas.discussion_date')) . ":" . "</strong> {$row->discussion_date} <br>
-                        <strong>" . (__('ejalas::ejalas.decision_date')) . ":" . "</strong>" . replaceNumbers($this->adToBs($row->decision_date), true);
-            })->html()
-                ->sortable()
-                ->searchable()
-                ->collapseOnTablet(),
+      Column::make(__('ejalas::ejalas.dates'))
+    ->label(function ($row) {
+        return "<strong>" . __('ejalas::ejalas.discussion_date') . ":</strong> {$row->discussion_date} <br>
+                <strong>" . __('ejalas::ejalas.decision_date') . ":</strong> {$row->decision_date}";
+    })
+    ->html()
+    ->sortable()
+    ->searchable()
+    ->collapseOnTablet(),
 
             Column::make(__('ejalas::ejalas.decision_authority'), "judicialMember.title")
                 ->sortable()
@@ -119,7 +129,7 @@ class CaseRecordTable extends DataTableComponent
                 }
 
                 if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-info btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                    $preview = '<button type="button" class="btn table-print-btn btn-sm" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
                     $buttons .= $preview;
                 }
 
@@ -138,7 +148,8 @@ class CaseRecordTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.case_records.edit', ['id' => $id]);
+          $this->dispatch('edit-caseRecordForm', caseRecord: $id);
+        // return redirect()->route('admin.ejalas.case_records.edit', ['id' => $id]);
     }
     public function delete($id)
     {
@@ -148,7 +159,8 @@ class CaseRecordTable extends DataTableComponent
         }
         $service = new CaseRecordAdminService();
         $service->delete(CaseRecord::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.case_record_deleted_successfully'));
+        $this->dispatch('caseRecordDeleted');
+        $this->successToast(__('ejalas::ejalas.case_record_deleted_successfully'));
     }
     public function deleteSelected()
     {

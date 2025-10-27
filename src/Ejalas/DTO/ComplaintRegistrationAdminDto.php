@@ -3,7 +3,7 @@
 namespace Src\Ejalas\DTO;
 
 use Src\Ejalas\Models\ComplaintRegistration;
-
+use  Src\Ejalas\Enum\ApplicationStatus;
 class ComplaintRegistrationAdminDto
 {
     public function __construct(
@@ -11,6 +11,7 @@ class ComplaintRegistrationAdminDto
         public string $reg_no,
         public ?string $old_reg_no,
         public string $reg_date,
+        public string $reg_date_en,
         public string $reg_address,
         public ?string $complainer_id,
         public ?string $defender_id,
@@ -20,7 +21,7 @@ class ComplaintRegistrationAdminDto
         public string $description,
         public string $claim_request,
         public ?string $reconciliation_center_id,
-        public ?bool $status,
+        public ?string $status,
         public ?string $reconciliation_reg_no,
         public ?string $ward_no
 
@@ -33,6 +34,7 @@ class ComplaintRegistrationAdminDto
             reg_no: $complaintRegistration->reg_no,
             old_reg_no: $complaintRegistration->old_reg_no,
             reg_date: $complaintRegistration->reg_date,
+            reg_date_en: $complaintRegistration->reg_date_en,
             reg_address: $complaintRegistration->reg_address->value,
             complainer_id: $complaintRegistration->complainer_id,
             defender_id: $complaintRegistration->defender_id,
@@ -41,7 +43,7 @@ class ComplaintRegistrationAdminDto
             subject: $complaintRegistration->subject,
             description: $complaintRegistration->description,
             claim_request: $complaintRegistration->claim_request,
-            status: $complaintRegistration->status,
+            status: $complaintRegistration->status?->value ?? ApplicationStatus::Pending->value,
             reconciliation_center_id: $complaintRegistration->reconciliation_center_id,
             reconciliation_reg_no: $complaintRegistration->reconciliation_reg_no,
             ward_no: $complaintRegistration->ward_no,

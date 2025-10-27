@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('notice_no');
             $table->foreignId('fiscal_year_id')->nullable()->constrained('mst_fiscal_years')->cascadeOnDelete();
             $table->foreignId('complaint_registration_id')->constrained('jms_complaint_registrations')->cascadeOnDelete();
-            $table->string('reference_no');
+            $table->string('reference_no')->nullable();
             $table->date('notice_date');  // तारेख मिति
             $table->time('notice_time');  // समय
             $table->foreignId('reconciliation_center_id')->nullable()->constrained('jms_reconciliation_centers')->cascadeOnDelete();

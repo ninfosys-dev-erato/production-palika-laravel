@@ -10,7 +10,7 @@ class CourtNoticeAdminDto
         public string $notice_no,
         public string $fiscal_year_id,
         public string $complaint_registration_id,
-        public string $reference_no,
+        public ?string $reference_no,
         public string $notice_date,
         public string $notice_time,
         public string $reconciliation_center_id
@@ -25,7 +25,7 @@ class CourtNoticeAdminDto
             reference_no: $courtNotice->reference_no,
             notice_date: $courtNotice->notice_date,
             notice_time: $courtNotice->notice_time,
-            reconciliation_center_id: $courtNotice->reconciliation_center_id->value
+            reconciliation_center_id: $courtNotice->reconciliation_center_id
         );
     }
 }

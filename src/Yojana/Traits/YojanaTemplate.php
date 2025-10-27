@@ -156,6 +156,8 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
                         }
                         if ($segment == 'agreement_beneficiaries_total_no'){
                             $value = $this->totalAgreementBenificiaries($model) ?? '';
+                        }if ($segment == 'quotation_details'){
+                            $value = $this->quotationDetails($model) ?? '';
                         }
                     } catch (\Throwable $e) {
                         $value = null;
@@ -565,7 +567,38 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
         return $html;
     }
     
+    public function quotationDetails($plan)
+    {
+        $html = '<table style="width:100%; border-collapse:collapse; border:1px solid black; color:#000;">
+        <thead >
+            <tr>
+                <th style="border:1px solid black;  padding:8px; text-align: center">' . __('क्रम संख्या') . '</th>
+                <th style="border:1px solid black;  padding:8px; text-align: center">' . __('प्रश्तावदाताको नाम') . '</th>
+                <th style="border:1px solid black;  padding:8px; text-align: center">' . __('रकम भ्याट बाहेक (रु.)') . '</th>
+                <th style="border:1px solid black;  padding:8px; text-align: center">' . __('कैफियत') . '</th>
+            </tr>
+        </thead>
+        <tbody>';
 
+        if ($plan->implementationAgency?->quotations->count()) {
+            foreach ($plan->implementationAgency?->quotations as $index => $detail) {
+                $html .= '<tr style="transition:background-color 0.15s;">
+                <td style="border:1px solid black; padding:8px; text-align: center">' . replaceNumbers(($index + 1), true) . '</td>
+                <td style="border:1px solid black; padding:8px; text-align: center">' . ($detail->name .', '.$detail->address) . '</td>
+                <td style="border:1px solid black; padding:8px; text-align: center">' . amountToNepali(($detail->amount ?? 0), true) . '</td>
+                <td style="border:1px solid black; padding:8px; text-align: center">' . '' . '</td>
+            </tr>';
+            }
+        } else {
+            $html .= '<tr>
+            <td colspan="7" style="border:1px solid black; padding:8px; text-align:center;">'
+             . '' . 
+             '</td>
+        </tr>';
+        }
+        $html .= '</tbody></table>';
+        return $html;
+    }
 
     public function getCostEstimationDetails($plan)
     {

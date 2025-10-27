@@ -1,6 +1,41 @@
+<div>
+
+        <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between card-header">
+        <h5 class="text-primary fw-bold mb-0">
+            {{ $hearingScheduleForm 
+                ? __('ejalas::ejalas.add_hearing_schedule') 
+                : __('ejalas::ejalas.hearing_schedule_list') }}
+        </h5>                    </div>
+                    <div>
+                           @perm('jms_judicial_management create')
+            <button 
+                wire:click="toggleHearingScheduleForm" 
+                class="btn {{ $hearingScheduleForm ? 'btn-danger' : 'btn-info' }}"
+            >
+                <i class="bx {{ $hearingScheduleForm ? 'bx-arrow-back' : 'bx-plus' }}"></i>
+                {{ $hearingScheduleForm 
+                    ? __('ejalas::ejalas.back') 
+                    : __('ejalas::ejalas.add_hearing_schedule') }}
+            </button>
+        @endperm
+                    </div>
+                </div>
+    @if(!$hearingScheduleForm)
+      <livewire:ejalas.hearing_schedule_table theme="bootstrap-4" :complaintRegistration="$complaintRegistration"/> 
+@else
+
 <form wire:submit.prevent="save">
     <div class="card-body">
         <div class="row">
+                <div class='col-md-6' wire:ignore>
+                <div class='form-group'>
+                    <label for='complaint_registration_id'
+                        class="form-label ">{{ __('ejalas::ejalas.complaint_no') }}</label>
+                    <input wire:model='hearingSchedule.complaint_registration_id' name='complaint_registration_id' type='text' class='form-control'
+                       readonly>
+                </div>
+            </div>
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label for='hearing_paper_no' class="form-label">{{ __('ejalas::ejalas.hearing_paper_no') }}</label>
@@ -29,25 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-6' wire:ignore>
-                <div class='form-group'>
-                    <label for='complaint_registration_id'
-                        class="form-label">{{ __('ejalas::ejalas.complaint_no') }}</label>
-                    <select wire:model='hearingSchedule.complaint_registration_id' id="complaint_registration_id"
-                        name='complaint_registration_id' class="form-select" wire:change="getComplaintRegistration()">
-                        <option value="" hidden>{{ __('ejalas::ejalas.select_registration_number') }}</option>
-                        @foreach ($complainRegistrations as $id => $value)
-                            <option value="{{ $id }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-
-                    <div>
-                        @error('hearingSchedule.fiscal_year_id')
-                            <small class='text-danger'>{{ __($message) }}</small>
-                        @enderror
-                    </div>
-                </div>
-            </div>
+      
             <div class='col-md-6 mb-3'>
                 <div class='form-group'>
                     <label for='hearing_date' class="form-label">{{ __('ejalas::ejalas.hearing_date') }}</label>
@@ -106,12 +123,13 @@
             <div class="divider divider-primary text-start text-primary">
                 <div class="divider-text fw-bold fs-6">{{ __('ejalas::ejalas.description') }}</div>
             </div>
-            <div class="col-md-6 mb-3">
+           
+             <div class="col-md-6 mb-3">
                 <label for="complainer_id" class="form-label">
                     {{ __('ejalas::ejalas.complainers') }}
                 </label>
-                @forelse ($complainers as $complainer)
-                    <input type="text" class="form-control mb-2" value="{{ $complainer }}" readonly>
+       @forelse ($complaintRegistration->complainers as $complainer)
+                    <input type="text" class="form-control mb-2" value="{{ $complainer->name }}" readonly>
                 @empty
                     <input type="text" class="form-control mb-2" value="{{ __('ejalas::ejalas.no_complainer') }}"
                         readonly>
@@ -122,8 +140,8 @@
                 <label for="defender_id" class="form-label">
                     {{ __('ejalas::ejalas.defenders') }}
                 </label>
-                @forelse ($defenders as $defender)
-                    <input type="text" class="form-control mb-2" value="{{ $defender }}" readonly>
+               @forelse ($complaintRegistration->defenders as $defender)
+                    <input type="text" class="form-control mb-2" value="{{ $defender->name }}" readonly>
                 @empty
                     <input type="text" class="form-control mb-2" value="{{ __('ejalas::ejalas.no_defender') }}"
                         readonly>
@@ -134,33 +152,20 @@
                 <label for="claim request" class="form-label">
                     {{ __('ejalas::ejalas.claim_request') }}
                 </label>
-                <input type="text" class="form-control" wire:model="complaintData.claim_request" readonly>
+                <input type="text" class="form-control" readonly value="{{ $complaintRegistration->claim_request }}">
             </div>
             <div class="col-md-6 mb-3">
                 <label for="subject" class="form-label">
                     {{ __('ejalas::ejalas.subject') }}
                 </label>
-                <input type="text" class="form-control" wire:model="complaintData.subject" readonly>
+                <input type="text" class="form-control" value="{{ $complaintRegistration->subject }}" readonly>
             </div>
         </div>
     </div>
     <div class="card-footer">
         <button type="submit" class="btn btn-primary"
             wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
-        <a href="{{ route('admin.ejalas.hearing_schedules.index') }}" wire:loading.attr="disabled"
-            class="btn btn-danger">{{ __('ejalas::ejalas.back') }}</a>
     </div>
 </form>
-@script
-    <script>
-        $(document).ready(function() {
-
-            $('#complaint_registration_id').select2();
-            $('#complaint_registration_id').on('change', function(e) {
-                let complaintId = $(this).val();
-                @this.set('hearingSchedule.complaint_registration_id', complaintId);
-                @this.call('getComplaintRegistration');
-            });
-        });
-    </script>
-@endscript
+@endif
+</div>

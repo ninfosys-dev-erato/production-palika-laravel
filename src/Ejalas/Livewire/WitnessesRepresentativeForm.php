@@ -15,8 +15,11 @@ class WitnessesRepresentativeForm extends Component
     use SessionFlash;
 
     public ?WitnessesRepresentative $witnessesRepresentative;
-    public ?Action $action;
-    public $complainRegistrations;
+  public ?Action $action = Action::CREATE;
+    public $complaintRegistration;
+    
+  public $showWitnessRepresentativeForm = false;
+      protected $listeners = ['edit-witnessRepresentativeForm' => 'editWitnessRepresentativeForm'];
 
     public function rules(): array
     {
@@ -33,16 +36,20 @@ class WitnessesRepresentativeForm extends Component
         return view("Ejalas::livewire.witness-representative.form");
     }
 
-    public function mount(WitnessesRepresentative $witnessesRepresentative, Action $action)
+    public function mount($complaintRegistration, WitnessesRepresentative $witnessesRepresentative)
     {
-        $this->witnessesRepresentative = $witnessesRepresentative;
-        $this->action = $action;
-        $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')->where('status', true)->with('parties')
-            ->get()
-            ->mapWithKeys(function ($complaint) {
-                $partyNames = $complaint->parties->pluck('name')->implode(', ');
-                return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-            });
+        $this->complaintRegistration = $complaintRegistration;
+        $this->witnessesRepresentative = $witnessesRepresentative ?? $this->getDefaultWitnessRepresentative();
+    }
+    public function toggleWitnessRegistrationForm()
+    {
+        $this->showWitnessRepresentativeForm = !$this->showWitnessRepresentativeForm;
+
+        if ($this->showWitnessRepresentativeForm) {
+            $this->resetForm();
+        }
+
+        $this->dispatch('init-registration-date');
     }
 
     public function save()
@@ -54,21 +61,47 @@ class WitnessesRepresentativeForm extends Component
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.witnesses_representative_created_successfully'));
-                    return redirect()->route('admin.ejalas.witnesses_representatives.index');
+                    $this->successToast(__('ejalas::ejalas.witnesses_representative_created_successfully'));
                     break;
                 case Action::UPDATE:
                     $service->update($this->witnessesRepresentative, $dto);
-                    $this->successFlash(__('ejalas::ejalas.witnesses_representative_updated_successfully'));
-                    return redirect()->route('admin.ejalas.witnesses_representatives.index');
+                    $this->successToast(__('ejalas::ejalas.witnesses_representative_updated_successfully'));
                     break;
                 default:
-                    return redirect()->route('admin.ejalas.witnesses_representatives.index');
                     break;
             }
+                   $this->showWitnessRepresentativeForm = false;
+        $this->resetForm(); // reset for next creation
         } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
     }
+
+        public function editWitnessRepresentativeForm(WitnessesRepresentative $witnessesRepresentative)
+    {
+        $this->witnessesRepresentative = $witnessesRepresentative;
+        $this->action = Action::UPDATE;
+        $this->showWitnessRepresentativeForm = true;
+        $this->dispatch('init-registration-date');
+    }
+
+    protected function resetForm()
+    {
+        $this->witnessesRepresentative = $this->getDefaultWitnessRepresentative();
+        $this->action = Action::CREATE;
+    }
+
+ 
+    protected function getDefaultWitnessRepresentative(): WitnessesRepresentative
+    {
+
+
+        $witnessesRepresentative = new WitnessesRepresentative();
+        $witnessesRepresentative->complaint_registration_id = $this->complaintRegistration->id;
+    
+
+        return $witnessesRepresentative;
+    }
+
 }

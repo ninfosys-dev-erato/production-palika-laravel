@@ -7,6 +7,7 @@ use Src\Yojana\DTO\ImplementationAgencyAdminDto;
 use Src\Yojana\Enums\LetterTypes;
 use Src\Yojana\Models\ImplementationAgency;
 use Src\Yojana\Models\Plan;
+use Src\Yojana\Service\WorkOrderAdminService;
 
 class ImplementationAgencyAdminService
 {
@@ -65,6 +66,22 @@ public function collectionDelete(array $ids){
 
         $workOrderService = new WorkOrderAdminService();
         return $workOrderService->workOrderLetter(LetterTypes::AgreementInstruction , $plan);
+    }
+
+    /**
+     * Get or generate a work order for a specific letter type for the implementation agency's plan.
+     */
+    public function getWorkOrderByType($id, LetterTypes $type)
+    {
+        $implementationAgency = ImplementationAgency::find($id);
+        $plan  = Plan::find($implementationAgency->plan_id);
+        $plan->load('agreement','costEstimation.costDetails.sourceType');
+
+        $committeeCost = $plan->costEstimation->costDetails->where('costSource.code' ,'2' )->first();
+        $plan->setRelation('committeeCost', $committeeCost->cost_amount ?? 0);
+
+        $workOrderService = new WorkOrderAdminService();
+        return $workOrderService->workOrderLetter($type, $plan);
     }
 }
 

@@ -13,6 +13,7 @@ class SettlementAdminService
         return Settlement::create([
             'complaint_registration_id' => $settlementAdminDto->complaint_registration_id,
             'discussion_date' => $settlementAdminDto->discussion_date,
+                'discussion_date_en' => $settlementAdminDto->discussion_date_en,
             'settlement_date' => $settlementAdminDto->settlement_date,
             'present_members' => $settlementAdminDto->present_members,
             'settlement_details' => $settlementAdminDto->settlement_details,
@@ -27,6 +28,8 @@ class SettlementAdminService
         return tap($settlement)->update([
             'complaint_registration_id' => $settlementAdminDto->complaint_registration_id,
             'discussion_date' => $settlementAdminDto->discussion_date,
+                            'discussion_date_en' => $settlementAdminDto->discussion_date_en,
+
             'settlement_date' => $settlementAdminDto->settlement_date,
             'present_members' => $settlementAdminDto->present_members,
             'reconciliation_center_id' => $settlementAdminDto->reconciliation_center_id,

@@ -75,13 +75,15 @@ class AgreementTable extends DataTableComponent
         if (can('plan edit') || can('plan delete')) {
             $actionsColumn = Column::make(__(__('yojana::yojana.actions')))->label(function ($row, Column $column) {
                 $buttons = '<div class="btn-group" role="group" >';
-                if (can('plan settings')) {
-                    $settings = '<button class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')" ><i class="bx bx-printer"></i></button>&nbsp;';
-                    $buttons .= $settings;
-                }
+                
                 if (can('plan edit')) {
                     $edit = '<button class="btn btn-primary btn-sm" wire:click="edit(' . $row->id . ')" ><i class="bx bx-edit"></i></button>&nbsp;';
                     $buttons .= $edit;
+                }
+
+                if (can('plan settings')) {
+                    $settings = '<button class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')" ><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $settings;
                 }
 
                 if (can('plan delete')) {

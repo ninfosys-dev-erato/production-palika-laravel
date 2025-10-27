@@ -1,3 +1,33 @@
+<div>
+  
+
+        <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between card-header">
+        <h5 class="text-primary fw-bold mb-0">
+            {{ $showResponseForm 
+                ? __('ejalas::ejalas.add_hearing_schedule') 
+                : __('ejalas::ejalas.hearing_schedule_list') }}
+        </h5>                    </div>
+                    <div>
+                    @perm('jms_judicial_management create')
+    @if($canAddResponse || $showResponseForm)
+        <button 
+            wire:click="toggleResponseRegistrationForm" 
+            class="btn {{ $showResponseForm ? 'btn-danger' : 'btn-info' }}"
+        >
+            <i class="bx {{ $showResponseForm ? 'bx-arrow-back' : 'bx-plus' }}"></i>
+            {{ $showResponseForm 
+                ? __('ejalas::ejalas.back') 
+                : __('ejalas::ejalas.add_hearing_schedule') }}
+        </button>
+    @endif
+@endperm
+
+                    </div>
+                </div>
+    @if(!$showResponseForm)
+      <livewire:ejalas.written_response_registration_table theme="bootstrap-4" :complaintRegistration="$complaintRegistration"/> 
+@else
 <form wire:submit.prevent="save">
     <div class="card-body">
         <div class="row">
@@ -16,45 +46,13 @@
                 </div>
             </div>
 
-            <div class='col-md-6 mb-3' wire:ignore>
+        <div class='col-md-6' wire:ignore>
                 <div class='form-group'>
                     <label for='complaint_registration_id'
-                        class="form-label">{{ __('ejalas::ejalas.complaint_registration_id') }}</label>
-                    <select wire:model='writtenResponseRegistration.complaint_registration_id'
-                        id="complaint_registration_id"
-                        class="form-select form-select-md p-2  @error('complaint_registration_id') is-invalid @enderror"
-                        name='complaint_registration_id' wire:change="getComplaintRegistration()" required>
-                        <option value="" hidden>{{ __('ejalas::ejalas.select_registration_number') }}</option>
-                        @foreach ($complainRegistrations as $id => $value)
-                            <option value="{{ $id }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                    <div>
-                        @error('writtenResponseRegistration.complaint_registration_id')
-                            <small class='text-danger'>{{ __($message) }}</small>
-                        @enderror
-                    </div>
+                        class="form-label ">{{ __('ejalas::ejalas.complaint_no') }}</label>
+                    <input wire:model='writtenResponseRegistration.complaint_registration_id' name='complaint_registration_id' type='text' class='form-control'
+                       readonly>
                 </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="complainer_id" class="form-label">{{ __('ejalas::ejalas.complainers') }}</label>
-                @forelse ($complainers as $complainer)
-                    <input type="text" class="form-control mb-2" value="{{ $complainer }}" readonly>
-                @empty
-                    <input type="text" class="form-control mb-2" value="{{ __('ejalas::ejalas.no_complainer') }}"
-                        readonly>
-                @endforelse
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="defender_id" class="form-label">{{ __('ejalas::ejalas.defenders') }}</label>
-                @forelse ($defenders as $defender)
-                    <input type="text" class="form-control mb-2" value="{{ $defender }}" readonly>
-                @empty
-                    <input type="text" class="form-control mb-2" value="{{ __('ejalas::ejalas.no_defender') }}"
-                        readonly>
-                @endforelse
             </div>
 
             <div class='col-md-6 mb-3'>
@@ -202,21 +200,9 @@
     <div class="card-footer">
         <button type="submit" class="btn btn-primary"
             wire:loading.attr="disabled">{{ __('ejalas::ejalas.save') }}</button>
-        <a href="{{ route('admin.ejalas.written_response_registrations.index') }}" class="btn btn-danger"
-            wire:loading.attr="disabled">{{ __('ejalas::ejalas.back') }}</a>
     </div>
 
 </form>
+@endif
+</div>
 
-
-<script>
-    $(document).ready(function() {
-        $('#complaint_registration_id').select2();
-        $('#complaint_registration_id').on('change', function(e) {
-            let complaintId = $(this).val();
-            @this.set('writtenResponseRegistration.complaint_registration_id', $(this).val())
-            @this.call('getComplaintRegistration'); // Call livewire function to get party details
-        });
-
-    })
-</script>

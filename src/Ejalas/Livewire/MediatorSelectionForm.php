@@ -15,13 +15,19 @@ use Src\Ejalas\Service\MediatorSelectionAdminService;
 class MediatorSelectionForm extends Component
 {
     use SessionFlash;
+        protected $listeners = ['edit-mediatorSelectionForm' => 'editMediatorSelectionForm', 'selectedMediatorDeleted'=>'selectedMediatorDeleted'];
+
 
     public ?MediatorSelection $mediatorSelection;
-    public ?Action $action;
-    public $complainRegistrations;
+    public ?Action $action =  Action::CREATE;
+    public $complaintRegistration;
     public $mediators;
     public $mediatorSelectionTypes;
-    public $from;
+
+        public bool $canAddMediator = true;
+
+  public $showMediatorForm = false;
+  
 
     public function rules(): array
     {
@@ -38,34 +44,29 @@ class MediatorSelectionForm extends Component
         return view("Ejalas::livewire.mediator-selection.form");
     }
 
-    public function mount(MediatorSelection $mediatorSelection, Action $action, $from)
+    public function mount($complaintRegistration, MediatorSelection $mediatorSelection)
     {
-        $this->mediatorSelection = $mediatorSelection;
-        $this->action = $action;
-        $this->from = $from;
+        $this->complaintRegistration = $complaintRegistration;
+        $this->mediatorSelection = $mediatorSelection ?? $this->getDefaultMediatorSelection();
 
-        $complaintIdToKeep = $this->mediatorSelection->complaint_registration_id ?? null; //when on update
 
-        $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')
-            ->where('status', true)
-            ->where(function ($query) use ($complaintIdToKeep) {
-                $query->whereNotIn('id', function ($subquery) {
-                    $subquery->select('complaint_registration_id')
-                        ->from('jms_mediator_selections')
-                        ->whereNull('deleted_at');
-                });
-                if ($complaintIdToKeep) { //when on update include it's complaint registration id
-                    $query->orWhere('id', $complaintIdToKeep);
-                }
-            })
-            ->with('parties')
-            ->get()
-            ->mapWithKeys(function ($complaint) {
-                $partyNames = $complaint->parties->pluck('name')->implode(', ');
-                return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-            });
         $this->mediators = Mediator::whereNull('deleted_at')->pluck('mediator_name', 'id');
         $this->mediatorSelectionTypes = MediatorSelectionType::getForWeb();
+
+     $exists = MediatorSelection::whereNull('deleted_at')->where('complaint_registration_id', $complaintRegistration->id)->exists();
+    $this->canAddMediator = !$exists;
+    }
+
+    
+        public function toggleMediatorSelectionForm()
+    {
+        $this->showMediatorForm = !$this->showMediatorForm;
+
+        if ($this->showMediatorForm) {
+            $this->resetForm();
+        }
+
+        $this->dispatch('init-registration-date');
     }
 
     public function save()
@@ -77,21 +78,52 @@ class MediatorSelectionForm extends Component
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.mediator_selection_created_successfully'));
-                    return redirect()->route('admin.ejalas.mediator_selections.index', ['from' => $this->from]);
+                    $this->successToast(__('ejalas::ejalas.mediator_selection_created_successfully'));
+                      $this->canAddMediator = false;
                     break;
                 case Action::UPDATE:
                     $service->update($this->mediatorSelection, $dto);
-                    $this->successFlash(__('ejalas::ejalas.mediator_selection_updated_successfully'));
-                    return redirect()->route('admin.ejalas.mediator_selections.index', ['from' => $this->from]);
+                    $this->successToast(__('ejalas::ejalas.mediator_selection_updated_successfully'));
                     break;
                 default:
-                    return redirect()->route('admin.ejalas.mediator_selections.index', ['from' => $this->from]);
                     break;
             }
+                   $this->showMediatorForm = false;
+        $this->resetForm(); // reset for next creation
         } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
+    }
+
+     
+    public function editMediatorSelectionForm(MediatorSelection $mediatorSelection)
+    {
+        $this->mediatorSelection = $mediatorSelection;
+        $this->action = Action::UPDATE;
+        $this->showMediatorForm = true;
+        $this->dispatch('init-registration-date');
+    }
+
+ 
+    protected function resetForm()
+    {
+        $this->mediatorSelection = $this->getDefaultMediatorSelection();
+        $this->action = Action::CREATE;
+    }
+
+ 
+    protected function getDefaultMediatorSelection(): MediatorSelection
+    {
+
+
+        $mediatorSelection = new MediatorSelection();
+        $mediatorSelection->complaint_registration_id = $this->complaintRegistration->id;
+    
+
+        return $mediatorSelection;
+    }
+    public function selectedMediatorDeleted(){
+            $this->canAddMediator = true;
     }
 }

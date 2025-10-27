@@ -20,15 +20,13 @@ class HearingScheduleForm extends Component
     use SessionFlash, HelperDate;
 
     public ?HearingSchedule $hearingSchedule;
-    public ?Action $action;
-    public $complainRegistrations;
-    public $complaintData = [];
-
-    public $complainers = [];
-    public $defenders = [];
+    public ?Action $action =Action::CREATE;
+    public $complaintRegistration;
     public $reconciliationCenters;
     public $fiscalYears;
-    public $from;
+    public $hearingScheduleForm = false;
+
+       protected $listeners = ['edit-hearingSchedule' => 'editHearingSchedule'];
 
 
     public function rules(): array
@@ -49,94 +47,86 @@ class HearingScheduleForm extends Component
         return view("Ejalas::livewire.hearing-schedule.form");
     }
 
-    public function mount(HearingSchedule $hearingSchedule, Action $action, $from)
+    public function mount($complaintRegistration, HearingSchedule $hearingSchedule)
     {
-        $this->hearingSchedule = $hearingSchedule;
-        $this->action = $action;
-        $this->from = $from;
+        $this->complaintRegistration = $complaintRegistration;
+   
+        $this->hearingSchedule = $hearingSchedule ?? $this->getDefaultHearingSchedule();
+        
 
-        $nextId = HearingSchedule::max('id') + 1;
-
-        // $this->hearingSchedule->fiscal_year_id = getSetting('fiscal-year');
         $this->fiscalYears = FiscalYear::whereNull('deleted_at')->pluck('year', 'id');
-        $this->hearingSchedule->hearing_time = now()->format('H:i');
-        $this->hearingSchedule->hearing_paper_no = $nextId;
-
-        $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')->where('status', true)->with('parties')
-            ->get()
-            ->mapWithKeys(function ($complaint) {
-                $partyNames = $complaint->parties->pluck('name')->implode(', ');
-                return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-            });
-
-        $this->reconciliationCenters = PlaceOfRegistration::getForWeb();
 
 
-        if ($this->hearingSchedule->complaint_registration_id) {
-            $this->getComplaintRegistration();
-            $this->hearingSchedule->hearing_date = replaceNumbers($this->adToBs($this->hearingSchedule->hearing_date), true);
-        }
+        $this->reconciliationCenters = ReconciliationCenter::whereNull('deleted_at')->pluck('title','id');
     }
 
-    public function getComplaintRegistration()
+       public function toggleHearingScheduleForm()
     {
-        $complaintRegistrationId = $this->hearingSchedule['complaint_registration_id'];
-        $this->complaintData = ComplaintRegistration::with([
-            'fiscalYear',
-            'priority',
-            'disputeMatter',
-            'parties'
-        ])->find($complaintRegistrationId)?->toArray() ?? [];
+        $this->hearingScheduleForm = !$this->hearingScheduleForm;
 
-        if (!empty($this->complaintData)) {
-            // Access parties through the relationship
-            $parties = collect($this->complaintData['parties'] ?? []);
-
-            // Separate complainers and defenders using pivot data
-            $this->complainers = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Complainer';
-            })->pluck('name')->toArray();
-
-            $this->defenders = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Defender';
-            })->pluck('name')->toArray();
-        } else {
-            $this->complainers = [];
-            $this->defenders = [];
+        if ($this->hearingScheduleForm) {
+            $this->resetForm(); // fresh form when opening
         }
-        if ($this->action  == Action::CREATE) {
-            $count = HearingSchedule::where('complaint_registration_id', $complaintRegistrationId)->count();
-            $this->hearingSchedule['reference_no'] = $count + 1;
-        }
+
+        $this->dispatch('init-registration-date');
     }
 
     public function save()
     {
+      
         $this->validate();
         try {
             $englishDate = $this->bsToAd($this->hearingSchedule['hearing_date']);
-            $this->hearingSchedule['hearing_date'] = $englishDate;
+            $this->hearingSchedule['hearing_date_en'] = $englishDate;
             $dto = HearingScheduleAdminDto::fromLiveWireModel($this->hearingSchedule);
+         
             $service = new HearingScheduleAdminService();
 
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.hearing_schedule_created_successfully'));
-                    return redirect()->route('admin.ejalas.hearing_schedules.index', ['from' => $this->from]);
+                    $this->successToast(__('ejalas::ejalas.hearing_schedule_created_successfully'));
                     break;
                 case Action::UPDATE:
                     $service->update($this->hearingSchedule, $dto);
-                    $this->successFlash(__('ejalas::ejalas.hearing_schedule_updated_successfully'));
-                    return redirect()->route('admin.ejalas.hearing_schedules.index', ['from' => $this->from]);
+                    $this->successToast(__('ejalas::ejalas.hearing_schedule_updated_successfully'));
                     break;
                 default:
-                    return redirect()->route('admin.ejalas.hearing_schedules.index', ['from' => $this->from]);
                     break;
             }
+            
+        $this->hearingScheduleForm = false;
+        $this->resetForm(); 
         } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
+    }
+
+    
+    public function editHearingSchedule(HearingSchedule $hearingSchedule)
+    {
+        $this->hearingSchedule = $hearingSchedule;
+        $this->action = Action::UPDATE;
+        $this->hearingScheduleForm = true;
+        $this->dispatch('init-registration-date');
+    }
+
+ 
+    protected function resetForm()
+    {
+        $this->hearingSchedule = $this->getDefaultHearingSchedule();
+        $this->action = Action::CREATE;
+    }
+
+ 
+    protected function getDefaultHearingSchedule(): HearingSchedule
+    {
+        $hearingSchedule = new HearingSchedule();
+        $hearingSchedule->complaint_registration_id = $this->complaintRegistration->id;
+        $hearingSchedule->hearing_paper_no = HearingSchedule::max('id') + 1;
+        $hearingSchedule->hearing_time = now()->format('H:i');
+
+        return $hearingSchedule;
     }
 }

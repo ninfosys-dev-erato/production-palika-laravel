@@ -18,16 +18,15 @@ class WrittenResponseRegistrationForm extends Component
     use SessionFlash;
 
     public ?WrittenResponseRegistration $writtenResponseRegistration;
-    public ?Action $action;
-    public $complainRegistrations;
-    public $complaintData = [];
-
-    public $complainers = [];
-    public $defenders = [];
+    public ?Action $action = Action::CREATE;
+    public $complaintRegistration;
     public $registrationIndicators;
     public array $selectedIndicators = []; //stores data in the json format
+    public bool $canAddResponse = true;
 
+  public $showResponseForm = false;
 
+    protected $listeners = ['edit-responseForm' => 'editResponseForm', 'responseDeleted'=>'responseDeleted'];
 
     public function rules(): array
     {
@@ -51,53 +50,31 @@ class WrittenResponseRegistrationForm extends Component
         return view("Ejalas::livewire.written-response-registration.form");
     }
 
-    public function mount(WrittenResponseRegistration $writtenResponseRegistration, Action $action)
+    public function mount($complaintRegistration, WrittenResponseRegistration $writtenResponseRegistration)
     {
-        $this->writtenResponseRegistration = $writtenResponseRegistration;
-        $this->action = $action;
-        $nextId = WrittenResponseRegistration::max('id') + 1;
-        $this->writtenResponseRegistration->response_registration_no = $nextId;
+        $this->complaintRegistration = $complaintRegistration;
+        $this->writtenResponseRegistration = $writtenResponseRegistration ?? $this->getDefaultResponseRegistration();
+ 
 
         $this->registrationIndicators = RegistrationIndicator::whereNull('deleted_at')->where('indicator_type', PartyType::Defender)->pluck('dispute_title', 'id');
 
-        $this->complainRegistrations = ComplaintRegistration::whereNull('deleted_at')->where('status', true)->with('parties')
-            ->get()
-            ->mapWithKeys(function ($complaint) {
-                $partyNames = $complaint->parties->pluck('name')->implode(', '); // Get all party names as a string
-                return [$complaint->id => $complaint->reg_no . ' (' . $partyNames . ')'];
-            });
-        if ($this->writtenResponseRegistration->complaint_registration_id) {
-            $this->getComplaintRegistration();
-            $this->selectedIndicators = json_decode($this->writtenResponseRegistration->registration_indicator, true);
-        }
+     $exists = WrittenResponseRegistration::whereNull('deleted_at')->where('complaint_registration_id', $complaintRegistration->id)->exists();
+    $this->canAddResponse = !$exists;
+
     }
-    public function getComplaintRegistration()
+
+        public function toggleResponseRegistrationForm()
     {
-        $complaintRegistrationId = $this->writtenResponseRegistration['complaint_registration_id'];
-        $this->complaintData = ComplaintRegistration::with([
-            'fiscalYear',
-            'priority',
-            'disputeMatter',
-            'parties'
-        ])->find($complaintRegistrationId)?->toArray() ?? [];
+        $this->showResponseForm = !$this->showResponseForm;
 
-        if (!empty($this->complaintData)) {
-            // Access parties through the relationship
-            $parties = collect($this->complaintData['parties'] ?? []);
-
-            // Separate complainers and defenders using pivot data
-            $this->complainers = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Complainer';
-            })->pluck('name')->toArray();
-
-            $this->defenders = $parties->filter(function ($party) {
-                return $party['pivot']['type'] === 'Defender';
-            })->pluck('name')->toArray();
-        } else {
-            $this->complainers = [];
-            $this->defenders = [];
+        if ($this->showResponseForm) {
+            $this->resetForm();
         }
+
+        $this->dispatch('init-registration-date');
     }
+
+ 
     public function updatedSelectedIndicators($value)
     {
         if (in_array('पूरा नभएको', $this->selectedIndicators)) {
@@ -117,21 +94,55 @@ class WrittenResponseRegistrationForm extends Component
             switch ($this->action) {
                 case Action::CREATE:
                     $service->store($dto);
-                    $this->successFlash(__('ejalas::ejalas.written_response_registration_created_successfully'));
-                    return redirect()->route('admin.ejalas.written_response_registrations.index');
+                    $this->successToast(__('ejalas::ejalas.written_response_registration_created_successfully'));
+                           $this->canAddResponse = false;
                     break;
                 case Action::UPDATE:
                     $service->update($this->writtenResponseRegistration, $dto);
-                    $this->successFlash(__('ejalas::ejalas.written_response_registration_updated_successfully'));
-                    return redirect()->route('admin.ejalas.written_response_registrations.index');
+                    $this->successToast(__('ejalas::ejalas.written_response_registration_updated_successfully'));
                     break;
                 default:
-                    return redirect()->route('admin.ejalas.written_response_registrations.index');
                     break;
             }
+        $this->showResponseForm = false;
+        $this->resetForm(); // reset for next creation
         } catch (\Throwable $e) {
             logger($e->getMessage());
             $this->errorFlash((('Something went wrong while saving.' . $e->getMessage())));
         }
     }
+
+    
+    public function editResponseForm(WrittenResponseRegistration $writtenResponseRegistration)
+    {
+        $this->writtenResponseRegistration = $writtenResponseRegistration;
+        $this->action = Action::UPDATE;
+        $this->showResponseForm = true;
+        $this->dispatch('init-registration-date');
+    }
+
+ 
+    protected function resetForm()
+    {
+        $this->writtenResponseRegistration = $this->getDefaultCourtNotice();
+        $this->action = Action::CREATE;
+    }
+
+ 
+    protected function getDefaultCourtNotice(): WrittenResponseRegistration
+    {
+
+
+        $writtenResponseRegistration = new WrittenResponseRegistration();
+        $writtenResponseRegistration->complaint_registration_id = $this->complaintRegistration->id;
+        $writtenResponseRegistration->response_registration_no = WrittenResponseRegistration::max('id') + 1;
+    
+
+        return $writtenResponseRegistration;
+    }
+    public function responseDeleted(){
+            $this->canAddResponse = true;
+    }
+
 }
+

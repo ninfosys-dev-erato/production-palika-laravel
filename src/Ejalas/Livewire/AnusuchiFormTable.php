@@ -60,16 +60,9 @@ class AnusuchiFormTable extends DataTableComponent
                 ->sortable()
                 ->searchable()
                 ->collapseOnTablet(),
-            
+
             Column::make(__('ejalas::ejalas.parties'))
-                ->label(function ($row) {
-                    // Fetch related parties using the many-to-many relationship
-                    $defenders = $row->parties()->where('complaint_party.type', 'Defender')->pluck('name')->toArray();
-                    $complainers = $row->parties()->where('complaint_party.type', 'Complainer')->pluck('name')->toArray();
-                    
-                    $allParties = array_merge($complainers, $defenders);
-                    return implode(', ', $allParties);
-                })
+                ->label(fn($row) => $row->parties->pluck('name')->implode(', '))
                 ->sortable()
                 ->searchable(function ($builder, $term) {
                     $builder->orWhereHas('parties', function ($query) use ($term) {
@@ -80,27 +73,24 @@ class AnusuchiFormTable extends DataTableComponent
         ];
 
 
-            $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
-                $buttons = '<div class="btn-group" role="group" >';
-    
-                if (can('jms_judicial_management print')) {
-                    $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
-                    $buttons .= $preview;
-                }
-                return $buttons . "</div>";
-            })->html();
-            $columns[] = $actionsColumn;
-       
+        $actionsColumn = Column::make(__('ejalas::ejalas.actions'))->label(function ($row, Column $column) {
+            $buttons = '<div class="btn-group" role="group" >';
+
+            if (can('jms_judicial_management print')) {
+                $preview = '<button type="button" class="btn btn-info btn-sm me-1" wire:click="preview(' . $row->id . ')"><i class="bx bx-file"></i></button>';
+                $buttons .= $preview;
+            }
+            return $buttons . "</div>";
+        })->html();
+        $columns[] = $actionsColumn;
+
         return $columns;
     }
 
     public function refresh() {}
 
- public function preview($id)
- {
-    return redirect()->route('admin.ejalas.anusuchi-form.preview', ['id' => $id]);
- }
-
-
-
+    public function preview($id)
+    {
+        return redirect()->route('admin.ejalas.anusuchi-form.preview', ['id' => $id]);
+    }
 }

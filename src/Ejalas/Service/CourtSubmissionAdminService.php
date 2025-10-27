@@ -12,6 +12,7 @@ public function store(CourtSubmissionAdminDto $courtSubmissionAdminDto){
     return CourtSubmission::create([
         'complaint_registration_id' => $courtSubmissionAdminDto->complaint_registration_id,
         'discussion_date' => $courtSubmissionAdminDto->discussion_date,
+         'discussion_date_en' => $courtSubmissionAdminDto->discussion_date_en,
         'submission_decision_date' => $courtSubmissionAdminDto->submission_decision_date,
         'decision_authority_id' => $courtSubmissionAdminDto->decision_authority_id,
         'created_at' => date('Y-m-d H:i:s'),
@@ -22,6 +23,8 @@ public function update(CourtSubmission $courtSubmission, CourtSubmissionAdminDto
     return tap($courtSubmission)->update([
         'complaint_registration_id' => $courtSubmissionAdminDto->complaint_registration_id,
         'discussion_date' => $courtSubmissionAdminDto->discussion_date,
+                 'discussion_date_en' => $courtSubmissionAdminDto->discussion_date_en,
+
         'submission_decision_date' => $courtSubmissionAdminDto->submission_decision_date,
         'decision_authority_id' => $courtSubmissionAdminDto->decision_authority_id,
         'updated_at' => date('Y-m-d H:i:s'),

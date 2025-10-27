@@ -59,6 +59,7 @@
                             <input wire:model='complaintRegistration.reg_date' name='reg_date' type="text"
                                 id="reg_date" class='form-control nepali-date'
                                 placeholder="{{ __('ejalas::ejalas.enter_reg_date') }}">
+
                             <div>
                                 @error('complaintRegistration.reg_date')
                                     <small class='text-danger'>{{ __($message) }}</small>
@@ -119,8 +120,6 @@
         </div>
     </div>
 
-
-
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between">
             <div class="d-flex justify-content-between card-header">
@@ -137,8 +136,6 @@
         <div class="card-body">
             <livewire:ejalas.party_table theme="bootstrap-4" :complainer_reg_no="$complaintRegistration->reg_no" :type="'Complainer'" />
         </div>
-
-
 
         <div class="modal fade" id="indexModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -158,10 +155,7 @@
             </div>
         </div>
 
-
     </div>
-
-
 
     <div class="card mt-5">
         <div class="card-header  d-flex justify-content-between">
@@ -180,9 +174,6 @@
             <livewire:ejalas.party_table theme="bootstrap-4" :complainer_reg_no="$complaintRegistration->reg_no" :type="'Defender'" />
         </div>
 
-
-
-
         <div class="modal fade" id="indexModal-defender" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -200,8 +191,6 @@
                 </div>
             </div>
         </div>
-
-
 
     </div>
 
@@ -301,7 +290,6 @@
         </div>
     </div>
 
-
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('close-modal', () => {
@@ -336,7 +324,6 @@
         });
     </script>
 </div>
-
 
 @script
     <script>

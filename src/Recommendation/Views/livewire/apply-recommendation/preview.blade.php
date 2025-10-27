@@ -87,25 +87,7 @@
         }
     </style>
 
-    <script>
-        function printDiv() {
-            const printContent = document.getElementById('printContent');
-            if (!printContent) {
-                alert('No content found for printing.');
-                return;
-            }
 
-            const printContents = printContent.innerHTML;
-            const originalContents = document.body.innerHTML;
-
-            document.body.innerHTML = printContents;
-            setTimeout(() => {
-                window.print();
-                document.body.innerHTML = originalContents;
-                location.reload();
-            }, 100);
-        }
-    </script>
 
 
 
@@ -115,17 +97,14 @@
     {{-- this script lets user download the pdf --}}
     <script>
         async function printDiv() {
-            const timestamp = new Date().getTime();
-
             const {
                 jsPDF
             } = window.jspdf;
             const element = document.getElementById('printContent');
 
-
             const canvas = await html2canvas(element, {
                 scale: 2,
-                useCORS: true,
+                useCORS: true
             });
 
             const imgData = canvas.toDataURL('image/png');
@@ -140,17 +119,21 @@
             let heightLeft = imgHeight;
             let position = 0;
 
+            // Add first page
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
             heightLeft -= pdfHeight;
 
-            // Only add more pages if the image is taller than one page
+            // Add more pages only if needed
             while (heightLeft > 1) {
                 position -= pdfHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
                 heightLeft -= pdfHeight;
             }
-            pdf.save(`certificate_${timestamp}.pdf`);
+
+            // Trigger browser print dialog
+            pdf.autoPrint();
+            window.open(pdf.output('bloburl'), '_blank');
         }
     </script>
 

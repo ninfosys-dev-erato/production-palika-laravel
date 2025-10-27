@@ -25,7 +25,7 @@ class LegalDocument extends Model
         'deleted_by',
         'updated_at',
         'updated_by',
-        'template'
+        'template',
     ];
 
     public function casts(): array

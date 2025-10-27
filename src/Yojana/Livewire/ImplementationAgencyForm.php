@@ -113,7 +113,7 @@ class ImplementationAgencyForm extends Component
 
             case ImplementationMethods::OperatedByContract:
                 $dynamicRules['implementationAgency.organization_id'] = ['required'];
-                $dynamicRules['contractDetails.contract_number'] = ['required', 'numeric'];
+                $dynamicRules['contractDetails.contract_number'] = ['required'];
                 $dynamicRules['contractDetails.notice_date'] = ['required', 'string'];
                 $dynamicRules['contractDetails.bid_acceptance_date'] = ['required', 'string'];
                 $dynamicRules['contractDetails.bid_amount'] = ['required', 'numeric', 'min:0'];
@@ -254,7 +254,7 @@ class ImplementationAgencyForm extends Component
 
                     if (
                         isset($this->contractDetails) &&
-                        $this->implementationAgency->model == ImplementationMethods::OperatedByContract
+                        $model == ImplementationMethods::OperatedByContract
                     ) {
                         $this->contractDetails['implementation_agency_id'] = $updated->id;
                         $contractDto = ImplementationContractDetailsDto::fromArrayData($this->contractDetails);

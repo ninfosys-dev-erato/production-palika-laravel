@@ -108,8 +108,21 @@ class ImplementationAgencyTable extends DataTableComponent
                     $buttons .= $edit;
                 }
                 if (can('plan print')) {
-                    $print = '<button type="button" class="btn btn-info btn-sm" wire:click="print(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp';
-                    $buttons .= $print;
+                    // Agreement Instruction Letter
+                    $agreementBtn = '<button type="button" class="btn btn-info btn-sm" title="' . __('yojana::yojana.agreement_instruction') . '" wire:click="printAgreementInstruction(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $agreementBtn;
+
+                    // Tender Approval Letter
+                    $tenderBtn = '<button type="button" class="btn btn-success btn-sm" title="' . __('yojana::yojana.tender_approval_letter') . '" wire:click="printTenderApproval(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $tenderBtn;
+                    
+                    // Rate Submission Letter
+                    $rateSubmissionBtn = '<button type="button" class="btn btn-secondary btn-sm" title="' . __('yojana::yojana.rate_submission_letter') . '" wire:click="printRateSubmission(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $rateSubmissionBtn;
+                    
+                    // Tender Opening Minute
+                    $tenderOpeningBtn = '<button type="button" class="btn btn-warning btn-sm" title="' . __('yojana::yojana.tender_opening_minute') . '" wire:click="printTenderOpeningMinute(' . $row->id . ')"><i class="bx bx-file"></i></button>&nbsp;';
+                    $buttons .= $tenderOpeningBtn;
                 }
                 return $buttons;
             })->html();
@@ -136,6 +149,54 @@ class ImplementationAgencyTable extends DataTableComponent
         $workOrder = $service->getWorkOrder( $id);
         if (!isset($workOrder)){
             $this->errorFlash('Letter Sample Not Found');
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    public function printAgreementInstruction($id)
+    {
+        $service = new ImplementationAgencyAdminService();
+        $workOrder = $service->getWorkOrderByType($id, LetterTypes::AgreementInstruction);
+        if (!isset($workOrder)){
+            $this->errorFlash(__('yojana::yojana.letter_format_missing'));
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    public function printTenderApproval($id)
+    {
+        $service = new ImplementationAgencyAdminService();
+        $workOrder = $service->getWorkOrderByType($id, LetterTypes::TenderApprovalLetter);
+        if (!isset($workOrder)){
+            $this->errorFlash(__('yojana::yojana.letter_format_missing'));
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    public function printRateSubmission($id)
+    {
+        $service = new ImplementationAgencyAdminService();
+        $workOrder = $service->getWorkOrderByType($id, LetterTypes::RateSubmissionLetter);
+        if (!isset($workOrder)){
+            $this->errorFlash(__('yojana::yojana.letter_format_missing'));
+            return false;
+        }
+        $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);
+        $this->dispatch('open-pdf-in-new-tab', url: $url);
+    }
+
+    public function printTenderOpeningMinute($id)
+    {
+        $service = new ImplementationAgencyAdminService();
+        $workOrder = $service->getWorkOrderByType($id, LetterTypes::TenderOpeningMinute);
+        if (!isset($workOrder)){
+            $this->errorFlash(__('yojana::yojana.letter_format_missing'));
             return false;
         }
         $url = route('admin.plans.work_orders.preview', ['id' => $workOrder->id, 'model_id' => $id ]);

@@ -9,6 +9,7 @@ Route::group(['prefix' => 'admin/complaint_registrations', 'as' => 'admin.ejalas
     Route::get('/edit/{from?}/{id}', [ComplaintRegistrationAdminController::class, 'edit'])->name('edit');
     Route::get('/view/{id}', [ComplaintRegistrationAdminController::class, 'view'])->name('view');
     Route::get('/preview/{id}', [ComplaintRegistrationAdminController::class, 'preview'])->name('preview');
+    Route::get('/forward/{id}', [ComplaintRegistrationAdminController::class, 'forward'])->name('forward');
     // Route::get('/report', [ComplaintRegistrationAdminController::class, 'report'])->name('report');
     // Route::get('/reconciliation/index', [ComplaintRegistrationAdminController::class, 'reconciliationIndex'])->name('reconciliationIndex');
 });

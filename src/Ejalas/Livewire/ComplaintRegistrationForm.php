@@ -92,7 +92,6 @@ class ComplaintRegistrationForm extends Component
             if ($this->complaintRegistration->reconciliation_reg_no) {
                 $this->showField = true;
             }
-            $this->complaintRegistration->reg_date = replaceNumbers($this->adToBs($this->complaintRegistration->reg_date), true);
             // Fetch parties related to this complaint registration including pivot data
             $this->selectedParties = $this->complaintRegistration
                 ->parties()
@@ -111,12 +110,14 @@ class ComplaintRegistrationForm extends Component
 
     public function save()
     {
+
         $this->validate();
         try {
             $englishDate = $this->bsToAd($this->complaintRegistration['reg_date']);
-            $this->complaintRegistration['reg_date'] = $englishDate;
+            $this->complaintRegistration['reg_date_en'] = $englishDate;
             $this->complaintRegistration['ward_no'] = GlobalFacade::ward();
             $dto = ComplaintRegistrationAdminDto::fromLiveWireModel($this->complaintRegistration);
+
             $service = new ComplaintRegistrationAdminService();
             switch ($this->action) {
                 case Action::CREATE:

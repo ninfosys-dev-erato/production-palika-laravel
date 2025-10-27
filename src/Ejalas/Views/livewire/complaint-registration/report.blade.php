@@ -1,28 +1,23 @@
 <div>
-    <nav aria-label="breadcrumb" class="d-flex justify-content-end">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="bx bx-home-alt"></i></a>
-            <li class="breadcrumb-item"><a href="#">{{ __('ejalas::ejalas.complaint_registration') }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ __('ejalas::ejalas.list') }}</li>
-        </ol>
-    </nav>
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="text-primary mb-0">{{ __('ejalas::ejalas.complaint_registration_report') }}</h4>
-        <div class="d-flex gap-2 ms-auto">
-            <button type="button" wire:click="export" class="btn btn-outline-primary btn-sm">
-                {{ __('Export') }}
-            </button>
-            <button wire:click='downloadPdf' class="btn btn-outline-primary btn-sm" target="_blank">
-                {{ __('Pdf') }}
-            </button>
-        </div>
-    </div>
     <div class="container py-4">
         <div class="card border-0 shadow-sm rounded-3">
-            <div class="divider divider-primary text-start text-primary fw-bold mx-4 mb-0">
-                <div class="divider-text fs-4">{{ __('ejalas::ejalas.search') }}</div>
+            <div class="d-flex justify-content-between align-items-center mx-4 mb-0">
+                <div class="divider divider-primary text-start text-primary fw-bold flex-grow-1 mb-0">
+                    <div class="divider-text fs-5">
+                        {{ __('ejalas::ejalas.complaint_registration_report') }}
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 ms-3 mt-3">
+                    {{-- <button type="button" wire:click="export" class="btn btn-outline-primary btn-sm">
+                        {{ __('Export') }}
+                    </button> --}}
+                    <button wire:click="downloadPdf" class="btn btn-outline-primary btn-sm">
+                        {{ __('Pdf') }}
+                    </button>
+                </div>
             </div>
+
             <div class="card-body">
                 <div class="row g-3 align-items-center">
                     <!-- Start Date -->
@@ -53,6 +48,23 @@
                         @enderror
                     </div>
 
+                    <div class="col-md col-12">
+                        <label class="form-label">{{ __('ejalas::ejalas.fiscal_year') }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white border-0"><i
+                                    class="bx bx-layer"></i></span>
+                            <select class="form-select" wire:model="selectedFiscalYear">
+                                <option value="">{{ __('ejalas::ejalas.select_an_option') }}</option>
+                                @foreach ($fiscalYears as $id => $value)
+                                    <option value="{{ $id }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('selectedFiscalYear')
+                            <small class="text-danger">{{ __($message) }}</small>
+                        @enderror
+                    </div>
+
                     <!-- Status -->
                     <div class="col-md col-12">
                         <label class="form-label">{{ __('ejalas::ejalas.status') }}</label>
@@ -61,9 +73,9 @@
                                     class="bx bx-layer"></i></span>
                             <select class="form-select" wire:model="selectedStatus">
                                 <option value="">{{ __('ejalas::ejalas.select_an_option') }}</option>
-                                <option value="pending">{{ __('ejalas::ejalas.pending') }}</option>
-                                <option value="1">{{ __('ejalas::ejalas.registered') }}</option>
-                                <option value="0">{{ __('ejalas::ejalas.rejected') }}</option>
+                                @foreach ($allStatus as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
                             </select>
                         </div>
                         @error('selectedStatus')
@@ -71,6 +83,9 @@
                         @enderror
                     </div>
 
+                </div>
+
+                <div class="row g-3 align-items-center mt-3">
                     <!-- Dispute Matter -->
                     <div class="col-md col-12">
                         <label class="form-label">{{ __('ejalas::ejalas.dispute_matter') }}</label>
@@ -88,11 +103,6 @@
                             <small class="text-danger">{{ __($message) }}</small>
                         @enderror
                     </div>
-
-
-                </div>
-
-                <div class="row g-3 align-items-center mt-3">
                     <!-- Dispute Area -->
                     <div class="col-md col-12">
                         <label class="form-label">{{ __('ejalas::ejalas.dispute_area') }}</label>
@@ -128,20 +138,20 @@
                         @enderror
                     </div>
 
-                    <!-- Reconciliation Center -->
+                    <!-- Reg address -->
                     <div class="col-md col-12">
-                        <label class="form-label">{{ __('ejalas::ejalas.reconciliation_center') }}</label>
+                        <label class="form-label">{{ __('ejalas::ejalas.place_of_registration') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-primary text-white border-0"><i
                                     class="bx bx-layer"></i></span>
-                            <select class="form-select" wire:model="selectedReconciliationCenter">
+                            <select class="form-select" wire:model="selectedRegAddress">
                                 <option value="">{{ __('ejalas::ejalas.select_an_option') }}</option>
-                                @foreach ($reconciliationCenters as $id => $value)
+                                @foreach ($regAddresses as $id => $value)
                                     <option value="{{ $id }}">{{ $value }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        @error('selectedReconciliationCenter')
+                        @error('selectedRegAddress')
                             <small class="text-danger">{{ __($message) }}</small>
                         @enderror
                     </div>
@@ -167,17 +177,21 @@
         </div>
     </div>
 
-
-
     <div class="overflow-x-auto mx-auto">
+
         @if ($complaints && $complaints->count())
-            <div class="container mt-4">
-                <div class="card mx-auto shadow">
-                    <table class="table table-border">
+            <div class=" mt-4" id="printReportContent">
+                <div>
+                    {!! $letterHead !!}
+                    <div class="d-flex justify-content-end">
+                        <p>मिति: {{ $nepaliDate }}</p>
+                    </div>
+                    <table class="bordered-table">
                         <thead>
                             <tr>
                                 <th>दर्ता नं.</th>
                                 <th>दर्ता मिति</th>
+                                <th>दर्ता भएको ठाउँ</th>
                                 <th>निवेदक</th>
                                 <th>विपक्षी</th>
                                 <th>वार्ड</th>
@@ -190,13 +204,14 @@
                             @foreach ($complaints as $complaint)
                                 <tr class="hover:bg-gray-50">
                                     <td>{{ $complaint->reg_no }}</td>
-                                    <td>{{ $complaint->reg_date_bs }}</td>
-                                    <td>{{ implode(', ', $complaint->complainers ?? []) }}</td>
-                                    <td>{{ implode(', ', $complaint->defenders ?? []) }}</td>
+                                    <td>{{ $complaint->reg_date }}</td>
+                                    <td>{{ $complaint->reg_address?->label() }}</td>
+                                    <td>{{ $complaint->complainers->pluck('name')->implode(', ') }}</td>
+                                    <td>{{ $complaint->defenders->pluck('name')->implode(', ') }}</td>
                                     <td>{{ $complaint->ward_no }}</td>
                                     <td>{{ $complaint->disputeMatter?->disputeArea?->title ?? '' }}</td>
                                     <td>{{ $complaint->disputeMatter?->title ?? '' }}</td>
-                                    <td>{{ is_null($complaint->status) ? 'निर्णय बाँकी' : ($complaint->status ? 'स्वीकृत' : 'अस्वीकृत') }}
+                                    <td>{{ $complaint->status?->label() }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -221,24 +236,76 @@
             </div>
         @endif
     </div>
-</div>
-@script
-    {{-- <script>
-        $(document).ready(function() {
-            $('#startDate').nepaliDatePicker({
-                dateFormat: '%y-%m-%d',
-                closeOnDateSelect: true,
-            }).on('dateSelect', function() {
-                let nepaliDate = $(this).val();
-                @this.set('startDate', nepaliDate);
-            });
-            $('#endDate').nepaliDatePicker({
-                dateFormat: '%y-%m-%d',
-                closeOnDateSelect: true,
-            }).on('dateSelect', function() {
-                let nepaliDate = $(this).val();
-                @this.set('endDate', nepaliDate);
+
+    <style>
+        /* Ensure A4 Size */
+        #printReportContent {
+            padding: 7mm 20mm;
+            background: white;
+            text-align: left;
+            position: relative;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .bordered-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bordered-table th,
+        .bordered-table td {
+            border: 1px solid black;
+            padding: 8px 8px;
+            text-align: left;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('print-report', () => {
+                printDiv();
             });
         });
-    </script> --}}
-@endscript
+        async function printDiv() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const element = document.getElementById('printReportContent');
+
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // Add first page
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            // Add more pages only if needed
+            while (heightLeft > 1) {
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            // Trigger browser print dialog
+            pdf.autoPrint();
+            window.open(pdf.output('bloburl'), '_blank');
+        }
+    </script>
+</div>

@@ -2,6 +2,7 @@
 
 namespace Src\Ejalas\Service;
 
+use App\Facades\GlobalFacade;
 use Illuminate\Support\Facades\Auth;
 use Src\Ejalas\DTO\ComplaintRegistrationAdminDto;
 use Src\Ejalas\Models\ComplaintRegistration;
@@ -15,6 +16,7 @@ class ComplaintRegistrationAdminService
             'reg_no' => $complaintRegistrationAdminDto->reg_no,
             'old_reg_no' => $complaintRegistrationAdminDto->old_reg_no,
             'reg_date' => $complaintRegistrationAdminDto->reg_date,
+            'reg_date_en' => $complaintRegistrationAdminDto->reg_date_en,
             'reg_address' => $complaintRegistrationAdminDto->reg_address,
             'complainer_id' => $complaintRegistrationAdminDto->complainer_id,
             'defender_id' => $complaintRegistrationAdminDto->defender_id,
@@ -38,6 +40,7 @@ class ComplaintRegistrationAdminService
             'reg_no' => $complaintRegistrationAdminDto->reg_no,
             'old_reg_no' => $complaintRegistrationAdminDto->old_reg_no,
             'reg_date' => $complaintRegistrationAdminDto->reg_date,
+            'reg_date_en' => $complaintRegistrationAdminDto->reg_date_en,
             'reg_address' => $complaintRegistrationAdminDto->reg_address,
             'complainer_id' => $complaintRegistrationAdminDto->complainer_id,
             'defender_id' => $complaintRegistrationAdminDto->defender_id,

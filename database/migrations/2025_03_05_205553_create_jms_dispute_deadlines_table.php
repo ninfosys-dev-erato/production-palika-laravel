@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('complaint_registration_id')->constrained('jms_complaint_registrations')->cascadeOnDelete();
             $table->foreignId('registrar_id')->nullable()->constrained('jms_judicial_employees')->cascadeOnDelete();
             $table->string('deadline_set_date')->nullable();
+            $table->string('deadline_set_date_en')->nullable();
             $table->string('deadline_extension_period')->nullable();
             $table->text('template')->nullable();
             $table->softDeletes();

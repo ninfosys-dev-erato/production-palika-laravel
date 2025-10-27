@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Src\Ejalas\DTO\DisputeRegistrationCourtAdminDto;
 use Src\Ejalas\Models\ComplaintRegistration;
 use Src\Ejalas\Models\DisputeRegistrationCourt;
+use  Src\Ejalas\Enum\ApplicationStatus;
 
 class DisputeRegistrationCourtAdminService
 {
@@ -15,10 +16,10 @@ class DisputeRegistrationCourtAdminService
         $complainRegistration = ComplaintRegistration::findOrFail($disputeRegistrationCourtAdminDto->complaint_registration_id);
 
         // Set complaint registration status based on dispute registration court status
-        $complaintStatus = ($disputeRegistrationCourtAdminDto->status === 'Approved') ? true : false;
+        $complaintStatus = ($disputeRegistrationCourtAdminDto->status === 'approved') ? ApplicationStatus::Accepted : ApplicationStatus::Pending;
 
         $complainRegistration->update([
-            'status' => $complaintStatus,
+            'status' => $complaintStatus->value,
         ]);
         FileTrackingFacade::recordFile($complainRegistration);
 
@@ -38,10 +39,10 @@ class DisputeRegistrationCourtAdminService
         $complainRegistration = ComplaintRegistration::findOrFail($disputeRegistrationCourtAdminDto->complaint_registration_id);
 
         // Set complaint registration status based on dispute registration court status
-        $complaintStatus = ($disputeRegistrationCourtAdminDto->status === 'Approved') ? true : false;
+         $complaintStatus = ($disputeRegistrationCourtAdminDto->status === 'approved') ? ApplicationStatus::Accepted : ApplicationStatus::Pending;
 
         $complainRegistration->update([
-            'status' => $complaintStatus,
+            'status' => $complaintStatus->value,
         ]);
         FileTrackingFacade::recordFile($complainRegistration);
 

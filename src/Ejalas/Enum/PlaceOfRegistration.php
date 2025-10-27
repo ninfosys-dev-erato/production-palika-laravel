@@ -20,15 +20,14 @@ enum PlaceOfRegistration: string
         };
     }
 
+
+
+
     public static function getValuesWithLabels(): array
     {
         $valuesWithLabels = [];
-
         foreach (self::cases() as $value) {
-            $valuesWithLabels[] = [
-                'value' => $value,
-                'label' => $value->label(),
-            ];
+            $valuesWithLabels[$value->value] = $value->label();
         }
 
         return $valuesWithLabels;

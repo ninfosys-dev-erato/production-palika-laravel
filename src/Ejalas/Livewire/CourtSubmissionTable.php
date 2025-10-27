@@ -20,9 +20,11 @@ class CourtSubmissionTable extends DataTableComponent
     public $report = false;
     public $startDate = null;
     public $endDate = null;
+    public $complaintRegistration;
     protected $listeners = ['getSearchDate' => 'getSearchDate'];
-    public function mount($report = false)  // Default to false if not passed
+    public function mount($complaintRegistration, $report = false)  // Default to false if not passed
     {
+        $this->complaintRegistration = $complaintRegistration;
         $this->report = $report;
     }
     public array $bulkActions = [
@@ -52,6 +54,9 @@ class CourtSubmissionTable extends DataTableComponent
             ->where('jms_court_submissions.deleted_at', null)
             ->where('jms_court_submissions.deleted_by', null)
             ->orderBy('jms_court_submissions.created_at', 'DESC')
+            ->when($this->complaintRegistration, function ($query) {
+                $query->where('complaint_registration_id', $this->complaintRegistration->id);
+            })
             ->when($this->report, function ($query) {
                 $query->whereBetween('discussion_date', [$this->startDate, $this->endDate]);
             });
@@ -72,8 +77,7 @@ class CourtSubmissionTable extends DataTableComponent
             Column::make(__('ejalas::ejalas.discussion_date'), "discussion_date")
                 ->label(function ($row) {
                     return $row->discussion_date
-                        ? replaceNumbers($this->adToBs($row->discussion_date), true)
-                        : 'N/A';
+                        ?? 'N/A';
                 })
                 ->html()
                 ->sortable()
@@ -117,7 +121,9 @@ class CourtSubmissionTable extends DataTableComponent
             SessionFlash::WARNING_FLASH(__('ejalas::ejalas.you_cannot_perform_this_action'));
             return false;
         }
-        return redirect()->route('admin.ejalas.court_submissions.edit', ['id' => $id]);
+        $this->dispatch('edit-courtSubmissionForm', courtSubmission: $id);
+
+        // return redirect()->route('admin.ejalas.court_submissions.edit', ['id' => $id]);
     }
     public function delete($id)
     {
@@ -127,7 +133,8 @@ class CourtSubmissionTable extends DataTableComponent
         }
         $service = new CourtSubmissionAdminService();
         $service->delete(CourtSubmission::findOrFail($id));
-        $this->successFlash(__('ejalas::ejalas.court_submission_deleted_successfully'));
+        $this->dispatch('courtSubmissionFormDeleted');
+        $this->successToast(__('ejalas::ejalas.court_submission_deleted_successfully'));
     }
     public function deleteSelected()
     {

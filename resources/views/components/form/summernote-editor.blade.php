@@ -25,38 +25,40 @@
     <div class="text-danger">{{ $message }}</div>
     @enderror
 </div>
+
 @push('scripts')
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            $('#{{ $id }}').summernote({
-                placeholder: '',
-                tabsize: 2,
-                height: 1200,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ],
-                callbacks: {
-                    onChange: function(contents, $editable) {
-                        @this.set('{{ $name }}', contents);
-                    }
-                }
-            });
-            let buttons = $('.note-editor button[data-toggle="dropdown"]');
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    $('#{{ $id }}').summernote({
+        placeholder: '',
+        tabsize: 2,
+        height: 1200,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        codeviewFilter: false,        // ✅ keep all tags
+        codeviewIframeFilter: false,  // ✅ don't clean HTML inside iframe
+        callbacks: {
+            onChange: function(contents, $editable) {
+                @this.set('{{ $name }}', contents);
+            }
+        }
+    });
 
-            buttons.each((key, value)=>{
-                $(value).on('click', function(e){
-                    $(this).closest('.note-btn-group').toggleClass('open');
-                })
-            })
+    // Fix dropdown toggle issue
+    $('.note-editor button[data-toggle="dropdown"]').each((key, value)=>{
+        $(value).on('click', function(e){
+            $(this).closest('.note-btn-group').toggleClass('open');
         });
-
-    </script>
+    });
+});
+</script>
 @endpush
