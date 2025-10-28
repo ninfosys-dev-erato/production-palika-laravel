@@ -27,6 +27,7 @@ class WorkOrder extends Model
         'updated_at',
         'updated_by',
         'template',
+        'dynamic_data',
     ];
 
     public function casts(): array
@@ -46,6 +47,7 @@ class WorkOrder extends Model
             'deleted_at' => 'datetime',
             'deleted_by' => 'string',
             'template' => 'string',
+            'dynamic_data' => 'array'
         ];
     }
 
@@ -61,5 +63,8 @@ class WorkOrder extends Model
     {
         return $this->belongsTo(LetterSample::class, 'letter_sample_id', 'id');
     }
-
+    public function formSigneeName()
+    {
+        return $this->hasMany(FormSigneeName::class, 'work_order_id', 'id');
+    }
 }

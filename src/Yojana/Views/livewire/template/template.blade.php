@@ -3,36 +3,71 @@
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h5><strong>{{__('yojana::yojana.subject__')}}</strong>{{__($model->subject)}}</h5>
+                <h5><strong>{{ __('yojana::yojana.subject__') }}</strong>{{ __($model->subject) }}</h5>
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-between flex-wrap">
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button class="btn btn-outline-primary" type="submit" wire:loading.attr="disabled" wire:click="save">
-                    <i class="bx bx-save"></i> {{ __('yojana::yojana.save') }}
-                </button>
-                <button class="btn btn-outline-primary" type="submit" wire:loading.attr="disabled"
-                    wire:click="resetLetter">
-                    <i class="bx bx-reset"></i> {{ __('yojana::yojana.reset') }}
-                </button>
-                <div class="d-flex align-items-center">
-                    <label for="" class="mb-0">{{ __('yojana::yojana.edit_mode') }}&nbsp;</label>
-                    <div class="form-check form-switch mb-0">
-                        <input type="checkbox" class="form-check-input" {{ !$preview ? 'checked' : '' }}
-                            wire:click="togglePreview">
-                    </div>
+
+                {{-- Input Fields Mode --}}
+                @if ($editorMode == 'input')
+                    <button class="btn btn-outline-danger" wire:click="deleteDynamicData">
+                        {{ __('yojana::yojana.delete_data') }}
+                    </button>
+                @endif
+
+                @if ($editorMode == 'ck' || $editorMode == 'preview')
+                    <button class="btn btn-outline-primary" type="submit" wire:click="save" wire:loading.attr="disabled">
+                        <i class="bx bx-save"></i> {{ __('yojana::yojana.save') }}
+                    </button>
+
+                    <button class="btn btn-outline-primary" type="button" wire:click="resetLetter"
+                        wire:loading.attr="disabled">
+                        <i class="bx bx-reset"></i> {{ __('yojana::yojana.reset') }}
+                    </button>
+                @endif
+
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+
+                <div class="d-flex border rounded overflow-hidden">
+                    {{-- Input Fields --}}
+                    <button type="button"
+                        class="flex-fill btn {{ $editorMode == 'input' ? 'btn-primary text-white' : 'btn-light' }}"
+                        wire:click="setEditorMode('input')">
+                        {{ __('yojana::yojana.input_fields') }}
+                    </button>
+
+                    {{-- Preview Text --}}
+                    <button type="button"
+                        class="flex-fill btn {{ $editorMode == 'preview' ? 'btn-primary text-white' : 'btn-light' }}"
+                        wire:click="setEditorMode('preview')">
+                        {{ __('yojana::yojana.preview_text') }}
+                    </button>
+
+                    {{-- CKEditor --}}
+                    <button type="button"
+                        class="flex-fill btn {{ $editorMode == 'ck' ? 'btn-primary text-white' : 'btn-light' }}"
+                        wire:click="setEditorMode('ck')">
+                        {{ __('yojana::yojana.ck_editor') }}
+                    </button>
                 </div>
             </div>
 
             <div>
-                <button type="button" class="btn btn-outline-primary btn-info"
-                    onclick="printDiv()" data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="{{ __('yojana::yojana.print_form') }}">
-                    <i class="bx bx-printer"></i> {{ __('yojana::yojana.print') }}
-                </button>
+                @if ($editorMode != 'input')
+                    {{-- Print Button --}}
+                    <button type="button" class="btn btn-outline-primary btn-info" onclick="printDiv()"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('yojana::yojana.print_form') }}">
+                        <i class="bx bx-printer"></i> {{ __('yojana::yojana.print') }}
+                    </button>
+                @endif
+
             </div>
 
         </div>
+
     </div>
 
     <div class="col-md-12 {{ $preview ? 'd-none' : '' }}">
@@ -45,6 +80,7 @@
             </div>
         </div>
     </div>
+
     <style>
         /* Ensure A4 Size */
         .a4-container {
@@ -74,13 +110,12 @@
             });
 
         });
-
     </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>
-    async function printDiv() {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        async function printDiv() {
             const {
                 jsPDF
             } = window.jspdf;
@@ -119,54 +154,54 @@
             pdf.autoPrint();
             window.open(pdf.output('bloburl'), '_blank');
         }
-    </script> 
+    </script>
 
-{{-- this script lets user download the pdf --}}
-<!-- <script>
-    async function printDiv() {
-        const {
-            jsPDF
-        } = window.jspdf;
-        const element = document.getElementById('printContent');
+    {{-- this script lets user download the pdf --}}
+    <!-- <script>
+        async function printDiv() {
+            const {
+                jsPDF
+            } = window.jspdf;
+            const element = document.getElementById('printContent');
 
 
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-        });
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+            });
 
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
 
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
 
-        const imgProps = pdf.getImageProperties(imgData);
-        const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-        let heightLeft = imgHeight;
-        let position = 0;
+            let heightLeft = imgHeight;
+            let position = 0;
 
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-        heightLeft -= pdfHeight;
-
-        // Only add more pages if the image is taller than one page
-        while (heightLeft > 1) {
-            position -= pdfHeight;
-            pdf.addPage();
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
             heightLeft -= pdfHeight;
+
+            // Only add more pages if the image is taller than one page
+            while (heightLeft > 1) {
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+            pdf.save("certificate.pdf");
         }
-        pdf.save("certificate.pdf");
-    }
-    // Listen for Livewire print event
-    document.addEventListener('livewire:init', () => {
-        Livewire.on('print-certificate-letter', () => {
+        // Listen for Livewire print event
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('print-certificate-letter', () => {
 
-            printDiv();
+                printDiv();
+            });
+
+
         });
-
-
-    });
-</script> -->
+    </script> -->
 @endpush

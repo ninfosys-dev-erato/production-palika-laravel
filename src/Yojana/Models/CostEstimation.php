@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Settings\Models\FiscalYear;
 
 class CostEstimation extends Model
 {
@@ -28,6 +29,8 @@ class CostEstimation extends Model
         'rate_analysis_document',
         'cost_estimation_document',
         'initial_photo',
+        'fiscal_year',
+        'chalani_no',
         'created_at',
         'created_by',
         'deleted_at',
@@ -51,6 +54,8 @@ class CostEstimation extends Model
             'rate_analysis_document' => 'string',
             'cost_estimation_document' => 'string',
             'initial_photo' => 'string',
+            'chalani_no' => 'string',
+            'fiscal_year' => 'string',
             'created_at' => 'datetime',
             'created_by' => 'string',
             'updated_at' => 'datetime',
@@ -82,24 +87,26 @@ class CostEstimation extends Model
     {
         return $this->hasMany(CostEstimationDetail::class);
     }
-    public function plan() : BelongsTo
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
-    public function costDetails() : HasMany
+    public function costDetails(): HasMany
     {
         return $this->hasMany(CostDetails::class);
     }
 
-    public function configDetails() : HasMany
+    public function configDetails(): HasMany
     {
         return $this->hasMany(CostEstimationConfiguration::class);
     }
 
-    public function costEstimationLogs() : HasMany
+    public function costEstimationLogs(): HasMany
     {
         return $this->hasMany(CostEstimationLog::class);
     }
-
-
+    public function fiscalYear()
+    {
+        return $this->belongsTo(FiscalYear::class, 'fiscal_year', 'id');
+    }
 }

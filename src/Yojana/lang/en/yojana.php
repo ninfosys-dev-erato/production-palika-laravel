@@ -1758,4 +1758,27 @@ return [
 
     // General guidance
     'enter_implementation_method_first' => 'Please select the implementation method first',
+    'fiscal_year' => 'Fiscal Year',          
+    'select_fiscal_year' => 'Select Fiscal Year', 
+    'chalani_no' => 'Chalani Number',          
+    'enter_chalani_no' => 'Enter Chalani Number',
+    'signee_name' => 'Signee Name',
+    'please_select_any_one_option' => 'Please select any one option',
+    'signee_saved_successfully' => 'Signee Saved Successfully',
+    'saved' => 'Saved',
+    'unsaved' => 'Unsaved',
+    'preview_values' => 'Preview Values',
+    'edit_inputs' => 'Edit Inputs',
+    'save' => 'Save',
+    'delete_data' => 'Delete Data',
+    'data_deleted_successfully' => 'Data deleted successfully',
+    'data_saved_successfully' => 'Data saved successfully',
+
+    'input_fields' => 'Input Fields',
+    'preview_text' => 'Preview Text',
+    'ck_editor' => 'CKEditor',
+    'edit_mode' => 'Edit Mode',
+
 ];
+
+

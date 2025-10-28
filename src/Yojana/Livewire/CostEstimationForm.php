@@ -39,6 +39,7 @@ use Src\Yojana\Service\CostEstimationDetailAdminService;
 use Src\Settings\Traits\AdminSettings;
 use Src\Yojana\Service\WorkOrderAdminService;
 use App\Traits\HelperTemplate;
+use Src\Settings\Models\FiscalYear;
 
 class CostEstimationForm extends Component
 {
@@ -96,6 +97,7 @@ class CostEstimationForm extends Component
     public $cost_estimation_saved;
 
     public $initial_photo_saved;
+    public $fiscalYear;
 
     public function rules(): array
     {
@@ -104,6 +106,7 @@ class CostEstimationForm extends Component
             'costEstimationDetail.activity_group_id' => 'nullable',
             'costEstimationDetail.activity_id' => 'nullable',
             'costEstimationDetail.unit' => 'nullable',
+
             'costEstimationDetail.quantity' => ['nullable', 'numeric', 'min:1'],
             'costEstimationDetail.rate' => ['nullable', 'numeric', 'min:1'],
             'costEstimationDetail.amount' => 'required',
@@ -111,6 +114,8 @@ class CostEstimationForm extends Component
             'costEstimation.is_revised' => 'nullable',
             'costEstimation.revision_no' => 'nullable',
             'costEstimation.revision_date' => 'nullable',
+            'costEstimation.chalani_no' => 'nullable',
+            'costEstimation.fiscal_year' => 'nullable',
         ];
     }
     public function messages(): array
@@ -136,7 +141,7 @@ class CostEstimationForm extends Component
         $this->action = $action;
         $this->plan = $plan;
 
-        if ($this->plan?->costEstimation?->status === "Approved" ) {
+        if ($this->plan?->costEstimation?->status === "Approved") {
             $this->showApprovalLetter = true;
         }
 
@@ -157,9 +162,10 @@ class CostEstimationForm extends Component
         }
         $this->activityGroups = ProjectActivityGroup::WhereNull('deleted_at')->pluck('title', 'id');
         $this->activities = Activity::WhereNull('deleted_at')->get();
-        $this->configurations = Configuration::whereNull('deleted_at')->pluck('title','id');
-        $this->sourceTypes = SourceType::WhereNull('deleted_at')->pluck('title','id');
-        $this->units = Unit::WhereNull('deleted_at')->pluck('symbol','id');
+        $this->configurations = Configuration::whereNull('deleted_at')->pluck('title', 'id');
+        $this->sourceTypes = SourceType::WhereNull('deleted_at')->pluck('title', 'id');
+        $this->units = Unit::WhereNull('deleted_at')->pluck('symbol', 'id');
+        $this->fiscalYear = FiscalYear::whereNull('deleted_at')->pluck('year', 'id');
         $this->resetForm();
     }
 
@@ -213,11 +219,10 @@ class CostEstimationForm extends Component
 
     public function loadUnit($id)
     {
-        $activity = $this->activities->firstWhere('id',$id);
+        $activity = $this->activities->firstWhere('id', $id);
         if ($activity->exists()) {
             $this->costEstimationDetail->unit = $activity->unit_id;
         }
-
     }
 
     public function removeDetails($index)
@@ -348,8 +353,7 @@ class CostEstimationForm extends Component
             if ($this->is_vatable) {
                 $this->costEstimationDetail->vat_amount = $detail->amount * 0.13;
             }
-        }
-        else{
+        } else {
             if ($this->is_vatable) {
                 $this->costEstimationDetail->vat_amount = $detail->amount * 0.13;
             }
@@ -439,11 +443,11 @@ class CostEstimationForm extends Component
 
     public function save()
     {
-        if (count((array)$this->records) < 1){
-            $this->errorFlash(__('yojana::messages.please_add_cost_estimation_details_first'),'');
+        if (count((array)$this->records) < 1) {
+            $this->errorFlash(__('yojana::messages.please_add_cost_estimation_details_first'), '');
             return;
         }
-        
+
         try {
             $this->costEstimation->rate_analysis_document = $this?->rate_analysis_saved ?? "";
             $this->costEstimation->cost_estimation_document = $this->cost_estimation_saved ?? "";
@@ -458,6 +462,7 @@ class CostEstimationForm extends Component
             }
             $dto = CostEstimationAdminDto::fromLiveWireModel($this->costEstimation);
             $service = new CostEstimationAdminService();
+
 
             switch ($this->action) {
                 case Action::CREATE:
@@ -560,8 +565,8 @@ class CostEstimationForm extends Component
         $nepaliDate = replaceNumbers($this->adToBs(now()->format('Y-m-d')), true);
         $header = $this->getBusinessLetterHeaderFromSample();
 
-        $html = view('Yojana::cost-estimation.print', compact('costEstimation',  'palika_name', 'palika_logo', 'palika_campaign_logo', 'address', 'palika_ward', 'nepaliDate', 'plan', 'totalConfig','header'))->render();
-        
+        $html = view('Yojana::cost-estimation.print', compact('costEstimation',  'palika_name', 'palika_logo', 'palika_campaign_logo', 'address', 'palika_ward', 'nepaliDate', 'plan', 'totalConfig', 'header'))->render();
+
         // $url = PdfFacade::saveAndStream(
         //     content: $html,
         //     file_path: config('src.Yojana.yojana.cost-estimation'),
@@ -573,14 +578,14 @@ class CostEstimationForm extends Component
         // $this->dispatch('open-pdf-in-new-tab', url: $url);
 
         $this->dispatch('print-cost-estimation', html: $html);
-        }
+    }
 
     public function printApprovalLetter()
     {
         $cacheKey = 'letter_sample_exists:' . LetterTypes::ProgramApprovalAndInformationLetter->value . ':' . $this->plan->implementation_method_id;
         $exists = LetterSample::where('letter_type', LetterTypes::ProgramApprovalAndInformationLetter)
-                ->where('implementation_method_id', $this->plan->implementation_method_id)
-                ->exists();
+            ->where('implementation_method_id', $this->plan->implementation_method_id)
+            ->exists();
 
         if ($exists == false) {
             $this->errorFlash(__('yojana::messages.template_not_found'));

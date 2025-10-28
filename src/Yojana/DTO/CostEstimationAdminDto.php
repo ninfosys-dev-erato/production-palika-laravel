@@ -19,21 +19,26 @@ class CostEstimationAdminDto
         public ?string $rate_analysis_document,
         public ?string $cost_estimation_document,
         public ?string $initial_photo,
-    ){}
+        public ?string $chalani_no,
+        public ?string $fiscal_year,
+    ) {}
 
-    public static function fromLiveWireModel(CostEstimation $costEstimation):CostEstimationAdminDto{
+    public static function fromLiveWireModel(CostEstimation $costEstimation): CostEstimationAdminDto
+    {
         return new self(
-                plan_id : $costEstimation->plan_id,
-                date : $costEstimation->date,
-                total_cost : $costEstimation->total_cost,
-                is_revised : $costEstimation->is_revised,
-                revision_no : $costEstimation->revision_no,
-                revision_date : $costEstimation->revision_date,
-                status : $costEstimation->status,
-                document_upload : $costEstimation->document_upload,
-                rate_analysis_document: $costEstimation -> rate_analysis_document,
-                cost_estimation_document: $costEstimation -> cost_estimation_document,
-                initial_photo: $costEstimation -> initial_photo
+            plan_id: $costEstimation->plan_id,
+            date: $costEstimation->date,
+            total_cost: $costEstimation->total_cost,
+            is_revised: $costEstimation->is_revised,
+            revision_no: $costEstimation->revision_no,
+            revision_date: $costEstimation->revision_date,
+            status: $costEstimation->status,
+            document_upload: $costEstimation->document_upload,
+            rate_analysis_document: $costEstimation->rate_analysis_document,
+            cost_estimation_document: $costEstimation->cost_estimation_document,
+            initial_photo: $costEstimation->initial_photo,
+            chalani_no: $costEstimation->chalani_no,
+            fiscal_year: $costEstimation->fiscal_year,
         );
     }
 }

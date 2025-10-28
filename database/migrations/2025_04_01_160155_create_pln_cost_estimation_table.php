@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('rate_analysis_document')->nullable();
             $table->string('cost_estimation_document')->nullable();
             $table->string('initial_photo')->nullable();
+            $table->string('chalani_no')->nullable();
+            $table->string('fiscal_year')->nullable();
             $table->string('document_upload')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
