@@ -4,8 +4,8 @@
             <button type="button" class="btn btn-info" onclick="history.back()">
                 <i class="bx bx-arrow-back"></i> {{ __('recommendation::recommendation.back') }}
             </button>
-            <button type="button" class="btn btn-danger" onclick="printDiv()"
-                data-bs-toggle="tooltip" data-bs-placement="top" title="Print">
+            <button type="button" class="btn btn-danger" onclick="printDiv()" data-bs-toggle="tooltip"
+                data-bs-placement="top" title="Print">
                 <i class="bx bx-printer"></i> {{ __('recommendation::recommendation.print') }}
             </button>
         </div>
@@ -16,24 +16,24 @@
                 <div id="printContent" class="a4-container">
                     {!! $template . $styles !!}
                     @php
-                $watermark = getSetting('palika-campaign-logo');
-            @endphp
+                        $watermark = getSetting('palika-campaign-logo');
+                    @endphp
 
-            @if (!empty($watermark) && getSetting('show-letter-watermark'))
-                <img class="watermark" src="{{ $watermark }}" alt="Watermark">
-            @endif
+                    @if (!empty($watermark) && getSetting('show-letter-watermark'))
+                        <img class="watermark" src="{{ $watermark }}" alt="Watermark">
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 
     <style>
-         @font-face {
-        font-family: 'Kalimati';
-        src: url('/fonts/Kalimati.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
+        @font-face {
+            font-family: 'Kokila';
+            src: url('/fonts/Kokila.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
         /* Ensure A4 Size */
         .a4-container {
@@ -45,27 +45,30 @@
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
             text-align: left;
             position: relative;
-            font-family: 'Kalimati' !important;
+            font-family: 'Kokila' !important;
             font-size: 16px;
             color: #000;
         }
 
 
 
-     .watermark {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: 0.1; /* Adjust transparency here */
-        width: 60%;
-        height: 40%;
-        z-index: 0; /* Ensure it stays behind text */
-        pointer-events: none; /* So it doesn't interfere with interaction */
-    }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.1;
+            /* Adjust transparency here */
+            width: 60%;
+            height: 40%;
+            z-index: 0;
+            /* Ensure it stays behind text */
+            pointer-events: none;
+            /* So it doesn't interfere with interaction */
+        }
 
 
-      
+
         /* Print Styling */
         @media print {
             body {
@@ -91,7 +94,7 @@
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     {{-- this script lets user download the pdf --}}

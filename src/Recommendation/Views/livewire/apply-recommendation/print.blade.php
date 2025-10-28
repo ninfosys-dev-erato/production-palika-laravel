@@ -54,8 +54,8 @@
 
     <style>
         @font-face {
-            font-family: 'Kalimati';
-            src: url('/fonts/Kalimati.ttf') format('truetype');
+            font-family: 'Kokila';
+            src: url('/fonts/Kokila.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -70,7 +70,7 @@
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
             text-align: left;
             position: relative;
-            font-family: 'Kalimati' !important;
+            font-family: 'Kokila' !important;
             font-size: 16px;
             color: #000;
         }
