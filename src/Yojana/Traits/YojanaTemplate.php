@@ -18,7 +18,7 @@ trait YojanaTemplate
 
 public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | AgreementFormat $form)
 {
-    
+    dd($this->averageGrantAmount($plan));
     // dd(replaceNumbers($plan->agreement->beneficiaries_total_no,true));
     // dd($this->committeeAgreementSignatureDetails($plan));
     $template = $form->sample_letter;
@@ -159,6 +159,9 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
                         }if ($segment == 'quotation_details'){
                             $value = $this->quotationDetails($model) ?? '';
                         }
+                        if ($segment == 'average_grant_amount'){
+                            $value = $this->averageGrantAmount($model) ?? '';
+                        }
                     } catch (\Throwable $e) {
                         $value = null;
                         break;
@@ -202,6 +205,24 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
     }
     
 
+    public function averageGrantAmount($plan)
+    {
+        $costEstimationAmount = $plan->costEstimation->total_cost ?? 0;
+        $evaluationAmount = $plan->latestPayment->evaluation_amount ?? 0;
+
+        $addAmount = $plan->costEstimation->configDetails
+            ->where('operation_type', 'add')
+            ->sum('amount') ?? 0;
+
+        $deductAmount = $plan->costEstimation->configDetails
+            ->where('operation_type', 'deduct')
+            ->sum('amount') ?? 0;
+
+        $localGrantAmount = $plan->allocated_budget + $addAmount - $deductAmount;
+
+        $averageGrant = round(($evaluationAmount / $costEstimationAmount) * $localGrantAmount, 2);
+        return $averageGrant;
+    }
 
     public function getBudgetSourceData($plan)
     {
