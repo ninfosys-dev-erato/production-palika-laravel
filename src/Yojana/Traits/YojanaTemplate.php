@@ -18,7 +18,6 @@ trait YojanaTemplate
 
 public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | AgreementFormat $form)
 {
-    dd($this->averageGrantAmount($plan));
     // dd(replaceNumbers($plan->agreement->beneficiaries_total_no,true));
     // dd($this->committeeAgreementSignatureDetails($plan));
     $template = $form->sample_letter;
