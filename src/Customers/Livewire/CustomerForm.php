@@ -43,6 +43,7 @@ class CustomerForm extends Component
     public $uploadedImage2;
     public array $districts = [];
     public bool $showDocumentBackInput = false;
+        public $avatar;
 
     public function rules(): array
     {
@@ -57,6 +58,7 @@ class CustomerForm extends Component
         }
 
         $rules = [
+              'avatar' => ['required'],
             'customer.name' => ['required'],
             'customer.email' => ['nullable'],
             'customer.mobile_no' => ['required', 'numeric', 'digits:10', Rule::unique('tbl_customers', 'mobile_no')->ignore($this->customer->id)],
@@ -202,7 +204,12 @@ class CustomerForm extends Component
     public function mount(Customer $customer, Action $action, bool $isModalForm, bool $isForGrievance = false)
     {
 
+
         $this->customer = $customer;
+        if($this->customer->avatar)
+        {
+            $this->avatar = $this->customer->avatar;
+        }
         $this->action = $action;
         $this->isModalForm = $isModalForm;
         $this->isForGrievance = $isForGrievance;
@@ -225,6 +232,14 @@ class CustomerForm extends Component
             }
 
             $this->customer->password = Str::random(10);
+            if (
+                $this->customer->avatar instanceof \Illuminate\Http\File ||
+                $this->customer->avatar instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ||
+                $this->customer->avatar instanceof \Illuminate\Http\UploadedFile
+                ) {
+                $this->customer->avatar = ImageServiceFacade::compressAndStoreImage($this->avatar, 'customer/avatar', getStorageDisk('public'));
+            }
+            $this->customer->avatar = $this->avatar;
 
             $dto = CustomerAdminDto::fromAdminLiveWireModel($this->customer);
 

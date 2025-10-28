@@ -19,6 +19,8 @@
                     <x-form.text-input label="{{ __('Mobile Number') }}" id="customer.mobile_no"
                         placeholder="{{ __('Enter Mobile Number') }}" name="customer.mobile_no" />
                 </div>
+
+
                 <div class="col-md-6">
                     <label class="form-label" for="customer.gender">{{ __('Gender') }}</label>
                     <select id="customer.gender" name="customer.gender"
@@ -49,6 +51,42 @@
                         @enderror
                     </div>
                 @endif
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="image">{{ __('Avatar') }}</label>
+                        <input wire:model="avatar" name="avatar" type="file" class="form-control"
+                            accept="image/*,.pdf">
+                        @error('avatar')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                        @if (
+                            ($avatar && $avatar instanceof \Livewire\TemporaryUploadedFile) ||
+                                $avatar instanceof \Illuminate\Http\File ||
+                                $avatar instanceof \Illuminate\Http\UploadedFile)
+                            @php
+                                $mime = $avatar->getMimeType();
+                                $isImage = str_starts_with($mime, 'image/');
+                                $isPDF = $mime === 'application/pdf';
+                            @endphp
+                            <div class="col-md-3 ">
+                                <a href="{{ $avatar->temporaryUrl() }}" target="_blank"
+                                    class="btn btn-outline-primary btn-sm">
+                                    <i class="bx bx-file"></i>
+                                    {{ __('yojana::yojana.view_uploaded_file') }}
+                                </a>
+                            </div>
+                        @elseif (!empty(trim($avatar)))
+                            @php
+                                $fileUrl = customFileAsset('customer/avatar', $avatar, 'local', 'tempUrl');
+                            @endphp
+                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bx bx-file"></i>
+                                {{ __('yojana::yojana.view_uploaded_file') }}
+                            </a>
+                        @endif
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -295,7 +333,7 @@
                                     @php
                                         $previewUrl = safeFilePreview($uploadedImage1);
                                     @endphp
-                                    
+
                                     @if ($previewUrl)
                                         <img src="{{ $previewUrl }}" alt="Uploaded Image Preview"
                                             class="img-thumbnail mt-2" style="height: 300px;">
@@ -304,7 +342,8 @@
                                             <i class="{{ getFileTypeIcon($uploadedImage1) }}"></i>
                                             <span class="ms-2">{{ $uploadedImage1->getFilename() }}</span>
                                             <br>
-                                            <small class="text-muted">{{ __('This file type cannot be previewed') }}</small>
+                                            <small
+                                                class="text-muted">{{ __('This file type cannot be previewed') }}</small>
                                         </div>
                                     @endif
                                 @endif
@@ -326,17 +365,17 @@
                                         @php
                                             $previewUrl2 = safeFilePreview($uploadedImage2);
                                         @endphp
-                                        
+
                                         @if ($previewUrl2)
-                                            <img src="{{ $previewUrl2 }}"
-                                                alt="Uploaded Image Preview" class="img-thumbnail mt-2"
-                                                style="height: 300px;">
+                                            <img src="{{ $previewUrl2 }}" alt="Uploaded Image Preview"
+                                                class="img-thumbnail mt-2" style="height: 300px;">
                                         @else
                                             <div class="mt-2 p-3 bg-light border rounded">
                                                 <i class="{{ getFileTypeIcon($uploadedImage2) }}"></i>
                                                 <span class="ms-2">{{ $uploadedImage2->getFilename() }}</span>
                                                 <br>
-                                                <small class="text-muted">{{ __('This file type cannot be previewed') }}</small>
+                                                <small
+                                                    class="text-muted">{{ __('This file type cannot be previewed') }}</small>
                                             </div>
                                         @endif
                                     @endif
