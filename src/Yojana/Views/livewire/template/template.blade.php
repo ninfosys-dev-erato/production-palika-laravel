@@ -156,6 +156,113 @@
         }
     </script>
 
+     <script>
+            function initNepaliDatePickers() {
+               
+
+                document.querySelectorAll('.nepali-date').forEach(input => {
+
+                    if (!input || typeof input.nepaliDatePicker !== 'function') return;
+
+                    // Skip already initialized inputs
+                    if (input.classList.contains('ndp-initialized')) return;
+
+                    // Store current value and clear it temporarily to avoid parsing issues
+                    const currentValue = input.value || '';
+
+                    // Temporarily clear the value to prevent parsing errors
+                    input.value = '';
+
+                    // Destroy existing picker if present
+                    if (input._nepaliDatePicker) {
+                        try {
+                            input._nepaliDatePicker.destroy();
+                            input._nepaliDatePicker = null;
+                        } catch (_) {}
+                    }
+
+                    // Initialize picker with empty value first
+                    try {
+                        input.nepaliDatePicker({
+                            language: "ne",
+                            ndpYear: true,
+                            ndpMonth: true,
+                            unicodeDate: true,
+                            onChange: () => {
+                                // Dispatch input event so Livewire picks up the change
+                                input.dispatchEvent(new Event('input', {
+                                    bubbles: true
+                                }));
+                            }
+                        });
+
+                        // Now set the value after picker is initialized
+                        if (currentValue && currentValue.trim() !== '') {
+                            // Use setTimeout to ensure picker is fully ready
+                            setTimeout(() => {
+                                try {
+                                    input.value = currentValue;
+                                    // Trigger the picker to update its display
+                                    if (input._nepaliDatePicker && input._nepaliDatePicker.setDate) {
+                                        input._nepaliDatePicker.setDate(currentValue);
+                                    }
+                                } catch (e) {
+                                    console.warn('Could not set date value:', currentValue, e);
+                                }
+                            }, 200);
+                        }
+
+                        // Mark as initialized
+                        input.classList.add('ndp-initialized');
+                        console.log('Nepali date picker initialized for:', input.id || input.name);
+
+                    } catch (error) {
+                        console.error('Nepali date picker init failed for', input.id || input.name, error);
+                        // Remove the initialized class so it can be retried
+                        input.classList.remove('ndp-initialized');
+                    }
+                });
+            }
+
+            function setupLivewireDatePickers() {
+                initNepaliDatePickers();
+
+                if (typeof Livewire !== 'undefined') {
+                    // Custom event from Livewire component
+                    Livewire.on('init-registration-date', () => {
+                        setTimeout(() => initNepaliDatePickers(), 100);
+                    });
+
+                    // Initialize after any Livewire DOM update
+                    Livewire.hook('message.processed', () => {
+                        setTimeout(() => initNepaliDatePickers(), 100);
+                    });
+                } else {
+                    // Retry setup if Livewire is not yet loaded
+                    setTimeout(setupLivewireDatePickers, 500);
+                }
+            }
+
+            // Run on initial DOM ready
+            document.addEventListener('DOMContentLoaded', () => {
+                setupLivewireDatePickers();
+            });
+
+            // Also ensure initialization after Livewire fully loads
+            document.addEventListener('livewire:load', () => {
+                setupLivewireDatePickers();
+            });
+
+            // Optional: re-initialize on Bootstrap tabs or modals if your datepicker is inside them
+            document.addEventListener('shown.bs.tab', () => {
+                setTimeout(() => initNepaliDatePickers(), 100);
+            });
+
+            document.addEventListener('shown.bs.modal', () => {
+                setTimeout(() => initNepaliDatePickers(), 100);
+            });
+        </script>
+
     {{-- this script lets user download the pdf --}}
     <!-- <script>
         async function printDiv() {

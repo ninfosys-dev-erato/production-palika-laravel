@@ -83,7 +83,7 @@ class TemplateForm extends Component
                     case 'select':
                         $replacement = '<select wire:model.defer="placeholders.' . $name . '" 
                                     class="form-select d-inline-block mb-1" 
-                                    style="min-width:200px; width:25%;" wire:change="saveDynamicData">
+                                    style="min-width:200px; width:25%;">
                                     <option value="">-- Select --</option>';
                         foreach ($this->employees as $id => $employeeName) {
                             $selected = $storedValue == $employeeName ? 'selected' : '';
@@ -94,12 +94,22 @@ class TemplateForm extends Component
                         break;
 
                     case 'input':
-                    default:
                         $replacement = '<input type="text"
                                        wire:model.defer="placeholders.' . $name . '"
                                        value="' . e($storedValue) . '"
                                        class="form-control d-inline-block mb-1"
-                                       style="min-width:200px; width:25%;" wire:change="saveDynamicData">';
+                                       style="min-width:200px; width:25%;">';
+                        break;
+                    case 'inputnepalidate':
+                        $replacement = '<input type="text"
+                                       wire:model.defer="placeholders.' . $name . '"
+                                       value="' . e($storedValue) . '"
+                                       class="form-control d-inline-block mb-1 nepali-date"
+                                       style="min-width:200px; width:25%;">';
+                        $this->dispatch('init-registration-date');
+                        break;
+                    default:
+
                         break;
                 }
             } else {
@@ -118,13 +128,14 @@ class TemplateForm extends Component
         $this->letter = $this->renderDynamicInputs($this->templateLetter);
     }
 
-    
+
     public function saveDynamicData()
     {
 
         $this->model->update([
             'dynamic_data' => json_encode($this->placeholders)
         ]);
+
 
         $this->successToast(__('yojana::yojana.data_saved_successfully'));
     }
@@ -163,6 +174,7 @@ class TemplateForm extends Component
                 $this->showDynamicField = false;  // hide input fields
                 $this->preview = true;            // show the rendered preview container
                 $this->letter = $this->renderDynamicInputs($this->templateLetter);
+                $this->saveDynamicData();
                 break;
 
             case 'ck':
