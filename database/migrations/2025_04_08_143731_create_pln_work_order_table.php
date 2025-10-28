@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('subject')->nullable();
             $table->longText('letter_body')->nullable();
             $table->longText('template')->nullable();
+            $table->longText('dynamic_data')->nullable();
             $table->string('letter_sample_id')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');

@@ -1763,8 +1763,15 @@ return [
 
     'please_select_any_one_option' => 'कृपया कुनै एउटा विकल्प छान्नुहोस्',
     'signee_saved_successfully' => 'हस्ताक्षरकर्ता सफलतापूर्वक सुरक्षित गरियो',
-    'saved' => 'saved',
-    'unsaved' => 'saved नगरिएको',
+    'saved' => 'सेब',
+    'unsaved' => 'सेब नगरिएको',
+    'preview_values' => 'मानहरू पूर्वावलोकन गर्नुहोस्',
+    'edit_inputs' => 'इनपुट सम्पादन गर्नुहोस्',
+    'save' => 'सेभ गर्नुहोस्',
+    'delete_data' => 'डाटा मेटाउनुहोस्',
+    'data_deleted_successfully' => 'डाटा सफलतापूर्वक मेटाइयो',
+    'data_saved_successfully' => 'डाटा सफलतापूर्वक सेभ भयो',
+
 
 
 ];

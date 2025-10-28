@@ -27,6 +27,7 @@ class WorkOrder extends Model
         'updated_at',
         'updated_by',
         'template',
+        'dynamic_data',
     ];
 
     public function casts(): array
@@ -46,6 +47,7 @@ class WorkOrder extends Model
             'deleted_at' => 'datetime',
             'deleted_by' => 'string',
             'template' => 'string',
+            'dynamic_data' => 'array'
         ];
     }
 
