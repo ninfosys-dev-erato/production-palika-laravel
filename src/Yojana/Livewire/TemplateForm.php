@@ -117,6 +117,8 @@ class TemplateForm extends Component
         $this->showDynamicField = !$this->showDynamicField;
         $this->letter = $this->renderDynamicInputs($this->templateLetter);
     }
+
+    
     public function saveDynamicData()
     {
 
