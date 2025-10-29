@@ -194,43 +194,40 @@
 
     {{-- this script opens the new tab and let user print or download the certificate --}}
 
-    {{-- <script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
         async function printDiv() {
-            const {
-                jsPDF
-            } = window.jspdf;
             const element = document.getElementById('printContent');
 
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true
-            });
 
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
 
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const options = {
+                margin: 0.5,
+                filename: 'document.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'a4',
+                    orientation: 'portrait'
+                },
+                pagebreak: {
+                    mode: ['css', 'legacy'],
+                    before: '.page_break'
+                }
+            };
 
-            const imgProps = pdf.getImageProperties(imgData);
-            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-            let heightLeft = imgHeight;
-            let position = 0;
+            const worker = html2pdf().set(options).from(element);
+            const pdf = await worker.toPdf().get('pdf');
 
-            // Add first page
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-            heightLeft -= pdfHeight;
-
-            // Add more pages only if needed
-            while (heightLeft > 1) {
-                position -= pdfHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-                heightLeft -= pdfHeight;
-            }
-
-            // Trigger browser print dialog
             pdf.autoPrint();
             window.open(pdf.output('bloburl'), '_blank');
         }
