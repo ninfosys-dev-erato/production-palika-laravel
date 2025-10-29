@@ -16,6 +16,7 @@ use Src\Yojana\DTO\AgreementBeneficiaryAdminDto;
 use Src\Yojana\DTO\AgreementGrantAdminDto;
 use Src\Yojana\DTO\AgreementInstallmentDetailsAdminDto;
 use Src\Yojana\DTO\AgreementSignatureDetailAdminDto;
+use Src\Yojana\DTO\AgreementWitnessDetailAdminDto;
 use Src\Yojana\DTO\CostDetailsAdminDto;
 use Src\Yojana\Enums\ImplementationMethods;
 use Src\Yojana\Enums\PlanStatus;
@@ -40,6 +41,7 @@ use Src\Yojana\Service\AgreementBeneficiaryAdminService;
 use Src\Yojana\Service\AgreementGrantAdminService;
 use Src\Yojana\Service\AgreementInstallmentDetailAdminService;
 use Src\Yojana\Service\AgreementSignatureDetailAdminService;
+use Src\Yojana\Service\AgreementWitnessDetailAdminService;
 use Src\Yojana\Service\CostDetailsAdminService;
 
 class AgreementForm extends Component
@@ -68,6 +70,9 @@ class AgreementForm extends Component
     public $beneficiaryRecords = [];
     public $signatureRecords = [];
     public $installmentDetails = [];
+    public $employees;
+    public $witnessDetail = ['employee_id' => null];
+    public $witnessRecords = [];
 
     public bool $basedOnWorkProgress = false;
 
@@ -136,6 +141,8 @@ class AgreementForm extends Component
             'agreementSignatureDetail.contact_number.numeric' => __('yojana::messages.agreement_signature_contact_number_numeric'),
             'agreementSignatureDetail.contact_number.digits' => __('yojana::messages.agreement_signature_contact_number_digits'),
             'agreementSignatureDetail.date.required' => __('yojana::messages.agreement_signature_date_required'),
+            // Witness select
+            'witnessDetail.employee_id.required' => __('yojana::messages.please_choose_witness_first'),
 
             // Installment Details
             'installmentDetails.*.release_date.required' => __('yojana::messages.installment_details_release_date_required'),
@@ -251,6 +258,9 @@ class AgreementForm extends Component
         $this->sourceTypes = SourceType::whereNull('deleted_at')->pluck('title', 'id')->toArray();
         $this->beneficiaries = BenefitedMember::whereNull('deleted_at')->pluck('title', 'id')->toArray();
         $this->signatureParties = SignatureParties::cases();
+        $this->employees = Employee::with('designation')
+            ->whereNull('deleted_at')
+            ->get();
 
 
         $this->plan->load('implementationMethod', 'implementationAgency.organization', 'implementationAgency.consumerCommittee.committeeMembers', 'implementationAgency.application');
@@ -321,6 +331,30 @@ class AgreementForm extends Component
         $this->removeRecord($this->signatureRecords, $index);
     }
 
+    public function addWitnessRecord()
+{
+    $this->validate([
+        'witnessDetail.employee_id' => 'required|exists:mst_employees,id',
+    ]);
+
+    $employee = Employee::find($this->witnessDetail['employee_id']);
+
+    $this->witnessRecords[] = [
+        'employee_id' => $employee->id,
+        'name' => $employee->name,
+        'position' => $employee?->designation?->title ?? '-',
+    ];
+
+    // Reset select field
+    $this->witnessDetail = ['employee_id' => null];
+}
+
+
+    public function removeWitnessRecord($index)
+    {
+        $this->removeRecord($this->witnessRecords, $index);
+    }
+
     protected function removeRecord(&$records, $index)
     {
         unset($records[$index]);
@@ -336,6 +370,19 @@ class AgreementForm extends Component
         $this->signatureRecords = $this->agreement->signatureDetails?->toArray() ?? [];
         $this->installmentDetails = $this->agreement->installmentDetails?->toArray() ?? [];
         $this->isDepositRequired = !empty($this->agreement->deposit_number);
+
+        // Load witness records and enrich with employee name and designation when available
+        $this->witnessRecords = $this->agreement->witnessDetails?->map(function ($witness) {
+            $row = is_array($witness) ? $witness : $witness->toArray();
+            $employee = null;
+            if (!empty($row['employee_id'])) {
+                $employee = Employee::with('designation')->find($row['employee_id']);
+            }
+            $row['name'] = $employee?->name ?? ($row['name'] ?? '-');
+            $row['position'] = $employee?->designation?->title ?? ($row['position'] ?? '-');
+            return $row;
+        })->toArray() ?? [];
+
         $this->action = Action::UPDATE;
         $this->dispatch('open-editAgreement');
     }
@@ -482,11 +529,14 @@ class AgreementForm extends Component
         $beneficiaryService = new AgreementBeneficiaryAdminService();
         $signatureService = new AgreementSignatureDetailAdminService();
         $installmentService = new AgreementInstallmentDetailAdminService();
+        $witnessService = new AgreementWitnessDetailAdminService();
+
 
         $agreement->grants()->delete();
         $agreement->beneficiaries()->delete();
         $agreement->signatureDetails()->delete();
         $agreement->installmentDetails()->delete();
+        $agreement->witnessDetails()->delete();
 
         if ($this->costEstimation) {
             $this->costEstimation->costDetails()->delete();
@@ -511,6 +561,13 @@ class AgreementForm extends Component
             $signatureDto = AgreementSignatureDetailAdminDto::fromArrayData($signatureRecord);
             $signatureService->store($signatureDto);
         }
+
+        // Persist witness records into their own table via AgreementWitnessDetailAdminService
+        foreach ($this->witnessRecords as $witnessRecord) {
+            $witnessRecord['agreement_id'] = $agreement->id;
+            $witnessDto = AgreementWitnessDetailAdminDto::fromArrayData($witnessRecord);
+            $witnessService->store($witnessDto);
+        }
         foreach ($this->installmentDetails as $index => $installmentDetail) {
             $installmentDetail['agreement_id'] = $agreement->id;
             $installmentDetail['installment_number'] = $index + 1;
@@ -527,6 +584,7 @@ class AgreementForm extends Component
         $this->beneficiaryRecords = [];
         $this->signatureRecords =  [];
         $this->installmentDetails = [];
+        $this->witnessRecords = [];
         $this->action = Action::CREATE;
     }
 }

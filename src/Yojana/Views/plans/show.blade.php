@@ -45,7 +45,7 @@
                             </button>
                         </li>
 
-                    @if ($plan?->costEstimation?->status === 'Approved')
+                    {{-- @if ($plan?->costEstimation?->status === 'Approved') --}}
                         <li class="nav-item" role="presentation">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                 data-bs-target="#implementation_bodies" aria-controls="implementation_bodies"
@@ -115,7 +115,7 @@
 
                             @endif
                         @endif
-                    @endif
+                    {{-- @endif --}}
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                             data-bs-target="#document-upload" aria-controls="document-upload"
@@ -535,14 +535,14 @@
                             <h5 class="text-primary fw-bold mb-0">
                                 {{ __('yojana::yojana.cost_estimation') }}
                             </h5>
-                            @if ($plan->costEstimation()->exists() && $plan?->costEstimation?->status !== 'Approved')
+                            {{-- @if ($plan->costEstimation()->exists() && $plan?->costEstimation?->status !== 'Approved')
                                 <div>
                                     <a class="btn btn-info" data-bs-toggle="modal"
                                         data-bs-target="#costEstimationForwardModal" onclick="resetForm()">
                                         <i class="bx bx-send"></i> {{ __('yojana::yojana.forward') }}
                                     </a>
                                 </div>
-                            @endif
+                            @endif --}}
                         </div>
                         <div class="">
                             <livewire:yojana.cost_estimation_form :action="App\Enums\Action::CREATE" :$plan />
@@ -611,7 +611,7 @@
                             </div>
                         </div>
                     </div>
-                    @if ($plan?->costEstimation?->status === 'Approved')
+                    {{-- @if ($plan?->costEstimation?->status === 'Approved') --}}
                         <div class="tab-pane fade" id="implementation_bodies" role="tabpanel">
                             <div class="card p-4">
                                 @if ($plan?->implementation_method_id == null)
@@ -1008,7 +1008,7 @@
                             </div>
                             @endif
                         @endif
-                    @endif
+                    {{-- @endif --}}
                 <div class="tab-pane fade" id="document-upload" role="tabpanel">
                     <div class="card p-4">
                         <div class="card-header">

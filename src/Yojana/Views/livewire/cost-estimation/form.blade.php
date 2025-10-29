@@ -16,7 +16,7 @@
                 <div class="row">
                     <div class='col-md-6 mb-3'>
                         <div class='form-group'>
-                            <label class="form-label" for='fiscal_year'>{{ __('yojana::yojana.fiscal_year') }}</label>
+                            <label class="form-label" for='fiscal_year'>{{ __('yojana::yojana.fiscal_year') }} <span class="text-danger">*</span></label>
                             <select wire:model='costEstimation.fiscal_year' name='fiscal_year' type='text'
                                 class='form-control {{ $errors->has('costEstimation.fiscal_year') ? 'is-invalid' : '' }}'>
                                 <option value="" hidden>{{ __('yojana::yojana.select_fiscal_year') }}</option>
@@ -34,7 +34,7 @@
 
                   <div class='col-md-6 mb-3'>
                         <div class='form-group'>
-                            <label class="form-label" for='chalani_no'>{{ __('yojana::yojana.chalani_no') }}</label>
+                            <label class="form-label" for='chalani_no'>{{ __('yojana::yojana.chalani_no') }} <span class="text-danger">*</span></label>
                               <input wire:model='costEstimation.chalani_no' name='chalani_no' type='text'
                                 class='form-control {{ $errors->has('costEstimation.chalani_no') ? 'is-invalid' : '' }}'
                                 placeholder='{{ __('yojana::yojana.enter_chalani_no') }}'>

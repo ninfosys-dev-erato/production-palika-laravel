@@ -150,6 +150,19 @@
                     </div>
                 </div>
                 <div class='col-md-6 mb-3'>
+                    <div class='form-group' wire:ignore>
+                        <label for='date_of_letter_of_intent'
+                            class='form-label'>{{ __('yojana::yojana.date_of_letter_of_intent') }}</label>
+                        <input wire:model='contractDetails.date_of_letter_of_intent' name='date_of_letter_of_intent'
+                            type='text' class='form-control nepali-date'>
+                        <div>
+                            @error('contractDetails.date_of_letter_of_intent')
+                                <small class='text-danger'>{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class='col-md-6 mb-3'>
                     <div class='form-group'>
                         <label for='bid_amount' class='form-label'>{{ __('yojana::yojana.bid_amount') }}</label>
                         <input wire:model='contractDetails.bid_amount' name='bid_amount' type='number'

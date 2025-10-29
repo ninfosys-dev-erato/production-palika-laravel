@@ -733,6 +733,81 @@
     </div>
     </div>
 
+      <div class="card mb-3">
+    <div class="card-body">
+
+        <div class="row">
+            <div class='col-md-6'>
+                <div class='form-group mb-3'>
+                    <label for='witnessDetail.employee_id'
+                           class='form-label'>{{ __('yojana::yojana.witnesses') }}</label>
+                    <select name="witnessDetail.employee_id" wire:model="witnessDetail.employee_id"
+                            class="form-control {{ $errors->has('witnessDetail.employee_id') ? 'is-invalid' : '' }}">
+                        <option value="">{{ __('yojana::yojana.select_witness') }}</option>
+                        @foreach ($employees as $employee)
+                            <option value="{{ $employee->id }}">{{ $employee->name }} | {{ __('yojana::yojana.designation') }}: {{ $employee->designation->title ?? '-' }}</option>
+                        @endforeach
+                    </select>
+
+                    <div>
+                        @error('witnessDetail.employee_id')
+                        <small class='text-danger'>{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+    
+            <div class="card-header d-flex justify-content-end">
+                <button type="button" class="btn btn-info " wire:click="addWitnessRecord">
+                    {{ __('yojana::yojana.add_witness') }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+       <div class="card">
+    <div class="card-body">
+            <h6 class="text-primary">{{ __('yojana::yojana.witness_details') }}</h6>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="text-center">
+                    <tr>
+                        <th>{{ __('yojana::yojana.sno') }}</th>
+                        <th>{{ __('yojana::yojana.name') }}</th>
+                        <th>{{ __('yojana::yojana.position') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (empty($witnessRecords))
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">
+                                {{ __('yojana::yojana.no_witness_records_added') }}
+                            </td>
+                        </tr>
+                    @endif
+
+                    @foreach ($witnessRecords as $index => $witness)
+                        <tr class="text-center">
+                            <td>{{ replaceNumbersWithLocale($index + 1, true) }}</td>
+                            <td>{{ $witness['name'] }}</td>
+                            <td>{{ $witness['position'] }}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                    wire:click="removeWitnessRecord({{ $index }})">
+                                    <i class="bx bx-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
     <div class="card-footer">
         <button type="submit" class="btn btn-primary"
             wire:loading.attr="disabled">{{ __('yojana::yojana.save') }}</button>

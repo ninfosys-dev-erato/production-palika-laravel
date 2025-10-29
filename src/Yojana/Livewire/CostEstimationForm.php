@@ -141,7 +141,10 @@ class CostEstimationForm extends Component
         $this->action = $action;
         $this->plan = $plan;
 
-        if ($this->plan?->costEstimation?->status === "Approved") {
+        // if ($this->plan?->costEstimation?->status === "Approved") {
+        //     $this->showApprovalLetter = true;
+        // }
+        if ($this->plan?->costEstimation) {
             $this->showApprovalLetter = true;
         }
 
@@ -548,7 +551,7 @@ class CostEstimationForm extends Component
         $plan->load(['implementationLevel']);
 
 
-        $costEstimation->load(['costEstimationDetail.unitRelation', 'costDetails', 'configDetails', 'costEstimationDetail.activity']);
+        $costEstimation->load(['costEstimationDetail.unitRelation', 'costDetails', 'configDetails', 'costEstimationDetail.activity','fiscalYear']);
         $totalConfig = 0;
         foreach ($costEstimation->configDetails as $configDetail) {
             $totalConfig += $configDetail->amount;

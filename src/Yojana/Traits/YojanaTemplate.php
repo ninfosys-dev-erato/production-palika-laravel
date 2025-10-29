@@ -18,7 +18,6 @@ trait YojanaTemplate
 
 public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | AgreementFormat $form)
 {
-    
     // dd(replaceNumbers($plan->agreement->beneficiaries_total_no,true));
     // dd($this->committeeAgreementSignatureDetails($plan));
     $template = $form->sample_letter;
@@ -159,6 +158,9 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
                         }if ($segment == 'quotation_details'){
                             $value = $this->quotationDetails($model) ?? '';
                         }
+                        if ($segment == 'average_grant_amount'){
+                            $value = $this->averageGrantAmount($model) ?? '';
+                        }
                     } catch (\Throwable $e) {
                         $value = null;
                         break;
@@ -202,6 +204,24 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
     }
     
 
+    public function averageGrantAmount($plan)
+    {
+        $costEstimationAmount = $plan->costEstimation->total_cost ?? 0;
+        $evaluationAmount = $plan->latestPayment->evaluation_amount ?? 0;
+
+        $addAmount = $plan->costEstimation->configDetails
+            ->where('operation_type', 'add')
+            ->sum('amount') ?? 0;
+
+        $deductAmount = $plan->costEstimation->configDetails
+            ->where('operation_type', 'deduct')
+            ->sum('amount') ?? 0;
+
+        $localGrantAmount = $plan->allocated_budget + $addAmount - $deductAmount;
+
+        $averageGrant = round(($evaluationAmount / $costEstimationAmount) * $localGrantAmount, 2);
+        return $averageGrant;
+    }
 
     public function getBudgetSourceData($plan)
     {
@@ -252,12 +272,12 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
     public function getAgreementGrantDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid black;">
-        <thead style="text-align: left;">
-            <tr style="text-align: left;">
+        <thead style="text-align: center;">
+            <tr style="text-align: center;">
                 <th style="border:1px solid black;  padding:8px;">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid black;  padding:8px;">' . __('स्रोत प्रकार') . '</th>
+                <th style="border:1px solid black;  padding:8px;">' . __('स्रोत') . '</th>
                 <th style="border:1px solid black;  padding:8px;">' . __('सामग्रीको नाम') . '</th>
-                <th style="border:1px solid black;  padding:8px;">' . __('एकाइ') . '</th>
+                <th style="border:1px solid black;  padding:8px;">' . __('इकाइ') . '</th>
                 <th style="border:1px solid black;  padding:8px;">' . __('रकम') . '</th>
             </tr>
         </thead>

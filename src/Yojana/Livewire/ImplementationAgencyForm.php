@@ -58,6 +58,7 @@ class ImplementationAgencyForm extends Component
         'quotations.*.amount' => 'Amount',
         'quotations.*.date' => 'Date',
         'quotations.*.percentage' => 'Percentage',
+        'contractDetails.date_of_letter_of_intent' => 'Date of letter of intent',
     ];
 
     public function rules(): array
@@ -116,6 +117,7 @@ class ImplementationAgencyForm extends Component
                 $dynamicRules['contractDetails.contract_number'] = ['required'];
                 $dynamicRules['contractDetails.notice_date'] = ['required', 'string'];
                 $dynamicRules['contractDetails.bid_acceptance_date'] = ['required', 'string'];
+                $dynamicRules['contractDetails.date_of_letter_of_intent'] = ['nullable', 'string'];
                 $dynamicRules['contractDetails.bid_amount'] = ['required', 'numeric', 'min:0'];
                 $dynamicRules['contractDetails.deposit_amount'] = ['required', 'numeric', 'min:0'];
                 break;
@@ -197,7 +199,6 @@ class ImplementationAgencyForm extends Component
         $this->implementationAgency->plan_id = $this->plan->id;
         $this->implementationAgency->model = $this->plan?->implementationMethod->id;
         $model = $this->plan?->implementationMethod?->model;
-        
         // Custom validation for quotations
         if ($model == ImplementationMethods::OperatedByQuotation) {
             if (count($this->quotations) < 4) {
