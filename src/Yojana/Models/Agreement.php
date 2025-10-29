@@ -103,6 +103,11 @@ class Agreement extends Model
         return $this->hasMany(AgreementInstallmentDetails::class, 'agreement_id', 'id');
     }
 
+    public function witnessDetails(): HasMany
+    {
+        return $this->hasMany(AgreementWitnessDetail::class, 'agreement_id', 'id');
+    }
+
     public function getPlanStartDateNeAttribute()
     {
         // this method returns nepali date for created_at for report purpose

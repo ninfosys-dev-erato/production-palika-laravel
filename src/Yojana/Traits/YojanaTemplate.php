@@ -272,12 +272,12 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
     public function getAgreementGrantDetails($plan)
     {
         $html = '<table style="width:100%; border-collapse:collapse; border:1px solid black;">
-        <thead style="text-align: left;">
-            <tr style="text-align: left;">
+        <thead style="text-align: center;">
+            <tr style="text-align: center;">
                 <th style="border:1px solid black;  padding:8px;">' . __('क्रम संख्या') . '</th>
-                <th style="border:1px solid black;  padding:8px;">' . __('स्रोत प्रकार') . '</th>
+                <th style="border:1px solid black;  padding:8px;">' . __('स्रोत') . '</th>
                 <th style="border:1px solid black;  padding:8px;">' . __('सामग्रीको नाम') . '</th>
-                <th style="border:1px solid black;  padding:8px;">' . __('एकाइ') . '</th>
+                <th style="border:1px solid black;  padding:8px;">' . __('इकाइ') . '</th>
                 <th style="border:1px solid black;  padding:8px;">' . __('रकम') . '</th>
             </tr>
         </thead>
