@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Facades\FileFacade;
 use App\Facades\GlobalFacade;
 use Illuminate\Database\Eloquent\Model;
+use Src\Recommendation\Models\ApplyRecommendation;
 use Src\Settings\Models\LetterHeadSample;
 use Src\Wards\Models\Ward;
 use Illuminate\Support\Str;
@@ -12,6 +13,8 @@ use Src\Settings\Enums\TemplateEnum;
 
 trait HelperTemplate
 {
+
+    use HelperDate;
 
     const EMPTY_LINES = "____________________";
     function getLetterHeader(
@@ -91,7 +94,7 @@ HTML;
 
     }
 
-    function getRecommendationLetterHead(string $regNo, string $fiscalYear, bool $is_darta = true): string
+    function getRecommendationLetterHead(string $regNo, ApplyRecommendation $applyRecommendation, bool $is_darta = true): string
     {
         $letterHeadSample = LetterHeadSample::where('slug', TemplateEnum::Recommendation)->whereNull('deleted_at')->first();
         if (!$letterHeadSample) {
@@ -114,11 +117,17 @@ HTML;
         $office_name = $office_name ?: getSetting('office-name') ?: self::EMPTY_LINES;
         $office_name_en = $office_name_en ?: getSetting('office-name-en') ?: self::EMPTY_LINES;
 
+        if (($applyRecommendation->accepted_at)) {
+            $date = $applyRecommendation->accepted_at->format('Y-m-d');
+            $bsDate = $this->adToBs($date);
+            $approvedDate = replaceNumbers($bsDate, true);
+        }
+    
         $additionalData = [
             '{{rec.reg_no}}' => $regNo ?? '',
-            '{{rec.fiscal_year}}' => $fiscalYear ?? '',
+            '{{rec.fiscal_year}}' => $applyRecommendation->fiscalYear?->year ?? getSetting('fiscal-year)'),
             '{{rec.label}}' => $label ?? '',
-            '{{rec.date}}' => getFormattedBsDate() ?? '',
+            '{{rec.date}}' => $approvedDate ?? getFormattedBsDate(),
             '{{rec.office_name}}' => $office_name ?? '',
             '{{rec.office_name_en}}' => $office_name_en ?? '',
             '{{rec.ward_name}}' => $ward_name ?? '',

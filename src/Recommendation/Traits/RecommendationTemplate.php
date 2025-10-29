@@ -49,9 +49,7 @@ trait RecommendationTemplate
 
         $globalData = $this->getGlobalData($signeeName, $wardId, $applyRecommendation->id);
         // $letterHead = $this->getLetterHeader($wardId, getFormattedBsDate(), $regNo, true, $applyRecommendation?->fiscalYear?->year);
-
-
-        $letterHead = $this->getRecommendationLetterHead($regNo, $applyRecommendation?->fiscalYear?->year ?? getSetting('fiscal-year)'), true);
+        $letterHead = $this->getRecommendationLetterHead($regNo, $applyRecommendation, true);
 
         $letterFoot = $this->getFooter();
 
