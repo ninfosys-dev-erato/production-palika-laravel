@@ -18,6 +18,7 @@ trait YojanaTemplate
 
 public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | AgreementFormat $form)
 {
+    // dd($this->getAgreementWitnessDetails($plan));
     // dd(replaceNumbers($plan->agreement->beneficiaries_total_no,true));
     // dd($this->committeeAgreementSignatureDetails($plan));
     $template = $form->sample_letter;
@@ -160,6 +161,9 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
                         }
                         if ($segment == 'average_grant_amount'){
                             $value = $this->averageGrantAmount($model) ?? '';
+                        }
+                        if ($segment == 'average_witness_details'){
+                            $value = $this->getAgreementWitnessDetails($model) ?? '';
                         }
                     } catch (\Throwable $e) {
                         $value = null;
@@ -453,6 +457,60 @@ public function resolveTemplate(Plan | ConsumerCommittee $plan, LetterSample | A
 
         return $html;
     }
+
+public function getAgreementWitnessDetails($plan)
+{
+    $witnesses = $plan->agreement->witnessDetails?->load('employee.designation') ?? collect();
+
+    $colCount = max(3, $witnesses->count());
+
+    $html = '
+    <figure class="table" style="width:100%; margin:0;">
+        <table class="border:1px solid black;" style="width:100%;">
+            <tbody>
+                <tr>
+                    <td colspan="' . $colCount . '" 
+                        style="text-align:center; border:1px solid black;  font-weight:bold;">
+                        रोहादर र साक्षी (बाँसगढी नगरपालिका कार्यालयको तर्फबाट)
+                    </td>
+                </tr>
+                <tr>';
+
+    // दस्तखत row
+    foreach ($witnesses as $detail) {
+        $html .= '<td style="text-align:left; border:1px solid black; padding:6px;">दस्तखत:</td>';
+    }
+
+    $html .= '</tr><tr>';
+
+    // नाम, थर row
+    foreach ($witnesses as $detail) {
+        $html .= '
+            <td style="border:1px solid black; padding:6px;">
+                नाम, थर: ' . htmlspecialchars($detail->employee->name ?? '') . '
+            </td>';
+    }
+
+    $html .= '</tr><tr>';
+
+    // पद row
+    foreach ($witnesses as $detail) {
+        $html .= '
+            <td style="border:1px solid black; padding:6px;">
+                पद: ' . htmlspecialchars($detail->employee->designation->title ?? '') . '
+            </td>';
+    }
+
+    $html .= '
+            </tr>
+        </tbody>
+    </table>
+    </figure>';
+
+    return $html;
+}
+
+
 
 
     public function committeeAgreementSignatureDetails($plan)

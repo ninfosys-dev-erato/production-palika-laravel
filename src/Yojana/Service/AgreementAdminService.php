@@ -59,7 +59,7 @@ public function collectionDelete(array $ids){
     {
         $agreement = Agreement::find($id);
         $plan = $agreement->plan;
-        $plan->load('costEstimation.costDetails.sourceType','agreement.implementationMethod','agreement.consumerCommittee.ward','agreement.grants.sourceType','agreement.beneficiaries.beneficiary','agreement.signatureDetails','agreement.agreementCost','agreement.installmentDetails');
+        $plan->load('costEstimation.costDetails.sourceType','agreement.implementationMethod','agreement.consumerCommittee.ward','agreement.grants.sourceType','agreement.beneficiaries.beneficiary','agreement.signatureDetails','agreement.agreementCost','agreement.installmentDetails','agreement.witnessDetails.employee.designation');
         $implementationMethod = $plan->agreement->implementationMethod->model;
 
 //        dd($plan->agreement->consumerCommittee);
