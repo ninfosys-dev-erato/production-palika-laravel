@@ -1775,4 +1775,18 @@ return [
     'signee_saved_successfully' => 'Signee Saved Successfully',
     'saved' => 'Saved',
     'unsaved' => 'Unsaved',
+    'preview_values' => 'Preview Values',
+    'edit_inputs' => 'Edit Inputs',
+    'save' => 'Save',
+    'delete_data' => 'Delete Data',
+    'data_deleted_successfully' => 'Data deleted successfully',
+    'data_saved_successfully' => 'Data saved successfully',
+
+    'input_fields' => 'Input Fields',
+    'preview_text' => 'Preview Text',
+    'ck_editor' => 'CKEditor',
+    'edit_mode' => 'Edit Mode',
+
 ];
+
+

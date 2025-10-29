@@ -8,84 +8,66 @@
         </div>
         <div class="d-flex align-items-center justify-content-between flex-wrap">
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button class="btn btn-outline-primary" type="submit" wire:loading.attr="disabled" wire:click="save">
-                    <i class="bx bx-save"></i> {{ __('yojana::yojana.save') }}
-                </button>
-                <button class="btn btn-outline-primary" type="submit" wire:loading.attr="disabled"
-                    wire:click="resetLetter">
-                    <i class="bx bx-reset"></i> {{ __('yojana::yojana.reset') }}
-                </button>
-                <div class="d-flex align-items-center">
-                    <label for="" class="mb-0">{{ __('yojana::yojana.edit_mode') }}&nbsp;</label>
-                    <div class="form-check form-switch mb-0">
-                        <input type="checkbox" class="form-check-input" {{ !$preview ? 'checked' : '' }}
-                            wire:click="togglePreview">
-                    </div>
+
+                {{-- Input Fields Mode --}}
+                @if ($editorMode == 'input')
+                    <button class="btn btn-outline-danger" wire:click="deleteDynamicData">
+                        {{ __('yojana::yojana.delete_data') }}
+                    </button>
+                @endif
+
+                @if ($editorMode == 'ck' || $editorMode == 'preview')
+                    <button class="btn btn-outline-primary" type="submit" wire:click="save" wire:loading.attr="disabled">
+                        <i class="bx bx-save"></i> {{ __('yojana::yojana.save') }}
+                    </button>
+
+                    <button class="btn btn-outline-primary" type="button" wire:click="resetLetter"
+                        wire:loading.attr="disabled">
+                        <i class="bx bx-reset"></i> {{ __('yojana::yojana.reset') }}
+                    </button>
+                @endif
+
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+
+                <div class="d-flex border rounded overflow-hidden">
+                    {{-- Input Fields --}}
+                    <button type="button"
+                        class="flex-fill btn {{ $editorMode == 'input' ? 'btn-primary text-white' : 'btn-light' }}"
+                        wire:click="setEditorMode('input')">
+                        {{ __('yojana::yojana.input_fields') }}
+                    </button>
+
+                    {{-- Preview Text --}}
+                    <button type="button"
+                        class="flex-fill btn {{ $editorMode == 'preview' ? 'btn-primary text-white' : 'btn-light' }}"
+                        wire:click="setEditorMode('preview')">
+                        {{ __('yojana::yojana.preview_text') }}
+                    </button>
+
+                    {{-- CKEditor --}}
+                    <button type="button"
+                        class="flex-fill btn {{ $editorMode == 'ck' ? 'btn-primary text-white' : 'btn-light' }}"
+                        wire:click="setEditorMode('ck')">
+                        {{ __('yojana::yojana.ck_editor') }}
+                    </button>
                 </div>
             </div>
 
             <div>
-                <button type="button" class="btn btn-outline-primary btn-info" onclick="printDiv()"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('yojana::yojana.print_form') }}">
-                    <i class="bx bx-printer"></i> {{ __('yojana::yojana.print') }}
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="card my-3">
-        <div class="card-body">
-            <div class="row">
-                @foreach ($signees as $index => $signee)
-                    <div class="col-md-4 mb-3">
-                        <div class="form-group border rounded p-3">
-
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label mb-0">
-                                    {{ __('yojana::yojana.signee_name') }}
-                                </label>
-
-                                @if ($signee['id'])
-                                    <span class="badge bg-success"> {{ __('yojana::yojana.saved') }}</span>
-                                @else
-                                    <span class="badge bg-warning"> {{ __('yojana::yojana.unsaved') }}</span>
-                                @endif
-                            </div>
-
-                            <select wire:model="signees.{{ $index }}.employee_id" class="form-control">
-                                <option value="" hidden>
-                                    {{ __('yojana::yojana.select_an_option') }}
-                                </option>
-                                @foreach ($employees as $id => $value)
-                                    <option value="{{ $id }}">{{ $value }}</option>
-                                @endforeach
-                            </select>
-
-                            <div class="mt-2 d-flex gap-2">
-                                @if (count($signees) > 1)
-                                    <button type="button" wire:click="removeSignee({{ $index }})"
-                                        class="btn btn-danger btn-sm">
-                                        Delete
-                                    </button>
-                                @endif
-
-                                <button type="button" wire:click="submitSignee({{ $index }})"
-                                    class="btn btn-success btn-sm">
-                                    Submit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
-                <div class="col-12 mt-3">
-                    <button type="button" wire:click="addSignee" class="btn btn-primary">
-                        Add
+                @if ($editorMode != 'input')
+                    {{-- Print Button --}}
+                    <button type="button" class="btn btn-outline-primary btn-info" onclick="printDiv()"
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('yojana::yojana.print_form') }}">
+                        <i class="bx bx-printer"></i> {{ __('yojana::yojana.print') }}
                     </button>
-                </div>
+                @endif
+
             </div>
+
         </div>
+
     </div>
 
     <div class="col-md-12 {{ $preview ? 'd-none' : '' }}">
@@ -98,6 +80,7 @@
             </div>
         </div>
     </div>
+
     <style>
         /* Ensure A4 Size */
         .a4-container {
