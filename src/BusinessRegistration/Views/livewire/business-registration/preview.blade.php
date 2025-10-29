@@ -220,7 +220,7 @@
                 },
                 pagebreak: {
                     mode: ['css', 'legacy'],
-                    before: '.page_break'
+                    before: '.page-break'
                 }
             };
 
