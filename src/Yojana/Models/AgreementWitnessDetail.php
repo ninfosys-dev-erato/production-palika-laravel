@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Src\Employees\Models\Employee;
+
 
 /**
  * @property string $agreement_id
@@ -49,5 +51,10 @@ class AgreementWitnessDetail extends Model
     public function agreement(): BelongsTo
     {
         return $this->belongsTo(Agreement::class, 'agreement_id', 'id');
+    }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }
 }
