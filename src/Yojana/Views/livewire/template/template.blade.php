@@ -122,7 +122,7 @@
 
 
             const options = {
-                margin: 0.5,
+         
                 filename: 'document.pdf',
                 image: {
                     type: 'jpeg',
