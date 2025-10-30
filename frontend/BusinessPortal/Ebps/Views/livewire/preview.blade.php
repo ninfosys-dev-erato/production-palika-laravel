@@ -27,7 +27,7 @@
 
                             <div class="col-md-12 mt-3">
                                 <div style="border-radius: 10px; text-align: center; padding: 20px;">
-                                    <div id="printContent" class="a4-container">
+                                  <div id="printContent{{ $letter->id }}" class="a4-container">
                                         <style>
                                             {{ $form?->styles ?? '' }}
                                         </style>
